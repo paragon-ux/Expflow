@@ -1,0 +1,68 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://expflow.dev/schemas/2.3/hook-envelope.schema.json",
+  "title": "Python Hook Envelope",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "hook_id",
+    "hook_kind",
+    "operation_id",
+    "project_id",
+    "input_refs",
+    "requested_at",
+    "deadline_ms",
+    "security_profile"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "2.3"
+    },
+    "hook_id": {
+      "type": "string",
+      "pattern": "^efh_[0-9A-HJKMNP-TV-Z]{26}$"
+    },
+    "hook_kind": {
+      "type": "string",
+      "enum": [
+        "pre_commit_validation",
+        "post_commit_assertion",
+        "workflow_detection",
+        "deterministic_projection",
+        "model_assisted_projection",
+        "regeneration",
+        "equivalence_evaluation",
+        "structural_reuse"
+      ]
+    },
+    "operation_id": {
+      "type": "string",
+      "pattern": "^efo_[0-9A-HJKMNP-TV-Z]{26}$"
+    },
+    "project_id": {
+      "type": "string",
+      "pattern": "^efp_[0-9A-HJKMNP-TV-Z]{26}$"
+    },
+    "input_refs": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "requested_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "deadline_ms": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "security_profile": {
+      "type": "string"
+    },
+    "configuration": {
+      "type": "object"
+    }
+  }
+}

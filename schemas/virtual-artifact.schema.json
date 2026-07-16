@@ -1,0 +1,72 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://expflow.dev/schemas/2.3/virtual-artifact.schema.json",
+  "title": "Virtual Generated Artifact",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "virtual_artifact_id",
+    "project_id",
+    "workflow_occurrence_id",
+    "generation_event_ref",
+    "display_name",
+    "availability",
+    "created_at"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "2.3"
+    },
+    "virtual_artifact_id": {
+      "type": "string",
+      "pattern": "^efva_[0-9A-HJKMNP-TV-Z]{26}$"
+    },
+    "project_id": {
+      "type": "string",
+      "pattern": "^efp_[0-9A-HJKMNP-TV-Z]{26}$"
+    },
+    "workflow_occurrence_id": {
+      "type": "string",
+      "pattern": "^efw_[0-9A-HJKMNP-TV-Z]{26}$"
+    },
+    "generation_event_ref": {
+      "type": "string"
+    },
+    "display_name": {
+      "type": "string"
+    },
+    "media_type": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "parent_refs": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "availability": {
+      "type": "string",
+      "enum": [
+        "virtual",
+        "externally_referenced",
+        "unavailable",
+        "materialized",
+        "regenerated"
+      ]
+    },
+    "materialization_event_refs": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  }
+}

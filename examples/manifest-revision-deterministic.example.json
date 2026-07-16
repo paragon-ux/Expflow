@@ -1,0 +1,33 @@
+{
+  "schema_version": "2.3",
+  "manifest_revision_id": "efm_01J00000000000000000000015",
+  "manifest_kind": "import_tree",
+  "project_id": "efp_01J00000000000000000000001",
+  "tree_revision_id": "eft_01J00000000000000000000004",
+  "workflow_occurrence_id": "efw_01J00000000000000000000014",
+  "readable_locator": ".expflow/projections/workflows/example/IMPORT_TREE.md",
+  "content_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+  "status": "accepted",
+  "projector_class": "deterministic_template",
+  "projector_name": "import-tree-renderer",
+  "projector_version": "2.2",
+  "model": null,
+  "prompt_digest": null,
+  "source_refs": [
+    "eft_01J00000000000000000000004",
+    "efw_01J00000000000000000000014"
+  ],
+  "source_decision_refs": [
+    "efrd_01J00000000000000000000010"
+  ],
+  "accepted_by": {
+    "kind": "policy",
+    "name": "accepted-input-renderer",
+    "version": "1",
+    "model": null
+  },
+  "accepted_at": "2026-07-15T12:08:00Z",
+  "superseded_by": null,
+  "stale_reason": null,
+  "created_at": "2026-07-15T12:07:00Z"
+}

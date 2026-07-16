@@ -1,0 +1,56 @@
+{
+  "schema_version": "2.3",
+  "operation_id": "efo_01J00000000000000000000007",
+  "project_id": "efp_01J00000000000000000000001",
+  "operation_type": "sync",
+  "requested_at": "2026-07-15T12:09:30Z",
+  "requested_by": {
+    "kind": "agent",
+    "name": "document-builder",
+    "version": "1.4",
+    "model": null
+  },
+  "expected_head": "eft_01J00000000000000000000004",
+  "scope": {
+    "root": ".",
+    "include": [
+      "authorities/**",
+      "references/**"
+    ],
+    "exclude": [
+      ".expflow/**"
+    ],
+    "description": "Workflow-relevant branches"
+  },
+  "changed_path_hints": [
+    "drafts/spec.md",
+    "authorities/system-design/spec.md"
+  ],
+  "changes": [
+    {
+      "kind": "move",
+      "path": "authorities/system-design/spec.md",
+      "from_path": "drafts/spec.md",
+      "identity_directive": "preserve",
+      "node_id": "efn_01J00000000000000000000002",
+      "node_revision": 2,
+      "basis_note": "The invoking agent declared this as the same specification."
+    }
+  ],
+  "authority_source_refs": [
+    "efs_01J00000000000000000000008@1"
+  ],
+  "workflow_hints": [
+    {
+      "kind": "continue",
+      "workflow_occurrence_id": "efw_01J00000000000000000000014"
+    }
+  ],
+  "automation": {
+    "run_structural_validation": true,
+    "run_semantic_assertions": true,
+    "detect_workflows": true,
+    "project_manifests": true,
+    "semantic_refresh_on_no_change": false
+  }
+}
