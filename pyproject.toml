@@ -1,0 +1,26 @@
+[build-system]
+requires = ["setuptools>=75.8.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "expflow-hooks"
+version = "0.0.0.dev1"
+description = "Expflow Python hook package - schema-conforming validation and automation hooks"
+requires-python = ">=3.11"
+license = {text = "UNLICENSED"}
+readme = "README.md"
+
+[project.optional-dependencies]
+dev = [
+    "jsonschema>=4.23.0",
+    "pytest>=8.3.0",
+    "build>=1.2.0",
+]
+
+[tool.setuptools.packages.find]
+where = ["python"]
+include = ["expflow_hooks*"]
+
+[tool.pytest.ini_options]
+testpaths = ["python/tests"]
+python_files = ["test_*.py"]

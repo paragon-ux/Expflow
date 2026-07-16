@@ -1,0 +1,28 @@
+{
+  "schema_version": "2.3",
+  "document_id": "efad_01J00000000000000000000009",
+  "project_id": "efp_01J00000000000000000000001",
+  "profile": "unified",
+  "readable_locator": "authority/AUTHORITY_HISTORY.md",
+  "content_digest": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+  "machine_sidecar_locator": "authority/AUTHORITY_HISTORY.sidecar.json",
+  "sections": [
+    {
+      "anchor": "chat-actual-artifact-history",
+      "authority_role": "chat_actual_artifact_history",
+      "source_revision_refs": [
+        "efs_01J00000000000000000000008@1"
+      ],
+      "description": "Platform-observed artifact events."
+    },
+    {
+      "anchor": "user-provided-event-history",
+      "authority_role": "user_provided_event_history",
+      "source_revision_refs": [
+        "efs_01J00000000000000000000008@1"
+      ],
+      "description": "User-controlled materialization and import events."
+    }
+  ],
+  "created_at": "2026-07-15T12:06:00Z"
+}

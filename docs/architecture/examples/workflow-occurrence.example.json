@@ -1,0 +1,48 @@
+{
+  "schema_version": "2.3",
+  "workflow_occurrence_id": "efw_01J00000000000000000000014",
+  "project_id": "efp_01J00000000000000000000001",
+  "input_tree_revision_id": "eft_01J00000000000000000000004",
+  "input_path_selector": {
+    "root": ".",
+    "include": [
+      "authorities/**",
+      "references/**"
+    ],
+    "exclude": [],
+    "description": "Exact workflow input boundary"
+  },
+  "output_tree_revision_id": "eft_01J00000000000000000000005",
+  "output_path_selector": {
+    "root": ".",
+    "include": [
+      "deliverables/**",
+      "authorities/**"
+    ],
+    "exclude": [
+      "references/**"
+    ],
+    "description": "Material outputs and controlling generated documents"
+  },
+  "start_operation_id": "efo_01J00000000000000000000006",
+  "completion_operation_id": "efo_01J00000000000000000000007",
+  "authority_source_revision_refs": [
+    "efs_01J00000000000000000000008@1"
+  ],
+  "authority_document_refs": [
+    "efad_01J00000000000000000000009"
+  ],
+  "virtual_artifact_refs": [
+    "efva_01J00000000000000000000017"
+  ],
+  "material_status": "outputs_present",
+  "completion_status": "accepted",
+  "verification_status": "passed",
+  "reuse_status": "eligible",
+  "completion_assertion_ref": "efa_01J00000000000000000000011",
+  "completion_decision_ref": "efsd_01J00000000000000000000012",
+  "verification_decision_ref": "efsd_01J00000000000000000000012",
+  "reuse_decision_ref": null,
+  "created_at": "2026-07-15T12:04:00Z",
+  "supersedes_occurrence_ref": null
+}

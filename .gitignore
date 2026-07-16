@@ -1,0 +1,13 @@
+node_modules/
+build/
+dist/
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+*.egg-info/
+*.whl
+.expflow/
+.DS_Store
+Thumbs.db

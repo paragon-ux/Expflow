@@ -1,0 +1,20 @@
+{
+  "schema_version": "2.3",
+  "regeneration_attempt_id": "efra_01J00000000000000000000019",
+  "project_id": "efp_01J00000000000000000000001",
+  "target_kind": "workflow",
+  "target_ref": "efm_01J00000000000000000000016",
+  "source_workflow_occurrence_id": "efw_01J00000000000000000000014",
+  "input_tree_revision_id": "eft_01J00000000000000000000004",
+  "model_profile": "same-model-profile",
+  "prompt_digest": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+  "tool_profile": "document-generation-v1",
+  "security_profile": "local-redacted",
+  "status": "completed",
+  "output_refs": [
+    "tree:eft_01J00000000000000000000005"
+  ],
+  "started_at": "2026-07-15T13:00:00Z",
+  "completed_at": "2026-07-15T13:05:00Z",
+  "failure": null
+}

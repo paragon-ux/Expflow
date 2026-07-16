@@ -1,0 +1,113 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://expflow.dev/schemas/2.3/source-registration-decision.schema.json",
+  "title": "Authority Source Registration Decision",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "decision_id",
+    "source_revision_ref",
+    "outcome",
+    "made_by",
+    "automated",
+    "rationale",
+    "evidence_refs",
+    "consequences",
+    "created_at"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "2.3"
+    },
+    "made_by": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "name"
+      ],
+      "properties": {
+        "kind": {
+          "type": "string",
+          "enum": [
+            "user",
+            "agent",
+            "policy",
+            "integration",
+            "model",
+            "system"
+          ]
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "version": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "model": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "automated": {
+      "type": "boolean"
+    },
+    "policy_profile": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "rationale": {
+      "type": "string",
+      "minLength": 1
+    },
+    "evidence_refs": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "consequences": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "supersedes_decision_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "decision_id": {
+      "type": "string",
+      "pattern": "^efrd_[0-9A-HJKMNP-TV-Z]{26}$"
+    },
+    "source_revision_ref": {
+      "type": "string"
+    },
+    "outcome": {
+      "type": "string",
+      "enum": [
+        "accepted",
+        "rejected",
+        "revoked",
+        "superseded",
+        "deferred"
+      ]
+    }
+  }
+}

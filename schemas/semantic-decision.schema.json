@@ -1,0 +1,142 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://expflow.dev/schemas/2.3/semantic-decision.schema.json",
+  "title": "Immutable Semantic Decision",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "decision_id",
+    "decision_kind",
+    "subject_refs",
+    "proposal_refs",
+    "outcome",
+    "made_by",
+    "automated",
+    "rationale",
+    "evidence_refs",
+    "consequences",
+    "created_at"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "2.3"
+    },
+    "made_by": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "name"
+      ],
+      "properties": {
+        "kind": {
+          "type": "string",
+          "enum": [
+            "user",
+            "agent",
+            "policy",
+            "integration",
+            "model",
+            "system"
+          ]
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "version": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "model": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "automated": {
+      "type": "boolean"
+    },
+    "policy_profile": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "rationale": {
+      "type": "string",
+      "minLength": 1
+    },
+    "evidence_refs": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "consequences": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "supersedes_decision_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "decision_id": {
+      "type": "string",
+      "pattern": "^efsd_[0-9A-HJKMNP-TV-Z]{26}$"
+    },
+    "decision_kind": {
+      "type": "string",
+      "enum": [
+        "cluster_membership",
+        "source_correspondence",
+        "workflow_boundary",
+        "workflow_completion",
+        "workflow_verification",
+        "manifest_acceptance",
+        "reuse_eligibility",
+        "conflict_resolution",
+        "policy_exception",
+        "custom"
+      ]
+    },
+    "subject_refs": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string"
+      }
+    },
+    "proposal_refs": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "outcome": {
+      "type": "string",
+      "enum": [
+        "accepted",
+        "rejected",
+        "modified",
+        "deferred",
+        "revoked",
+        "superseded"
+      ]
+    },
+    "modified_value": {}
+  }
+}

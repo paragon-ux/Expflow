@@ -1,0 +1,24 @@
+{
+  "schema_version": "2.3",
+  "decision_id": "efrd_01J00000000000000000000010",
+  "source_revision_ref": "efs_01J00000000000000000000008@1",
+  "outcome": "accepted",
+  "made_by": {
+    "kind": "policy",
+    "name": "trusted-local-source",
+    "version": "1",
+    "model": null
+  },
+  "automated": true,
+  "policy_profile": "default",
+  "rationale": "The source was generated locally by an approved integration and passed schema validation.",
+  "evidence_refs": [
+    "validation:authority-source-schema",
+    "policy:trusted-local-source@1"
+  ],
+  "consequences": [
+    "The source may support facts inside its declared fact scope."
+  ],
+  "created_at": "2026-07-15T12:06:30Z",
+  "supersedes_decision_ref": null
+}
