@@ -1,0 +1,12 @@
+{
+  "schema_version": "2.3",
+  "workflow_ssot": "docs/architecture/EXPFLOW_WORKFLOW_CURRENT.md",
+  "categories": [
+    { "name": "valid", "purpose": "schema-valid core record examples" },
+    { "name": "invalid", "purpose": "records expected to fail schema validation" },
+    { "name": "compatibility", "purpose": "compatibility and versioning policy fixtures" },
+    { "name": "recovery", "purpose": "core recovery classification fixtures" },
+    { "name": "tree-digests", "purpose": "tree-content digest vectors" },
+    { "name": "examples", "purpose": "pointers to supplied architecture examples" }
+  ]
+}

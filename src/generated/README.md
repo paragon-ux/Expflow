@@ -1,3 +1,5 @@
 # generated
 
-**Phase 1 scaffold.** Implementation belongs to a later phase. No product runtime behavior exists.
+Gate A generated descriptors live here. They are type and catalog artifacts only; they do not implement product runtime behavior.
+
+`schema-types.ts` is validated against the architecture schema inventory by the repository tests.

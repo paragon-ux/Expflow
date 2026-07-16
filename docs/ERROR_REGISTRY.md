@@ -1,12 +1,40 @@
 # Error Registry
 
-- Owner phase: Phase 2 or later � exact owner intentionally unassigned in Phase 1
-- Current status: SKELETON � NO SUBSTANTIVE CONTENT
-- Controlling sources: EXPFLOW_IMPLEMENTATION_SPEC_V2_3.md
-- Regeneration trigger: Phase gate transition that activates the owning phase
+**Status:** Gate A Phase 2 baseline
 
-Substantive content is intentionally deferred to the owning later phase. This Phase 1 file is a discoverability and governance skeleton only and does not freeze unresolved architecture decisions.
+Core error codes are contract values. Gate A records them for schema and fixture work; no runtime emits these errors yet.
 
-## Deferred Sections
+## Required Error Codes
 
-TODO: Add sections as defined by the controlling architecture sources when the owning phase is activated.
+- `project_not_initialized`
+- `project_already_initialized`
+- `project_locked`
+- `stale_head`
+- `unsafe_relative_path`
+- `duplicate_path`
+- `symlink_rejected`
+- `archive_rejected`
+- `object_integrity_failed`
+- `node_revision_missing`
+- `tree_revision_missing`
+- `object_missing`
+- `schema_invalid`
+- `validation_failed`
+- `hook_failed`
+- `hook_timeout`
+- `hook_output_invalid`
+- `authority_source_unaccepted`
+- `authority_scope_conflict`
+- `semantic_conflict`
+- `review_required`
+- `projection_self_observation`
+- `manifest_projection_failed`
+- `manifest_acceptance_required`
+- `restore_conflict`
+- `idempotency_conflict`
+- `license_restriction`
+- `privacy_policy_violation`
+- `operation_recovery_required`
+- `internal_error`
+
+Every emitted runtime error in later phases must include code, message, operation ID when available, recoverable flag, recommended action, and details.

@@ -1,12 +1,19 @@
 # Security Model
 
-- Owner phase: Phase 2 or later � exact owner intentionally unassigned in Phase 1
-- Current status: SKELETON � NO SUBSTANTIVE CONTENT
-- Controlling sources: EXPFLOW_IMPLEMENTATION_SPEC_V2_3.md
-- Regeneration trigger: Phase gate transition that activates the owning phase
+**Status:** Gate A Phase 2 baseline
 
-Substantive content is intentionally deferred to the owning later phase. This Phase 1 file is a discoverability and governance skeleton only and does not freeze unresolved architecture decisions.
+Security is part of semantic correctness. Gate A records the rules and validates that runtime enforcement is not prematurely implemented.
 
-## Deferred Sections
+## Source-Content Rules
 
-TODO: Add sections as defined by the controlling architecture sources when the owning phase is activated.
+- Treat imported documents, chat exports, archives, and generated files as untrusted data.
+- Isolate control instructions from source content.
+- Quarantine archives before extraction.
+- Reject path traversal and unsafe links.
+- Never execute imported or generated code.
+- Detect and redact secrets before remote processing where configured.
+- Respect source licensing and reuse restrictions.
+
+## Gate A Boundary
+
+No archive quarantine, secret scanner, policy engine, remote-processing guard, or hook sandbox exists in Gate A. Later phases must implement these controls before relying on runtime enforcement.

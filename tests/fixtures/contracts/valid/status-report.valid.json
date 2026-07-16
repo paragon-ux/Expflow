@@ -1,0 +1,23 @@
+{
+  "schema_version": "2.3",
+  "project_id": "efp_01J00000000000000000000001",
+  "head_tree_revision_id": "eft_01J00000000000000000000005",
+  "working_tree_state": "clean",
+  "generated_at": "2026-07-15T13:11:00Z",
+  "pending_changes": [],
+  "unresolved_items": [],
+  "open_conflict_refs": [],
+  "review_request_refs": [],
+  "workflow_occurrence_refs": [],
+  "manifest_heads": {
+    "import_tree": {
+      "manifest_revision_ref": "efm_01J00000000000000000000015",
+      "status": "current"
+    }
+  },
+  "automation_state": {
+    "pending_hooks": [],
+    "failed_hooks": []
+  },
+  "recommended_action": null
+}

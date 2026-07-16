@@ -1,12 +1,20 @@
 # Identity and Revision Model
 
-- Owner phase: Phase 2 or later � exact owner intentionally unassigned in Phase 1
-- Current status: SKELETON � NO SUBSTANTIVE CONTENT
-- Controlling sources: EXPFLOW_CONCEPT_PAPER_V2_3.md, EXPFLOW_IMPLEMENTATION_SPEC_V2_3.md
-- Regeneration trigger: Phase gate transition that activates the owning phase
+**Status:** Gate A Phase 2 baseline
 
-Substantive content is intentionally deferred to the owning later phase. This Phase 1 file is a discoverability and governance skeleton only and does not freeze unresolved architecture decisions.
+Material identity is opaque and continuity-based.
 
-## Deferred Sections
+## Rules
 
-TODO: Add sections as defined by the controlling architecture sources when the owning phase is activated.
+- Same-path modifications default to the next revision of the same node.
+- Explicit `new` and `replace` directives override defaults.
+- Only explicit `preserve` intent preserves identity across moves.
+- Digest similarity may produce semantic proposals, but it never silently preserves material identity.
+
+## Revision Ordering
+
+Tree revisions represent complete project-tree states. Workflow occurrences select input and output tree revisions and path selectors, separating project state from workflow scope.
+
+## Deferred Implementation
+
+No identity resolver, digest comparison, move detection, or revision store exists in Gate A. These rules are frozen as contracts for later material-core phases.

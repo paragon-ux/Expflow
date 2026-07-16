@@ -1,5 +1,12 @@
 # Contract Fixtures
 
-**Phase 1 placeholder.** Later contract fixtures belong to later phases.
+Gate A fixture categories:
 
-No test fixtures are invented in Phase 1 beyond the repository-contract verification tests that validate architecture-source integrity.
+- `valid/` -- schema-valid core record examples;
+- `invalid/` -- schema-invalid records expected to fail validation;
+- `compatibility/` -- compatibility policy examples;
+- `recovery/` -- recovery-classification examples as contract data only;
+- `tree-digests/` -- canonical tree-content digest vectors;
+- `examples/` -- fixture notes for supplied architecture examples.
+
+The corpus is verified by `npm run fixtures:verify` and `npm run schemas:examples-validate`.

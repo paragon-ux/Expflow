@@ -1,12 +1,29 @@
 # Protocol Core Specification
 
-- Owner phase: Phase 2 or later � exact owner intentionally unassigned in Phase 1
-- Current status: SKELETON � NO SUBSTANTIVE CONTENT
-- Controlling sources: EXPFLOW_PROTOCOL_SPEC_V2_3.md
-- Regeneration trigger: Phase gate transition that activates the owning phase
+**Status:** Gate A Phase 2 baseline
 
-Substantive content is intentionally deferred to the owning later phase. This Phase 1 file is a discoverability and governance skeleton only and does not freeze unresolved architecture decisions.
+The ordinary command surface is fixed:
 
-## Deferred Sections
+```text
+expflow init
+expflow sync
+expflow status
+expflow restore
+```
 
-TODO: Add sections as defined by the controlling architecture sources when the owning phase is activated.
+## Native Operations
+
+| Ordinary command  | Protocol operation | Gate A status  |
+| ----------------- | ------------------ | -------------- |
+| `expflow init`    | `project.init`     | Help text only |
+| `expflow sync`    | `project.sync`     | Help text only |
+| `expflow status`  | `project.status`   | Help text only |
+| `expflow restore` | `revision.restore` | Help text only |
+
+## Core Messages
+
+Core message and record shapes are supplied as JSON Schemas in `docs/architecture/schemas/` and mirrored under `schemas/`. Gate A validates those schemas and examples but does not dispatch operations.
+
+## Deferred Adapter Contracts
+
+The core protocol does not define external inspection, composite project revision tokens, incremental change cursors, adapter request canonicalization, external idempotency, lost-response reconciliation, capability policy, writer partitioning, adapter attempts, or adapter outcomes.

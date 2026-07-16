@@ -1,0 +1,6 @@
+{
+  "schema_version": "2.3",
+  "algorithm": "sha256",
+  "canonical_json": "{\"entries\":[{\"content_sha256\":\"0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef\",\"node_revision_id\":\"efr_01J00000000000000000000001\",\"occupancy\":\"present\",\"path\":\"docs/example.md\"}],\"removed_paths\":[],\"selector\":{\"exclude\":[\".expflow/**\"],\"include\":[\"**/*\"]},\"schema_version\":\"2.3\"}",
+  "expected_sha256": "7fefc77069bb829be7bf56d1bc7c0b3a8faac6dc33527569f57adc1c4f5a78b5"
+}
