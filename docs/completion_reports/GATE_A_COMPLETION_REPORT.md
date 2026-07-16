@@ -6,14 +6,14 @@ PASS -- Gate A contract ready.
 
 ## Delivered Artifacts
 
-| Area                                     | Status | Paths                                                                                    |
-| ---------------------------------------- | ------ | ---------------------------------------------------------------------------------------- |
-| Phase 1 repository contract              | PASS   | `docs/completion_reports/PHASE_01_COMPLETION_REPORT.md`                                  |
-| Phase 2 decisions and vocabulary         | PASS   | `docs/ARCHITECTURE_DECISIONS.md`, `docs/GLOSSARY.md`, `registries/decision-vectors.json` |
-| Phase 3 machine contracts and registries | PASS   | `registries/core-contracts.json`, `tests/contracts/registries-verify.ts`                 |
-| Phase 4 fixtures and generated types     | PASS   | `tests/fixtures/contracts/`, `src/generated/schema-types.ts`                             |
-| Validator parity                         | PASS   | `tests/contracts/schema-example-validate.ts`, `python/tests/test_schema_meta.py`         |
-| Gate status                              | PASS   | `docs/CURRENT_STATUS_MATRIX.md`                                                          |
+| Area                                      | Status | Paths                                                                                    |
+| ----------------------------------------- | ------ | ---------------------------------------------------------------------------------------- |
+| Phase 1 repository contract               | PASS   | `docs/completion_reports/PHASE_01_COMPLETION_REPORT.md`                                  |
+| Phase 2 decision framework and vocabulary | PASS   | `docs/ARCHITECTURE_DECISIONS.md`, `docs/GLOSSARY.md`, `registries/decision-vectors.json` |
+| Phase 3 machine contracts and registries  | PASS   | `registries/core-contracts.json`, `tests/contracts/registries-verify.ts`                 |
+| Phase 4 seed fixtures and descriptors     | PASS   | `tests/fixtures/contracts/`, `src/generated/schema-types.ts`                             |
+| Validator parity                          | PASS   | `tests/contracts/schema-example-validate.ts`, `python/tests/test_schema_meta.py`         |
+| Gate status                               | PASS   | `docs/CURRENT_STATUS_MATRIX.md`                                                          |
 
 ## Validation Evidence
 
@@ -31,26 +31,28 @@ All commands completed under the requested 60-second cap.
 
 ## Exit-Criteria Matrix
 
-| Gate A criterion                                                    | Status | Evidence                                                                                          |
-| ------------------------------------------------------------------- | ------ | ------------------------------------------------------------------------------------------------- |
-| Architecture decisions are frozen                                   | PASS   | `docs/ARCHITECTURE_DECISIONS.md`, `registries/decision-vectors.json`                              |
-| Core schemas and registries are complete                            | PASS   | `docs/architecture/schemas/`, `registries/core-contracts.json`                                    |
-| Tree-content digest semantics are fixed                             | PASS   | `docs/MATERIAL_RECORD_FORMAT.md`, `tests/fixtures/contracts/tree-digests/simple-tree.vector.json` |
-| Extension-boundary types are documented                             | PASS   | `docs/EXTENSION_BOUNDARY.md`, `src/generated/schema-types.ts`                                     |
-| TypeScript and Python validators agree across examples and fixtures | PASS   | `npm run schemas:examples-validate`, `python -m pytest`                                           |
-| Hosted CI path exists for validation                                | PASS   | `.github/workflows/phase-1-contract.yml` plus expanded local validation                           |
-| Adapter-only contracts remain absent from core                      | PASS   | `registries/core-contracts.json`, prohibited-scope tests                                          |
+| Gate A criterion                                                         | Status | Evidence                                                                                          |
+| ------------------------------------------------------------------------ | ------ | ------------------------------------------------------------------------------------------------- |
+| Gate A invariants are frozen and later-gate slots are registered         | PASS   | `docs/ARCHITECTURE_DECISIONS.md`, `registries/decision-vectors.json`                              |
+| Core schemas and registries are complete                                 | PASS   | `docs/architecture/schemas/`, `registries/core-contracts.json`                                    |
+| Tree-content digest semantics are fixed                                  | PASS   | `docs/MATERIAL_RECORD_FORMAT.md`, `tests/fixtures/contracts/tree-digests/simple-tree.vector.json` |
+| Extension-boundary types are documented                                  | PASS   | `docs/EXTENSION_BOUNDARY.md`, `src/generated/schema-types.ts`                                     |
+| TypeScript and Python validators agree across examples and seed fixtures | PASS   | `npm run schemas:examples-validate`, `python -m pytest`                                           |
+| Fixture taxonomy and seed corpus are established                         | PASS   | `tests/fixtures/contracts/`, `npm run fixtures:verify`                                            |
+| Hosted CI path exists for validation                                     | PASS   | `.github/workflows/phase-1-contract.yml` plus expanded local validation                           |
+| Adapter-only contracts remain absent from core                           | PASS   | `registries/core-contracts.json`, prohibited-scope tests                                          |
 
 ## Invariant Audit
 
-| Invariant                                                     | Status |
-| ------------------------------------------------------------- | ------ |
-| Workflow sequencing follows `EXPFLOW_WORKFLOW_CURRENT.md`     | PASS   |
-| Immutable architecture sources were not modified              | PASS   |
-| Source manifest still verifies 54 immutable files             | PASS   |
-| Current status matrix is mutable and excluded from validation | PASS   |
-| No Expflow product runtime behavior was added                 | PASS   |
-| Adapter contracts remain deferred to separate profiles        | PASS   |
+| Invariant                                                        | Status |
+| ---------------------------------------------------------------- | ------ |
+| Workflow sequencing follows `EXPFLOW_WORKFLOW_CURRENT.md`        | PASS   |
+| Immutable architecture sources were not modified                 | PASS   |
+| Source manifest still verifies 54 immutable files                | PASS   |
+| Current status matrix is mutable and excluded from validation    | PASS   |
+| No Expflow product runtime behavior was added                    | PASS   |
+| Adapter contracts remain deferred to separate profiles           | PASS   |
+| Later-gate implementation choices remain explicit decision slots | PASS   |
 
 ## Scope Audit
 
@@ -78,4 +80,4 @@ None.
 
 ## Handoff
 
-Gate A is complete and ready for PR review. The next authorized work after merge is Gate B / Phase 5 material-core implementation, beginning with immutable material stores.
+Gate A is complete and ready for PR review as a contract baseline. Mutable pass-start orientation guidance lives under `docs/orientation/`. The next authorized work after merge is Gate B / Phase 5 material-core implementation, beginning with immutable material stores and the Gate B decision slots recorded in `registries/decision-vectors.json`.

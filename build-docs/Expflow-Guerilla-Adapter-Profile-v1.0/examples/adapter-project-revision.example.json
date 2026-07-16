@@ -1,0 +1,17 @@
+{
+  "schema_version": "1.0",
+  "adapter_revision_id": "epr_01J00000000000000000000001",
+  "project_ref": "expflow:example-project",
+  "previous_adapter_revision_id": null,
+  "material_head": "eft_01J00000000000000000000001",
+  "semantic_sequence": 12,
+  "authority_sequence": 4,
+  "manifest_heads_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "automation_sequence": 7,
+  "created_at": "2026-07-15T15:00:00Z",
+  "trigger_refs": [
+    "eft_01J00000000000000000000001",
+    "efsd_01J00000000000000000000002"
+  ],
+  "state_digest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+}

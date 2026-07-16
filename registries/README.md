@@ -2,9 +2,9 @@
 
 Gate A registries are machine-readable contract data. They are not runtime configuration and do not implement Expflow behavior.
 
-| File                    | Purpose                                                                                  |
-| ----------------------- | ---------------------------------------------------------------------------------------- |
-| `core-contracts.json`   | Core workflow gate, schema, command, error-code, and adapter-deferral registry.          |
-| `decision-vectors.json` | Executable index of frozen architecture decisions from `docs/ARCHITECTURE_DECISIONS.md`. |
+| File                    | Purpose                                                                                                          |
+| ----------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| `core-contracts.json`   | Core workflow gate, schema, command, error-code, and adapter-deferral registry.                                  |
+| `decision-vectors.json` | Executable index of frozen Gate A decisions and later-gate decision slots from `docs/ARCHITECTURE_DECISIONS.md`. |
 
 Registry validation is performed by `npm run registries:verify`.

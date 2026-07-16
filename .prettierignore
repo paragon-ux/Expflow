@@ -7,5 +7,6 @@ package-lock.json
 docs/architecture/
 docs/V2_3_REVIEW_RESOLUTION.md
 docs/CURRENT_STATUS_MATRIX.md
+docs/orientation/
 schemas/
 examples/

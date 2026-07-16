@@ -1,6 +1,12 @@
 {
   "schema_version": "2.3",
   "source": "docs/ARCHITECTURE_DECISIONS.md",
+  "decision_model": {
+    "frozen_invariant": "A Gate A rule that later gates must not reopen without an architecture change.",
+    "future_decision_slot": "A named later-gate choice with constraints, intentionally not decided in Gate A.",
+    "deferred_outside_core": "A contract kept out of the core repository.",
+    "must_not_decide_yet": "A choice that would imply premature product runtime behavior."
+  },
   "decisions": [
     { "id": "AD-001", "summary": "Node.js 20+ and Python 3.11+ are the Gate A runtimes." },
     { "id": "AD-002", "summary": "npm with package-lock.json is the JavaScript package manager." },
@@ -56,7 +62,49 @@
     },
     {
       "id": "AD-020",
-      "summary": "Gate A closure requires decisions, schemas, registries, fixtures, generated types, and validator parity to agree."
+      "summary": "Gate A closure requires invariant decisions, future slots, schemas, registries, seeded fixtures, generated descriptors, and validator parity to agree."
+    }
+  ],
+  "future_decision_slots": [
+    {
+      "id": "DS-B-IDENTIFIERS",
+      "owning_gate": "B",
+      "summary": "Select the concrete identifier generator and prefix grammar validation before material identity implementation.",
+      "constraints": [
+        "Identifiers remain opaque.",
+        "Prefixes remain record-family scoped.",
+        "Identifiers must not encode path, workflow, authority, or semantic meaning."
+      ]
+    },
+    {
+      "id": "DS-B-STORAGE-ATOMICITY",
+      "owning_gate": "B",
+      "summary": "Specify locking, staging, rename, fsync, reflink, retention, and integrity-audit behavior before material storage implementation.",
+      "constraints": [
+        "Material commits remain atomic and recoverable.",
+        "Hard links to writable working-tree files remain prohibited.",
+        "Recovery must not invent semantic decisions."
+      ]
+    },
+    {
+      "id": "DS-C-SEMANTIC-TRUST",
+      "owning_gate": "C",
+      "summary": "Choose authority-source trust defaults and local versus remote semantic profiles before semantic runtime implementation.",
+      "constraints": [
+        "Authority requires an immutable source-registration decision.",
+        "Assertions remain distinct from decisions.",
+        "Model-assisted output remains proposed unless explicitly accepted."
+      ]
+    },
+    {
+      "id": "DS-D-SECURITY-PROFILES",
+      "owning_gate": "D",
+      "summary": "Specify archive quarantine, secret handling, sandbox, licensing, and remote-processing defaults before hardening closure.",
+      "constraints": [
+        "Imported and generated content remains untrusted data.",
+        "Generated or imported code must not be executed as instructions.",
+        "Remote processing must respect configured privacy and licensing limits."
+      ]
     }
   ]
 }

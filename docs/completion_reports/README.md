@@ -4,13 +4,13 @@ Completion reports provide phase and gate evidence. They are mutable project rec
 
 ## Inventory
 
-| Report                                                     | Status | Scope                                    |
-| ---------------------------------------------------------- | ------ | ---------------------------------------- |
-| [Phase 1 Completion Report](PHASE_01_COMPLETION_REPORT.md) | PASS   | Repository contract baseline             |
-| [Phase 2 Completion Report](PHASE_02_COMPLETION_REPORT.md) | PASS   | Architecture decisions and vocabulary    |
-| [Phase 3 Completion Report](PHASE_03_COMPLETION_REPORT.md) | PASS   | Core machine contracts and registries    |
-| [Phase 4 Completion Report](PHASE_04_COMPLETION_REPORT.md) | PASS   | Conformance fixtures and generated types |
-| [Gate A Completion Report](GATE_A_COMPLETION_REPORT.md)    | PASS   | Contract Ready gate closure              |
+| Report                                                     | Status | Scope                                   |
+| ---------------------------------------------------------- | ------ | --------------------------------------- |
+| [Phase 1 Completion Report](PHASE_01_COMPLETION_REPORT.md) | PASS   | Repository contract baseline            |
+| [Phase 2 Completion Report](PHASE_02_COMPLETION_REPORT.md) | PASS   | Decision framework and vocabulary       |
+| [Phase 3 Completion Report](PHASE_03_COMPLETION_REPORT.md) | PASS   | Core machine contracts and registries   |
+| [Phase 4 Completion Report](PHASE_04_COMPLETION_REPORT.md) | PASS   | Seed fixtures and generated descriptors |
+| [Gate A Completion Report](GATE_A_COMPLETION_REPORT.md)    | PASS   | Contract Ready gate closure             |
 
 ## Validation
 

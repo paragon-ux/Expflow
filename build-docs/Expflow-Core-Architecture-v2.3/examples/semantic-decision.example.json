@@ -1,0 +1,31 @@
+{
+  "schema_version": "2.3",
+  "decision_id": "efsd_01J00000000000000000000012",
+  "decision_kind": "manifest_acceptance",
+  "subject_refs": [
+    "efm_01J00000000000000000000016"
+  ],
+  "proposal_refs": [
+    "efa_01J00000000000000000000011"
+  ],
+  "outcome": "accepted",
+  "modified_value": null,
+  "made_by": {
+    "kind": "user",
+    "name": "project-owner",
+    "version": null,
+    "model": null
+  },
+  "automated": false,
+  "policy_profile": null,
+  "rationale": "The proposed workflow-time manifest correctly separates the input and output scopes.",
+  "evidence_refs": [
+    "efm_01J00000000000000000000016",
+    "efw_01J00000000000000000000014"
+  ],
+  "consequences": [
+    "The manifest becomes the accepted workflow-time manifest head."
+  ],
+  "created_at": "2026-07-15T12:15:00Z",
+  "supersedes_decision_ref": null
+}

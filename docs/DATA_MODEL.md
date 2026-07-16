@@ -13,7 +13,7 @@ Expflow separates durable state into four families.
 
 ## Record Version
 
-Core schemas use `schema_version: "2.3"` where applicable. Compatibility changes must be reflected in schemas, examples, registries, fixtures, and generated types before Gate A closure.
+Core schemas use `schema_version: "2.3"` where applicable. Compatibility changes must be reflected in schemas, examples, registries, seed fixtures, and generated descriptors before Gate A closure.
 
 ## Identifiers
 
