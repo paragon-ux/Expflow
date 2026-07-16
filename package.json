@@ -31,6 +31,7 @@
     "validate": "npm run format:check && npm run lint && npm run typecheck && npm test && npm run contracts:verify && npm run schemas:meta-validate && npm run examples:index-check && npm run build && npm run package:verify"
   },
   "devDependencies": {
+    "@types/node": "^26.1.1",
     "ajv": "^8.17.1",
     "ajv-formats": "^3.0.1",
     "eslint": "^9.23.0",

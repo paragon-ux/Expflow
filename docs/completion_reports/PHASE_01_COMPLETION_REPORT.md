@@ -66,7 +66,7 @@ All commands completed under the 60-second cap requested for this run.
 
 | ID  | Command                                         | Status | Exit code | Evidence                                                                                |
 | --- | ----------------------------------------------- | ------ | --------: | --------------------------------------------------------------------------------------- |
-| V01 | `npm ci`                                        | PASS   |         0 | 171 packages installed; 0 vulnerabilities                                               |
+| V01 | `npm ci`                                        | PASS   |         0 | 173 packages installed; 0 vulnerabilities                                               |
 | V02 | `npm run format:check`                          | PASS   |         0 | All matched files use Prettier code style                                               |
 | V03 | `npm run lint`                                  | PASS   |         0 | ESLint completed with no errors                                                         |
 | V04 | `npm run typecheck`                             | PASS   |         0 | `tsc --noEmit` completed                                                                |
