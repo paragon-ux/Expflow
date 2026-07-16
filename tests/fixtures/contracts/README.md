@@ -9,4 +9,6 @@ Gate A fixture categories:
 - `tree-digests/` -- canonical tree-content digest vectors;
 - `examples/` -- fixture notes for supplied architecture examples.
 
-The corpus is verified by `npm run fixtures:verify` and `npm run schemas:examples-validate`.
+These are seed fixtures for the Gate A validation harness. Later gates add behavior-specific fixtures when they implement the owning runtime behavior.
+
+The taxonomy and seed corpus are verified by `npm run fixtures:verify` and `npm run schemas:examples-validate`.

@@ -50,12 +50,12 @@ Immutable architecture source files live under `docs/architecture/`. Their byte-
 
 Expflow builds through four gates across seventeen phases:
 
-| Gate                                 | Phases | Meaning                                                                           |
-| ------------------------------------ | ------ | --------------------------------------------------------------------------------- |
-| A — Contract Ready                   | 1–4    | Repository governance, architecture decisions, schemas, fixtures, generated types |
-| B — Material Core Ready              | 5–8    | Immutable stores, sync, identity, transactions, commands                          |
-| C — Ownership and Reproduction Ready | 9–14   | Authority, semantics, workflows, projections, regeneration, reuse                 |
-| D — Hardened and Proven              | 15–17  | Security, migration, packaging, end-to-end proof                                  |
+| Gate                                 | Phases | Meaning                                                                                   |
+| ------------------------------------ | ------ | ----------------------------------------------------------------------------------------- |
+| A — Contract Ready                   | 1–4    | Repository governance, invariant decisions, schemas, seed fixtures, generated descriptors |
+| B — Material Core Ready              | 5–8    | Immutable stores, sync, identity, transactions, commands                                  |
+| C — Ownership and Reproduction Ready | 9–14   | Authority, semantics, workflows, projections, regeneration, reuse                         |
+| D — Hardened and Proven              | 15–17  | Security, migration, packaging, end-to-end proof                                          |
 
 No phase may skip its preceding gate. Every phase completion report must contain:
 
@@ -431,6 +431,7 @@ tsconfig.json                — TypeScript configuration
 pyproject.toml               — Python package configuration
 
 docs/architecture/           — Immutable architecture sources
+docs/orientation/            — System 1 and System 2 pass-start controls
 docs/ARCHITECTURE_DECISIONS.md — Decision log skeleton
 docs/completion_reports/     — Phase completion reports
 

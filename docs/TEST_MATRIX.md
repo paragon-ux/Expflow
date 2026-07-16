@@ -15,7 +15,7 @@
 | V07 | `npm run schemas:meta-validate`                 | JSON Schema meta-validation                      |
 | V08 | `npm run examples:index-check`                  | Example discoverability and parse check          |
 | V09 | `npm run schemas:examples-validate`             | TypeScript example and fixture schema validation |
-| V10 | `npm run fixtures:verify`                       | Contract fixture corpus verification             |
+| V10 | `npm run fixtures:verify`                       | Fixture taxonomy and seed corpus verification    |
 | V11 | `npm run build`                                 | TypeScript build                                 |
 | V12 | `npm run package:verify`                        | npm package verification                         |
 | V13 | `python -m pip install -e ".[dev]"`             | Editable Python dev install                      |
@@ -32,7 +32,7 @@
 | Source integrity           | `SOURCE_MANIFEST.json`, `npm run contracts:verify`       |
 | Schema meta-validation     | AJV Draft 2020-12 and Python `jsonschema`                |
 | Example validation         | `npm run schemas:examples-validate`, Python parity tests |
-| Fixture corpus             | `tests/fixtures/contracts/`                              |
+| Fixture taxonomy and seeds | `tests/fixtures/contracts/`                              |
 | Generated type descriptors | `src/generated/schema-types.ts`                          |
 | Adapter deferral           | Contract tests and extension-boundary docs               |
 | No product runtime         | Prohibited-scope tests                                   |

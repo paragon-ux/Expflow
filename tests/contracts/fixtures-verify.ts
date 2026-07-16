@@ -1,5 +1,5 @@
 /**
- * Gate A contract fixture corpus verification.
+ * Gate A contract fixture taxonomy and seed corpus verification.
  */
 
 import { createHash } from 'node:crypto';
@@ -94,5 +94,5 @@ if (errors.length > 0) {
   process.exit(1);
 }
 
-console.log('PASS - Gate A fixture corpus is present, parseable, and internally consistent');
+console.log('PASS - Gate A fixture taxonomy and seed corpus are present and parseable');
 process.exit(0);

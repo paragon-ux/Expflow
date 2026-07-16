@@ -1,0 +1,89 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://expflow.dev/schemas/2.3/tree-revision.schema.json",
+  "title": "Immutable Relative Tree Revision",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "tree_revision_id",
+    "sequence",
+    "project_id",
+    "created_at",
+    "created_by_operation",
+    "source",
+    "entries",
+    "content_digest"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "2.3"
+    },
+    "tree_revision_id": {
+      "type": "string",
+      "pattern": "^eft_[0-9A-HJKMNP-TV-Z]{26}$"
+    },
+    "sequence": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "project_id": {
+      "type": "string",
+      "pattern": "^efp_[0-9A-HJKMNP-TV-Z]{26}$"
+    },
+    "parent_tree_revision_id": {
+      "anyOf": [
+        {
+          "type": "string",
+          "pattern": "^eft_[0-9A-HJKMNP-TV-Z]{26}$"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "created_by_operation": {
+      "type": "string",
+      "pattern": "^efo_[0-9A-HJKMNP-TV-Z]{26}$"
+    },
+    "source": {
+      "type": "string",
+      "enum": [
+        "initialization",
+        "sync",
+        "restore",
+        "migration",
+        "projection_materialization"
+      ]
+    },
+    "scope": {
+      "$ref": "path-selector.schema.json"
+    },
+    "entries": {
+      "type": "array",
+      "items": {
+        "$ref": "tree-entry.schema.json"
+      }
+    },
+    "removed_paths": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "content_digest": {
+      "type": "string",
+      "pattern": "^sha256:[a-f0-9]{64}$"
+    },
+    "notes": {
+      "type": [
+        "string",
+        "null"
+      ]
+    }
+  }
+}

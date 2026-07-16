@@ -8,7 +8,7 @@
 1. Phase 1 -- Kickoff and Repository Contract: complete and merged in PR #1.
 2. Phase 2 -- Architecture Decisions and Vocabulary: freeze mutable decision docs and registries from immutable architecture sources.
 3. Phase 3 -- Core Machine Contracts and Registries: verify supplied core schemas, examples, registries, compatibility policy, and extension-boundary descriptors.
-4. Phase 4 -- Conformance Fixtures and Generated Types: add valid/invalid/compatibility/recovery/tree-digest fixture corpus, generated descriptors, and TypeScript/Python validation parity.
+4. Phase 4 -- Conformance Fixtures and Generated Descriptors: add seed valid/invalid/compatibility/recovery/tree-digest fixtures, generated schema descriptors, and TypeScript/Python validation parity.
 5. Gate A Exit: confirm hosted CI and local validation pass with adapter-only contracts absent.
 
 ## Execution Rules

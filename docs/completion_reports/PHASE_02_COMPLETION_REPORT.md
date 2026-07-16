@@ -2,17 +2,17 @@
 
 ## Result
 
-PASS -- Architecture decisions and vocabulary complete for Gate A.
+PASS -- Gate A decision framework and vocabulary complete.
 
 ## Delivered Artifacts
 
-| Area                               | Status | Paths                                                                |
-| ---------------------------------- | ------ | -------------------------------------------------------------------- |
-| Architecture decisions             | PASS   | `docs/ARCHITECTURE_DECISIONS.md`, `registries/decision-vectors.json` |
-| Vocabulary                         | PASS   | `docs/GLOSSARY.md`                                                   |
-| MVP and scope boundary             | PASS   | `docs/MVP_SCOPE.md`, `docs/CODEX_BUILD_PLAN.md`                      |
-| Root workflow governance alignment | PASS   | `AGENTS.md`                                                          |
-| Live status matrix                 | PASS   | `docs/CURRENT_STATUS_MATRIX.md`                                      |
+| Area                                | Status | Paths                                                                |
+| ----------------------------------- | ------ | -------------------------------------------------------------------- |
+| Decision framework and future slots | PASS   | `docs/ARCHITECTURE_DECISIONS.md`, `registries/decision-vectors.json` |
+| Vocabulary                          | PASS   | `docs/GLOSSARY.md`                                                   |
+| MVP and scope boundary              | PASS   | `docs/MVP_SCOPE.md`, `docs/CODEX_BUILD_PLAN.md`                      |
+| Root workflow governance alignment  | PASS   | `AGENTS.md`                                                          |
+| Live status matrix                  | PASS   | `docs/CURRENT_STATUS_MATRIX.md`                                      |
 
 ## Validation Evidence
 
@@ -27,13 +27,14 @@ All commands completed under the requested 60-second cap.
 
 ## Exit-Criteria Matrix
 
-| Criterion                                               | Status | Evidence                                                   |
-| ------------------------------------------------------- | ------ | ---------------------------------------------------------- |
-| Architecture decisions frozen from architecture sources | PASS   | `docs/ARCHITECTURE_DECISIONS.md`                           |
-| Vocabulary established                                  | PASS   | `docs/GLOSSARY.md`                                         |
-| Public-vs-machine boundary documented                   | PASS   | `docs/PROTOCOL_CORE_SPEC.md`, `docs/EXTENSION_BOUNDARY.md` |
-| Adapter-only contracts deferred                         | PASS   | `registries/core-contracts.json`                           |
-| No material-runtime behavior introduced                 | PASS   | `npm test`, prohibited-scope tests                         |
+| Criterion                                          | Status | Evidence                                                   |
+| -------------------------------------------------- | ------ | ---------------------------------------------------------- |
+| Gate A invariants frozen from architecture sources | PASS   | `docs/ARCHITECTURE_DECISIONS.md`                           |
+| Later-gate choices represented as decision slots   | PASS   | `registries/decision-vectors.json`                         |
+| Vocabulary established                             | PASS   | `docs/GLOSSARY.md`                                         |
+| Public-vs-machine boundary documented              | PASS   | `docs/PROTOCOL_CORE_SPEC.md`, `docs/EXTENSION_BOUNDARY.md` |
+| Adapter-only contracts deferred                    | PASS   | `registries/core-contracts.json`                           |
+| No material-runtime behavior introduced            | PASS   | `npm test`, prohibited-scope tests                         |
 
 ## Invariant Audit
 
@@ -43,6 +44,7 @@ All commands completed under the requested 60-second cap.
 | Immutable architecture sources were not edited                  | PASS   |
 | Current status matrix remains a mutable operational artifact    | PASS   |
 | Gate A remains contract-only                                    | PASS   |
+| Future-gate work is not pulled into Gate A completion evidence  | PASS   |
 
 ## Scope Audit
 
@@ -61,4 +63,4 @@ None.
 
 ## Handoff
 
-Phase 2 is complete. Phase 3 can use the frozen decisions and vocabulary as contract inputs.
+Phase 2 is complete. Mutable pass-start orientation guidance lives under `docs/orientation/`. Phase 3 can use the frozen invariants, future decision slots, and vocabulary as contract inputs.

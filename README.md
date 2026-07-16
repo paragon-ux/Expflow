@@ -1,52 +1,56 @@
 # Expflow
 
-**Schema-governed, local-first workflow ownership and observability platform.**
+Expflow is a local-first workflow ownership and observability platform for projects where people, agents, and tools produce changing artifact trees.
 
-Expflow versions complete material trees, registers extensible authority sources, records attributed semantic assertions and immutable decisions, defines explicit workflow input/output boundaries, manages deterministic and model-assisted projections, and evaluates regeneration, equivalence, and structural reuse — through a deliberately small ordinary command surface.
+It is designed to preserve the relationship between:
 
-## Status
+- the material files that existed before and after a workflow run;
+- the authority sources that were accepted for that work;
+- the attributed claims, decisions, conflicts, and review requests created along the way;
+- the workflow inputs, outputs, projections, regeneration attempts, and reuse evidence that explain how an artifact was produced.
 
-**Phase 1 / Gate A — Contract Ready.** No product runtime is implemented.
+The goal is practical ownership of automated work: a project should be able to show what changed, why it changed, what evidence was trusted, what decisions remain durable, and which parts can be safely inspected, regenerated, restored, or reused.
 
-The four ordinary commands are specified but not yet operational:
+## Current Availability
+
+Expflow is in a pre-release contract phase. This repository currently provides architecture sources, schemas, examples, validation harnesses, and TypeScript/Python package scaffolds.
+
+It is not yet a product runtime. The package does not scan project trees, persist Expflow records, execute hooks, run projections, contact external systems, or mutate user files.
+
+## Planned Command Surface
+
+Expflow is intentionally built around a small everyday interface:
 
 ```text
-expflow init       (not implemented in Phase 1)
-expflow sync       (not implemented in Phase 1)
-expflow status     (not implemented in Phase 1)
-expflow restore    (not implemented in Phase 1)
+expflow init
+expflow sync
+expflow status
+expflow restore
 ```
 
-## Requirements
+These commands are part of the public design, but they are not operational in the current pre-release package.
 
-- **Node.js** >= 20
-- **Python** >= 3.11
-- **npm** (lockfile included)
+## What Is In This Repository
 
-## Quick Start
+- `docs/architecture/` contains the immutable architecture sources for the current contract.
+- `schemas/` and `examples/` mirror the published architecture schemas and examples.
+- `src/` contains the TypeScript package scaffold, CLI help/version handling, and read-only contract tooling.
+- `python/expflow_hooks/` contains the Python hook-package scaffold and repository-only schema discovery.
+- `tests/` contains repository-contract checks that keep the pre-runtime boundary explicit.
+
+For implementation status, see [docs/CURRENT_STATUS_MATRIX.md](docs/CURRENT_STATUS_MATRIX.md). For contributor setup and validation commands, see [README_DEV.md](README_DEV.md).
+
+## Development Snapshot
+
+The current package version is `0.0.0-phase.1`. It can be installed locally for contract validation and package-boundary checks, not for production use.
 
 ```bash
-# Install dependencies
 npm ci
 python -m pip install -e ".[dev]"
-
-# Run full Phase 1 validation
 npm run validate
 python -m pytest
 ```
 
-## Architecture Sources
-
-Immutable architecture sources live under `docs/architecture/`. Their byte-for-byte integrity is verified by `docs/architecture/SOURCE_MANIFEST.json`.
-
-- 8 architecture Markdown documents
-- 26 JSON Schema 2020-12 schemas
-- 18 JSON examples
-
-## Completion Report
-
-[Phase 1 Completion Report](docs/completion_reports/PHASE_01_COMPLETION_REPORT.md)
-
 ## License
 
-UNLICENSED — this repository is in a pre-release architecture phase.
+UNLICENSED. This repository is not yet released for production use.

@@ -15,6 +15,12 @@ const registryPath = resolve(REPO_ROOT, 'registries/core-contracts.json');
 const decisionsPath = resolve(REPO_ROOT, 'registries/decision-vectors.json');
 const expectedCommands = ['init', 'sync', 'status', 'restore'];
 const expectedGateAPhases = [1, 2, 3, 4];
+const expectedFutureDecisionSlots = [
+  'DS-B-IDENTIFIERS',
+  'DS-B-STORAGE-ATOMICITY',
+  'DS-C-SEMANTIC-TRUST',
+  'DS-D-SECURITY-PROFILES',
+];
 const requiredDeferredContracts = [
   'external_inspection_protocol',
   'composite_project_revision_tokens',
@@ -159,6 +165,30 @@ try {
     (_, index) => `AD-${String(index + 1).padStart(3, '0')}`,
   );
   assertSameSet(ids, expectedIds, 'decision vector IDs');
+
+  if (!Array.isArray(decisions.future_decision_slots)) {
+    fail('decision-vectors registry must contain a future_decision_slots array');
+  }
+  const slotIds = decisions.future_decision_slots.map((slot: unknown) => {
+    if (!isRecord(slot) || typeof slot.id !== 'string') {
+      fail('each future decision slot must contain a string id');
+    }
+    if (typeof slot.owning_gate !== 'string' || !['B', 'C', 'D'].includes(slot.owning_gate)) {
+      fail(`future decision slot ${slot.id} must identify owning_gate B, C, or D`);
+    }
+    if (typeof slot.summary !== 'string' || slot.summary.length === 0) {
+      fail(`future decision slot ${slot.id} must contain a summary`);
+    }
+    const constraints = stringArray(
+      slot.constraints,
+      `future decision slot ${slot.id} constraints`,
+    );
+    if (constraints.length === 0) {
+      fail(`future decision slot ${slot.id} must contain at least one constraint`);
+    }
+    return slot.id;
+  });
+  assertSameSet(slotIds, expectedFutureDecisionSlots, 'future decision slot IDs');
 } catch (error) {
   errors.push(String(error instanceof Error ? error.message : error));
 }
