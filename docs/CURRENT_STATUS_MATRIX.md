@@ -2,7 +2,7 @@
 
 **Status:** Gate A complete -- Contract Ready
 **Last updated:** 2026-07-16
-**Current baseline:** continuation branch `feature/expflow-gate-a-status-matrix`
+**Current baseline:** `feature/expflow-gate-a-status-matrix` at `b8e06874d6ddcbf5655da51dbf362498b276e8c6`
 **Workflow SSOT:** `docs/architecture/EXPFLOW_WORKFLOW_CURRENT.md`
 **Evidence:** [Gate A completion report](completion_reports/GATE_A_COMPLETION_REPORT.md), [Phase 1 completion report](completion_reports/PHASE_01_COMPLETION_REPORT.md), [Phase 2 completion report](completion_reports/PHASE_02_COMPLETION_REPORT.md), [Phase 3 completion report](completion_reports/PHASE_03_COMPLETION_REPORT.md), [Phase 4 completion report](completion_reports/PHASE_04_COMPLETION_REPORT.md), [PR #1](https://github.com/paragon-ux/Expflow/pull/1)
 

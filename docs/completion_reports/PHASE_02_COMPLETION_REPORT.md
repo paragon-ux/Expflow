@@ -55,7 +55,7 @@ None.
 ## Git Summary
 
 - Branch: `feature/expflow-gate-a-status-matrix`
-- Commit: `GATE_A_COMMIT_PENDING`
+- Gate A implementation commit: `b8e06874d6ddcbf5655da51dbf362498b276e8c6`
 - Base: `origin/main`
 - Local-only directories intentionally unstaged: `.reasonix/`, `build-docs/`
 
