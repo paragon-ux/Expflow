@@ -11,6 +11,11 @@ Completion reports provide phase and gate evidence. They are mutable project rec
 | [Phase 3 Completion Report](PHASE_03_COMPLETION_REPORT.md) | PASS   | Core machine contracts and registries   |
 | [Phase 4 Completion Report](PHASE_04_COMPLETION_REPORT.md) | PASS   | Seed fixtures and generated descriptors |
 | [Gate A Completion Report](GATE_A_COMPLETION_REPORT.md)    | PASS   | Contract Ready gate closure             |
+| [Phase 5 Completion Report](PHASE_05_COMPLETION_REPORT.md) | PASS   | Immutable material stores               |
+| [Phase 6 Completion Report](PHASE_06_COMPLETION_REPORT.md) | PASS   | Sync, scanning, and identity            |
+| [Phase 7 Completion Report](PHASE_07_COMPLETION_REPORT.md) | PASS   | Transactions and core recovery          |
+| [Phase 8 Completion Report](PHASE_08_COMPLETION_REPORT.md) | PASS   | Four commands and extension host        |
+| [Gate B Completion Report](GATE_B_COMPLETION_REPORT.md)    | PASS   | Material Core gate closure              |
 
 ## Validation
 

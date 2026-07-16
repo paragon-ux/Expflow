@@ -1,19 +1,20 @@
 # Codex Build Plan
 
-**Status:** Gate A continuation baseline
+**Status:** Gate B material-core implementation
 **Workflow SSOT:** `docs/architecture/EXPFLOW_WORKFLOW_CURRENT.md`
 
 ## Current Path
 
-1. Phase 1 -- Kickoff and Repository Contract: complete and merged in PR #1.
-2. Phase 2 -- Architecture Decisions and Vocabulary: freeze mutable decision docs and registries from immutable architecture sources.
-3. Phase 3 -- Core Machine Contracts and Registries: verify supplied core schemas, examples, registries, compatibility policy, and extension-boundary descriptors.
-4. Phase 4 -- Conformance Fixtures and Generated Descriptors: add seed valid/invalid/compatibility/recovery/tree-digest fixtures, generated schema descriptors, and TypeScript/Python validation parity.
-5. Gate A Exit: confirm hosted CI and local validation pass with adapter-only contracts absent.
+1. Gate A -- Contract Ready: complete and merged to `origin/main`.
+2. Phase 5 -- Immutable Material Stores: implement local object, node-revision, tree-revision, project, material-head, receipt, validation, and change stores.
+3. Phase 6 -- Sync, Scanning, and Identity: implement scanner exclusion, deterministic candidate trees, same-path continuity, explicit identity directives, and digest-similarity proposals.
+4. Phase 7 -- Transactions and Core Recovery: implement lock, validation, immutable receipts, partial post-commit status, and local recovery checks.
+5. Phase 8 -- Four Commands and Extension Host: implement native runtime operations, CLI handlers, package verification, and narrow extension host.
+6. Gate B Exit: confirm local validation, commit, push, PR review, and hosted CI.
 
 ## Execution Rules
 
 - Do not modify immutable `docs/architecture/**` sources.
-- Do not implement material storage, scanning, identity resolution, transactions, command handlers, authority runtime, semantic stores, projections, hooks, adapters, or migration runtime in Gate A.
+- In Gate B, implement only material-core runtime. Do not implement authority runtime, semantic stores, workflow detection, projections, hooks, adapters, migration runtime, network services, databases, brokers, external inspection, change cursors, idempotency, or reconciliation.
 - Keep `docs/CURRENT_STATUS_MATRIX.md` mutable and outside validation.
 - Update completion evidence with actual command results only.

@@ -1,16 +1,16 @@
 # Phase Prompts
 
-- Owner phase: Phase 1
-- Current status: SKELETON � NO SUBSTANTIVE CONTENT
-- Controlling sources: EXPFLOW_WORKFLOW_CURRENT.md
-- Regeneration trigger: Each phase completion
+**Status:** mutable build-prompt inventory
+**Controlling workflow:** `docs/architecture/EXPFLOW_WORKFLOW_CURRENT.md`
 
-Substantive content is intentionally deferred to the owning later phase. This Phase 1 file is a discoverability and governance skeleton only and does not freeze unresolved architecture decisions.
-
-## Purpose
-
-Index of phase-specific build prompts used during Expflow development
+This directory indexes phase-specific build prompts and gate checklists. These files are mutable execution controls, not immutable architecture sources.
 
 ## Inventory
 
-TODO: Populate as phases complete.
+| File                                        | Status                | Purpose                                                             |
+| ------------------------------------------- | --------------------- | ------------------------------------------------------------------- |
+| `FINAL_CONTRACT_MATERIAL_CORE_CHECKLIST.md` | Gate B local evidence | Checklist for the material-core gate before PR review and hosted CI |
+
+## Notes
+
+Add phase prompts or final checklists as phases complete. Do not use this directory to override `EXPFLOW_WORKFLOW_CURRENT.md` or immutable architecture sources.

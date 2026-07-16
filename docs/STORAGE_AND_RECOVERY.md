@@ -1,8 +1,8 @@
 # Storage and Recovery
 
-**Status:** Gate A Phase 2 baseline
+**Status:** Gate B implemented baseline
 
-Storage and recovery are material-core concerns. Gate A freezes the contract without implementing storage.
+Storage and recovery are material-core concerns. Gate B implements the local file-backed material path.
 
 ## Future Transaction Discipline
 
@@ -23,6 +23,13 @@ A material transaction will:
 
 Recovery repairs structural state from durable evidence. It must never invent semantic decisions.
 
-## Gate A Boundary
+## Gate B Implementation
 
-No locks, object store, staging area, atomic commit logic, receipt store, or recovery implementation exists in Gate A.
+- Project transactions acquire `.expflow/LOCK` and release it in a `finally` path.
+- Objects, node revisions, tree revisions, validations, changes, and operation receipts are written as local files.
+- Immutable records use exclusive writes; existing record identifiers are not overwritten.
+- Material head replacement is separated from immutable record writes.
+- Recovery currently removes uncommitted staging directories and verifies the committed head tree and object integrity.
+- `partial_post_commit` receipts preserve material success when post-commit automation is incomplete.
+
+Gate B does not implement semantic recovery, hook dispatch, adapter lost-response reconciliation, or external operation resolution.

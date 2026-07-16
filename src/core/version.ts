@@ -1,2 +1,2 @@
-/** Expflow package version — Phase 1 scaffold. */
-export const VERSION = '0.0.0-phase.1';
+/** Expflow package version for the Gate B material-core runtime. */
+export const VERSION = '0.0.0-gate-b';

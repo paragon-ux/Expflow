@@ -1,14 +1,14 @@
 # Current Status Matrix
 
-**Status:** Gate A complete -- Contract Ready
+**Status:** Gate B implementation in progress -- Material Core
 **Last updated:** 2026-07-16
-**Current baseline:** `feature/expflow-gate-a-status-matrix`; exact head is recorded in Git and PR evidence
+**Current baseline:** `main` at `00373ff55690d153d301057b34175c5ff8f9068f`
 **Workflow SSOT:** `docs/architecture/EXPFLOW_WORKFLOW_CURRENT.md`
 **Evidence:** [Gate A completion report](completion_reports/GATE_A_COMPLETION_REPORT.md), [Phase 1 completion report](completion_reports/PHASE_01_COMPLETION_REPORT.md), [Phase 2 completion report](completion_reports/PHASE_02_COMPLETION_REPORT.md), [Phase 3 completion report](completion_reports/PHASE_03_COMPLETION_REPORT.md), [Phase 4 completion report](completion_reports/PHASE_04_COMPLETION_REPORT.md), [PR #1](https://github.com/paragon-ux/Expflow/pull/1), [PR #2](https://github.com/paragon-ux/Expflow/pull/2)
 
 **Orientation:** Mutable pass-start controls live in [docs/orientation/](orientation/README.md) and are intentionally excluded from formatting and contract validation.
 
-**Hosted CI evidence:** Phase 1 hosted checks passed in PR #1. Gate A continuation checks are green in PR #2 at `6977ee7b8e5b2eb43b66811cec1f15cc4cb13cd4`.
+**Hosted CI evidence:** Phase 1 hosted checks passed in PR #1. Gate A continuation checks passed in PR #2 and the completed Gate A baseline is now on `origin/main`.
 
 **Validation status:** operational live-status artifact; intentionally excluded from repository formatting and contract validation.
 
@@ -40,7 +40,7 @@ The project is still pre-runtime. No material store, scanner, sync transaction, 
 | Gate | Phases | Meaning | Status | Evidence |
 |---|---|---|---|---|
 | A -- Contract Ready | 1-4 | Repository governance, invariant decisions, future slots, schemas, registries, seed fixtures, generated descriptors, and validator parity | COMPLETE | Gate A completion report; local validation passed; PR #2 checks green |
-| B -- Material Core Ready | 5-8 | Immutable stores, sync, identity, transactions, recovery, commands, inspection, and operation resolution | PENDING | Requires Gate A PR review and merge |
+| B -- Material Core Ready | 5-8 | Immutable stores, sync, identity, transactions, recovery, commands, inspection, and operation resolution | IN PROGRESS | Started from `origin/main` after Gate A merge |
 | C -- Ownership and Reproduction Ready | 9-14 | Authority, semantics, workflow boundaries, projections, regeneration, equivalence, and reuse | BLOCKED | Requires Gate B closure |
 | D -- Hardened and Proven | 15-17 | Security, migration, packaging, and end-to-end proof | BLOCKED | Requires Gate C closure |
 
@@ -62,12 +62,23 @@ The project is still pre-runtime. No material store, scanner, sync transaction, 
 
 ### Gate B: Material Core
 
-Gate B has not started. The next work is:
+Gate B is active on `feature/expflow-gate-b-material-core`. The current work is:
 
 - immutable material stores;
 - sync, scanning, and identity behavior;
 - transactions and core recovery;
 - the four ordinary commands and extension host.
+
+Implemented locally on the Gate B branch so far:
+
+- local `.expflow/` project state, immutable objects, node revisions, tree revisions, operation receipts, validations, changes, and material head state;
+- working-tree scanner with `.expflow/**` exclusion;
+- deterministic tree-content digest generation;
+- same-path continuity, explicit move preservation, explicit new/replace directives, and digest-similarity proposals without silent identity preservation;
+- `project.init`, `project.sync`, `project.status`, and `revision.restore` runtime operations;
+- CLI handlers for `expflow init`, `expflow sync`, `expflow status`, and `expflow restore`;
+- narrow extension host for native operation invocation and read-only committed state;
+- focused Gate B unit tests and installed-package CLI verification.
 
 ### Gate C: Ownership and Reproduction
 
@@ -99,9 +110,9 @@ Hosted Gate A continuation checks are green in PR #2.
 
 The credible route from the current baseline is:
 
-> Gate A PR review and merge -> Gate B material stores -> sync/scanning/identity -> transactions/recovery -> four ordinary commands and extension host -> Gate C ownership and reproduction runtime -> Gate D hardening and proof.
+> Gate B material stores -> sync/scanning/identity -> transactions/recovery -> four ordinary commands and extension host -> Gate C ownership and reproduction runtime -> Gate D hardening and proof.
 
-The central near-term risk is beginning Gate B runtime before the Gate A continuation branch is reviewed and merged.
+The central near-term risk is over-expanding Gate B into adapter inspection/reconciliation or Gate C semantic/projection behavior.
 
 ---
 
@@ -109,4 +120,4 @@ The central near-term risk is beginning Gate B runtime before the Gate A continu
 
 A defensible project-status statement is:
 
-> Expflow has completed Gate A locally and has green hosted checks in PR #2. The repository now has governed architecture sources, frozen Gate A invariants, registered later-gate decision slots, verified core registries, schema/example validation, a seed contract fixture harness, generated schema descriptors, TypeScript/Python validator parity, package-boundary verification, and no product runtime behavior. The next milestone is PR review and merge for the Gate A continuation branch, then Gate B material-core work after merge.
+> Expflow has completed Gate A and the Gate A baseline is on `origin/main`. The repository now has governed architecture sources, frozen Gate A invariants, registered later-gate decision slots, verified core registries, schema/example validation, a seed contract fixture harness, generated schema descriptors, TypeScript/Python validator parity, and package-boundary verification. The active milestone is Gate B material-core work: immutable stores, sync/scanning/identity, transactions/recovery, and the four ordinary commands with a narrow extension host.

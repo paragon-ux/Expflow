@@ -1,6 +1,6 @@
 # Identity and Revision Model
 
-**Status:** Gate A Phase 2 baseline
+**Status:** Gate B implemented baseline
 
 Material identity is opaque and continuity-based.
 
@@ -15,6 +15,10 @@ Material identity is opaque and continuity-based.
 
 Tree revisions represent complete project-tree states. Workflow occurrences select input and output tree revisions and path selectors, separating project state from workflow scope.
 
-## Deferred Implementation
+## Gate B Implementation
 
-No identity resolver, digest comparison, move detection, or revision store exists in Gate A. These rules are frozen as contracts for later material-core phases.
+- Same-path changed bytes create the next revision of the same node by default.
+- Explicit `preserve` move directives preserve identity and reuse an unchanged revision when bytes match.
+- Explicit `new` and `replace` directives allocate a new node at the path.
+- Digest-similar add/remove patterns are reported as proposals and never preserve identity without `preserve`.
+- Node and tree revisions remain immutable after commit.

@@ -1,8 +1,8 @@
 # Material Record Format
 
-**Status:** Gate A Phase 2 baseline
+**Status:** Gate B implemented baseline
 
-Material records are architecture intent in Gate A. They are not implemented by the Phase 1 scaffold.
+Material records are implemented by the Gate B TypeScript runtime as local JSON records and content-addressed objects under `.expflow/`.
 
 ## Record Families
 
@@ -22,6 +22,13 @@ Material records are architecture intent in Gate A. They are not implemented by 
 - Tree digest preimage includes path selectors, normalized sorted entries, node revision references, content digests, occupancy metadata, and sorted removed paths.
 - Tree digest preimage excludes tree revision ID, parent, operation ID, creation time, and notes.
 
-## Phase Boundary
+## Gate B Implementation
 
-Gate A may define and validate record shapes. It must not create material stores, scan working trees, persist objects, or mutate project state.
+- Objects are copied into `.expflow/objects/sha256/<prefix>/<hash>` and verified by SHA-256.
+- Node revisions are immutable JSON records under `.expflow/records/node-revisions/`.
+- Tree revisions are immutable JSON records under `.expflow/records/tree-revisions/`.
+- Operation receipts are immutable JSON records under `.expflow/records/operation-receipts/`.
+- The material head is updated separately through `.expflow/HEAD`.
+- Tree-content digests are deterministic and exclude event fields such as tree ID, operation ID, parent, timestamp, and notes.
+
+Gate B does not implement authority, semantic, workflow, projection, adapter, database, broker, or network runtime behavior.
