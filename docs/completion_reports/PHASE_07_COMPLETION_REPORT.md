@@ -53,7 +53,7 @@ None.
 ## Git Summary
 
 - Branch: `feature/expflow-gate-b-material-core`
-- Commit: pending final commit
+- Gate B implementation commit: `4044b32`
 - Changed files: runtime, stores, recovery, tests, docs
 
 ## Handoff

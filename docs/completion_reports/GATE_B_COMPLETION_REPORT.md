@@ -83,7 +83,7 @@ None for local Gate B readiness. Hosted CI evidence is pending PR creation and m
 - Repository root: `C:/Users/USER/Desktop/Frameworks/Expflow`
 - Branch: `feature/expflow-gate-b-material-core`
 - Base: `origin/main` at Gate A completion
-- Commit: pending final commit
+- Gate B implementation commit: `4044b32`
 - Local validation: passed by component commands under the 60-second cap
 
 ## Handoff

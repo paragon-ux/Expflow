@@ -2,7 +2,7 @@
 
 **Status:** Gate B implementation in progress -- Material Core
 **Last updated:** 2026-07-16
-**Current baseline:** `main` at `00373ff55690d153d301057b34175c5ff8f9068f`
+**Current baseline:** `main` at `00373ff55690d153d301057b34175c5ff8f9068f`; Gate B implementation commit `4044b32`
 **Workflow SSOT:** `docs/architecture/EXPFLOW_WORKFLOW_CURRENT.md`
 **Evidence:** [Gate A completion report](completion_reports/GATE_A_COMPLETION_REPORT.md), [Phase 1 completion report](completion_reports/PHASE_01_COMPLETION_REPORT.md), [Phase 2 completion report](completion_reports/PHASE_02_COMPLETION_REPORT.md), [Phase 3 completion report](completion_reports/PHASE_03_COMPLETION_REPORT.md), [Phase 4 completion report](completion_reports/PHASE_04_COMPLETION_REPORT.md), [PR #1](https://github.com/paragon-ux/Expflow/pull/1), [PR #2](https://github.com/paragon-ux/Expflow/pull/2)
 
@@ -69,7 +69,7 @@ Gate B is active on `feature/expflow-gate-b-material-core`. The current work is:
 - transactions and core recovery;
 - the four ordinary commands and extension host.
 
-Implemented locally on the Gate B branch so far:
+Implemented locally on the Gate B branch at `4044b32`:
 
 - local `.expflow/` project state, immutable objects, node revisions, tree revisions, operation receipts, validations, changes, and material head state;
 - working-tree scanner with `.expflow/**` exclusion;
