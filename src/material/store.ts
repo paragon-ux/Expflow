@@ -130,13 +130,6 @@ export function writeHead(projectRoot: string, treeRevisionId: string | null): v
 }
 
 function renameWithinVolume(from: string, to: string): void {
-  try {
-    rmSync(to, { force: true });
-    writeFileSync(`${to}.replace-test`, '');
-    rmSync(`${to}.replace-test`, { force: true });
-  } catch {
-    // The subsequent rename gives the actionable filesystem error.
-  }
   renameSync(from, to);
 }
 
@@ -282,6 +275,20 @@ export function readOperationReceipt(
 
 export function operationReceiptPath(projectRoot: string, operationId: string): string {
   return resolve(storePaths(projectRoot).receipts, `${operationId}.json`);
+}
+
+export function listOperationReceipts(projectRoot: string): OperationReceiptRecord[] {
+  const dir = storePaths(projectRoot).receipts;
+  if (!existsSync(dir)) {
+    return [];
+  }
+  return readdirSync(dir)
+    .filter((file) => file.endsWith('.json'))
+    .map((file) => readJsonFile(resolve(dir, file)) as OperationReceiptRecord)
+    .sort((left, right) => {
+      const finished = left.finished_at.localeCompare(right.finished_at);
+      return finished === 0 ? left.operation_id.localeCompare(right.operation_id) : finished;
+    });
 }
 
 export function writeValidationResult(projectRoot: string, record: ValidationResultRecord): void {

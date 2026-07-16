@@ -46,7 +46,9 @@
 | Object integrity              | Corruption verification test                                              |
 | Tree-content digest path      | Runtime tree revision creation and status clean/drift checks              |
 | Sync and identity             | Same-path, explicit move, explicit new-node, and digest proposal tests    |
+| Scoped selectors              | Selector-root sync keeps out-of-scope entries unchanged                   |
 | Transactions and receipts     | Stale-head guard, lock path, receipt status, and partial post-commit test |
-| Restore-source reads          | Tree restore test                                                         |
+| Core recovery                 | Uncommitted staging cleanup and committed receipt/head-gap reconciliation |
+| Restore-source reads          | Tree restore reconciliation removes files absent from the restored tree   |
 | Extension host boundary       | `tests/unit/extension-host.test.ts`                                       |
 | Adapter-only contracts absent | `tests/unit/prohibited-scope.test.ts`                                     |

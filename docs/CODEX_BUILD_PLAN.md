@@ -1,6 +1,6 @@
 # Codex Build Plan
 
-**Status:** Gate B material-core implementation
+**Status:** Gate B review fixes, then Gate C Phase 9
 **Workflow SSOT:** `docs/architecture/EXPFLOW_WORKFLOW_CURRENT.md`
 
 ## Current Path
@@ -10,7 +10,8 @@
 3. Phase 6 -- Sync, Scanning, and Identity: implement scanner exclusion, deterministic candidate trees, same-path continuity, explicit identity directives, and digest-similarity proposals.
 4. Phase 7 -- Transactions and Core Recovery: implement lock, validation, immutable receipts, partial post-commit status, and local recovery checks.
 5. Phase 8 -- Four Commands and Extension Host: implement native runtime operations, CLI handlers, package verification, and narrow extension host.
-6. Gate B Exit: confirm local validation, commit, push, PR review, and hosted CI.
+6. Gate B Exit: resolve PR review findings, confirm local validation, commit, push, PR review, and hosted CI.
+7. Phase 9 -- Authority Model: after Gate B is review-clean, implement authority-source records, registration decisions, current-source projection, and source policy behavior without adding adapter-specific contracts.
 
 ## Execution Rules
 

@@ -20,7 +20,7 @@ PASS -- Phase 8 complete
 | ------------------------ | --------: | ------ | ------------------------------------------ |
 | `npm run typecheck`      |         0 | PASS   | TypeScript strict check passed             |
 | `npm run lint`           |         0 | PASS   | ESLint passed                              |
-| `npm test`               |         0 | PASS   | 34 unit tests passed                       |
+| `npm test`               |         0 | PASS   | 37 unit tests passed                       |
 | `npm run build`          |         0 | PASS   | TypeScript build passed                    |
 | `npm run package:verify` |         0 | PASS   | Installed CLI `init` and `status` verified |
 
@@ -29,9 +29,9 @@ PASS -- Phase 8 complete
 | Criterion                     | Status | Evidence                       | Notes                                                   |
 | ----------------------------- | ------ | ------------------------------ | ------------------------------------------------------- |
 | `project.init`                | PASS   | runtime, CLI, package verifier | Creates `.expflow/` and commits initial tree            |
-| `project.sync`                | PASS   | runtime, CLI, unit tests       | Commits material drift and identity decisions           |
+| `project.sync`                | PASS   | runtime, CLI, unit tests       | Commits material drift and scoped identity decisions    |
 | `project.status`              | PASS   | runtime, CLI, package verifier | Reports clean/drifted/invalid/uninitialized             |
-| `revision.restore`            | PASS   | runtime and unit test          | Restores tree/node references as new heads              |
+| `revision.restore`            | PASS   | runtime and unit test          | Restores tree/node references and removes absent files  |
 | Shared runtime path           | PASS   | CLI calls `createRuntime`      | CLI and package exports use same runtime                |
 | Extension host                | PASS   | `createExtensionHost` test     | Native operations and read-only committed state only    |
 | Adapter-only contracts absent | PASS   | prohibited-scope test          | No inspection/cursor/idempotency/reconciliation modules |

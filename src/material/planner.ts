@@ -2,6 +2,7 @@ import { basename, dirname } from 'node:path';
 import { createExpflowId } from '../core/ids.js';
 import { assertSafeRelativePath } from '../core/paths.js';
 import { treeContentDigest } from './digest.js';
+import { selectorIncludesPath } from './selectors.js';
 import type {
   CandidateNodeRevision,
   CandidateTree,
@@ -147,6 +148,12 @@ export function planCandidateTree(input: {
   const newNodeRevisions: CandidateNodeRevision[] = [];
   const identityProposals: IdentityProposal[] = [];
 
+  for (const entry of currentEntries.values()) {
+    if (!selectorIncludesPath(input.scope, entry.relative_path)) {
+      entries.push({ ...entry });
+    }
+  }
+
   for (const file of input.scannedFiles) {
     const change = changesByPath.get(file.relative_path);
     const currentEntry = currentEntries.get(file.relative_path);
@@ -268,7 +275,9 @@ export function planCandidateTree(input: {
     entries.push(newFileEntry(file, node));
   }
 
-  const removedPaths = [...currentEntries.keys()].filter((path) => !scannedByPath.has(path)).sort();
+  const removedPaths = [...currentEntries.keys()]
+    .filter((path) => selectorIncludesPath(input.scope, path) && !scannedByPath.has(path))
+    .sort();
   const contentDigest = treeContentDigest(entries, removedPaths, input.scope);
 
   return {

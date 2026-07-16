@@ -1,8 +1,13 @@
-import { readdirSync, statSync } from 'node:fs';
+import { existsSync, lstatSync, readdirSync, statSync } from 'node:fs';
 import { basename, dirname, resolve } from 'node:path';
 import { ExpflowError } from '../core/errors.js';
 import { assertSafeRelativePath, relativeProjectPath } from '../core/paths.js';
 import { sha256File } from '../material/digest.js';
+import {
+  defaultPathSelector,
+  selectorIncludesPath,
+  selectorRootPath,
+} from '../material/selectors.js';
 import type { PathSelectorRecord, ScannedFile } from '../material/types.js';
 
 const DEFAULT_EXCLUDED_NAMES = new Set([
@@ -18,36 +23,30 @@ function isTemporaryEditorFile(name: string): boolean {
   return name.endsWith('~') || name.endsWith('.swp') || name.endsWith('.tmp');
 }
 
-function selectorIncludesPath(selector: PathSelectorRecord, relativePath: string): boolean {
-  const include = selector.include.length === 0 ? ['**/*'] : selector.include;
-  const excluded = selector.exclude.some((pattern) => matchesSimplePattern(pattern, relativePath));
-  if (excluded) {
-    return false;
-  }
-  return include.some((pattern) => matchesSimplePattern(pattern, relativePath));
-}
-
-function matchesSimplePattern(pattern: string, relativePath: string): boolean {
-  if (pattern === '**/*' || pattern === '**') {
-    return true;
-  }
-  const normalizedPattern = pattern.endsWith('/') ? pattern.slice(0, -1) : pattern;
-  if (normalizedPattern.endsWith('/**')) {
-    const prefix = normalizedPattern.slice(0, -'/**'.length);
-    return relativePath === prefix || relativePath.startsWith(`${prefix}/`);
-  }
-  return relativePath === normalizedPattern || relativePath.startsWith(`${normalizedPattern}/`);
-}
-
-export function defaultPathSelector(): PathSelectorRecord {
-  return { root: '.', include: ['**/*'], exclude: ['.expflow/**'] };
-}
+export { defaultPathSelector } from '../material/selectors.js';
 
 export function scanWorkingTree(
   projectRoot: string,
   selector: PathSelectorRecord = defaultPathSelector(),
 ): ScannedFile[] {
   const results: ScannedFile[] = [];
+
+  function addFile(absPath: string): void {
+    const relativePath = relativeProjectPath(projectRoot, absPath);
+    if (!selectorIncludesPath(selector, relativePath)) {
+      return;
+    }
+    const stat = statSync(absPath);
+    results.push({
+      absolute_path: absPath,
+      byte_size: stat.size,
+      content_digest: sha256File(absPath),
+      filename: basename(relativePath),
+      folder_name:
+        dirname(relativePath) === '.' ? null : dirname(relativePath).split('\\').join('/'),
+      relative_path: assertSafeRelativePath(relativePath),
+    });
+  }
 
   function visit(absDir: string): void {
     const entries = readdirSync(absDir, { withFileTypes: true }).sort((left, right) =>
@@ -74,20 +73,24 @@ export function scanWorkingTree(
       if (entry.isDirectory()) {
         visit(absPath);
       } else if (entry.isFile()) {
-        const stat = statSync(absPath);
-        results.push({
-          absolute_path: absPath,
-          byte_size: stat.size,
-          content_digest: sha256File(absPath),
-          filename: basename(relativePath),
-          folder_name:
-            dirname(relativePath) === '.' ? null : dirname(relativePath).split('\\').join('/'),
-          relative_path: assertSafeRelativePath(relativePath),
-        });
+        addFile(absPath);
       }
     }
   }
 
-  visit(projectRoot);
+  const rootPath = selectorRootPath(projectRoot, selector);
+  if (!existsSync(rootPath)) {
+    return [];
+  }
+  if (lstatSync(rootPath).isSymbolicLink()) {
+    const relativePath = relativeProjectPath(projectRoot, rootPath);
+    throw new ExpflowError('symlink_rejected', `Symlinks are not accepted: ${relativePath}`);
+  }
+  const rootStat = statSync(rootPath);
+  if (rootStat.isDirectory()) {
+    visit(rootPath);
+  } else if (rootStat.isFile()) {
+    addFile(rootPath);
+  }
   return results.sort((left, right) => left.relative_path.localeCompare(right.relative_path));
 }

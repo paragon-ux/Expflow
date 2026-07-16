@@ -85,8 +85,10 @@ The TypeScript package implements:
 - CLI handlers for `expflow init`, `expflow sync`, `expflow status`, and `expflow restore`
 - Local `.expflow/` material storage with immutable objects, node revisions, tree revisions, operation receipts, validations, changes, and material head state
 - Working-tree scanning with `.expflow/**` exclusion
+- Path-selector roots for scoped scans and scoped material planning
 - Same-path continuity, explicit `preserve`, `new`, and `replace` directives, and digest-similarity proposals without identity preservation
-- Local transaction locking, validation receipts, partial post-commit material success status, recovery cleanup, and restore-source reads
+- Local transaction locking, validation receipts, partial post-commit material success status, receipt/head recovery checks, and restore-source reads
+- Tree restore reconciles files absent from the restored tree before advancing the material head
 - A narrow extension host that invokes native operations and reads schema-shaped committed records without raw store exports
 - Read-only architecture-source discovery and repository-contract verification
 

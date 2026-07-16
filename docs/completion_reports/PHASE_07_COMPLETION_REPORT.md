@@ -21,26 +21,29 @@ PASS -- Phase 7 complete
 | ----------------------------------------------------------------- | --------: | ------ | ------------------------------ |
 | `npm run typecheck`                                               |         0 | PASS   | TypeScript strict check passed |
 | `npm run lint`                                                    |         0 | PASS   | ESLint passed                  |
-| `npm test`                                                        |         0 | PASS   | 34 unit tests passed           |
+| `npm test`                                                        |         0 | PASS   | 37 unit tests passed           |
 | `git diff --check origin/main...HEAD -- ':!docs/architecture/**'` |         0 | PASS   | No whitespace errors           |
 
 ## Exit-Criteria Matrix
 
-| Criterion                                 | Status | Evidence                                   | Notes                                                  |
-| ----------------------------------------- | ------ | ------------------------------------------ | ------------------------------------------------------ |
-| Project lock                              | PASS   | `createLock`                               | One local material transaction at a time               |
-| Expected head guard                       | PASS   | stale-head unit test                       | Rejects `stale_head` before commit                     |
-| Blocking validation                       | PASS   | `validateCandidate` and validation records | Duplicate/unsafe path checks are blocking              |
-| Immutable native operation receipts       | PASS   | receipt store and tests                    | Receipts use exclusive writes                          |
-| `partial_post_commit` material success    | PASS   | unit test                                  | Head advances and receipt preserves automation warning |
-| Recovery cleanup                          | PASS   | recovery test                              | Uncommitted staging directories are removed            |
-| Recovery never invents semantic decisions | PASS   | scope audit                                | No semantic stores exist in Gate B                     |
+| Criterion                                 | Status | Evidence                                   | Notes                                                   |
+| ----------------------------------------- | ------ | ------------------------------------------ | ------------------------------------------------------- |
+| Project lock                              | PASS   | `createLock`                               | One local material transaction at a time                |
+| Expected head guard                       | PASS   | stale-head unit test                       | Rejects `stale_head` before commit                      |
+| Blocking validation                       | PASS   | `validateCandidate` and validation records | Duplicate/unsafe path checks are blocking               |
+| Immutable native operation receipts       | PASS   | receipt store and tests                    | Receipts use exclusive writes                           |
+| `partial_post_commit` material success    | PASS   | unit test                                  | Head advances and receipt preserves automation warning  |
+| Recovery cleanup                          | PASS   | recovery test                              | Uncommitted staging directories are removed             |
+| Receipt/head-gap recovery                 | PASS   | recovery regression test                   | Committed receipt and tree can advance interrupted head |
+| Safe head replacement                     | PASS   | `writeHead` implementation                 | Old `HEAD` is not removed before replacement            |
+| Recovery never invents semantic decisions | PASS   | scope audit                                | No semantic stores exist in Gate B                      |
 
 ## Invariant Audit
 
 - Material success is not reported as generic failure after head advancement.
 - Recovery repairs only structural state and does not invent semantic acceptance.
 - Receipts are immutable records, not finalized by modifying an older committed receipt.
+- Recovery may advance the head only from durable committed material-success receipt evidence.
 
 ## Scope Audit
 

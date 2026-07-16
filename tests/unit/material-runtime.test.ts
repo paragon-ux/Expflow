@@ -1,5 +1,13 @@
 import { describe, expect, it } from 'vitest';
-import { mkdtempSync, mkdirSync, readFileSync, renameSync, rmSync, writeFileSync } from 'node:fs';
+import {
+  existsSync,
+  mkdtempSync,
+  mkdirSync,
+  readFileSync,
+  renameSync,
+  rmSync,
+  writeFileSync,
+} from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 import { createRuntime } from '../../src/operations/runtime.js';
@@ -10,6 +18,8 @@ import {
   readNodeRevision,
   readTreeRevision,
   storePaths,
+  updateProjectHead,
+  writeHead,
 } from '../../src/material/store.js';
 
 function tempProject(): string {
@@ -176,6 +186,7 @@ describe('Gate B material runtime', () => {
       const initReceipt = await runtime.init({ root });
 
       writeProjectFile(root, 'a.txt', 'two');
+      writeProjectFile(root, 'b.txt', 'added later');
       await runtime.sync({ root });
       const restoreReceipt = await runtime.restore({
         reference: `tree:${initReceipt.new_head ?? ''}`,
@@ -184,12 +195,77 @@ describe('Gate B material runtime', () => {
 
       expect(restoreReceipt.status).toBe('committed');
       expect(readFileSync(resolve(root, 'a.txt'), 'utf-8')).toBe('one');
+      expect(existsSync(resolve(root, 'b.txt'))).toBe(false);
       expect(readHead(root)).toBe(restoreReceipt.new_head);
+      const status = await runtime.status({ root });
+      expect(status.working_tree_state).toBe('clean');
 
       mkdirSync(resolve(storePaths(root).staging, 'orphan'), { recursive: true });
       const recovery = await runtime.recover({ root });
       expect(recovery.findings[0]?.recovery_class).toBe('uncommitted_stage');
       expect(recovery.findings[0]?.repaired).toBe(true);
+    } finally {
+      cleanup(root);
+    }
+  });
+
+  it('recovers a committed receipt when head advancement was interrupted', async () => {
+    const root = tempProject();
+    try {
+      writeProjectFile(root, 'a.txt', 'one');
+      const runtime = createRuntime();
+      const initReceipt = await runtime.init({ root });
+
+      writeProjectFile(root, 'a.txt', 'two');
+      const syncReceipt = await runtime.sync({ root });
+      writeHead(root, initReceipt.new_head);
+      updateProjectHead(root, initReceipt.new_head);
+
+      const recovery = await runtime.recover({ root });
+      expect(recovery.findings).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({
+            recovery_class: 'tree_committed_head_not_advanced',
+            repaired: true,
+          }),
+        ]),
+      );
+      expect(readHead(root)).toBe(syncReceipt.new_head);
+    } finally {
+      cleanup(root);
+    }
+  });
+
+  it('limits scoped sync to selector roots while retaining out-of-scope entries', async () => {
+    const root = tempProject();
+    try {
+      writeProjectFile(root, 'docs/a.txt', 'one');
+      writeProjectFile(root, 'root.txt', 'one');
+      const runtime = createRuntime();
+      await runtime.init({ root });
+
+      writeProjectFile(root, 'docs/a.txt', 'two');
+      writeProjectFile(root, 'root.txt', 'two');
+      const scope = { exclude: [], include: ['**/*'], root: 'docs' };
+      const plan = await runtime.planSync({ root, scope });
+      expect(plan.entries).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({ relative_path: 'docs/a.txt' }),
+          expect.objectContaining({ relative_path: 'root.txt' }),
+        ]),
+      );
+      expect(plan.removed_paths).toEqual([]);
+      expect(plan.new_node_revisions).toHaveLength(1);
+
+      const scopedReceipt = await runtime.sync({ root, scope });
+      const scopedTree = readTreeRevision(root, scopedReceipt.new_head ?? '');
+      const docsEntry = scopedTree.entries.find((entry) => entry.relative_path === 'docs/a.txt');
+      const rootEntry = scopedTree.entries.find((entry) => entry.relative_path === 'root.txt');
+      expect(docsEntry?.node_revision).toBe(2);
+      expect(rootEntry?.node_revision).toBe(1);
+
+      const status = await runtime.status({ root });
+      expect(status.working_tree_state).toBe('drifted');
     } finally {
       cleanup(root);
     }

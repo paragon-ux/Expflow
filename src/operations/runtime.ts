@@ -1,4 +1,4 @@
-import { mkdirSync, writeFileSync } from 'node:fs';
+import { mkdirSync, rmSync, writeFileSync } from 'node:fs';
 import { dirname } from 'node:path';
 import { ExpflowError, toExpflowError } from '../core/errors.js';
 import { createExpflowId } from '../core/ids.js';
@@ -264,6 +264,24 @@ function makeProject(
 function treeFromHead(projectRoot: string): TreeRevisionRecord | null {
   const head = readHead(projectRoot);
   return head === null ? null : readTreeRevision(projectRoot, head);
+}
+
+function treeFilePaths(tree: TreeRevisionRecord): Set<string> {
+  return new Set(
+    tree.entries.filter((entry) => entry.entry_kind === 'file').map((entry) => entry.relative_path),
+  );
+}
+
+function reconcileWorkingTreeToRestoredTree(
+  projectRoot: string,
+  sourceTree: TreeRevisionRecord,
+): void {
+  const restoredPaths = treeFilePaths(sourceTree);
+  for (const file of scanWorkingTree(projectRoot, defaultPathSelector())) {
+    if (!restoredPaths.has(file.relative_path)) {
+      rmSync(file.absolute_path, { force: true });
+    }
+  }
 }
 
 function materialStatusFromPlan(plan: SyncPlan): StatusReportRecord['working_tree_state'] {
@@ -568,6 +586,17 @@ export function createRuntime(): ExpflowRuntime {
         let restoredTree: TreeRevisionRecord;
         if (input.reference.startsWith('tree:')) {
           const sourceTree = readTreeRevision(projectRoot, input.reference.slice('tree:'.length));
+          const currentTree =
+            previousHead === null ? null : readTreeRevision(projectRoot, previousHead);
+          const restoredPaths = treeFilePaths(sourceTree);
+          const removedPaths =
+            currentTree === null
+              ? []
+              : currentTree.entries
+                  .filter((entry) => !restoredPaths.has(entry.relative_path))
+                  .map((entry) => entry.relative_path)
+                  .sort();
+          reconcileWorkingTreeToRestoredTree(projectRoot, sourceTree);
           for (const entry of sourceTree.entries) {
             if (
               entry.entry_kind !== 'file' ||
@@ -586,14 +615,11 @@ export function createRuntime(): ExpflowRuntime {
             writeFileSync(target, bytes);
           }
           const entries = sourceTree.entries.map((entry) => ({ ...entry }));
-          const removedPaths = sourceTree.removed_paths ?? [];
           const contentDigest = treeContentDigest(
             entries,
             removedPaths,
             sourceTree.scope ?? defaultPathSelector(),
           );
-          const currentTree =
-            previousHead === null ? null : readTreeRevision(projectRoot, previousHead);
           restoredTree = {
             ...sourceTree,
             content_digest: contentDigest,
