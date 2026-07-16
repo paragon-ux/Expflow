@@ -1,12 +1,19 @@
 # Codex Build Plan
 
-- Owner phase: Phase 2 or later � exact owner intentionally unassigned in Phase 1
-- Current status: SKELETON � NO SUBSTANTIVE CONTENT
-- Controlling sources: EXPFLOW_WORKFLOW_CURRENT.md
-- Regeneration trigger: Phase gate transition that activates the owning phase
+**Status:** Gate A continuation baseline
+**Workflow SSOT:** `docs/architecture/EXPFLOW_WORKFLOW_CURRENT.md`
 
-Substantive content is intentionally deferred to the owning later phase. This Phase 1 file is a discoverability and governance skeleton only and does not freeze unresolved architecture decisions.
+## Current Path
 
-## Deferred Sections
+1. Phase 1 -- Kickoff and Repository Contract: complete and merged in PR #1.
+2. Phase 2 -- Architecture Decisions and Vocabulary: freeze mutable decision docs and registries from immutable architecture sources.
+3. Phase 3 -- Core Machine Contracts and Registries: verify supplied core schemas, examples, registries, compatibility policy, and extension-boundary descriptors.
+4. Phase 4 -- Conformance Fixtures and Generated Types: add valid/invalid/compatibility/recovery/tree-digest fixture corpus, generated descriptors, and TypeScript/Python validation parity.
+5. Gate A Exit: confirm hosted CI and local validation pass with adapter-only contracts absent.
 
-TODO: Add sections as defined by the controlling architecture sources when the owning phase is activated.
+## Execution Rules
+
+- Do not modify immutable `docs/architecture/**` sources.
+- Do not implement material storage, scanning, identity resolution, transactions, command handlers, authority runtime, semantic stores, projections, hooks, adapters, or migration runtime in Gate A.
+- Keep `docs/CURRENT_STATUS_MATRIX.md` mutable and outside validation.
+- Update completion evidence with actual command results only.

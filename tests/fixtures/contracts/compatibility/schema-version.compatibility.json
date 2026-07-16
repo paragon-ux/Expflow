@@ -1,0 +1,6 @@
+{
+  "schema_version": "2.3",
+  "compatibility_policy": "Gate A accepts Draft 2020-12 schemas with explicit 2.3 IDs and rejects unsupported dialects.",
+  "accepted_schema_id_prefix": "https://expflow.dev/schemas/2.3/",
+  "unsupported_dialects": ["http://json-schema.org/draft-07/schema#"]
+}

@@ -1,12 +1,24 @@
 # Data Model
 
-- Owner phase: Phase 2 or later � exact owner intentionally unassigned in Phase 1
-- Current status: SKELETON � NO SUBSTANTIVE CONTENT
-- Controlling sources: EXPFLOW_IMPLEMENTATION_SPEC_V2_3.md, docs/architecture/schemas/
-- Regeneration trigger: Phase gate transition that activates the owning phase
+**Status:** Gate A Phase 2 baseline
 
-Substantive content is intentionally deferred to the owning later phase. This Phase 1 file is a discoverability and governance skeleton only and does not freeze unresolved architecture decisions.
+Expflow separates durable state into four families.
 
-## Deferred Sections
+| Family     | Records                                                                                                                        | Authority rule                                                             |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------- |
+| Material   | Nodes, node revisions, tree entries, tree revisions, operation plans, operation receipts                                       | Byte and path facts are immutable once committed.                          |
+| Semantic   | Authority sources, authority documents, assertions, decisions, conflicts, review requests, source correspondence               | Accepted semantic state is derived from immutable decisions.               |
+| Workflow   | Workflow occurrences, virtual artifacts, materialization events, regeneration attempts, equivalence evaluations, reuse results | Workflow completion is not inferred from material outputs alone.           |
+| Projection | Manifest revisions, manifest heads, deterministic and model-assisted outputs                                                   | Projections are derived and rebuildable, not authoritative material state. |
 
-TODO: Add sections as defined by the controlling architecture sources when the owning phase is activated.
+## Record Version
+
+Core schemas use `schema_version: "2.3"` where applicable. Compatibility changes must be reflected in schemas, examples, registries, fixtures, and generated types before Gate A closure.
+
+## Identifiers
+
+Identifiers are opaque and prefix-scoped. Prefixes identify record family only; they do not encode user purpose, path meaning, or semantic acceptance.
+
+## State Derivation
+
+Current state is derived from immutable records and revision ordering. No mutable "current" field is authoritative by itself.

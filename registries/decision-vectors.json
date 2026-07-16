@@ -1,0 +1,62 @@
+{
+  "schema_version": "2.3",
+  "source": "docs/ARCHITECTURE_DECISIONS.md",
+  "decisions": [
+    { "id": "AD-001", "summary": "Node.js 20+ and Python 3.11+ are the Gate A runtimes." },
+    { "id": "AD-002", "summary": "npm with package-lock.json is the JavaScript package manager." },
+    { "id": "AD-003", "summary": "The ordinary command surface is init, sync, status, restore." },
+    {
+      "id": "AD-004",
+      "summary": "Gate A code is limited to help/version, discovery, validation, and contract verification."
+    },
+    {
+      "id": "AD-005",
+      "summary": "docs/architecture sources are immutable manifest-verified inputs."
+    },
+    { "id": "AD-006", "summary": "schemas/ and examples/ are non-authoritative working mirrors." },
+    { "id": "AD-007", "summary": "Identifiers are opaque and prefix-scoped." },
+    {
+      "id": "AD-008",
+      "summary": "Relative paths are normalized, UTF-8, safe, and forward-slash based."
+    },
+    { "id": "AD-009", "summary": "SHA-256 is the mandatory digest algorithm." },
+    {
+      "id": "AD-010",
+      "summary": "Tree-content digests hash canonical UTF-8 JSON for sorted complete tree content."
+    },
+    {
+      "id": "AD-011",
+      "summary": "Material, semantic, workflow, and projection records remain separate families."
+    },
+    {
+      "id": "AD-012",
+      "summary": "Authority descriptors require immutable registration decisions before acceptance."
+    },
+    { "id": "AD-013", "summary": "Assertions and decisions are distinct immutable records." },
+    {
+      "id": "AD-014",
+      "summary": "Deterministic and model-assisted projections are separate attributable outputs."
+    },
+    {
+      "id": "AD-015",
+      "summary": "Python hooks are schema-governed read-only stdin/stdout participants."
+    },
+    {
+      "id": "AD-016",
+      "summary": "Adapter inspection, cursors, idempotency, reconciliation, policy, and writer partitioning are deferred outside core."
+    },
+    { "id": "AD-017", "summary": "Core extension exports are narrow and documented." },
+    {
+      "id": "AD-018",
+      "summary": "Gate A contains no locks, stores, transactions, recovery, or receipts."
+    },
+    {
+      "id": "AD-019",
+      "summary": "Source-content security is governance and test contract until later runtime phases."
+    },
+    {
+      "id": "AD-020",
+      "summary": "Gate A closure requires decisions, schemas, registries, fixtures, generated types, and validator parity to agree."
+    }
+  ]
+}

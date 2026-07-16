@@ -1,12 +1,27 @@
 # Material Record Format
 
-- Owner phase: Phase 2 or later � exact owner intentionally unassigned in Phase 1
-- Current status: SKELETON � NO SUBSTANTIVE CONTENT
-- Controlling sources: EXPFLOW_IMPLEMENTATION_SPEC_V2_3.md, EXPFLOW_PROTOCOL_SPEC_V2_3.md
-- Regeneration trigger: Phase gate transition that activates the owning phase
+**Status:** Gate A Phase 2 baseline
 
-Substantive content is intentionally deferred to the owning later phase. This Phase 1 file is a discoverability and governance skeleton only and does not freeze unresolved architecture decisions.
+Material records are architecture intent in Gate A. They are not implemented by the Phase 1 scaffold.
 
-## Deferred Sections
+## Record Families
 
-TODO: Add sections as defined by the controlling architecture sources when the owning phase is activated.
+| Record            | Purpose                                                   |
+| ----------------- | --------------------------------------------------------- |
+| Material node     | Opaque continuity identity for a material artifact.       |
+| Node revision     | Immutable content revision with mandatory SHA-256 digest. |
+| Tree entry        | Actual relative path occupancy for a node revision.       |
+| Tree revision     | Complete immutable project tree state.                    |
+| Operation plan    | Planned native operation inputs and expected state.       |
+| Operation receipt | Immutable native operation result evidence.               |
+
+## Digest Requirements
+
+- Content digests use SHA-256 over exact bytes.
+- Tree-content digests use canonical UTF-8 JSON for sorted tree content.
+- Tree digest preimage includes path selectors, normalized sorted entries, node revision references, content digests, occupancy metadata, and sorted removed paths.
+- Tree digest preimage excludes tree revision ID, parent, operation ID, creation time, and notes.
+
+## Phase Boundary
+
+Gate A may define and validate record shapes. It must not create material stores, scan working trees, persist objects, or mutate project state.

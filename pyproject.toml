@@ -7,7 +7,7 @@ name = "expflow-hooks"
 version = "0.0.0.dev1"
 description = "Expflow Python hook package - schema-conforming validation and automation hooks"
 requires-python = ">=3.11"
-license = {text = "UNLICENSED"}
+license = "LicenseRef-UNLICENSED"
 readme = "README.md"
 
 [project.optional-dependencies]

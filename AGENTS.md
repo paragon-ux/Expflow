@@ -1,6 +1,6 @@
 # AGENTS.md — Expflow Agent Governance
 
-**Phase:** 1 — Kickoff and Repository Contract
+**Phase:** Gate A — Phases 1–4
 **Gate:** A — Contract Ready
 **Expflow version:** 2.3 architecture lock candidate
 
@@ -40,6 +40,8 @@ When interpreting the architecture, consult sources in this exact precedence:
 11. Architecture examples in `docs/architecture/examples/`
 12. `RELATED_WORK.md` (positioning only)
 
+For workflow phase and gate sequencing, `EXPFLOW_WORKFLOW_CURRENT.md` is the controlling source.
+
 Immutable architecture source files live under `docs/architecture/`. Their byte-for-byte integrity is verified by `docs/architecture/SOURCE_MANIFEST.json`. Never modify these files.
 
 ---
@@ -48,12 +50,12 @@ Immutable architecture source files live under `docs/architecture/`. Their byte-
 
 Expflow builds through four gates across seventeen phases:
 
-| Gate                                 | Phases | Meaning                                                           |
-| ------------------------------------ | ------ | ----------------------------------------------------------------- |
-| A — Contract Ready                   | 1      | Repository governance, architecture sources, schemas, fixtures    |
-| B — Material Core Ready              | 2–5    | Immutable stores, sync, identity, transactions, commands          |
-| C — Ownership and Reproduction Ready | 6–11   | Authority, semantics, workflows, projections, regeneration, reuse |
-| D — Hardened and Proven              | 12–17  | Security, migration, packaging, end-to-end proof                  |
+| Gate                                 | Phases | Meaning                                                                           |
+| ------------------------------------ | ------ | --------------------------------------------------------------------------------- |
+| A — Contract Ready                   | 1–4    | Repository governance, architecture decisions, schemas, fixtures, generated types |
+| B — Material Core Ready              | 5–8    | Immutable stores, sync, identity, transactions, commands                          |
+| C — Ownership and Reproduction Ready | 9–14   | Authority, semantics, workflows, projections, regeneration, reuse                 |
+| D — Hardened and Proven              | 15–17  | Security, migration, packaging, end-to-end proof                                  |
 
 No phase may skip its preceding gate. Every phase completion report must contain:
 

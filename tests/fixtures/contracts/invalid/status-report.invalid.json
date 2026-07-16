@@ -1,0 +1,13 @@
+{
+  "schema_version": "2.3",
+  "project_id": "not-a-valid-project-id",
+  "head_tree_revision_id": null,
+  "working_tree_state": "clean",
+  "generated_at": "2026-07-15T13:11:00Z",
+  "unresolved_items": [],
+  "manifest_heads": {},
+  "automation_state": {
+    "pending_hooks": [],
+    "failed_hooks": []
+  }
+}

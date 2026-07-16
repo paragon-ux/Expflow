@@ -1,16 +1,17 @@
 # Completion Reports
 
-- Owner phase: Phase 1
-- Current status: SKELETON � NO SUBSTANTIVE CONTENT
-- Controlling sources: EXPFLOW_WORKFLOW_CURRENT.md
-- Regeneration trigger: Each phase completion
-
-Substantive content is intentionally deferred to the owning later phase. This Phase 1 file is a discoverability and governance skeleton only and does not freeze unresolved architecture decisions.
-
-## Purpose
-
-Index of phase-gate completion reports
+Completion reports provide phase and gate evidence. They are mutable project records, not immutable architecture sources.
 
 ## Inventory
 
-TODO: Populate as phases complete.
+| Report                                                     | Status | Scope                                    |
+| ---------------------------------------------------------- | ------ | ---------------------------------------- |
+| [Phase 1 Completion Report](PHASE_01_COMPLETION_REPORT.md) | PASS   | Repository contract baseline             |
+| [Phase 2 Completion Report](PHASE_02_COMPLETION_REPORT.md) | PASS   | Architecture decisions and vocabulary    |
+| [Phase 3 Completion Report](PHASE_03_COMPLETION_REPORT.md) | PASS   | Core machine contracts and registries    |
+| [Phase 4 Completion Report](PHASE_04_COMPLETION_REPORT.md) | PASS   | Conformance fixtures and generated types |
+| [Gate A Completion Report](GATE_A_COMPLETION_REPORT.md)    | PASS   | Contract Ready gate closure              |
+
+## Validation
+
+Completion reports must cite actual command results. Do not claim a validation, commit, push, hosted check, or pull request without performing it.

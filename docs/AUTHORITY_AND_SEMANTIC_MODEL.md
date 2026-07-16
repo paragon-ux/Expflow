@@ -1,12 +1,20 @@
 # Authority and Semantic Model
 
-- Owner phase: Phase 2 or later � exact owner intentionally unassigned in Phase 1
-- Current status: SKELETON � NO SUBSTANTIVE CONTENT
-- Controlling sources: EXPFLOW_CONCEPT_PAPER_V2_3.md, EXPFLOW_IMPLEMENTATION_SPEC_V2_3.md
-- Regeneration trigger: Phase gate transition that activates the owning phase
+**Status:** Gate A Phase 2 baseline
 
-Substantive content is intentionally deferred to the owning later phase. This Phase 1 file is a discoverability and governance skeleton only and does not freeze unresolved architecture decisions.
+Authority is extensible, but acceptance requires immutable decisions.
 
-## Deferred Sections
+## Authority Sources
 
-TODO: Add sections as defined by the controlling architecture sources when the owning phase is activated.
+An authority-source descriptor is not accepted authority until a source-registration decision accepts it. Split and unified readable authority documents remain supported profiles.
+
+## Semantic Records
+
+- Assertions are attributed claims.
+- Decisions accept, reject, modify, defer, revoke, or supersede assertions and sources.
+- Conflicts and review requests remain visible after resolution.
+- Source correspondence records connect imported evidence to Expflow records without making source content authoritative.
+
+## Gate A Boundary
+
+Gate A validates schemas and examples for these records. It does not implement source registration, decision stores, derived current semantic state, or conflict workflows.

@@ -1,0 +1,7 @@
+{
+  "schema_version": "2.3",
+  "classification": "interrupted_core_commit",
+  "phase": "material-core-intent",
+  "rule": "Recovery may repair structural state from durable evidence but must not invent semantic decisions.",
+  "gate_a_runtime_status": "not_implemented"
+}

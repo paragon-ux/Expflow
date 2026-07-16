@@ -1,12 +1,23 @@
 # Extension Boundary
 
-- Owner phase: Phase 2 or later � exact owner intentionally unassigned in Phase 1
-- Current status: SKELETON � NO SUBSTANTIVE CONTENT
-- Controlling sources: EXPFLOW_IMPLEMENTATION_SPEC_V2_3.md, V2_3_REVIEW_RESOLUTION.md, V2_3_ARCHITECTURE_DELTA.md
-- Regeneration trigger: Phase gate transition that activates the owning phase
+**Status:** Gate A Phase 2 baseline
 
-Substantive content is intentionally deferred to the owning later phase. This Phase 1 file is a discoverability and governance skeleton only and does not freeze unresolved architecture decisions.
+The core extension host is narrow and separately packaged adapters must stay outside the core repository.
 
-## Deferred Sections
+## Allowed Extension Exports
 
-TODO: Add sections as defined by the controlling architecture sources when the owning phase is activated.
+- Schema-valid immutable records.
+- Invocation of the four native operations.
+- Operation receipts.
+- Read-only project state.
+
+## Prohibited Extension Exports
+
+- Raw `.expflow` storage paths.
+- Internal store implementations.
+- Undocumented records.
+- Adapter idempotency, cursors, reconciliation, capability policy, or writer partitioning.
+
+## Gate A Constraint
+
+Gate A may document extension types and verify that adapter-only contracts remain absent. It must not implement an adapter package or adapter runtime.
