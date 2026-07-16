@@ -1,12 +1,20 @@
 # Authority and Semantic Model
 
-**Status:** Gate A Phase 2 baseline
+**Status:** Gate C Phase 9 authority-model implementation
 
 Authority is extensible, but acceptance requires immutable decisions.
 
 ## Authority Sources
 
 An authority-source descriptor is not accepted authority until a source-registration decision accepts it. Split and unified readable authority documents remain supported profiles.
+
+Gate C Phase 9 implements:
+
+- immutable authority-source revisions;
+- immutable source-registration decisions;
+- split and unified readable authority document records;
+- a current-source projection derived from decisions;
+- default source-scope conflict checks for overlapping accepted authority sources.
 
 ## Semantic Records
 
@@ -15,6 +23,6 @@ An authority-source descriptor is not accepted authority until a source-registra
 - Conflicts and review requests remain visible after resolution.
 - Source correspondence records connect imported evidence to Expflow records without making source content authoritative.
 
-## Gate A Boundary
+## Current Boundary
 
-Gate A validates schemas and examples for these records. It does not implement source registration, decision stores, derived current semantic state, or conflict workflows.
+Phase 9 does not implement semantic assertion stores, semantic decision stores, conflicts, review requests, source correspondence, workflow occurrences, projections, regeneration, equivalence, or reuse.

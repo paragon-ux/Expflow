@@ -52,3 +52,13 @@
 | Restore-source reads          | Tree restore reconciliation removes files absent from the restored tree   |
 | Extension host boundary       | `tests/unit/extension-host.test.ts`                                       |
 | Adapter-only contracts absent | `tests/unit/prohibited-scope.test.ts`                                     |
+
+## Gate C Phase 9 Coverage
+
+| Area                           | Evidence                                  |
+| ------------------------------ | ----------------------------------------- |
+| Authority descriptors proposed | `tests/unit/authority-runtime.test.ts`    |
+| Registration decisions         | accepted and revoked decision tests       |
+| Current-source projection      | derived accepted-source tests             |
+| Readable authority documents   | split authority document shape test       |
+| Authority scope conflicts      | overlapping accepted-source conflict test |

@@ -1,6 +1,6 @@
 # Expflow Developer Guide
 
-**Gate B -- Material Core.** Local material-core runtime behavior is implemented for the four ordinary commands. Adapter inspection/reconciliation and Gate C semantic/projection behavior remain out of scope.
+**Gate C Phase 9 -- Authority Model.** Local material-core runtime behavior is implemented for the four ordinary commands, and authority-source registration is implemented as a library runtime. Adapter inspection/reconciliation and later Gate C semantic/workflow/projection behavior remain out of scope.
 
 ## Prerequisites
 
@@ -90,9 +90,10 @@ The TypeScript package implements:
 - Local transaction locking, validation receipts, partial post-commit material success status, receipt/head recovery checks, and restore-source reads
 - Tree restore reconciles files absent from the restored tree before advancing the material head
 - A narrow extension host that invokes native operations and reads schema-shaped committed records without raw store exports
+- A library authority runtime for authority-source revisions, source-registration decisions, readable authority documents, current-source projection, and scope-conflict checks
 - Read-only architecture-source discovery and repository-contract verification
 
-The TypeScript package does not implement adapter inspection, composite external revisions, change cursors, adapter idempotency, lost-response reconciliation, authority decisions, semantic stores, workflow detection, projections, hook dispatch, network services, databases, or brokers. Repository-contract tests verify this boundary.
+The TypeScript package does not implement adapter inspection, composite external revisions, change cursors, adapter idempotency, lost-response reconciliation, semantic assertion stores, semantic decision stores, conflict workflows, workflow detection, projections, hook dispatch, network services, databases, or brokers. Repository-contract tests verify this boundary.
 
 The Python wheel does not package `docs/architecture/`. Installed wheels import and report the hook package version, while architecture-source discovery remains explicitly repository-checkout-only.
 

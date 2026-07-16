@@ -7,9 +7,10 @@ This directory indexes phase-specific build prompts and gate checklists. These f
 
 ## Inventory
 
-| File                                        | Status                | Purpose                                                             |
-| ------------------------------------------- | --------------------- | ------------------------------------------------------------------- |
-| `FINAL_CONTRACT_MATERIAL_CORE_CHECKLIST.md` | Gate B local evidence | Checklist for the material-core gate before PR review and hosted CI |
+| File                                        | Status                | Purpose                                                              |
+| ------------------------------------------- | --------------------- | -------------------------------------------------------------------- |
+| `FINAL_CONTRACT_MATERIAL_CORE_CHECKLIST.md` | Gate B local evidence | Checklist for the material-core gate before PR review and hosted CI  |
+| `PHASE_09_AUTHORITY_MODEL.md`               | Gate C Phase 9        | Authority-source, registration-decision, and authority-document work |
 
 ## Notes
 

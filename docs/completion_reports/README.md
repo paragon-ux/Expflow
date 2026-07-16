@@ -16,6 +16,7 @@ Completion reports provide phase and gate evidence. They are mutable project rec
 | [Phase 7 Completion Report](PHASE_07_COMPLETION_REPORT.md) | PASS   | Transactions and core recovery          |
 | [Phase 8 Completion Report](PHASE_08_COMPLETION_REPORT.md) | PASS   | Four commands and extension host        |
 | [Gate B Completion Report](GATE_B_COMPLETION_REPORT.md)    | PASS   | Material Core gate closure              |
+| [Phase 9 Completion Report](PHASE_09_COMPLETION_REPORT.md) | PASS   | Authority model                         |
 
 ## Validation
 

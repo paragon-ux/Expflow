@@ -1,7 +1,7 @@
 # AGENTS.md — Expflow Agent Governance
 
-**Phase:** Gate B — Phases 5–8
-**Gate:** B — Material Core
+**Phase:** Gate C — Phase 9
+**Gate:** C — Ownership and Reproduction
 **Expflow version:** 2.3 architecture lock candidate
 
 ---
@@ -19,7 +19,7 @@ expflow status
 expflow restore
 ```
 
-In Gate B, these commands have local material-core handlers. They do not implement adapter inspection/reconciliation, authority decisions, semantic stores, workflow detection, projections, hooks, migration, databases, brokers, or network services.
+In Gate C Phase 9, these commands retain the local material-core handlers from Gate B. Authority-source registration is available as a library/runtime surface; semantic stores, workflow detection, projections, hooks, adapters, migration, databases, brokers, and network services remain absent.
 
 ---
 
@@ -144,7 +144,7 @@ The architecture defines immutable semantic records. In Phase 1 these are docume
 - Conflicts and review requests
 - Source correspondence records
 
-No implementation exists in Phase 1. Agents must not implement semantic record creation, storage, or derivation.
+Gate C Phase 9 implements source-registration decisions only. Agents must not implement semantic assertion stores, semantic decision stores, conflict workflows, review requests, source correspondence, or derived semantic state until the owning Gate C phases.
 
 ---
 
@@ -219,7 +219,7 @@ Authority sources are extensible — any conforming source may be registered. Re
 
 Semantic decisions (accept, reject, modify, defer, revoke, supersede) are immutable. Current semantic state is derived from decisions, not mutable fields. Conflicts remain visible after resolution.
 
-In Phase 1, no authority registration or decision logic exists. Agents must not implement source registration, decision stores, or derived-state computation.
+Gate C Phase 9 implements authority-source revisions, source-registration decisions, readable authority documents, and current-source projection. Agents must not treat a source descriptor or readable document as accepted authority without an accepted immutable source-registration decision.
 
 ---
 
@@ -278,7 +278,7 @@ In Phase 1, no security enforcement exists. These rules are governance only.
 
 ## 19. Repository-Contract Test Expectations
 
-Repository-contract and Gate B material-core tests must verify:
+Repository-contract, Gate B material-core, and Gate C authority tests must verify:
 
 1. Source integrity: every manifest entry matches byte-for-byte
 2. Required architecture Markdown files exist
@@ -287,7 +287,9 @@ Repository-contract and Gate B material-core tests must verify:
 5. All supplied examples parse as valid JSON
 6. Gate B material records persist and verify without adapter-only protocols
 7. No prohibited imports (networking, databases, message brokers) exist in src/
-8. No adapter inspection, change cursor, idempotency, lost-response reconciliation, authority, semantic, workflow, projection, hook, or migration runtime exists in core
+8. No adapter inspection, change cursor, idempotency, lost-response reconciliation, semantic, workflow, projection, hook, or migration runtime exists in core
+9. Authority descriptors remain proposed until accepted by immutable source-registration decisions
+10. Current authority state is derived from decisions and source-scope conflicts are visible
 
 Test commands:
 
@@ -375,9 +377,9 @@ Agents must NOT:
 
 ---
 
-## 24. Gate B Runtime Statement
+## 24. Gate C Runtime Statement
 
-**Expflow Gate B contains a local material-core runtime implementation.**
+**Expflow Gate C Phase 9 contains the Gate B material-core runtime plus a local authority-model runtime.**
 
 The TypeScript package (`src/`) implements:
 
@@ -388,6 +390,7 @@ The TypeScript package (`src/`) implements:
 - Same-path continuity, explicit identity directives, and digest-similarity proposals without silent identity preservation
 - Local project lock, validation, immutable receipts, partial post-commit material success status, recovery cleanup, and restore-source reads
 - Narrow extension host for native operations and read-only committed state
+- Library authority runtime for source revisions, source-registration decisions, readable authority documents, current-source projection, and authority scope-conflict checks
 - Read-only architecture-source and manifest discovery
 - Read-only repository-contract verification
 
@@ -396,7 +399,7 @@ The Python package (`python/expflow_hooks/`) implements only:
 - Package import and `__version__` reporting
 - Read-only discovery of the architecture schema-source directory
 
-No adapter inspection, composite external revisions, change cursors, adapter idempotency, lost-response reconciliation, authority decisions, semantic stores, workflow detection, projections, hook dispatch, migration runtime, network access, database access, broker access, or subprocess-driven product behavior exists in the core runtime.
+No adapter inspection, composite external revisions, change cursors, adapter idempotency, lost-response reconciliation, semantic assertion stores, semantic decision stores, conflicts, review requests, source correspondence, workflow detection, projections, hook dispatch, migration runtime, network access, database access, broker access, or subprocess-driven product behavior exists in the core runtime.
 
 ---
 
@@ -431,7 +434,7 @@ python -m build --wheel
 AGENTS.md                    — This file
 README.md                    — Project overview
 README_DEV.md                — Developer setup and validation
-package.json                 — Node package (private, 0.0.0-phase.1)
+package.json                 — Node package (private, 0.0.0-gate-c)
 tsconfig.json                — TypeScript configuration
 pyproject.toml               — Python package configuration
 
@@ -450,4 +453,4 @@ tests/                       — Repository-contract tests
 
 ---
 
-_AGENTS.md — Expflow Gate B / Material Core. Adapter, semantic, workflow, projection, hook, and migration behavior remains out of scope._
+_AGENTS.md — Expflow Gate C Phase 9 / Authority Model. Semantic, workflow, projection, hook, adapter, and migration behavior remains out of scope._
