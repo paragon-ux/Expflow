@@ -19,6 +19,7 @@ dev = [
 
 [tool.setuptools.packages.find]
 where = ["python"]
+include = ["expflow_hooks*"]
 
 [tool.pytest.ini_options]
 testpaths = ["python/tests"]

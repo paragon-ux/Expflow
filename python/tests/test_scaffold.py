@@ -5,7 +5,14 @@ import json
 import sys
 
 import expflow_hooks
-from expflow_hooks.discovery import ARCHITECTURE_DIR, SCHEMAS_DIR, SOURCE_MANIFEST_PATH
+from expflow_hooks.discovery import (
+    ARCHITECTURE_DISCOVERY_MODE,
+    ARCHITECTURE_DIR,
+    SCHEMAS_DIR,
+    SOURCE_MANIFEST_PATH,
+    architecture_sources_available,
+    require_repository_architecture,
+)
 
 
 def test_package_version():
@@ -20,6 +27,9 @@ def test_package_imports():
 
 def test_discovery_paths_exist():
     """Architecture discovery paths point to real directories and files."""
+    assert ARCHITECTURE_DISCOVERY_MODE == "editable-repository"
+    assert architecture_sources_available()
+    require_repository_architecture()
     assert ARCHITECTURE_DIR.is_dir(), f"Architecture dir missing: {ARCHITECTURE_DIR}"
     assert SCHEMAS_DIR.is_dir(), f"Schemas dir missing: {SCHEMAS_DIR}"
     assert SOURCE_MANIFEST_PATH.is_file(), f"Source manifest missing: {SOURCE_MANIFEST_PATH}"

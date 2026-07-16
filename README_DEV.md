@@ -79,7 +79,8 @@ npm run package:verify       # Build, pack, install outside checkout, verify CLI
 # npm package (outside checkout)
 npm run package:verify
 
-# Python wheel (outside checkout)
+# Python wheel (outside checkout; verifies version, no top-level tests package,
+# and the explicit repository-only architecture discovery boundary)
 python tests/contracts/verify_python_wheel.py
 ```
 
@@ -110,10 +111,12 @@ The TypeScript and Python packages in Phase 1 implement only:
 
 - Package version reporting (`0.0.0-phase.1`)
 - CLI `--help` and `--version` handling
-- Read-only architecture-source discovery
+- Read-only architecture-source discovery from an editable repository checkout
 - Read-only repository-contract verification
 
 No material scanning, storage, mutation, persistence, network access, hook execution, or domain algorithms exist. Repository-contract tests verify this boundary.
+
+The Python wheel does not package `docs/architecture/`. Installed wheels import and report the contract version, while architecture-source discovery is explicitly repository-checkout-only in Phase 1.
 
 ## Architecture Sources
 

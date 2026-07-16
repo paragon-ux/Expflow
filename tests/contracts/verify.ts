@@ -15,6 +15,7 @@ import {
   isRecord,
   listFilesRecursively,
   readJsonFile,
+  sha256File,
   type ImmutableSourceEntry,
   type SourceManifest,
 } from './architecture-controls.js';
@@ -33,6 +34,11 @@ function fail(message: string): never {
 
 function toRepoPath(absPath: string): string {
   return relative(REPO_ROOT, absPath).split(sep).join('/');
+}
+
+function repoBasename(repoPath: string): string {
+  const parts = repoPath.split('/');
+  return parts[parts.length - 1] ?? repoPath;
 }
 
 function exactKeys(value: Record<string, unknown>, expected: string[], label: string): void {
@@ -139,6 +145,40 @@ function verifyManifestEntries(manifestEntries: ImmutableSourceEntry[]): string[
   return errors;
 }
 
+function verifyRequiredArchitectureDuplicateConflicts(
+  manifestEntries: ImmutableSourceEntry[],
+): string[] {
+  const errors: string[] = [];
+  const requiredNames = new Set(requiredArchitectureBasenames());
+  const authoritativeByName = new Map(
+    manifestEntries
+      .filter((entry) => requiredNames.has(repoBasename(entry.path)))
+      .map((entry) => [repoBasename(entry.path), entry]),
+  );
+
+  const duplicatePaths = listFilesRecursively(resolve(REPO_ROOT, 'docs'))
+    .map(toRepoPath)
+    .filter((repoPath) => !repoPath.startsWith('docs/architecture/'))
+    .filter((repoPath) => requiredNames.has(repoBasename(repoPath)))
+    .sort(compareRepoPath);
+
+  for (const duplicatePath of duplicatePaths) {
+    const name = repoBasename(duplicatePath);
+    const authoritative = authoritativeByName.get(name);
+    if (!authoritative) {
+      continue;
+    }
+    const duplicateSha = sha256File(resolve(REPO_ROOT, duplicatePath));
+    if (duplicateSha !== authoritative.sha256) {
+      errors.push(
+        `Conflicting duplicate architecture source: ${duplicatePath} sha256=${duplicateSha} differs from ${authoritative.path} sha256=${authoritative.sha256}`,
+      );
+    }
+  }
+
+  return errors;
+}
+
 function verifyWorkingMirror(immutableDir: string, mirrorDir: string, label: string): string[] {
   const errors: string[] = [];
   const immutableFiles = listFilesRecursively(immutableDir)
@@ -189,6 +229,7 @@ for (const name of requiredArchitectureBasenames()) {
     allErrors.push(`Missing required architecture source from manifest: ${expectedPath}`);
   }
 }
+allErrors.push(...verifyRequiredArchitectureDuplicateConflicts(manifest.entries));
 
 allErrors.push(...verifyWorkingMirror(resolve(ARCHITECTURE_DIR, 'schemas'), SCHEMAS_DIR, 'schema'));
 allErrors.push(
