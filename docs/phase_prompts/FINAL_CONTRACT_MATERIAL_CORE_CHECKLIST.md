@@ -24,4 +24,4 @@
 
 ## Notes
 
-Hosted CI evidence must be recorded after the Gate B PR is opened. Gate C must not start until Gate B review, hosted CI, and merge evidence are complete.
+Hosted CI evidence is green in PR #4. Gate C must not start until Gate B review and merge evidence are complete.

@@ -50,7 +50,7 @@ All commands were run under the requested 60-second command cap. The aggregate `
 | Transactions recover core interruption classes                         | PASS   | Phase 7 report, recovery cleanup test | Gate B implements local structural recovery checks; semantic recovery remains absent |
 | Native operation receipts distinguish material and automation outcomes | PASS   | `partial_post_commit` test            | Material head advances while warning records incomplete automation                   |
 | Extension host exposes no undocumented stores                          | PASS   | Phase 8 report, extension-host test   | No raw `.expflow` paths or store classes exported                                    |
-| Clean package validation passes locally                                | PASS   | Validation evidence                   | Hosted CI pending PR creation                                                        |
+| Clean package validation passes locally and in hosted CI               | PASS   | Validation evidence, PR #4            | Hosted checks green; merge state `CLEAN`                                             |
 
 ## Invariant Audit
 
@@ -76,7 +76,7 @@ All commands were run under the requested 60-second command cap. The aggregate `
 
 ## Blockers and Contradictions
 
-None for local Gate B readiness. Hosted CI evidence is pending PR creation and must be recorded before claiming remote merge-readiness.
+None.
 
 ## Git Summary
 
@@ -84,8 +84,11 @@ None for local Gate B readiness. Hosted CI evidence is pending PR creation and m
 - Branch: `feature/expflow-gate-b-material-core`
 - Base: `origin/main` at Gate A completion
 - Gate B implementation commit: `4044b32`
+- Evidence update commit: `41557b9`
+- PR: [#4 Gate B material core](https://github.com/paragon-ux/Expflow/pull/4)
+- Hosted CI: green; merge state `CLEAN`
 - Local validation: passed by component commands under the 60-second cap
 
 ## Handoff
 
-Next authorized gate after Gate B PR review, hosted CI, and merge: Gate C -- Ownership and Reproduction Ready, Phase 9 Authority Model.
+Next authorized gate after Gate B PR review and merge: Gate C -- Ownership and Reproduction Ready, Phase 9 Authority Model.
