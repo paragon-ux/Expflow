@@ -3,6 +3,7 @@ build/
 dist/
 build-docs/
 .reasonix/
+reasonix.toml
 .mypy_cache/
 .ruff_cache/
 .coverage

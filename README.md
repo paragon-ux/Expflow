@@ -76,7 +76,7 @@ Expflow core intentionally does not implement every surrounding integration surf
 ## Repository Map
 
 - `docs/architecture/` contains immutable architecture sources.
-- `docs/` contains mutable implementation evidence, phase prompts, completion reports, release notes, review summaries, release evidence, and orientation.
+- `docs/` contains mutable implementation evidence, completion reports, release notes, review summaries, and orientation.
 - `schemas/` and `examples/` mirror the architecture schemas and examples for tooling.
 - `src/` contains the TypeScript package, CLI, material runtime, Gate C library runtimes, Gate D security/migration runtimes, and contract tooling.
 - `python/expflow_hooks/` contains the Python hook-package scaffold and repository-only schema discovery.
