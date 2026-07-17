@@ -2,13 +2,11 @@
 
 ## Title
 
-Expflow v1.0.0 Release Candidate
+Expflow v1.0.0
 
 ## Summary
 
-Expflow v1.0.0 prepares the local core for external review as an MIT-licensed release candidate. This release closes Gates A through D: repository contracts, material-core runtime behavior, ownership and reproduction record families, local security and migration controls, native hardening, package metadata, and end-to-end proof.
-
-No packages have been published and no `v1.0.0` tag has been created from this branch.
+Expflow v1.0.0 is the first MIT-licensed release of the local Expflow core. This release closes Gates A through D: repository contracts, material-core runtime behavior, ownership and reproduction record families, local security and migration controls, native hardening, package metadata, and end-to-end proof.
 
 ## Included
 
@@ -34,11 +32,9 @@ Local release validation passed on 2026-07-17 for Node, TypeScript, repository c
 
 ## Release Status
 
-Classification: `release-candidate-ready`.
+Classification: `release-ready`.
 
 Owner-controlled follow-ups remain:
 
-- Review and merge the Gate D hardening closure PR if not already merged.
-- Review and merge the v1 release-closeout PR.
 - Decide whether to create the `v1.0.0` tag.
 - Decide whether and where to publish npm and Python packages.

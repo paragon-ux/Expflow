@@ -1,6 +1,6 @@
 # Repository Directory Structure
 
-**Status:** authoritative mutable directory-structure control for the v1.0.0 release-candidate revision.
+**Status:** authoritative mutable directory-structure control for the v1.0.0 release revision.
 
 This document defines how tracked, untracked, generated, package, and release-facing files should be separated for the current revision. It does not override `AGENTS.md`, immutable architecture sources, package manifests, or validation contracts. It gives release-closeout agents a stable placement rule so cleanup can happen by moving, ignoring, excluding, or curating files rather than deleting useful material.
 

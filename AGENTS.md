@@ -2,7 +2,7 @@
 
 **Phase:** Post-Gate D release closeout
 **Gate:** D — Hardened and Proven
-**Expflow version:** 1.0.0 release candidate
+**Expflow version:** 1.0.0 release
 
 ---
 

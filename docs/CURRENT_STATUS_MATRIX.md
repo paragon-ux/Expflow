@@ -1,14 +1,14 @@
 # Current Status Matrix
 
-**Status:** v1.0.0 release closeout locally validated
+**Status:** v1.0.0 release branch locally validated
 **Last updated:** 2026-07-17
-**Current baseline:** Gate D native hardening closure PR #7 head `d1dd2ac925b219c50c7728963e908042793c7376`; v1 release-closeout PR #8 on branch `codex/gate-d-v1-release-closeout`
+**Current baseline:** Gate D native hardening closure merged to `main` through PR #7; active v1 release PR #10 on branch `codex/gate-d-v1-release-closeout`
 **Workflow SSOT:** `docs/architecture/EXPFLOW_WORKFLOW_CURRENT.md`
-**Evidence:** [Gate A completion report](completion_reports/GATE_A_COMPLETION_REPORT.md), [Gate B completion report](completion_reports/GATE_B_COMPLETION_REPORT.md), [Gate C completion report](completion_reports/GATE_C_COMPLETION_REPORT.md), [Gate D completion report](completion_reports/GATE_D_COMPLETION_REPORT.md), [v1 release closeout report](completion_reports/V1_RELEASE_CLOSEOUT_REPORT.md), [v1 GitHub release note](release_notes/GITHUB_RELEASE_NOTE_V1_0_0.md), [PR #4](https://github.com/paragon-ux/Expflow/pull/4), [PR #5](https://github.com/paragon-ux/Expflow/pull/5), [PR #6](https://github.com/paragon-ux/Expflow/pull/6), [PR #7](https://github.com/paragon-ux/Expflow/pull/7), [PR #8](https://github.com/paragon-ux/Expflow/pull/8)
+**Evidence:** [Gate A completion report](completion_reports/GATE_A_COMPLETION_REPORT.md), [Gate B completion report](completion_reports/GATE_B_COMPLETION_REPORT.md), [Gate C completion report](completion_reports/GATE_C_COMPLETION_REPORT.md), [Gate D completion report](completion_reports/GATE_D_COMPLETION_REPORT.md), [v1 release closeout report](completion_reports/V1_RELEASE_CLOSEOUT_REPORT.md), [v1 GitHub release note](release_notes/GITHUB_RELEASE_NOTE_V1_0_0.md), [PR #4](https://github.com/paragon-ux/Expflow/pull/4), [PR #5](https://github.com/paragon-ux/Expflow/pull/5), [PR #6](https://github.com/paragon-ux/Expflow/pull/6), [PR #7](https://github.com/paragon-ux/Expflow/pull/7), [PR #10](https://github.com/paragon-ux/Expflow/pull/10)
 
 **Orientation:** Mutable pass-start controls live in [docs/orientation/](orientation/README.md) and are intentionally excluded from stable contract validation.
 
-**Hosted CI evidence:** Phase 1 hosted checks passed in PR #1. Gate A continuation checks passed in PR #2. PR #4 hosted checks were green and PR #4 merged to `main` at `6fe8d82`. PR #5 hosted checks were green and PR #5 merged to `main` at `17fb82a`. Gate D PR #6 hosted checks were green and PR #6 merged to `main` at `2b194f1`. Gate D native hardening closure PR #7 hosted checks are green at `d1dd2ac`.
+**Hosted CI evidence:** Phase 1 hosted checks passed in PR #1. Gate A continuation checks passed in PR #2. PR #4 hosted checks were green and PR #4 merged to `main` at `6fe8d82`. PR #5 hosted checks were green and PR #5 merged to `main` at `17fb82a`. Gate D PR #6 hosted checks were green and PR #6 merged to `main` at `2b194f1`. Gate D native hardening closure PR #7 hosted checks were green and PR #7 merged to `main` at `69fd4aa`. Active v1 release PR #10 now targets `main`.
 
 **Validation status:** operational live-status artifact; intentionally excluded from repository formatting and contract validation.
 
@@ -29,7 +29,7 @@ Expflow has completed Gate A as defined by `EXPFLOW_WORKFLOW_CURRENT.md`. Gate B
 | Adapter SDK and integrations      |                 0% | Adapter contracts are explicitly deferred to separately versioned adapter profiles and remain absent from core.                                                                  |
 | Conformance and contract testing  |                92% | Source integrity, registries, schemas, examples, fixtures, package boundaries, material runtime, Gate C runtimes, Gate D security/migration, and e2e proof are tested locally.     |
 | Empirical evaluation              |                 0% | No pilots, benchmarks, or comparative evaluation have been run.                                                                                                                 |
-| Production readiness              |                72% | Core hardening proof, native transaction/recovery closure, MIT release metadata, standalone GitHub release note, and public release docs are locally validated for a v1.0.0 release candidate; pilots, adapter packages, and empirical evaluation remain future work. |
+| Production readiness              |                72% | Core hardening proof, native transaction/recovery closure, MIT release metadata, standalone GitHub release note, and public release docs are locally validated for v1.0.0; pilots, adapter packages, and empirical evaluation remain future work. |
 
 ---
 
@@ -96,7 +96,7 @@ Expflow has completed Gate A as defined by `EXPFLOW_WORKFLOW_CURRENT.md`. Gate B
 
 ### Core Release
 
-The v1.0.0 release-closeout branch has prepared release-candidate evidence, MIT license metadata, coherent `1.0.0` package versions, public release documentation, a standalone GitHub release note, and repository-structure compliance with local reference packets untracked. Pilots, empirical evaluation, and separate adapter packages remain future work.
+The v1.0.0 release branch has prepared release evidence, MIT license metadata, coherent `1.0.0` package versions, public release documentation, a standalone GitHub release note, and repository-structure compliance with local reference packets untracked. Pilots, empirical evaluation, and separate adapter packages remain future work.
 
 ### Adapter Packages
 
@@ -137,7 +137,7 @@ The aggregate `npm run validate` command is not claimed as a pass under the expl
 
 ## Current Critical Path
 
-> Review stacked PR #8 for v1.0.0 release closeout. After PR #7 merges, retarget or rebase PR #8 onto `main` for hosted checks, then decide whether to tag or publish.
+> Review active PR #10 for v1.0.0 release closeout, then decide whether to tag or publish.
 
 No Guerilla integration runtime is required in Expflow core. The hardening closure addresses the post-merge Gate D native hardening review through F10 and DCR-1 through DCR-6; remaining post-v1 work is pilots, empirical evaluation, and separate adapter/profile packages.
 
@@ -145,4 +145,4 @@ No Guerilla integration runtime is required in Expflow core. The hardening closu
 
 ## Practical Status Statement
 
-> Expflow has completed Gate A, merged Gate B through PR #4, merged Gate C through PR #5, merged Gate D through PR #6, and completed Gate D native hardening closure on PR #7. The active release branch prepares Expflow v1.0.0 as an MIT-licensed release candidate with standalone GitHub release notes and directory-structure compliance while preserving the four-command and adapter-deferral boundaries.
+> Expflow has completed Gate A, merged Gate B through PR #4, merged Gate C through PR #5, merged Gate D through PR #6, and merged Gate D native hardening closure through PR #7. The active release branch prepares Expflow v1.0.0 with MIT license metadata, standalone GitHub release notes, and directory-structure compliance while preserving the four-command and adapter-deferral boundaries.

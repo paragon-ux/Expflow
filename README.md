@@ -6,7 +6,7 @@ Expflow is a schema-governed, local-first workflow ownership and observability p
 
 Expflow records what changed, which evidence was trusted, which decisions remain durable, and which outputs can be inspected, regenerated, restored, or reused.
 
-Current release candidate: [`v1.0.0`](docs/release_notes/GITHUB_RELEASE_NOTE_V1_0_0.md). No `v1.0.0` tag has been created and no package has been published from this branch.
+Current release: [`v1.0.0`](docs/release_notes/GITHUB_RELEASE_NOTE_V1_0_0.md).
 
 ## What Expflow Tracks
 
@@ -22,7 +22,7 @@ Material output does not imply semantic acceptance, workflow completion, or reus
 
 ## Release Scope
 
-Expflow v1.0.0 is release-candidate-ready for the local core surfaces implemented in this repository:
+Expflow v1.0.0 covers the local core surfaces implemented in this repository:
 
 - four ordinary commands: `expflow init`, `expflow sync`, `expflow status`, and `expflow restore`;
 - local `.expflow/` material storage with immutable object, node-revision, tree-revision, receipt, validation, change, and material-head records;
@@ -71,7 +71,7 @@ Expflow core intentionally does not implement every surrounding integration surf
 - **Guerilla hook dispatch:** compatibility reference only, not an Expflow core runtime.
 - **Network services, databases, and brokers:** absent from the local core.
 - **Archive extraction and generated-code execution:** blocked by the Gate D security posture.
-- **Pilots and empirical evaluation:** future work outside the v1.0.0 release candidate.
+- **Pilots and empirical evaluation:** future work outside the v1.0.0 core release.
 
 ## Repository Map
 

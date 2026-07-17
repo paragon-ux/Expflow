@@ -27,7 +27,7 @@ Completion reports provide phase and gate evidence. They are mutable project rec
 | [Phase 16 Completion Report](PHASE_16_COMPLETION_REPORT.md) | PASS   | Legacy migration and packaging                                    |
 | [Phase 17 Completion Report](PHASE_17_COMPLETION_REPORT.md) | PASS   | End-to-end proof                                                  |
 | [Gate D Completion Report](GATE_D_COMPLETION_REPORT.md)     | PASS   | Hardened and Proven gate closure plus native durability hardening |
-| [v1 Release Closeout Report](V1_RELEASE_CLOSEOUT_REPORT.md) | PASS   | v1.0.0 release-candidate metadata, package, docs, and validation  |
+| [v1 Release Closeout Report](V1_RELEASE_CLOSEOUT_REPORT.md) | PASS   | v1.0.0 release metadata, package, docs, and validation            |
 
 ## Validation
 
