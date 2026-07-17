@@ -52,13 +52,15 @@ These commands operate on local material-core behavior. Gate C ownership/reprodu
 ## Repository Map
 
 - `docs/architecture/` contains immutable architecture sources.
-- `docs/` contains mutable implementation evidence, phase prompts, completion reports, release evidence, and orientation.
+- `docs/` contains mutable implementation evidence, phase prompts, completion reports, release notes, release evidence, and orientation.
 - `schemas/` and `examples/` mirror the architecture schemas and examples for tooling.
 - `src/` contains the TypeScript package, CLI, material runtime, Gate C library runtimes, Gate D security/migration runtimes, and contract tooling.
 - `python/expflow_hooks/` contains the Python hook-package scaffold and repository-only schema discovery.
 - `tests/` contains repository-contract, material-runtime, authority, Gate C ownership/reproduction, Gate D security/migration, package, and end-to-end proof tests.
 
 For implementation status, see [docs/CURRENT_STATUS_MATRIX.md](docs/CURRENT_STATUS_MATRIX.md). For contributor setup and validation commands, see [README_DEV.md](README_DEV.md).
+
+The standalone GitHub release note for v1.0.0 is [docs/release_notes/GITHUB_RELEASE_NOTE_V1_0_0.md](docs/release_notes/GITHUB_RELEASE_NOTE_V1_0_0.md).
 
 ## Validate
 

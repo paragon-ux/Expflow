@@ -53,6 +53,7 @@ The release branch intentionally incorporates the Gate D native hardening closur
 - `README.md` now presents Expflow v1.0.0 release scope, install steps, command surface, repository map, validation, and MIT license.
 - `README_DEV.md` now presents v1 release-candidate setup and validation.
 - `CHANGELOG.md` records v1.0.0 outcomes.
+- `docs/release_notes/GITHUB_RELEASE_NOTE_V1_0_0.md` provides standalone text for a GitHub release.
 - `SECURITY.md` records supported versions, reporting expectations, and local-first security posture.
 - `CONTRIBUTING.md` records branch, validation, architecture-source, and scope-boundary rules.
 - `docs/CURRENT_STATUS_MATRIX.md`, `docs/CODEX_BUILD_PLAN.md`, `docs/TEST_MATRIX.md`, and `docs/README.md` were updated for release-closeout status.
@@ -68,14 +69,23 @@ The release branch intentionally incorporates the Gate D native hardening closur
 
 ## Repository Hygiene Audit
 
-| Area                           | Status               | Evidence                                                                                                                                                             |
-| ------------------------------ | -------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Immutable architecture sources | PASS                 | `docs/architecture/**` was not edited; source integrity check passed.                                                                                                |
-| Generated output               | PASS                 | `build/`, `dist/`, wheels, npm tarballs, caches, and `.expflow/` remain ignored/generated.                                                                           |
-| Local reference state          | PASS                 | `.reasonix/` and `build-docs/untracked/` are ignored.                                                                                                                |
-| Tracked `build-docs/**`        | DOCUMENTED EXCEPTION | Existing tracked reference packets remain tracked to avoid unapproved untracking or deletion. They are excluded from npm package contents by `package.json` `files`. |
-| Release-facing docs            | PASS                 | No local absolute paths or private scratch links were added to public release docs.                                                                                  |
-| Package surface                | PASS                 | npm package verification installs outside checkout and reports `1.0.0`; Python wheel verification imports outside checkout and reports `1.0.0`.                      |
+| Area                           | Status | Evidence                                                                                                                                        |
+| ------------------------------ | ------ | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| Immutable architecture sources | PASS   | `docs/architecture/**` was not edited; source integrity check passed.                                                                           |
+| Generated output               | PASS   | `build/`, `dist/`, wheels, npm tarballs, caches, and `.expflow/` remain ignored/generated.                                                      |
+| Local reference state          | PASS   | `.reasonix/` and `build-docs/` are ignored local-only directories.                                                                              |
+| Tracked `build-docs/**`        | PASS   | No tracked `build-docs/**` paths remain; curated hardening and Guerilla-boundary summaries live under `docs/`.                                  |
+| Release-facing docs            | PASS   | No local absolute paths or private scratch links were added to public release docs.                                                             |
+| Package surface                | PASS   | npm package verification installs outside checkout and reports `1.0.0`; Python wheel verification imports outside checkout and reports `1.0.0`. |
+
+## Repository Structure Follow-Up
+
+| Item                                | Status | Evidence                                                                                              |
+| ----------------------------------- | ------ | ----------------------------------------------------------------------------------------------------- |
+| Directory-structure compliance      | PASS   | `build-docs/` and `.reasonix/` are local-only ignored directories with no tracked paths.              |
+| Standalone GitHub release note      | PASS   | `docs/release_notes/GITHUB_RELEASE_NOTE_V1_0_0.md` is tracked separately from changelog and reports.  |
+| Curated hardening review evidence   | PASS   | `docs/reviews/GATE_D_HARDENING_REVIEW_SUMMARY.md` preserves release-relevant hardening review status. |
+| Curated Guerilla boundary reference | PASS   | `docs/external_references/GUERILLA_UNIVERSAL_HOOK_BOUNDARY.md` records the compatibility boundary.    |
 
 ## Scope Audit
 
@@ -119,6 +129,17 @@ Focused preflight also passed:
 
 - `npm test -- tests/unit/version.test.ts tests/unit/security-migration-runtime.test.ts` -- 6 tests passed.
 - `python -m pytest python/tests/test_scaffold.py` -- 6 tests passed.
+
+Release-structure follow-up validation also passed:
+
+| Command                                                                                                      | Exit code | Result | Evidence                                                       |
+| ------------------------------------------------------------------------------------------------------------ | --------: | ------ | -------------------------------------------------------------- |
+| `npm run format:check`                                                                                       |         0 | PASS   | Edited tracked docs use Prettier style.                        |
+| `npm run contracts:verify`                                                                                   |         0 | PASS   | 54 immutable architecture files verified after structure edit. |
+| `npm run package:verify`                                                                                     |         0 | PASS   | npm package still installs outside checkout and reports 1.0.0. |
+| `git diff --check -- ':!docs/architecture/**'`                                                               |         0 | PASS   | No whitespace errors outside immutable architecture sources.   |
+| `git ls-files build-docs .reasonix` structure check                                                          |         0 | PASS   | No tracked local-only reference or tool-state paths remain.    |
+| `git check-ignore build-docs/Expflow-Gate-D-Hardening-PR-Review.md .reasonix/skills/starter-prompt/SKILL.md` |         0 | PASS   | Local reference and tool-state paths are ignored.              |
 
 ## Hosted CI Evidence
 
