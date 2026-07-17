@@ -1,6 +1,13 @@
 node_modules/
 build/
 dist/
+build-docs/untracked/
+.reasonix/
+.mypy_cache/
+.ruff_cache/
+.coverage
+coverage/
+htmlcov/
 __pycache__/
 *.pyc
 *.pyo
@@ -8,6 +15,7 @@ __pycache__/
 venv/
 *.egg-info/
 *.whl
+*.tgz
 .expflow/
 .DS_Store
 Thumbs.db

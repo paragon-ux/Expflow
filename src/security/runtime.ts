@@ -18,7 +18,7 @@ import type {
 const DEFAULT_POLICY: SecurityPolicy = {
   allowArchiveLinks: false,
   allowGeneratedCodeExecution: false,
-  allowedLicenses: ['MIT', 'Apache-2.0', 'BSD-2-Clause', 'BSD-3-Clause', 'UNLICENSED'],
+  allowedLicenses: ['MIT', 'Apache-2.0', 'BSD-2-Clause', 'BSD-3-Clause'],
   blockedReuseRestrictions: ['no-reuse', 'internal-only', 'no-redistribution'],
   environmentProfile: 'minimal',
   hookInputLimitBytes: 1_000_000,

@@ -1,8 +1,8 @@
 # AGENTS.md — Expflow Agent Governance
 
-**Phase:** Gate D -- Phases 15-17
+**Phase:** Post-Gate D release closeout
 **Gate:** D — Hardened and Proven
-**Expflow version:** 2.3 architecture lock candidate
+**Expflow version:** 1.0.0 release candidate
 
 ---
 
@@ -449,7 +449,7 @@ python -m build --wheel
 AGENTS.md                    — This file
 README.md                    — Project overview
 README_DEV.md                — Developer setup and validation
-package.json                 — Node package (private, 0.0.0-gate-d)
+package.json                 — Node package (1.0.0)
 tsconfig.json                — TypeScript configuration
 pyproject.toml               — Python package configuration
 

@@ -1,6 +1,6 @@
 # Codex Build Plan
 
-**Status:** Gate D native hardening closure on `codex/gate-d-hardening-review-format`
+**Status:** v1.0.0 release closeout on `codex/gate-d-v1-release-closeout`
 **Workflow SSOT:** `docs/architecture/EXPFLOW_WORKFLOW_CURRENT.md`
 
 ## Current Path
@@ -16,7 +16,8 @@
 9. Gate C Exit: complete and merged to `main` through PR #5.
 10. Gate D -- Security, migration, packaging hardening, and end-to-end proof: complete and merged through PR #6.
 11. Gate D native hardening closure -- staged immutable promotion, init/restore recovery intents, stale-lock classification, causal tree/receipt material-head repair, and restore intent/tree parity.
-12. Next step after validation: closure PR review and hosted checks.
+12. v1.0.0 release closeout -- MIT license, coherent package versions, public release docs, repository hygiene evidence, and release validation.
+13. Next step after validation: release-closeout PR review. Do not tag or publish without explicit owner approval.
 
 ## Execution Rules
 

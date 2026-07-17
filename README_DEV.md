@@ -1,6 +1,6 @@
 # Expflow Developer Guide
 
-**Gate D -- Hardened and Proven.** Local material-core runtime behavior is implemented for the four ordinary commands. Gate C ownership and reproduction behavior is implemented through library runtimes for authority, semantics, workflows, projections, regeneration/equivalence, and reuse. Gate D adds local security controls, migration evidence, package hardening, end-to-end proof, and native durability hardening for material transactions.
+**v1.0.0 release candidate.** Local material-core runtime behavior is implemented for the four ordinary commands. Gate C ownership and reproduction behavior is implemented through library runtimes for authority, semantics, workflows, projections, regeneration/equivalence, and reuse. Gate D adds local security controls, migration evidence, package hardening, end-to-end proof, and native durability hardening for material transactions.
 
 Adapter inspection/reconciliation, Guerilla hook dispatch, network services, databases, brokers, and generated-code execution remain out of scope.
 
@@ -72,13 +72,14 @@ python -m pip install -e ".[dev]"
 python -m pytest
 python -m build --wheel
 python tests/contracts/verify_python_wheel.py
+git diff --check -- ':!docs/architecture/**'
 ```
 
 ## Current TypeScript Runtime Boundary
 
 The TypeScript package implements:
 
-- Package version reporting (`0.0.0-gate-d`)
+- Package version reporting (`1.0.0`)
 - CLI handlers for `expflow init`, `expflow sync`, `expflow status`, and `expflow restore`
 - Local `.expflow/` material storage with immutable objects, node revisions, tree revisions, operation receipts, validations, changes, and material head state
 - Working-tree scanning with `.expflow/**` exclusion and scoped path selectors
