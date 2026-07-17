@@ -1,6 +1,6 @@
 # Current Status Matrix
 
-**Status:** Gate D complete locally on `codex/gate-d-hardening`
+**Status:** Gate D complete on PR #6
 **Last updated:** 2026-07-17
 **Current baseline:** `main` at Gate C merge commit `17fb82a083399f1228c556ff2d3b82455e42a8de`; Gate D branch `codex/gate-d-hardening`
 **Workflow SSOT:** `docs/architecture/EXPFLOW_WORKFLOW_CURRENT.md`
@@ -8,7 +8,7 @@
 
 **Orientation:** Mutable pass-start controls live in [docs/orientation/](orientation/README.md) and are intentionally excluded from stable contract validation.
 
-**Hosted CI evidence:** Phase 1 hosted checks passed in PR #1. Gate A continuation checks passed in PR #2. PR #4 hosted checks were green and PR #4 merged to `main` at `6fe8d82`. PR #5 hosted checks were green and PR #5 merged to `main` at `17fb82a`. Gate D PR #6 is open and awaiting hosted checks.
+**Hosted CI evidence:** Phase 1 hosted checks passed in PR #1. Gate A continuation checks passed in PR #2. PR #4 hosted checks were green and PR #4 merged to `main` at `6fe8d82`. PR #5 hosted checks were green and PR #5 merged to `main` at `17fb82a`. Gate D PR #6 hosted checks are green.
 
 **Validation status:** operational live-status artifact; intentionally excluded from repository formatting and contract validation.
 
@@ -40,7 +40,7 @@ Expflow has completed Gate A as defined by `EXPFLOW_WORKFLOW_CURRENT.md`. Gate B
 | A -- Contract Ready | 1-4 | Repository governance, invariant decisions, future slots, schemas, registries, seed fixtures, generated descriptors, and validator parity | COMPLETE | Gate A completion report; local validation passed; PR #2 checks green |
 | B -- Material Core Ready | 5-8 | Immutable stores, sync, identity, transactions, recovery, commands, inspection, and operation resolution | COMPLETE | Gate B completion report; PR #4 merged to `main` at `6fe8d82`; hosted checks were green |
 | C -- Ownership and Reproduction Ready | 9-14 | Authority, semantics, workflow boundaries, projections, regeneration, equivalence, and reuse | COMPLETE | Gate C completion report; PR #5 merged to `main` at `17fb82a`; hosted checks green |
-| D -- Hardened and Proven | 15-17 | Security, migration, packaging, and end-to-end proof | PR OPEN | Gate D completion report; PR #6; security/migration tests; e2e proof; package verification |
+| D -- Hardened and Proven | 15-17 | Security, migration, packaging, and end-to-end proof | COMPLETE | Gate D completion report; PR #6 hosted checks; security/migration tests; e2e proof; package verification |
 
 ---
 
@@ -128,12 +128,12 @@ The aggregate `npm run validate` command is not claimed as a pass under the expl
 
 ## Current Critical Path
 
-> Gate D PR #6 hosted checks and review.
+> Post-Gate D release/pilot work.
 
-The central near-term risk is validating Gate D hosted checks on PR #6; local validation evidence is current.
+No gate-blocking core implementation work remains after PR #6 hosted validation. Remaining work is production release hardening, pilots, empirical evaluation, and separate adapter packages.
 
 ---
 
 ## Practical Status Statement
 
-> Expflow has completed Gate A, merged Gate B through PR #4, merged Gate C through PR #5, and opened Gate D PR #6 from `codex/gate-d-hardening`. Gate D adds local security controls, migration evidence, packaging hardening, and automated end-to-end proof while preserving the four-command and adapter-deferral boundaries.
+> Expflow has completed Gate A, merged Gate B through PR #4, merged Gate C through PR #5, and completed Gate D on PR #6. Gate D adds local security controls, migration evidence, packaging hardening, and automated end-to-end proof while preserving the four-command and adapter-deferral boundaries.

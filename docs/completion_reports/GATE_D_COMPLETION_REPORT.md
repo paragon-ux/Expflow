@@ -71,7 +71,7 @@ Final validation was run under the requested 60-second command cap using compone
 
 ## Blockers and Contradictions
 
-None locally. Hosted checks are pending on PR #6.
+None. Hosted checks are green on PR #6.
 
 ## Git Summary
 
@@ -81,4 +81,4 @@ None locally. Hosted checks are pending on PR #6.
 
 ## Handoff
 
-Gate D is locally complete and open for PR review/hosted validation in PR #6.
+Gate D is complete with hosted validation evidence in PR #6.
