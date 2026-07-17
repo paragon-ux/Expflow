@@ -219,6 +219,30 @@ describe('Gate C ownership and reproduction runtime', () => {
     }
   });
 
+  it('rejects workflow selector shape drift before immutable write', async () => {
+    const { root, initOperationId, inputTree } = await initializedProject();
+    try {
+      const workflows = createWorkflowRuntime(root);
+
+      await expect(
+        workflows.startWorkflowOccurrence({
+          inputPathSelector: {
+            exclude: [],
+            include: ['docs/**'],
+            root: '.',
+            unexpected: true,
+          },
+          inputTreeRevisionId: inputTree,
+          startOperationId: initOperationId,
+        } as unknown as Parameters<typeof workflows.startWorkflowOccurrence>[0]),
+      ).rejects.toMatchObject<Partial<ExpflowError>>({
+        code: 'schema_invalid',
+      });
+    } finally {
+      cleanup(root);
+    }
+  });
+
   it('keeps projections scanner-excluded and derives accepted manifest heads', async () => {
     const { root, outputTree } = await initializedProject();
     try {

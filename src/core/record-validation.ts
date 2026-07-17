@@ -1,7 +1,7 @@
 import { ExpflowError } from './errors.js';
 import type { ExpflowIdPrefix } from './ids.js';
 import { assertSafeRelativePath } from './paths.js';
-import type { RequestedBy } from '../material/types.js';
+import type { PathSelectorRecord, RequestedBy } from '../material/types.js';
 
 const ID_SUFFIX = '[0-9A-HJKMNP-TV-Z]{26}';
 const SOURCE_REVISION_REF = new RegExp(`^efs_${ID_SUFFIX}@[1-9][0-9]*$`);
@@ -39,10 +39,10 @@ export function assertNonEmptyString(value: string, field: string): void {
 }
 
 export function assertStringArray(
-  value: readonly string[],
+  value: unknown,
   field: string,
   options: { readonly minItems?: number } = {},
-): void {
+): asserts value is readonly string[] {
   if (
     !Array.isArray(value) ||
     value.some((item) => typeof item !== 'string') ||
@@ -104,17 +104,21 @@ export function assertNoAdditionalProperties(
 }
 
 export function assertPathSelectorShape(
-  value: {
-    readonly root?: string;
-    readonly include: readonly string[];
-    readonly exclude: readonly string[];
-  },
+  value: unknown,
   field: string,
-): void {
-  assertStringArray(value.include, `${field}.include`);
-  assertStringArray(value.exclude, `${field}.exclude`);
-  if (value.root !== undefined && value.root !== '.') {
-    assertSafeRelativePath(value.root);
+): asserts value is PathSelectorRecord {
+  assertNoAdditionalProperties(value, ['include', 'exclude', 'root', 'description'], field);
+  const record = value as Partial<PathSelectorRecord>;
+  assertStringArray(record.include, `${field}.include`);
+  assertStringArray(record.exclude, `${field}.exclude`);
+  assertOptionalStringOrNull(record.description, `${field}.description`);
+  if (record.root !== undefined) {
+    if (typeof record.root !== 'string') {
+      throw schemaInvalid(`${field}.root must be a string.`);
+    }
+    if (record.root !== '.') {
+      assertSafeRelativePath(record.root);
+    }
   }
 }
 

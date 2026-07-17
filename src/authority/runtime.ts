@@ -6,6 +6,7 @@ import {
   assertDateTime,
   assertEnum,
   assertExpflowId,
+  assertNoAdditionalProperties,
   assertNonEmptyString,
   assertPathSelectorShape,
   assertRequestedBy,
@@ -157,19 +158,7 @@ function assertAuthoritySourceRecord(record: AuthoritySourceRecord): void {
   assertStringArray(record.handling_labels ?? [], 'handling_labels');
   assertStringArray(record.reuse_restrictions ?? [], 'reuse_restrictions');
   assertDateTime(record.created_at, 'created_at');
-  if (record.effective_interval !== null && record.effective_interval !== undefined) {
-    assertDateTime(record.effective_interval.start, 'effective_interval.start');
-    assertDateTime(record.effective_interval.end, 'effective_interval.end');
-    if (
-      record.effective_interval.start !== null &&
-      record.effective_interval.start !== undefined &&
-      record.effective_interval.end !== null &&
-      record.effective_interval.end !== undefined &&
-      Date.parse(record.effective_interval.start) > Date.parse(record.effective_interval.end)
-    ) {
-      throw schemaInvalid('effective_interval.start must not be after effective_interval.end.');
-    }
-  }
+  assertEffectiveInterval(record.effective_interval);
   if (
     record.supersedes_source_revision_ref !== null &&
     record.supersedes_source_revision_ref !== undefined
@@ -206,11 +195,41 @@ function assertAuthorityDocumentRecord(record: AuthorityDocumentRecord): void {
     throw schemaInvalid('Split authority documents must contain exactly one section.');
   }
   for (const section of record.sections) {
+    assertNoAdditionalProperties(
+      section,
+      ['anchor', 'authority_role', 'source_revision_refs', 'description'],
+      'sections',
+    );
     assertNonEmptyString(section.anchor, 'sections.anchor');
     assertEnum(section.authority_role, AUTHORITY_DOCUMENT_ROLES, 'sections.authority_role');
     assertStringArray(section.source_revision_refs, 'sections.source_revision_refs', {
       minItems: 1,
     });
+    if (
+      section.description !== null &&
+      section.description !== undefined &&
+      typeof section.description !== 'string'
+    ) {
+      throw schemaInvalid('sections.description must be a string or null.');
+    }
+  }
+}
+
+function assertEffectiveInterval(interval: AuthoritySourceRecord['effective_interval']): void {
+  if (interval === null || interval === undefined) {
+    return;
+  }
+  assertNoAdditionalProperties(interval, ['start', 'end'], 'effective_interval');
+  assertDateTime(interval.start, 'effective_interval.start');
+  assertDateTime(interval.end, 'effective_interval.end');
+  if (
+    interval.start !== null &&
+    interval.start !== undefined &&
+    interval.end !== null &&
+    interval.end !== undefined &&
+    Date.parse(interval.start) > Date.parse(interval.end)
+  ) {
+    throw schemaInvalid('effective_interval.start must not be after effective_interval.end.');
   }
 }
 

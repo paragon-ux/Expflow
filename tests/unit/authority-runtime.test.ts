@@ -111,6 +111,43 @@ describe('Gate C Phase 9 authority runtime', () => {
     }
   });
 
+  it('rejects authority source nested schema shape drift before immutable write', async () => {
+    const root = await initializedProject();
+    try {
+      const authority = createAuthorityRuntime(root);
+
+      await expect(
+        authority.createSourceRevision(
+          sourceInput({
+            subjectScope: {
+              exclude: [],
+              include: ['**/*'],
+              root: 'docs',
+              unexpected: true,
+            },
+          } as unknown as Partial<AuthoritySourceInput>),
+        ),
+      ).rejects.toMatchObject<Partial<ExpflowError>>({
+        code: 'schema_invalid',
+      });
+
+      await expect(
+        authority.createSourceRevision(
+          sourceInput({
+            effectiveInterval: {
+              extra: 'not allowed',
+              start: '2026-01-01T00:00:00.000Z',
+            },
+          } as unknown as Partial<AuthoritySourceInput>),
+        ),
+      ).rejects.toMatchObject<Partial<ExpflowError>>({
+        code: 'schema_invalid',
+      });
+    } finally {
+      cleanup(root);
+    }
+  });
+
   it('derives revocation from later decisions without mutating source records', async () => {
     const root = await initializedProject();
     try {
@@ -369,6 +406,24 @@ describe('Gate C Phase 9 authority runtime', () => {
             },
           ],
         }),
+      ).rejects.toMatchObject<Partial<ExpflowError>>({
+        code: 'schema_invalid',
+      });
+
+      await expect(
+        authority.recordAuthorityDocument({
+          contentDigest: 'sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',
+          profile: 'unified',
+          readableLocator: 'authority/SOURCE.md',
+          sections: [
+            {
+              anchor: 'source',
+              authority_role: 'registered_authority_source',
+              source_revision_refs: [sourceRef(source)],
+              unexpected: true,
+            },
+          ],
+        } as unknown as Parameters<typeof authority.recordAuthorityDocument>[0]),
       ).rejects.toMatchObject<Partial<ExpflowError>>({
         code: 'schema_invalid',
       });
