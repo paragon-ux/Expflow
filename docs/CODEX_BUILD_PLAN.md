@@ -1,20 +1,20 @@
 # Codex Build Plan
 
-**Status:** Gate C complete locally
+**Status:** Gate C PR #5 retargeted to main and merge-ready
 **Workflow SSOT:** `docs/architecture/EXPFLOW_WORKFLOW_CURRENT.md`
 
 ## Current Path
 
 1. Gate A -- Contract Ready: complete and merged to `origin/main`.
-2. Gate B -- Material Core Ready: complete in PR #4 review-clean head.
+2. Gate B -- Material Core Ready: complete and merged to `main` through PR #4.
 3. Phase 9 -- Authority Model: authority-source records, registration decisions, current-source projection, readable documents, and authority policy behavior.
 4. Phase 10 -- Semantic Ownership: assertions, decisions, conflicts, review requests, source correspondence, artifact clusters, and semantic change listing.
 5. Phase 11 -- Workflow Boundaries: workflow occurrences, virtual artifacts, materialization events, and immutable workflow transitions.
 6. Phase 12 -- Projection System: manifest revisions, scanner-excluded projection locators, model-assisted proposal defaults, and accepted manifest-head derivation.
 7. Phase 13 -- Regeneration and Equivalence Evaluation: regeneration attempts, unknown-outcome preservation, and equivalence evaluations.
 8. Phase 14 -- Structural Reuse: reuse results, policy gates, output workflow references, and no-transfer behavior.
-9. Gate C Exit: component validation, PR update, review, and hosted checks.
-10. Next gate after merge: Gate D -- Security, migration, packaging hardening, and end-to-end proof.
+9. Gate C Exit: component validation, PR update, review, and PR #5 merge.
+10. Next gate after PR #5 merge: Gate D -- Security, migration, packaging hardening, and end-to-end proof.
 
 ## Execution Rules
 

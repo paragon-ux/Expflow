@@ -1,14 +1,14 @@
 # Current Status Matrix
 
-**Status:** Gate C review fixes validated locally for PR #5
+**Status:** Gate C PR #5 retargeted to main and merge-ready
 **Last updated:** 2026-07-17
-**Current baseline:** `main` at `00373ff55690d153d301057b34175c5ff8f9068f`; Gate B PR #4 review-clean at `5fe54ec67ade75b283636181b0b2fce59e498072`; Gate C review-fix implementation commits `206c2ab0ea5af68ccc734319562920d02a6e4f5f` and `619891e0c39ca09aa1fe45e6742c34957a77c762`
+**Current baseline:** `main` at Gate B merge commit `6fe8d823e9a57b21dc7474104f842a25d62b457e`; Gate C PR #5 head `c4890b639180f83a6f5976dfc90256319c6ed2f6`; Gate C review-fix implementation commits `09a4b7d` and `311d83f`
 **Workflow SSOT:** `docs/architecture/EXPFLOW_WORKFLOW_CURRENT.md`
 **Evidence:** [Gate A completion report](completion_reports/GATE_A_COMPLETION_REPORT.md), [Gate B completion report](completion_reports/GATE_B_COMPLETION_REPORT.md), [Gate C completion report](completion_reports/GATE_C_COMPLETION_REPORT.md), [PR #5 review resolution](PR_5_GATE_C_ARCHITECTURE_REVIEW.md), [PR #4](https://github.com/paragon-ux/Expflow/pull/4), [PR #5](https://github.com/paragon-ux/Expflow/pull/5)
 
 **Orientation:** Mutable pass-start controls live in [docs/orientation/](orientation/README.md) and are intentionally excluded from stable contract validation.
 
-**Hosted CI evidence:** Phase 1 hosted checks passed in PR #1. Gate A continuation checks passed in PR #2. PR #4 hosted checks are green at `5fe54ec` and merge state is `CLEAN`. PR #5 is stacked on PR #4 and has local validation evidence; hosted checks depend on remote branch/base configuration.
+**Hosted CI evidence:** Phase 1 hosted checks passed in PR #1. Gate A continuation checks passed in PR #2. PR #4 hosted checks were green at `5fe54ec` and PR #4 merged to `main` at `6fe8d82`. PR #5 now targets `main` with merge state `CLEAN`; no hosted check rollup is listed for the retargeted PR, and local validation evidence is current.
 
 **Validation status:** operational live-status artifact; intentionally excluded from repository formatting and contract validation.
 
@@ -16,7 +16,7 @@
 
 ## Current Maturity
 
-Expflow has completed Gate A as defined by `EXPFLOW_WORKFLOW_CURRENT.md`. Gate B material core is review-clean in PR #4. Gate C Phases 9-14 are complete locally on `feature/expflow-gate-c-authority-model`, with PR #5 review blockers F1-F6 fixed in implementation commits `206c2ab0ea5af68ccc734319562920d02a6e4f5f` and `619891e0c39ca09aa1fe45e6742c34957a77c762`.
+Expflow has completed Gate A as defined by `EXPFLOW_WORKFLOW_CURRENT.md`. Gate B material core is merged into `main` through PR #4. Gate C Phases 9-14 are complete locally on `feature/expflow-gate-c-authority-model`, with PR #5 review blockers F1-F6 fixed in implementation commits `09a4b7d` and `311d83f`.
 
 | Area                             | Estimated maturity | Assessment                                                                                                                                                                      |
 | -------------------------------- | -----------------: | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -38,8 +38,8 @@ Expflow has completed Gate A as defined by `EXPFLOW_WORKFLOW_CURRENT.md`. Gate B
 | Gate | Phases | Meaning | Status | Evidence |
 | --- | --- | --- | --- | --- |
 | A -- Contract Ready | 1-4 | Repository governance, invariant decisions, future slots, schemas, registries, seed fixtures, generated descriptors, and validator parity | COMPLETE | Gate A completion report; local validation passed; PR #2 checks green |
-| B -- Material Core Ready | 5-8 | Immutable stores, sync, identity, transactions, recovery, commands, inspection, and operation resolution | REVIEW CLEAN | Gate B completion report; PR #4 head `5fe54ec`; hosted checks green; merge state `CLEAN` |
-| C -- Ownership and Reproduction Ready | 9-14 | Authority, semantics, workflow boundaries, projections, regeneration, equivalence, and reuse | REVIEW FIXED LOCALLY | Gate C completion report; PR #5 review resolution; component validation passed under 60-second command caps |
+| B -- Material Core Ready | 5-8 | Immutable stores, sync, identity, transactions, recovery, commands, inspection, and operation resolution | COMPLETE | Gate B completion report; PR #4 merged to `main` at `6fe8d82`; hosted checks were green |
+| C -- Ownership and Reproduction Ready | 9-14 | Authority, semantics, workflow boundaries, projections, regeneration, equivalence, and reuse | MERGE READY | Gate C completion report; PR #5 targets `main`, merge state `CLEAN`; component validation passed under 60-second command caps |
 | D -- Hardened and Proven | 15-17 | Security, migration, packaging, and end-to-end proof | BLOCKED | Requires Gate C merge |
 
 ---
@@ -116,12 +116,12 @@ The aggregate `npm run validate` command is not claimed as a pass under the expl
 
 ## Current Critical Path
 
-> PR #5 review/hosted checks -> Gate D.
+> Merge PR #5 -> Gate D.
 
-The central near-term risk is reviewing the stacked PR without PR #4 merged; PR #5 currently depends on the Gate B branch base.
+The central near-term risk is entering Gate D before PR #5 lands on `main`; PR #5 is retargeted and merge-ready but not yet merged at this matrix revision.
 
 ---
 
 ## Practical Status Statement
 
-> Expflow has completed Gate A, has review-clean Gate B material-core evidence in PR #4, and has completed Gate C Phases 9-14 locally on `feature/expflow-gate-c-authority-model`. PR #5 review findings F1-F6, including the final AD-021 nested-shape blocker, have been fixed and validated locally. The remaining remote caveat is stacked-PR hosted-check visibility while PR #5 depends on the Gate B branch base.
+> Expflow has completed Gate A, merged Gate B material-core evidence through PR #4, and completed Gate C Phases 9-14 locally on `feature/expflow-gate-c-authority-model`. PR #5 review findings F1-F6, including the final AD-021 nested-shape blocker, have been fixed and validated locally. PR #5 now targets `main` directly and is merge-ready.

@@ -92,20 +92,21 @@ Final component validation was run under the requested 60-second command cap.
 | F1  | fixed  | `src/core/record-validation.ts`, `src/authority/runtime.ts`, `src/projections/runtime.ts`, `src/reproduction/runtime.ts`, Gate C tests | Required authority-document, manifest, and regeneration digest fields reject missing/untyped values before immutable writes.                                    |
 | F2  | fixed  | `src/core/record-validation.ts`, `src/authority/runtime.ts`, `src/semantics/runtime.ts`, Gate C tests                                  | Nested attribution, semantic claim, path selector, authority effective interval, authority document section, and workflow selector objects reject schema drift. |
 | F3  | fixed  | `src/workflows/runtime.ts`, Gate C tests                                                                                               | Accepted workflow completion rejects `null` or absent completion decision refs.                                                                                 |
-| F4  | fixed  | `docs/CURRENT_STATUS_MATRIX.md`, `docs/PR_5_GATE_C_ARCHITECTURE_REVIEW.md`, this report                                                | Mutable Gate C evidence reflects the post-review implementation commit and PR #5 stacked-base reality.                                                          |
+| F4  | fixed  | `docs/CURRENT_STATUS_MATRIX.md`, `docs/PR_5_GATE_C_ARCHITECTURE_REVIEW.md`, this report                                                | Mutable Gate C evidence reflects the post-review implementation commits and PR #5 retargeted-base reality.                                                      |
 | F5  | fixed  | `src/projections/runtime.ts`, `docs/ARCHITECTURE_DECISIONS.md`, Gate C tests                                                           | Manifest heads are accepted-only derived views; terminal projection statuses do not silently evict accepted heads.                                              |
 | F6  | fixed  | `src/authority/store.ts`, authority tests                                                                                              | Source-registration decisions replay in durable write order when timestamps tie.                                                                                |
 
 ## Blockers and Contradictions
 
-None locally after final validation. PR #5 is stacked on PR #4; hosted-check behavior depends on whether PR #4 is merged or PR #5 is retargeted.
+None locally after final validation. PR #4 has merged into `main`; PR #5 has been retargeted to `main` with clean merge state. No hosted check rollup is listed for the retargeted PR.
 
 ## Git Summary
 
 - Branch: `feature/expflow-gate-c-authority-model`
-- Implementation commits: `206c2ab0ea5af68ccc734319562920d02a6e4f5f`, `619891e0c39ca09aa1fe45e6742c34957a77c762`
+- Gate B merge commit on `main`: `6fe8d823e9a57b21dc7474104f842a25d62b457e`
+- Implementation commits: `09a4b7d`, `311d83f`
 - PR: [#5 Gate C ownership and reproduction runtime](https://github.com/paragon-ux/Expflow/pull/5)
-- Base: `feature/expflow-gate-b-material-core`
+- Base: `main`
 
 ## Handoff
 
