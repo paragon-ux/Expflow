@@ -1,8 +1,8 @@
 # Error Registry
 
-**Status:** Gate A Phase 2 baseline
+**Status:** Gate D implementation baseline
 
-Core error codes are contract values. Gate A records them for schema and fixture work; no runtime emits these errors yet.
+Core error codes are contract values. Gate D emits material, authority, semantic, workflow, projection, reproduction, security, and migration-boundary errors from local library/runtime surfaces.
 
 ## Required Error Codes
 
@@ -37,4 +37,4 @@ Core error codes are contract values. Gate A records them for schema and fixture
 - `operation_recovery_required`
 - `internal_error`
 
-Every emitted runtime error in later phases must include code, message, operation ID when available, recoverable flag, recommended action, and details.
+Every emitted runtime error includes a code, message, recoverable flag, and recommended action when available. Operation IDs are included where the error occurs inside a native operation context.

@@ -1,6 +1,6 @@
 # Authority and Semantic Model
 
-**Status:** Gate C implementation
+**Status:** Gate D implementation baseline
 
 Authority, assertions, decisions, conflicts, and source correspondence are separate record families. Durable records are validated before immutable writes.
 
@@ -34,4 +34,4 @@ Runtime validation rejects schema-shape drift before immutable writes, including
 
 ## Current Boundary
 
-Gate C does not implement hook dispatch, external adapter inspection, change cursors, databases, brokers, network services, or source-content execution. Remote trust profiles and production hardening remain Gate D or adapter-package work.
+Gate D adds local security controls for source-content handling and keeps remote processing local-only by default. Core still does not implement hook dispatch, external adapter inspection, adapter change cursors, databases, brokers, network services, or source-content execution.

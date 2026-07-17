@@ -1,6 +1,6 @@
 {
   "name": "expflow",
-  "version": "0.0.0-gate-c",
+  "version": "0.0.0-gate-d",
   "private": true,
   "description": "Expflow - schema-governed, local-first workflow ownership and observability platform",
   "type": "module",

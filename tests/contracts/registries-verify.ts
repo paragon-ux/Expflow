@@ -1,5 +1,5 @@
 /**
- * Core registry verification for Gate A.
+ * Core registry verification.
  *
  * Verifies machine-readable registries against immutable architecture schema
  * inventory and the current workflow gate model. This is contract validation,
@@ -161,7 +161,7 @@ try {
     return decision.id;
   });
   const expectedIds = Array.from(
-    { length: 20 },
+    { length: 27 },
     (_, index) => `AD-${String(index + 1).padStart(3, '0')}`,
   );
   assertSameSet(ids, expectedIds, 'decision vector IDs');
@@ -201,5 +201,5 @@ if (errors.length > 0) {
   process.exit(1);
 }
 
-console.log('PASS - Core registries match Gate A workflow and schema inventory');
+console.log('PASS - Core registries match workflow and schema inventory');
 process.exit(0);

@@ -63,6 +63,34 @@
     {
       "id": "AD-020",
       "summary": "Gate A closure requires invariant decisions, future slots, schemas, registries, seeded fixtures, generated descriptors, and validator parity to agree."
+    },
+    {
+      "id": "AD-021",
+      "summary": "Durable Gate C records validate required digests and exact schema-owned nested object shape before immutable writes."
+    },
+    {
+      "id": "AD-022",
+      "summary": "Current authority sources derive from durable decision order, source supersession, and effective intervals."
+    },
+    {
+      "id": "AD-023",
+      "summary": "Gate C exposes family-specific library runtimes and derived views, not generic database or adapter cursor surfaces."
+    },
+    {
+      "id": "AD-024",
+      "summary": "Projection manifest heads are accepted-only derived views."
+    },
+    {
+      "id": "AD-025",
+      "summary": "Gate D security defaults are local-only, network-blocked, minimal-environment, and generated-code execution disabled."
+    },
+    {
+      "id": "AD-026",
+      "summary": "Gate D migration evidence is in-place, material-only, and must not fabricate authority or semantic acceptance."
+    },
+    {
+      "id": "AD-027",
+      "summary": "Gate D end-to-end proof automates core-owned scenarios and preserves adapter-only boundaries."
     }
   ],
   "future_decision_slots": [
@@ -99,11 +127,12 @@
     {
       "id": "DS-D-SECURITY-PROFILES",
       "owning_gate": "D",
-      "summary": "Specify archive quarantine, secret handling, sandbox, licensing, and remote-processing defaults before hardening closure.",
+      "summary": "Resolved locally by AD-025 for archive quarantine, secret handling, licensing, remote-processing defaults, and generated-code non-execution.",
       "constraints": [
         "Imported and generated content remains untrusted data.",
         "Generated or imported code must not be executed as instructions.",
-        "Remote processing must respect configured privacy and licensing limits."
+        "Remote processing must respect configured privacy and licensing limits.",
+        "Future execution profiles require a separate explicit authorization decision."
       ]
     }
   ]

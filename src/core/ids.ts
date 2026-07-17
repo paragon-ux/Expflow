@@ -21,7 +21,10 @@ export type ExpflowIdPrefix =
   | 'efm'
   | 'efra'
   | 'efee'
-  | 'efru';
+  | 'efru'
+  | 'efq'
+  | 'efmg'
+  | 'efdp';
 
 const CROCKFORD_NO_ILOU = '0123456789ABCDEFGHJKMNPQRSTVWXYZ';
 
