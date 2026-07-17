@@ -43,6 +43,22 @@ python -m pip install -e ".[dev]"
 
 The npm package exposes the `expflow` CLI and TypeScript library exports after build. The Python package is a hook scaffold with read-only repository architecture discovery; it does not dispatch or execute hooks.
 
+## Installation
+
+After verified registry publication, install the primary Expflow CLI and TypeScript package with:
+
+```bash
+npm install -g expflow
+```
+
+Install the Python hook scaffold separately with:
+
+```bash
+pip install expflow-hooks
+```
+
+`expflow-hooks` is not the primary Expflow CLI implementation. It exposes the limited Python hook/scaffold package and `expflow_hooks` import surface.
+
 ## Workflow
 
 1. Run `expflow init` to create local Expflow state.
@@ -98,6 +114,8 @@ python tests/contracts/verify_python_wheel.py
 ## Documentation
 
 - [v1.0.0 GitHub release note](docs/release_notes/GITHUB_RELEASE_NOTE_V1_0_0.md)
+- [v1 compatibility promise](docs/V1_COMPATIBILITY.md)
+- [Release publishing checklist](docs/RELEASE_PUBLISHING.md)
 - [Current status matrix](docs/CURRENT_STATUS_MATRIX.md)
 - [Developer guide](README_DEV.md)
 - [Repository directory structure](docs/REPOSITORY_DIRECTORY_STRUCTURE.md)

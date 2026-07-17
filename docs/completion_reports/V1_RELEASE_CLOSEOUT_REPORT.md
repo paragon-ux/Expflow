@@ -2,20 +2,52 @@
 
 ## Result
 
-PASS -- Expflow v1.0.0 release preparation completed locally
+FAIL -- release or registry state is inconsistent
 
 ## Release Identity
 
-| Field                  | Value                                      |
-| ---------------------- | ------------------------------------------ |
-| Release version        | `1.0.0`                                    |
-| Branch                 | `codex/gate-d-v1-release-closeout`         |
-| Starting head          | `d1dd2ac925b219c50c7728963e908042793c7376` |
-| Release classification | `release-ready`                            |
-| Tag status             | No tag created                             |
-| Publish status         | No package published                       |
+| Field                  | Value                                                                                      |
+| ---------------------- | ------------------------------------------------------------------------------------------ |
+| Release version        | `1.0.0`                                                                                    |
+| Main release commit    | `7b91cf71c464ba2610503d3e70ecef6277503370`                                                 |
+| Branch                 | `codex/v1-dual-registry-release-prep`                                                      |
+| Release classification | `release-state remediation required`                                                       |
+| Tag status             | Remote tag `v1.0.0` exists at `7b91cf71c464ba2610503d3e70ecef6277503370`                   |
+| GitHub Release status  | Existing final GitHub Release: <https://github.com/paragon-ux/Expflow/releases/tag/v1.0.0> |
+| Publish status         | npm and PyPI publication not verified                                                      |
 
-The release branch intentionally incorporates the Gate D native hardening closure from PR #7. Tagging, publishing, and merging remain owner-controlled follow-up actions.
+The repository code for v1.0.0 is on `main`, but the dual-registry release sequence is not complete. The current external state has a GitHub Release before verified npm and PyPI publication, which violates the final dual-registry publication order. This pass does not move tags, delete releases, publish packages, or introduce registry tokens.
+
+## Dual-Registry Preflight
+
+| Check                        | Result   | Evidence                                                                                     |
+| ---------------------------- | -------- | -------------------------------------------------------------------------------------------- |
+| Repository root              | PASS     | `C:/Users/USER/Desktop/Frameworks/Expflow`                                                   |
+| Current branch               | PASS     | `codex/v1-dual-registry-release-prep`                                                        |
+| Worktree                     | PASS     | Clean before release-prep edits                                                              |
+| `origin/main`                | PASS     | `7b91cf71c464ba2610503d3e70ecef6277503370`                                                   |
+| Open pull requests           | PASS     | `gh pr list --state open` returned `[]` before this branch was created                       |
+| Remote tag `v1.0.0`          | CONFLICT | Tag exists at `7b91cf71c464ba2610503d3e70ecef6277503370`                                     |
+| GitHub Release `v1.0.0`      | CONFLICT | Final release exists before registries are verified                                          |
+| Hosted CI on `main`          | PASS     | Run `29618950830` succeeded for commit `7b91cf7`                                             |
+| npm package `expflow`        | BLOCKED  | `npm view expflow --json` returned registry 404; ownership is not proven by package metadata |
+| PyPI project `expflow-hooks` | BLOCKED  | PyPI JSON returned 404; pending Trusted Publisher must be configured                         |
+
+## Release Workflow And Artifact Manifest
+
+| Item            | Value                                                              |
+| --------------- | ------------------------------------------------------------------ |
+| Workflow file   | `.github/workflows/release.yml`                                    |
+| Workflow digest | `ef9f985fe6e192001485c546c85231e5b4fcf959678a47432fb783a872e644fb` |
+| Workflow run ID | Not run; workflow is prepared on an unmerged branch                |
+
+| Artifact                               | SHA-256                                                            | GitHub     | npm/PyPI      | Verified                                      |
+| -------------------------------------- | ------------------------------------------------------------------ | ---------- | ------------- | --------------------------------------------- |
+| `expflow-1.0.0.tgz`                    | `6e659ef1adcc6af71e2e750c2c84803c7a0c066d72a716ccd78919ad666bd911` | Local only | Not published | Exact npm tarball install verifier passed     |
+| `expflow_hooks-1.0.0.tar.gz`           | `eb6b14ca03c064da549f6b834652ec4c5e48a41a4d90c5ab16da8ec3a60cc4b8` | Local only | Not published | `twine check` passed                          |
+| `expflow_hooks-1.0.0-py3-none-any.whl` | `18211976fdf5436c659c73c7cd8772fc59c3c194ef74f5a4164553be2fc3160c` | Local only | Not published | `twine check` and exact wheel verifier passed |
+| `release-manifest.json`                | Pending                                                            | Pending    | Not published | Generated by release workflow                 |
+| `SHA256SUMS`                           | Pending                                                            | Pending    | Not published | Generated by release workflow                 |
 
 ## Gate D Durability Status
 
@@ -46,8 +78,10 @@ The release branch intentionally incorporates the Gate D native hardening closur
 - TypeScript package version set to `1.0.0`.
 - Python hook package version set to `1.0.0`.
 - npm private marker removed for the v1 release.
+- npm `publishConfig.access` set to `public`.
 - Package repository, homepage, issue URL, license, binary, exports, and files metadata are coherent for review.
 - Python wheel import verification reports `1.0.0` and confirms top-level tests are excluded.
+- Python dev metadata includes `twine` for distribution metadata checks.
 
 ## Documentation Changes
 
@@ -55,7 +89,10 @@ The release branch intentionally incorporates the Gate D native hardening closur
 - `README_DEV.md` now presents v1 release setup and validation.
 - `CHANGELOG.md` records v1.0.0 outcomes.
 - `docs/release_notes/GITHUB_RELEASE_NOTE_V1_0_0.md` provides standalone text for a GitHub release.
-- `SECURITY.md` records supported versions, reporting expectations, and local-first security posture.
+- `docs/V1_COMPATIBILITY.md` records the v1 public compatibility promise.
+- `docs/RELEASE_PUBLISHING.md` records owner actions for npm Trusted Publishing, PyPI pending Trusted Publisher, protected release environments, and GitHub Private Vulnerability Reporting.
+- `.github/workflows/release.yml` builds once from `v1.0.0`, attests the exact artifacts, publishes through OIDC, and creates or verifies the GitHub Release only after npm and PyPI verify.
+- `SECURITY.md` directs suspected vulnerabilities to GitHub Private Vulnerability Reporting and keeps public issues for non-sensitive hardening requests.
 - `CONTRIBUTING.md` records branch, validation, architecture-source, and scope-boundary rules.
 - `docs/CURRENT_STATUS_MATRIX.md`, `docs/TEST_MATRIX.md`, and `docs/README.md` were updated for release-closeout status.
 - `docs/CODEX_BUILD_PLAN.md`, `docs/phase_prompts/`, and `docs/external_references/GUERILLA_UNIVERSAL_HOOK_BOUNDARY.md` were removed from tracking as internal build artifacts during final release hygiene. Immutable architecture references to these paths remain unchanged per AGENTS.md §6.
@@ -131,6 +168,20 @@ All commands were run on 2026-07-17 under the requested 60-second command cap.
 | `python tests/contracts/verify_python_wheel.py` |         0 | PASS   | Wheel imports outside checkout, excludes tests, enforces repo-only discovery, and reports `1.0.0`. |
 | `git diff --check -- ':!docs/architecture/**'`  |         0 | PASS   | No whitespace errors outside immutable architecture sources.                                       |
 
+The dual-registry release remediation adds these validation results:
+
+| Command                                                                   | Exit code | Result | Evidence                                                                                                                   |
+| ------------------------------------------------------------------------- | --------: | ------ | -------------------------------------------------------------------------------------------------------------------------- |
+| `npx prettier --check .github/workflows/release.yml`                      |         0 | PASS   | Release workflow formatting passed.                                                                                        |
+| `npm pack --dry-run`                                                      |         0 | PASS   | npm package preview produced `expflow-1.0.0.tgz` with expected README, LICENSE, `dist/`, schemas, and architecture assets. |
+| `npx tsx tests/contracts/package-verify.ts --tarball <local release tgz>` |         0 | PASS   | Exact locally built npm tarball installs outside checkout and reports `1.0.0`.                                             |
+| `npm run clean`                                                           |         0 | PASS   | Removed TypeScript build output before exact Python distribution validation.                                               |
+| `python -m build`                                                         |         0 | PASS   | Built `expflow_hooks-1.0.0.tar.gz` and `expflow_hooks-1.0.0-py3-none-any.whl`.                                             |
+| `python -m twine check dist/*`                                            |         0 | PASS   | Python sdist and wheel metadata passed after `dist/` contained only Python distributions.                                  |
+| `python tests/contracts/verify_python_wheel.py --wheel <local wheel>`     |         0 | PASS   | Exact locally built wheel imports outside checkout, excludes tests, and reports `1.0.0`.                                   |
+
+Initial diagnostic note: `python -m twine check dist/*` fails when TypeScript build directories remain in `dist/`. The documented local validation path now runs `npm run clean` before Python distribution validation.
+
 Focused preflight also passed:
 
 - `npm test -- tests/unit/version.test.ts tests/unit/security-migration-runtime.test.ts` -- 6 tests passed.
@@ -163,19 +214,19 @@ Devin review and README follow-up validation also passed:
 
 PR #7 hardening closure hosted checks were green at head `d1dd2ac925b219c50c7728963e908042793c7376`.
 
-PR #10 is the active v1 release PR against `main` after PR #7 merged. Local release validation passed before this wording cleanup; hosted checks are tracked on the PR.
+PR #10 and PR #11 are merged. Hosted checks on `origin/main` commit `7b91cf7` passed in workflow run `29618950830`. The dual-registry remediation branch has not been merged or tagged.
 
 ## Blockers And Release Risks
 
-None for the locally validated v1.0.0 release branch.
+The release is blocked for publication until these items are resolved:
 
-Remaining owner-controlled follow-ups:
-
-- Review and merge the hardening closure if it is not already merged.
-- Review the v1 release-closeout PR.
-- Decide whether to create the `v1.0.0` tag.
-- Decide whether and where to publish npm and Python packages.
+- Existing GitHub Release `v1.0.0` exists before verified npm and PyPI publication.
+- npm package ownership for `expflow` is not proven by package metadata because the package is absent.
+- PyPI project `expflow-hooks` is absent; a pending Trusted Publisher must be configured.
+- Protected GitHub environments `release-npm` and `release-pypi` are not verified.
+- GitHub Private Vulnerability Reporting setting is not verified.
+- `.github/workflows/release.yml` is prepared on a branch and must be reviewed and merged before an authorized release rerun.
 
 ## Handoff
 
-Expflow is release-ready locally for v1.0.0. No tag was created and no package was published.
+Expflow core remains v1.0.0-ready from a code and local-validation standpoint, but publication is not release-complete. Owner action is required before any tag movement, release replacement, npm publication, or PyPI publication.

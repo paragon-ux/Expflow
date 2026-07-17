@@ -90,3 +90,17 @@ Expflow remains authoritative for native material transactions, restore behavior
 ### Review Response
 
 Fix Expflow-owned durability defects inside Expflow core without adding Guerilla hook dispatch, provider drivers, adapter idempotency, external cursors, network services, or lost-response reconciliation. Treat the locked Guerilla hook revision as a compatibility boundary reference, not as an Expflow deliverable.
+
+## ADR-S2-003 Registry Publication Is Release State
+
+### Issue
+
+Release closeout can look document-complete while registry ownership, OIDC publishing identity, tag state, and GitHub Release state are still unresolved. Creating a GitHub Release before npm and PyPI are verified makes the release externally visible but not publication-complete.
+
+### Decision
+
+For v1 publication, npm package ownership, PyPI project or pending-publisher ownership, protected GitHub release environments, tag-to-validated-main equality, and registry verification are release-state invariants. The GitHub Release is downstream of successful npm and PyPI publication, not a substitute for it.
+
+### Review Response
+
+If tag or GitHub Release state exists before registry publication is verified, classify it as a release-state inconsistency. Prepare corrective repository workflow and documentation changes, but do not move tags, delete releases, rename packages, or add persistent token fallbacks without explicit owner authorization.

@@ -21,6 +21,14 @@ npm ci
 python -m pip install -e ".[dev]"
 ```
 
+## Package Roles
+
+The npm package `expflow` is the primary CLI and TypeScript library package. Its public v1 API is the package-root export surface documented in `src/index.ts` and [docs/V1_COMPATIBILITY.md](docs/V1_COMPATIBILITY.md).
+
+The PyPI package `expflow-hooks` is the Python hook/scaffold package and imports as `expflow_hooks`. It is not the TypeScript core or the `expflow` CLI.
+
+Registry publication is owner-controlled through [docs/RELEASE_PUBLISHING.md](docs/RELEASE_PUBLISHING.md). Do not claim npm or PyPI publication until registry metadata and external install checks prove it.
+
 ## Validation Commands
 
 ### Formatting
@@ -60,9 +68,13 @@ npm run fixtures:verify
 ```bash
 npm run build
 npm run package:verify
-python -m build --wheel
+npm run clean
+python -m build
+python -m twine check dist/*
 python tests/contracts/verify_python_wheel.py
 ```
+
+`npm run clean` is required before the exact `python -m twine check dist/*` command because TypeScript build output also uses `dist/`.
 
 ### Full Local Validation Sequence
 
@@ -70,7 +82,9 @@ python tests/contracts/verify_python_wheel.py
 npm run validate
 python -m pip install -e ".[dev]"
 python -m pytest
-python -m build --wheel
+npm run clean
+python -m build
+python -m twine check dist/*
 python tests/contracts/verify_python_wheel.py
 git diff --check -- ':!docs/architecture/**'
 ```

@@ -17,6 +17,7 @@ Expflow v1.0.0 is the first MIT-licensed release of the local Expflow core. This
 - Library runtimes for authority sources, semantic decisions, workflow boundaries, projections, regeneration/equivalence, structural reuse, security controls, migration evidence, and the native extension host.
 - Repository validation for immutable architecture sources, schemas, examples, fixtures, registries, package boundaries, and end-to-end proof.
 - MIT license metadata for npm and Python package surfaces.
+- A v1 compatibility promise for CLI names, npm root exports, TypeScript runtime interfaces, persisted v1 state, and package identities.
 
 ## Explicitly Out Of Scope
 
@@ -30,11 +31,10 @@ Expflow v1.0.0 is the first MIT-licensed release of the local Expflow core. This
 
 Local release validation passed on 2026-07-17 for Node, TypeScript, repository contracts, package verification, Python tests, wheel build, wheel import, and release diff whitespace checks. Detailed command evidence is recorded in `docs/completion_reports/V1_RELEASE_CLOSEOUT_REPORT.md`.
 
-## Release Status
+## Compatibility
 
-Classification: `release-ready`.
+The v1 compatibility promise is documented in `docs/V1_COMPATIBILITY.md`.
 
-Owner-controlled follow-ups remain:
+## Registry Publication
 
-- Decide whether to create the `v1.0.0` tag.
-- Decide whether and where to publish npm and Python packages.
+Registry publication is owner-controlled through the OIDC release workflow documented in `docs/RELEASE_PUBLISHING.md`. Do not treat npm or PyPI installation as available until registry metadata and external installation checks verify the published artifacts.

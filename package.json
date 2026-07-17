@@ -63,5 +63,8 @@
   "bugs": {
     "url": "https://github.com/paragon-ux/Expflow/issues"
   },
+  "publishConfig": {
+    "access": "public"
+  },
   "license": "MIT"
 }

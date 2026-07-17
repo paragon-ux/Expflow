@@ -1,6 +1,6 @@
 import { existsSync, mkdirSync, mkdtempSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
-import { join, resolve } from 'node:path';
+import { basename, isAbsolute, join, resolve } from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { REPO_ROOT } from '../../src/schemas/discovery.js';
 import { VERSION } from '../../src/core/version.js';
@@ -48,21 +48,39 @@ function assertContains(actual: string, expected: string): void {
   }
 }
 
+function resolveProvidedTarball(): string | undefined {
+  const tarballIndex = process.argv.indexOf('--tarball');
+  if (tarballIndex === -1) {
+    return undefined;
+  }
+  const tarball = process.argv[tarballIndex + 1];
+  if (!tarball) {
+    throw new Error('Usage: package-verify.ts [--tarball <expflow tarball>]');
+  }
+  return isAbsolute(tarball) ? tarball : resolve(process.cwd(), tarball);
+}
+
 const tempRoot = mkdtempSync(join(tmpdir(), 'expflow-package-verify-'));
 const packDir = resolve(tempRoot, 'pack');
 const installDir = resolve(tempRoot, 'install');
+const providedTarball = resolveProvidedTarball();
 
 try {
   mkdirSync(packDir);
   mkdirSync(installDir);
 
-  run(npmCommand, ['run', 'clean'], REPO_ROOT);
-  run(npmCommand, ['run', 'build'], REPO_ROOT);
-  run(npmCommand, ['pack', '--pack-destination', packDir], REPO_ROOT);
+  if (!providedTarball) {
+    run(npmCommand, ['run', 'clean'], REPO_ROOT);
+    run(npmCommand, ['run', 'build'], REPO_ROOT);
+    run(npmCommand, ['pack', '--pack-destination', packDir], REPO_ROOT);
+  }
 
-  const tarball = resolve(packDir, `expflow-${VERSION}.tgz`);
+  const tarball = providedTarball ?? resolve(packDir, `expflow-${VERSION}.tgz`);
   if (!existsSync(tarball)) {
     throw new Error(`Expected npm tarball was not created: ${tarball}`);
+  }
+  if (basename(tarball) !== `expflow-${VERSION}.tgz`) {
+    throw new Error(`Expected npm tarball expflow-${VERSION}.tgz, got ${basename(tarball)}`);
   }
 
   run(npmCommand, ['init', '-y'], installDir);
