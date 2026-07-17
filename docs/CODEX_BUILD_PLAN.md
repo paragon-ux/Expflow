@@ -15,7 +15,7 @@
 8. Phase 14 -- Structural Reuse: reuse results, policy gates, output workflow references, and no-transfer behavior.
 9. Gate C Exit: complete and merged to `main` through PR #5.
 10. Gate D -- Security, migration, packaging hardening, and end-to-end proof: complete and merged through PR #6.
-11. Gate D native hardening closure -- staged immutable promotion, init/restore recovery intents, stale-lock classification, and material-head repair.
+11. Gate D native hardening closure -- staged immutable promotion, init/restore recovery intents, stale-lock classification, causal tree/receipt material-head repair, and restore intent/tree parity.
 12. Next step after validation: closure PR review and hosted checks.
 
 ## Execution Rules

@@ -94,7 +94,7 @@
     },
     {
       "id": "AD-028",
-      "summary": "Gate D native durability closure uses staged immutable promotion, recoverable init/restore intents, stale-lock liveness classification, and receipt-based head repair."
+      "summary": "Gate D native durability closure uses staged immutable promotion, recoverable init/restore intents, stale-lock liveness classification, and causal tree/receipt head repair."
     }
   ],
   "future_decision_slots": [

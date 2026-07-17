@@ -134,7 +134,13 @@ export function writeHead(projectRoot: string, treeRevisionId: string | null): v
   const path = storePaths(projectRoot).head;
   mkdirSync(dirname(path), { recursive: true });
   const tempPath = `${path}.${String(process.pid)}.${String(Date.now())}.tmp`;
-  writeFileSync(tempPath, treeRevisionId === null ? '\n' : `${treeRevisionId}\n`, 'utf-8');
+  const fd = openSync(tempPath, 'w');
+  try {
+    writeFileSync(fd, treeRevisionId === null ? '\n' : `${treeRevisionId}\n`, 'utf-8');
+    fsyncSync(fd);
+  } finally {
+    closeSync(fd);
+  }
   renameWithinVolume(tempPath, path);
 }
 
@@ -181,15 +187,11 @@ function writeBytesExclusiveDurable(path: string, bytes: Buffer | string): void 
 }
 
 function syncFile(path: string): void {
+  const fd = openSync(path, 'r+');
   try {
-    const fd = openSync(path, 'r+');
-    try {
-      fsyncSync(fd);
-    } finally {
-      closeSync(fd);
-    }
-  } catch {
-    // Some filesystems reject explicit fsync for read-back verification handles.
+    fsyncSync(fd);
+  } finally {
+    closeSync(fd);
   }
 }
 

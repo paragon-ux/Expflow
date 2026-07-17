@@ -209,7 +209,7 @@ Each material transaction:
 
 Recovery classes cover interrupted commits at each stage. Recovery repairs structural state but never invents semantic decisions.
 
-Gate B implements local project locks, material commit receipts, partial post-commit status, and local recovery checks for the material core. Gate D hardening closure adds operation-scoped staging, recoverable init/restore intents, stale-lock liveness classification, and receipt-based repair for mutable material heads. Recovery must never invent semantic decisions.
+Gate B implements local project locks, material commit receipts, partial post-commit status, and local recovery checks for the material core. Gate D hardening closure adds operation-scoped staging, recoverable init/restore intents, stale-lock liveness classification, and causal tree/receipt repair for mutable material heads. Recovery must never invent semantic decisions.
 
 ---
 
@@ -396,7 +396,7 @@ The TypeScript package (`src/`) implements:
 - Working-tree scanning with `.expflow/**` exclusion
 - Same-path continuity, explicit identity directives, and digest-similarity proposals without silent identity preservation
 - Local project lock, validation, immutable receipts, partial post-commit material success status, recovery cleanup, and restore-source reads
-- Operation-scoped staging, recoverable init/restore intents, stale-lock liveness classification, durable immutable-record promotion, and receipt-based `HEAD`/project metadata repair
+- Operation-scoped staging, recoverable init/restore intents, stale-lock liveness classification, durable immutable-record promotion, and causal tree/receipt `HEAD`/project metadata repair
 - Narrow extension host for native operations and read-only committed state
 - Library authority runtime for source revisions, source-registration decisions, readable authority documents, current-source projection, and authority scope-conflict checks
 - Library semantic runtime for assertions, decisions, conflicts, review requests, source correspondence, artifact clusters, and semantic change listing

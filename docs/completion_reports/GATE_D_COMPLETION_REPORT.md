@@ -27,8 +27,8 @@ Final validation was run under the requested 60-second command cap using compone
 | `npm run typecheck`                                         |         0 | PASS   | Strict TypeScript check passed                            |
 | `npm test -- tests/unit/security-migration-runtime.test.ts` |         0 | PASS   | 5 Gate D security/migration tests passed                  |
 | `npm test -- tests/e2e/gate-d-proof.test.ts`                |         0 | PASS   | 1 Gate D proof test passed, covering 25 scenarios         |
-| `npm test -- tests/unit/material-runtime.test.ts`           |         0 | PASS   | 14 material runtime and native hardening tests passed     |
-| `npm test`                                                  |         0 | PASS   | 10 Node test files and 87 tests passed                    |
+| `npm test -- tests/unit/material-runtime.test.ts`           |         0 | PASS   | 19 material runtime and native hardening tests passed     |
+| `npm test`                                                  |         0 | PASS   | 10 Node test files and 92 tests passed                    |
 | `npm run contracts:verify`                                  |         0 | PASS   | 54 immutable architecture files verified                  |
 | `npm run registries:verify`                                 |         0 | PASS   | ADR/register set verified through AD-028                  |
 | `npm run schemas:meta-validate`                             |         0 | PASS   | 26/26 schemas meta-validated                              |
@@ -45,18 +45,18 @@ Final validation was run under the requested 60-second command cap using compone
 
 ## Exit-Criteria Matrix
 
-| Gate D criterion                                           | Status | Evidence                                        |
-| ---------------------------------------------------------- | ------ | ----------------------------------------------- |
-| Security controls prevent specified threat classes         | PASS   | Security runtime and tests                      |
-| Migration preserves paths and does not fabricate authority | PASS   | Migration runtime and tests                     |
-| Clean packages install and run                             | PASS   | Package verification commands                   |
-| End-to-end scenarios have automated evidence               | PASS   | Gate D proof test                               |
-| Adapter-only contracts remain absent                       | PASS   | Prohibited-scope and e2e tests                  |
-| Native restore is recoverable across mutation boundaries   | PASS   | Fault-injected restore install test             |
-| Immutable records use staged promotion and conflict checks | PASS   | Store implementation and material tests         |
-| Tree revision digests match persisted tree preimages       | PASS   | Store verification and restore regression test  |
-| Locks are classified by owner liveness, not age alone      | PASS   | Stale/live lock recovery test                   |
-| Mutable material heads repair from committed receipts      | PASS   | Sync interruption and metadata divergence tests |
+| Gate D criterion                                                | Status | Evidence                                          |
+| --------------------------------------------------------------- | ------ | ------------------------------------------------- |
+| Security controls prevent specified threat classes              | PASS   | Security runtime and tests                        |
+| Migration preserves paths and does not fabricate authority      | PASS   | Migration runtime and tests                       |
+| Clean packages install and run                                  | PASS   | Package verification commands                     |
+| End-to-end scenarios have automated evidence                    | PASS   | Gate D proof test                                 |
+| Adapter-only contracts remain absent                            | PASS   | Prohibited-scope and e2e tests                    |
+| Native restore is recoverable across mutation boundaries        | PASS   | Fault-injected restore install test               |
+| Immutable records use staged promotion and conflict checks      | PASS   | Store implementation and material tests           |
+| Tree revision digests match persisted tree preimages            | PASS   | Store verification and restore regression test    |
+| Locks are classified by owner liveness, not age alone           | PASS   | Stale/live lock recovery test                     |
+| Mutable material heads repair from causal tree/receipt evidence | PASS   | Equal-timestamp and forked-receipt recovery tests |
 
 ## Hardening Review Closure
 
@@ -65,12 +65,24 @@ Final validation was run under the requested 60-second command cap using compone
 | F1 restore partial mutation before recoverable commit | FIXED  | Restore precomputes a target tree, stages replacement bytes, writes `restore_working_tree` intent, commits material records, then installs user files; recovery completes interrupted installs.              |
 | F2 immutable objects/records direct final writes      | FIXED  | Object and immutable JSON record writes use operation-scoped staging, verification, promotion, and occupied-path conflict checks.                                                                            |
 | F3 stale `.expflow/LOCK` recovery absent              | FIXED  | Recovery classifies stale, live, and malformed locks using same-host PID liveness and refuses live/ambiguous owners.                                                                                         |
-| F4 `HEAD`/`project.json` divergence                   | FIXED  | Recovery derives repair from latest verified material-success receipt and repairs both mutable representations.                                                                                              |
+| F4 `HEAD`/`project.json` divergence                   | FIXED  | Recovery derives repair from verified causal tree/receipt evidence and repairs both mutable representations.                                                                                                 |
 | F5 init publishes partial state                       | FIXED  | Init writes an `init_project` recovery intent and publishes `project.json` only after first material records and receipt exist.                                                                              |
 | F6 recovery tests only simulated end states           | FIXED  | Material tests fault-inject real init, sync, and restore operation paths.                                                                                                                                    |
 | F7 staging cleanup-only claim                         | FIXED  | Staging is used for object/record promotion and restore replacement bytes; recovery still cleans uncommitted staging.                                                                                        |
 | F8 evidence overclaimed crash durability              | FIXED  | This report distinguishes functional proof, native durability hardening, and remaining production/pilot work.                                                                                                |
 | F9 restored tree digest mismatch                      | FIXED  | Restored tree records persist the restore-specific `removed_paths`, and store verification recomputes tree `content_digest` from persisted entries, removed paths, and scope before write/read verification. |
+| F10 receipt-order head rollback                       | FIXED  | Recovery selects mutable-head repair from verified tree sequence, parent chain, receipt/tree/project consistency, and tree digest validity; equal-timestamp receipts cannot roll `HEAD` backward.            |
+
+## Devin Durability Requirements
+
+| Requirement                                | Status | Evidence                                                                                                                                                                                               |
+| ------------------------------------------ | ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| DCR-1 causal receipt/head repair           | PASS   | Recovery selects the highest unambiguous verified material tree sequence and reports invalid or forked candidates as unrepaired findings.                                                              |
+| DCR-2 file durability failures surface     | PASS   | Regular file writes and fsyncs for staged immutable objects, immutable JSON records, material `HEAD`, and restore replacement bytes are not swallowed; directory fsync remains documented best-effort. |
+| DCR-3 recovery convergence during recovery | PASS   | Restore recovery can be rerun after replacement files are already installed and converges with no second-run findings.                                                                                 |
+| DCR-4 restore intent/tree agreement        | PASS   | Tree and node restore recovery require the intent replacement/deletion set to agree with the committed target tree before replay.                                                                      |
+| DCR-5 evidence wording stays honest        | PASS   | This report and `docs/STORAGE_AND_RECOVERY.md` claim local native durability hardening and modeled interruption recovery, not absolute cross-filesystem power-loss durability.                         |
+| DCR-6 Guerilla boundary remains closed     | PASS   | No Guerilla hook dispatch, adapter protocols, external cursors, idempotency, lost-response reconciliation, network services, databases, brokers, or new ordinary commands were added.                  |
 
 ## Invariant Audit
 
@@ -80,6 +92,7 @@ Final validation was run under the requested 60-second command cap using compone
 - Security defaults are local-only and generated-code execution remains disabled.
 - Migration never fabricates authority, semantic acceptance, workflow completion, verification, or reuse decisions.
 - Tree revision `content_digest` values are verified against the record's persisted entries, removed paths, and scope.
+- Material head repair is causal: receipt timestamp and operation ID ordering are not recovery authority.
 - Guerilla universal-hook compatibility is a profile/observation boundary; Expflow native recovery remains core-owned and no Guerilla hook runtime was added.
 
 ## Scope Audit

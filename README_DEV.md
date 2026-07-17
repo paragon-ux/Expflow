@@ -83,7 +83,7 @@ The TypeScript package implements:
 - Local `.expflow/` material storage with immutable objects, node revisions, tree revisions, operation receipts, validations, changes, and material head state
 - Working-tree scanning with `.expflow/**` exclusion and scoped path selectors
 - Same-path continuity, explicit `preserve`, `new`, and `replace` directives, and digest-similarity proposals without identity preservation
-- Local transaction locking, operation-scoped staging, recoverable init/restore intents, validation receipts, partial post-commit material success status, stale-lock classification, receipt/head/project metadata recovery checks, and restore-source reads
+- Local transaction locking, operation-scoped staging, recoverable init/restore intents, validation receipts, partial post-commit material success status, stale-lock classification, causal tree/receipt head repair, and restore-source reads
 - A narrow extension host that invokes native operations and reads schema-shaped committed records without raw store exports
 - Authority-source revisions, source-registration decisions, readable authority documents, current-source projection, and scope-conflict checks
 - Semantic assertions, semantic decisions, conflicts, review requests, source correspondence, artifact clusters, and semantic change listing

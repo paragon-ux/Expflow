@@ -7,63 +7,79 @@ BLOCK
 ## Review Target
 
 - Repository: `paragon-ux/Expflow`
-- Reviewed baseline: `main` at merge commit `2b194f10f839aa227d151241777d7ddb1cd721e0`
-- Originating PR: [#6 Gate D hardening and proof](https://github.com/paragon-ux/Expflow/pull/6)
-- PR state: merged; hosted checks were green
-- Review type: post-merge Gate D hardening review and closure scope
+- Active PR: [#7 Gate D native hardening closure](https://github.com/paragon-ux/Expflow/pull/7)
+- Reviewed branch: `codex/gate-d-hardening-review-format`
+- Reviewed head: `61bb5e81c3fbafcadd8708b2ea5b30ccc384ba7f`
+- Baseline: `main` after merged PR #6 at `2b194f10f839aa227d151241777d7ddb1cd721e0`
+- Related merged PR: [#6 Gate D hardening and proof](https://github.com/paragon-ux/Expflow/pull/6)
+- Review lens: Gate D native durability closure plus Devin architecture review in `C:\Users\USER\Downloads\Expflow-Core-Architecture-v\Devin_Review_2.txt`
 - Related locked architecture: `build-docs/Guerilla-Universal-Hook-Architecture-Revision-Final/Guerilla-Universal-Hook-Architecture-Revision/`
 
 ## Release Risk
 
-Gate D is credible as a local functional proof of the implemented core surface, but it is not yet a durable native-recovery closure. The remaining risks are core-owned: restore can mutate user files before a recoverable commit exists, immutable records are installed directly at final paths, stale locks are not classified by recovery, and mutable head representations can diverge. The locked Guerilla universal-hook architecture does not change this boundary: Guerilla may bracket and observe Expflow, but Expflow remains authoritative for native transaction, restore, lock, and recovery semantics.
+The PR is architecturally sound in direction: immutable material data is written before mutable heads, restore now has a recoverable intent, stale locks are classified by liveness, and Guerilla remains an observation/profile boundary rather than core behavior. The remaining release risk is that recovery still decides the latest material head from receipt timestamp order with a random operation-id tie-break. That can repair `HEAD` backward from a newer committed tree to an older committed tree, so Gate D native durability closure is not complete until receipt/head repair is causal and the supporting durability evidence is tightened.
+
+## Prior Finding Closure Context
+
+This review treats the current PR #7 implementation for F1-F9 as trusted unless later evidence contradicts it. Do not reopen F1-F9 as separate work unless a new reproduction shows they remain false.
+
+| ID | Current status | Trusted closure basis |
+| --- | --- | --- |
+| F1 | FIXED | Restore computes and validates the target material state, writes a `restore_working_tree` recovery intent, commits material records and receipt, then mutates the working tree. |
+| F2 | FIXED WITH DCR-2 FOLLOW-UP | Immutable objects and JSON records use operation-scoped staging and final promotion. DCR-2 tightens the file-sync failure contract so this cannot degrade into silent non-durability. |
+| F3 | FIXED | Recovery classifies stale, live, foreign-host, and malformed locks and refuses live or ambiguous owners. |
+| F4 | FIXED WITH F10 FOLLOW-UP | Recovery repairs `HEAD` and `project.json` from committed receipts, but F10 requires the repair source to be causal instead of timestamp/random-id ordered. |
+| F5 | FIXED | Init writes an `init_project` intent and publishes `project.json` only after the first material records and receipt exist. |
+| F6 | FIXED WITH DCR-3 FOLLOW-UP | Fault-injection tests now cover real sync/init/restore boundaries. DCR-3 adds convergence evidence for interrupted recovery itself. |
+| F7 | FIXED | Operation-scoped staging is now part of immutable-object, immutable-record, and restore replacement-byte installation. |
+| F8 | FIXED WITH DCR-5 FOLLOW-UP | Gate D docs distinguish functional proof and native durability hardening. DCR-5 prevents renewed overclaiming after the final fix. |
+| F9 | FIXED | Restored tree records persist restore-specific `removed_paths`, and tree verification recomputes `content_digest` from persisted entries, removed paths, and scope. |
 
 ## Candidate-Finding Ledger
 
 | ID | Reviewer priority | Candidate defect | Evidence | Suggested direction |
 | --- | --- | --- | --- | --- |
-| F1 | P0 | `restore` can leave a partially mutated working tree while the old material head remains committed. | Tree restore removes files and writes restored bytes before validation, receipt, `HEAD`, and project metadata are committed in `src/operations/runtime.ts:599`, `src/operations/runtime.ts:615`, and `src/operations/runtime.ts:679`; node restore writes the target before planning and committing the candidate tree in `src/operations/runtime.ts:647` and `src/operations/runtime.ts:671`. | Implement a native restore transaction model: precompute and verify the restore plan, stage replacement bytes on the same filesystem, durably record replacement/deletion intent, install paths in a resumable or rollback-safe order, then commit receipt/head/project metadata at one documented point. Add interruption tests at every restore mutation boundary. |
-| F2 | P0 | Immutable objects and immutable JSON records are installed directly to final identity paths without a staged promotion and durability protocol. | Objects are copied straight to the content-addressed final path in `src/material/store.ts:171`; node, tree, receipt, validation, and change records use final-path exclusive JSON writes in `src/material/store.ts:211`, `src/material/store.ts:237`, `src/material/store.ts:255`, and `src/material/store.ts:294`; `writeJsonFileExclusive` closes the file but does not flush file or directory state in `src/core/json.ts:38`. | Write each object or immutable record under operation-scoped staging, flush and verify staged bytes, atomically promote to final path, sync containing directories where supported, verify existing final paths before reuse, and classify corrupt occupied final paths instead of treating them as immutable success. |
-| F3 | P0 | A crashed writer can leave a permanent `.expflow/LOCK`, and recovery does not inspect or classify it. | `createLock` writes a lock with PID and timestamp and recommends recovery on lock conflict in `src/material/store.ts:323`; normal cleanup only unlinks in the returned release callback at `src/material/store.ts:336`; `recoverProject` cleans staging and inspects heads/receipts but has no lock branch in `src/transactions/recovery.ts:41`. | Define lock ownership and stale-lock policy: host/runtime identity, acquisition time, same-host liveness check, PID-reuse handling where possible, malformed/inaccessible lock classification, atomic takeover, and refusal when a live owner is confirmed. Recovery must never remove a lock merely because it is old. |
-| F4 | P0 | `HEAD` and `project.json.head_tree_revision_id` can diverge without deterministic bidirectional repair. | Native commit writes receipt, then `HEAD`, then project metadata in `src/operations/runtime.ts:693`; recovery advances both only when the receipt `new_head` differs from current `HEAD` and `previous_head` equals current `HEAD` in `src/transactions/recovery.ts:84`; this skips the case where `HEAD` is already new but `project.json` is stale. | Make verified committed receipts and verified trees the recoverable material-head source. Recovery should read and validate both mutable representations, identify the latest reachable committed material-success receipt, reject ambiguous forks, repair stale mutable representations, report repairs, and remain idempotent. |
-| F5 | P1 | `init` publishes initialized project state before material validation and commit are complete. | `init` writes `project.json` and empty `HEAD` before candidate validation and tree commit in `src/operations/runtime.ts:338`; validation and later material commit happen afterward in `src/operations/runtime.ts:352` and `src/operations/runtime.ts:378`. | Treat initialization as a native transaction: stage initial project state and material records, publish initialized state only at the commit point, or teach recovery to classify and deterministically complete or remove an interrupted initialization. |
-| F6 | P1 | Recovery tests simulate selected end states rather than fault-injecting the real mutation sequence. | Current tests create an orphan staging directory manually in `tests/unit/material-runtime.test.ts:203` and manually rewind `HEAD`/project metadata in `tests/unit/material-runtime.test.ts:221`; the Gate D proof uses a `simulatePostCommitFailure` option rather than storage-boundary interruption in `tests/e2e/gate-d-proof.test.ts:375`. | Add a storage fault-injection harness with named failure points matching the actual native transaction sequence. Each case should execute the real operation path, reopen the runtime, run recovery, and verify old state, new state, or explicit blocked repair evidence. |
-| F7 | P1 | `.expflow/staging/` is treated as recoverable state but is not the transaction installation path. | Store initialization creates `paths.staging` in `src/material/store.ts:67`; recovery deletes staging entries in `src/transactions/recovery.ts:45`; ordinary object and immutable-record writes bypass staging and install directly to final paths in `src/material/store.ts:171` and `src/material/store.ts:211`. | Either make staging the actual operation installation path for native mutations, or narrow all staging/recovery claims to say it is cleanup-only. The preferred resolution is to use operation-scoped staging as part of F2. |
-| F8 | P2 | Gate D completion evidence overstates crash-durability maturity. | The Gate D report says `PASS -- Gate D complete locally` in `docs/completion_reports/GATE_D_COMPLETION_REPORT.md:5` and lists no blockers in `docs/completion_reports/GATE_D_COMPLETION_REPORT.md:72`, while the current tests prove functional scenarios and selected structural simulations rather than full crash-durability closure. | Keep Gate D as the final Expflow core gate, but label this follow-up as a Gate D Core Hardening Closure. Distinguish functional proof, structural recovery simulation, fault-injected crash proof, package proof, and security policy validation in mutable docs. |
+| F10 | P1 | Receipt-based head repair can move `HEAD` backward when committed receipts share the same `finished_at`. | `src/material/store.ts:412-423` sorts receipts by `finished_at`, then random `operation_id`; `src/transactions/recovery.ts:239-253` picks the last receipt from that order. A controlled review reproduction with equal receipt timestamps rewrote `HEAD` from tree sequence 3 back to sequence 2. | Derive mutable-head repair from verified material causality: tree `sequence`, parent chain, and receipt `previous_head/new_head` consistency. Do not use wall-clock receipt time or operation ID as the repair authority. Report ambiguous forks as unrepaired findings instead of silently choosing one. Add a regression with equal receipt timestamps. |
 
-## Guerilla Hook Compatibility Review
+## Devin Durability Escalation
 
-The Guerilla universal-hook architecture is locked and replaces the prior Phase 16 adapter direction. It does not create Expflow deliverables in this hardening review.
+The following items are acceptance criteria for the F10 durability fix, not optional polish and not separate future-gate work. They convert Devin's architecture observations into a self-reinforcing Gate D closure contract.
 
-Compatibility conclusion: Expflow should be compatible through a data-only `expflow.cli.v1` profile over ordinary commands and documented read-only state surfaces, not through a bespoke adapter or Guerilla-specific callback.
+| ID | Escalated requirement | Required outcome |
+| --- | --- | --- |
+| DCR-1 | Causal receipt/head repair | Recovery must select the repair head from verified tree causality, not receipt timestamp ordering. The selected tree must have a matching material-success receipt, a valid tree digest, a consistent parent chain, and the highest unambiguous committed material sequence reachable for the project. |
+| DCR-2 | File durability failures surface | Regular file fsync/write verification failures for staged immutable objects, immutable JSON records, and restore replacement bytes must fail the operation or recovery path. Directory fsync may remain best-effort only with explicit comments/docs because OS support varies. |
+| DCR-3 | Recovery convergence during recovery | Recovery does not need to be atomic, but it must be idempotent. Tests must cover interruption or repeated execution around restore recovery install, head write, project metadata update, intent removal, and staging cleanup, proving that rerunning recovery converges or reports an unrepaired finding. |
+| DCR-4 | Restore intent/tree agreement | Both tree restore and node restore must prove their recovery intent agrees with the committed tree state. Recovery replay from the intent must produce the same working tree expected by the committed tree and leave status clean when repair succeeds. |
+| DCR-5 | Evidence wording stays honest | Completion reports and storage/recovery docs must claim local native durability hardening and modeled interruption recovery only. They must not imply absolute power-loss durability across all filesystems while directory fsync remains best-effort. |
+| DCR-6 | Guerilla boundary remains closed | The fix must not add Guerilla hook dispatch, adapter protocols, external cursors, adapter idempotency, lost-response reconciliation, network services, databases, brokers, or new ordinary commands. |
 
-Required compatibility boundaries:
+## Completion Requirements
 
-- Expflow core must not implement Guerilla hook dispatch, adapter protocols, network services, databases, brokers, provider drivers, cross-system idempotency, or lost-response reconciliation.
-- Guerilla `sync` means Guerilla resynchronization only; it must not silently invoke native `expflow sync`.
-- Expflow native mutations must be executed through Guerilla `run(system_instance_id, argv, options)` when managed by Guerilla.
-- An Expflow profile should classify `init`, `sync`, and `restore` as mutating or destructive as appropriate, classify `status` as read-only or observational, and fail closed on unknown commands.
-- Observations should use `expflow status`, documented package exports, the read-only extension host, or explicitly documented stable state surfaces. A profile must not depend on undocumented `.expflow` internals unless Expflow promotes them to a stable public profile boundary.
-- Guerilla can record intent, observations, native results, unknown outcomes, and resynchronization evidence. It cannot repair Expflow-native partial restores, stale locks, corrupt immutable final paths, or head/project divergence.
-- The hardening closure therefore improves profile reliability without expanding Expflow into Guerilla. It makes Expflow's own receipts, immutable records, locks, material heads, and restore behavior trustworthy enough for Guerilla to observe.
+F10 may be marked `fixed` only when all of the following are true:
 
-Non-findings:
+- Recovery no longer uses `finished_at` plus `operation_id` as the authority for latest material head repair.
+- A corrupted, missing, forked, or causally ambiguous candidate tree/receipt causes an unrepaired recovery finding, not a silent best-effort repair.
+- Equal-timestamp committed receipts cannot roll `HEAD` or `project.json.head_tree_revision_id` backward.
+- Regular file fsync failures in durability-critical staged file writes are surfaced as operation/recovery failures; only directory fsync is allowed to be best-effort.
+- Restore recovery can be rerun after partial recovery work and still converges to the committed head or reports an unrepaired finding.
+- Tree restore and node restore have tests proving intent/tree agreement and clean replay.
+- Mutable docs state the exact durability maturity proved by Gate D and list any remaining production/pilot durability limits without calling them blockers.
+- PR #7 body or final closure report includes final status for F1-F10 and DCR-1 through DCR-6.
 
-- No bespoke Guerilla adapter is required.
-- No project-specific Guerilla SDK is required.
-- No new Expflow ordinary command is required.
-- No provider-specific model tool is required.
-- No external inspection cursor, cross-system revision token, adapter idempotency store, or lost-response reconciliation belongs in Expflow core.
+Docs-only changes cannot close F10, DCR-1, DCR-2, DCR-3, or DCR-4. Code-only changes cannot close DCR-5. Any non-fixed classification must cite repository evidence and must not depend on assumption or taste.
 
 ## Handoff Scope
 
-- Branch: create or use a non-protected hardening closure branch.
-- Findings requiring independent triage: F1, F2, F3, F4, F5, F6, F7, F8.
+- Branch: continue on `codex/gate-d-hardening-review-format` or another non-protected hardening closure branch.
+- Findings requiring independent triage: F10.
+- Acceptance criteria requiring evidence: DCR-1, DCR-2, DCR-3, DCR-4, DCR-5, DCR-6.
 - Reviewer-deferred candidate defects: none.
 - Scope boundary: keep the four ordinary commands unchanged and keep Guerilla behavior outside Expflow core.
 
 ## Verification Guidance
 
-Minimum focused verification after fixes:
+Minimum focused verification after the fix:
 
 ```bash
 npm test -- tests/unit/material-runtime.test.ts
@@ -72,7 +88,7 @@ npm run typecheck
 npm run lint
 ```
 
-Broader closure verification should include the full Gate D validation set once mutation-path changes land:
+Broader closure verification should include the full Gate D validation set after mutation-path changes land:
 
 ```bash
 npm ci
@@ -81,15 +97,21 @@ npm run lint
 npm run typecheck
 npm test
 npm run contracts:verify
+npm run registries:verify
 npm run schemas:meta-validate
 npm run examples:index-check
+npm run schemas:examples-validate
+npm run fixtures:verify
 npm run build
 npm run package:verify
 python -m pip install -e ".[dev]"
 python -m pytest
 python -m build --wheel
 python tests/contracts/verify_python_wheel.py
+git diff --check -- ':!docs/architecture/**'
 ```
+
+If an aggregate validation command exceeds the operational timeout, run the component commands with calibrated timeouts and record exact exit codes.
 
 ## Triage And Implementation Prompt
 
@@ -97,44 +119,44 @@ python tests/contracts/verify_python_wheel.py
 Work in this repository as the implementation agent.
 
 Goal:
-Independently validate, triage, and resolve every candidate finding from the Gate D hardening review ledger.
+Independently validate, triage, and resolve the active Gate D durability finding from the review ledger, while satisfying every Devin durability completion requirement.
 
 Branch:
-Create or use a non-protected hardening closure branch. Do not edit main directly.
+Use `codex/gate-d-hardening-review-format` or another non-protected hardening closure branch. Do not edit main directly.
 
 Rules:
 - Read repository instructions and inspect repository state before editing.
-- Triage every finding ID: F1, F2, F3, F4, F5, F6, F7, F8.
-- Inspect the implementation before accepting a finding as real.
-- Classify each ID as fixed, not-reproducible, duplicate, intentional-behavior, or out-of-scope.
-- Provide code- or test-based evidence for every non-fixed classification.
-- Fix every confirmed in-scope defect, regardless of provisional priority.
+- Triage finding F10 as exactly one of: fixed, not-reproducible, duplicate, intentional-behavior, or out-of-scope.
+- Inspect the implementation before accepting F10 as real.
+- Provide code- or test-based evidence for any non-fixed classification.
+- Fix every confirmed in-scope durability defect, regardless of provisional priority.
+- Satisfy DCR-1 through DCR-6 before claiming Gate D closure.
 - Preserve the four-command boundary: expflow init, expflow sync, expflow status, expflow restore.
-- Do not add Guerilla adapter behavior, hook dispatch, network services, databases, brokers, adapter idempotency, or lost-response reconciliation to Expflow core.
-- Add fault-injection or equivalent interruption tests for native transaction, restore, lock, and recovery behavior.
-- Update mutable Gate D evidence docs so labels match the maturity of the proof.
+- Do not add Guerilla adapter behavior, hook dispatch, network services, databases, brokers, adapter idempotency, external cursors, or lost-response reconciliation to Expflow core.
 - Preserve unrelated user changes.
 - Run repository-defined verification and report exact command results.
 
-Candidate findings:
-- F1 - restore can leave a partially mutated working tree before a recoverable commit exists.
-- F2 - immutable objects and records are written directly to final paths without durable staged promotion.
-- F3 - stale `.expflow/LOCK` recovery is absent.
-- F4 - `HEAD` and `project.json.head_tree_revision_id` can diverge without complete reconciliation.
-- F5 - initialization publishes partial project state before material commit completes.
-- F6 - recovery tests simulate selected states instead of fault-injecting real mutation boundaries.
-- F7 - staging is cleanup-only but is treated as transaction recovery state.
-- F8 - Gate D evidence wording overclaims crash-durability maturity.
+Candidate finding:
+- F10 - receipt-based head repair can move HEAD backward when committed receipts share the same finished_at; derive repair from verified material causality instead of timestamp/random-id order.
+
+Durability completion requirements:
+- DCR-1 - causal receipt/head repair.
+- DCR-2 - regular file durability failures surface; directory fsync may remain best-effort only when documented.
+- DCR-3 - recovery convergence is proven when recovery itself is interrupted or rerun after partial work.
+- DCR-4 - tree restore and node restore intents agree with their committed tree states.
+- DCR-5 - evidence wording states the exact durability maturity proved by Gate D.
+- DCR-6 - Guerilla remains an external observation/profile boundary.
 
 Completion report:
-- final status and evidence for every finding ID;
+- final status and evidence for F1-F10;
+- final status and evidence for DCR-1 through DCR-6;
 - changed files and behavioral impact;
 - verification commands and results;
-- compatibility statement for the locked Guerilla universal-hook architecture.
+- PR #7 readiness statement.
 ```
 
 ## Final Review Position
 
-Gate D architecture and functional scope are accepted. Gate D native durability closure requires changes.
+Gate D architecture and functional scope are accepted. Gate D native durability closure is blocked only by the active durability closure package around F10 and DCR-1 through DCR-6.
 
-The correct response is not to expand Expflow into a Guerilla integration system. It is to harden Expflow's own native storage, restore, lock, recovery, initialization, and evidence-labeling behavior so a future `expflow.cli.v1` Guerilla profile can observe reliable native boundaries through the locked universal-hook architecture.
+The correct fix is a coherent durability closure: causal material-head repair, surfaced regular-file durability failures, idempotent recovery proof, restore intent/tree parity, honest evidence wording, and no Guerilla/runtime scope expansion.

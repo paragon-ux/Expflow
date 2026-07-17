@@ -86,8 +86,9 @@ Expflow has completed Gate A as defined by `EXPFLOW_WORKFLOW_CURRENT.md`. Gate B
   - recoverable init and restore intents;
   - restore working-tree installation recovery after mutation-boundary interruptions;
   - stale/live/malformed lock classification based on same-host PID liveness;
-  - receipt-derived `HEAD` and `project.json` head repair;
-  - focused fault-injection tests for init, sync, and restore.
+  - causal tree/receipt `HEAD` and `project.json` head repair;
+  - restore intent/tree agreement checks;
+  - focused fault-injection and convergence tests for init, sync, and restore.
 
 ---
 
@@ -138,7 +139,7 @@ The aggregate `npm run validate` command is not claimed as a pass under the expl
 
 > Merge the hardening-closure PR after review. After merge, return to post-Gate D release/pilot work.
 
-No Guerilla integration runtime is required in Expflow core. The current local closure addresses the post-merge Gate D native hardening review; remaining post-merge work after closure is production release hardening, pilots, empirical evaluation, and separate adapter/profile packages.
+No Guerilla integration runtime is required in Expflow core. The current local closure addresses the post-merge Gate D native hardening review through F10 and DCR-1 through DCR-6; remaining post-merge work after closure is production release hardening, pilots, empirical evaluation, and separate adapter/profile packages.
 
 ---
 

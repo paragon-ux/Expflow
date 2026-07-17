@@ -74,14 +74,14 @@
 
 ## Gate D Coverage
 
-| Area                             | Evidence                                                                                          |
-| -------------------------------- | ------------------------------------------------------------------------------------------------- |
-| Archive quarantine               | `tests/unit/security-migration-runtime.test.ts` rejects traversal, links, devices, and size drift |
-| Source instruction/data boundary | source preparation test marks content as data and keeps control instructions separate             |
-| Secret and remote disclosure     | local-only rejection and redacted remote disclosure tests                                         |
-| Generated-code non-execution     | default policy rejects generated-code execution                                                   |
-| Licensing restrictions           | reuse policy rejects blocked license and reuse labels                                             |
-| Legacy migration                 | typed-folder migration test preserves files and reports no authority fabrication                  |
-| Native durability closure        | `tests/unit/material-runtime.test.ts` covers F1-F9 from the Gate D hardening review               |
-| End-to-end proof                 | `tests/e2e/gate-d-proof.test.ts` covers 25 workflow-required proof scenarios                      |
-| Adapter boundary                 | prohibited-scope and e2e tests prove adapter-only protocols remain absent                         |
+| Area                             | Evidence                                                                                                     |
+| -------------------------------- | ------------------------------------------------------------------------------------------------------------ |
+| Archive quarantine               | `tests/unit/security-migration-runtime.test.ts` rejects traversal, links, devices, and size drift            |
+| Source instruction/data boundary | source preparation test marks content as data and keeps control instructions separate                        |
+| Secret and remote disclosure     | local-only rejection and redacted remote disclosure tests                                                    |
+| Generated-code non-execution     | default policy rejects generated-code execution                                                              |
+| Licensing restrictions           | reuse policy rejects blocked license and reuse labels                                                        |
+| Legacy migration                 | typed-folder migration test preserves files and reports no authority fabrication                             |
+| Native durability closure        | `tests/unit/material-runtime.test.ts` covers F1-F10 and DCR-1 through DCR-4 from the Gate D hardening review |
+| End-to-end proof                 | `tests/e2e/gate-d-proof.test.ts` covers 25 workflow-required proof scenarios                                 |
+| Adapter boundary                 | prohibited-scope and e2e tests prove adapter-only protocols remain absent                                    |
