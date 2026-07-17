@@ -84,6 +84,7 @@ The release branch intentionally incorporates the Gate D native hardening closur
 | ----------------------------------- | ------ | ----------------------------------------------------------------------------------------------------- |
 | Directory-structure compliance      | PASS   | `build-docs/` and `.reasonix/` are local-only ignored directories with no tracked paths.              |
 | Standalone GitHub release note      | PASS   | `docs/release_notes/GITHUB_RELEASE_NOTE_V1_0_0.md` is tracked separately from changelog and reports.  |
+| Curated Gate C review evidence      | PASS   | `docs/reviews/PR_5_GATE_C_ARCHITECTURE_REVIEW.md` keeps the historical PR #5 review under reviews.    |
 | Curated hardening review evidence   | PASS   | `docs/reviews/GATE_D_HARDENING_REVIEW_SUMMARY.md` preserves release-relevant hardening review status. |
 | Curated Guerilla boundary reference | PASS   | `docs/external_references/GUERILLA_UNIVERSAL_HOOK_BOUNDARY.md` records the compatibility boundary.    |
 
