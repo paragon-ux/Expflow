@@ -16,6 +16,7 @@ Read this folder at the start of every implementation, review, or validation pas
 3. Use command timeouts that match the expected command duration.
 4. Do not run commands in parallel when they write the same output directories.
 5. Keep validation claims aligned with what the command actually proves.
+6. Identify affected top-level directory READMEs and update each affected README once before handoff; do not recurse into subdirectory READMEs unless explicitly requested.
 
 ## Mutable ADR Process
 

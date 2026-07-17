@@ -1,27 +1,28 @@
 # Test Matrix
 
-**Status:** Gate A Phase 2-4 baseline
+**Status:** Gate B validation baseline
 
 ## Validation Commands
 
-| ID  | Command                                         | Purpose                                          |
-| --- | ----------------------------------------------- | ------------------------------------------------ |
-| V01 | `npm ci`                                        | Clean dependency installation                    |
-| V02 | `npm run format:check`                          | Formatting contract for stable files             |
-| V03 | `npm run lint`                                  | TypeScript lint contract                         |
-| V04 | `npm run typecheck`                             | Strict TypeScript typecheck                      |
-| V05 | `npm test`                                      | Node repository-contract tests                   |
-| V06 | `npm run contracts:verify`                      | Source integrity and repository contract         |
-| V07 | `npm run schemas:meta-validate`                 | JSON Schema meta-validation                      |
-| V08 | `npm run examples:index-check`                  | Example discoverability and parse check          |
-| V09 | `npm run schemas:examples-validate`             | TypeScript example and fixture schema validation |
-| V10 | `npm run fixtures:verify`                       | Fixture taxonomy and seed corpus verification    |
-| V11 | `npm run build`                                 | TypeScript build                                 |
-| V12 | `npm run package:verify`                        | npm package verification                         |
-| V13 | `python -m pip install -e ".[dev]"`             | Editable Python dev install                      |
-| V14 | `python -m pytest`                              | Python schema parity tests                       |
-| V15 | `python -m build --wheel`                       | Python wheel build                               |
-| V16 | `python tests/contracts/verify_python_wheel.py` | External wheel import                            |
+| ID  | Command                                                           | Purpose                                                 |
+| --- | ----------------------------------------------------------------- | ------------------------------------------------------- |
+| V01 | `npm ci`                                                          | Clean dependency installation                           |
+| V02 | `npm run format:check`                                            | Formatting contract for stable files                    |
+| V03 | `npm run lint`                                                    | TypeScript lint contract                                |
+| V04 | `npm run typecheck`                                               | Strict TypeScript typecheck                             |
+| V05 | `npm test`                                                        | Node repository-contract tests                          |
+| V06 | `npm run contracts:verify`                                        | Source integrity and repository contract                |
+| V07 | `npm run schemas:meta-validate`                                   | JSON Schema meta-validation                             |
+| V08 | `npm run examples:index-check`                                    | Example discoverability and parse check                 |
+| V09 | `npm run schemas:examples-validate`                               | TypeScript example and fixture schema validation        |
+| V10 | `npm run fixtures:verify`                                         | Fixture taxonomy and seed corpus verification           |
+| V11 | `npm run build`                                                   | TypeScript build                                        |
+| V12 | `npm run package:verify`                                          | npm package verification                                |
+| V13 | `python -m pip install -e ".[dev]"`                               | Editable Python dev install                             |
+| V14 | `python -m pytest`                                                | Python schema parity tests                              |
+| V15 | `python -m build --wheel`                                         | Python wheel build                                      |
+| V16 | `python tests/contracts/verify_python_wheel.py`                   | External wheel import                                   |
+| V17 | `git diff --check origin/main...HEAD -- ':!docs/architecture/**'` | Whitespace check outside immutable architecture sources |
 
 `docs/CURRENT_STATUS_MATRIX.md` is a live operational status artifact and is intentionally excluded from formatting and contract validation.
 
@@ -36,3 +37,18 @@
 | Generated type descriptors | `src/generated/schema-types.ts`                          |
 | Adapter deferral           | Contract tests and extension-boundary docs               |
 | No product runtime         | Prohibited-scope tests                                   |
+
+## Gate B Coverage
+
+| Area                          | Evidence                                                                  |
+| ----------------------------- | ------------------------------------------------------------------------- |
+| Immutable material stores     | `tests/unit/material-runtime.test.ts`                                     |
+| Object integrity              | Corruption verification test                                              |
+| Tree-content digest path      | Runtime tree revision creation and status clean/drift checks              |
+| Sync and identity             | Same-path, explicit move, explicit new-node, and digest proposal tests    |
+| Scoped selectors              | Selector-root sync keeps out-of-scope entries unchanged                   |
+| Transactions and receipts     | Stale-head guard, lock path, receipt status, and partial post-commit test |
+| Core recovery                 | Uncommitted staging cleanup and committed receipt/head-gap reconciliation |
+| Restore-source reads          | Tree restore reconciliation removes files absent from the restored tree   |
+| Extension host boundary       | `tests/unit/extension-host.test.ts`                                       |
+| Adapter-only contracts absent | `tests/unit/prohibited-scope.test.ts`                                     |

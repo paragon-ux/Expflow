@@ -1,6 +1,6 @@
 # Expflow Developer Guide
 
-**Phase 1 / Gate A — Contract Ready.** No product runtime is implemented.
+**Gate B -- Material Core.** Local material-core runtime behavior is implemented for the four ordinary commands. Adapter inspection/reconciliation and Gate C semantic/projection behavior remain out of scope.
 
 ## Prerequisites
 
@@ -12,15 +12,10 @@
 ## Setup
 
 ```bash
-# Clone and enter branch
 git clone https://github.com/paragon-ux/Expflow.git
 cd Expflow
-git checkout feature/expflow-phase-1-kickoff
-
-# Node dependencies
+git checkout main
 npm ci
-
-# Python development install
 python -m pip install -e ".[dev]"
 ```
 
@@ -48,99 +43,76 @@ npm run typecheck
 ### Tests
 
 ```bash
-npm test              # Node repository-contract tests
-python -m pytest      # Python repository-contract tests
+npm test
+python -m pytest
 ```
 
 ### Contract Verification
 
 ```bash
-npm run contracts:verify       # Source integrity verification
-npm run schemas:meta-validate  # Schema meta-validation (Draft 2020-12)
-npm run examples:index-check   # Example discoverability index check
+npm run contracts:verify
+npm run registries:verify
+npm run schemas:meta-validate
+npm run examples:index-check
+npm run schemas:examples-validate
+npm run fixtures:verify
 ```
 
-### Build
+### Build And Package Verification
 
 ```bash
-npm run build                # TypeScript build
-python -m build --wheel      # Python wheel build
-```
-
-### Package Verification
-
-```bash
-npm run package:verify       # Build, pack, install outside checkout, verify CLI and export
-```
-
-### External Package Verification
-
-```bash
-# npm package (outside checkout)
+npm run build
 npm run package:verify
-
-# Python wheel (outside checkout; verifies version, no top-level tests package,
-# and the explicit repository-only architecture discovery boundary)
+python -m build --wheel
 python tests/contracts/verify_python_wheel.py
 ```
 
 ### Full Local Validation Sequence
 
 ```bash
-# Node validation
-npm run format:check
-npm run lint
-npm run typecheck
-npm test
-npm run contracts:verify
-npm run schemas:meta-validate
-npm run examples:index-check
-npm run build
-npm run package:verify
-
-# Python validation
+npm run validate
 python -m pip install -e ".[dev]"
 python -m pytest
 python -m build --wheel
 python tests/contracts/verify_python_wheel.py
 ```
 
-## Phase 1 No-Runtime Boundary
+## Gate B Runtime Boundary
 
-The TypeScript and Python packages in Phase 1 implement only:
+The TypeScript package implements:
 
-- Package version reporting (`0.0.0-phase.1`)
-- CLI `--help` and `--version` handling
-- Read-only architecture-source discovery from an editable repository checkout
-- Read-only repository-contract verification
+- Package version reporting (`0.0.0-gate-b`)
+- CLI handlers for `expflow init`, `expflow sync`, `expflow status`, and `expflow restore`
+- Local `.expflow/` material storage with immutable objects, node revisions, tree revisions, operation receipts, validations, changes, and material head state
+- Working-tree scanning with `.expflow/**` exclusion
+- Path-selector roots for scoped scans and scoped material planning
+- Same-path continuity, explicit `preserve`, `new`, and `replace` directives, and digest-similarity proposals without identity preservation
+- Local transaction locking, validation receipts, partial post-commit material success status, receipt/head recovery checks, and restore-source reads
+- Tree restore reconciles files absent from the restored tree before advancing the material head
+- A narrow extension host that invokes native operations and reads schema-shaped committed records without raw store exports
+- Read-only architecture-source discovery and repository-contract verification
 
-No material scanning, storage, mutation, persistence, network access, hook execution, or domain algorithms exist. Repository-contract tests verify this boundary.
+The TypeScript package does not implement adapter inspection, composite external revisions, change cursors, adapter idempotency, lost-response reconciliation, authority decisions, semantic stores, workflow detection, projections, hook dispatch, network services, databases, or brokers. Repository-contract tests verify this boundary.
 
-The Python wheel does not package `docs/architecture/`. Installed wheels import and report the contract version, while architecture-source discovery is explicitly repository-checkout-only in Phase 1.
+The Python wheel does not package `docs/architecture/`. Installed wheels import and report the hook package version, while architecture-source discovery remains explicitly repository-checkout-only.
 
 ## Architecture Sources
 
 Immutable architecture sources: `docs/architecture/`
 
-- 8 Markdown architecture documents
-- 1 review-resolution architecture document
+- Markdown architecture documents
 - 26 JSON Schema 2020-12 schemas in `docs/architecture/schemas/`
-- 18 JSON examples in `docs/architecture/examples/`
-- `docs/architecture/SOURCE_MANIFEST.json` — SHA-256 integrity manifest
+- JSON examples in `docs/architecture/examples/`
+- `docs/architecture/SOURCE_MANIFEST.json` -- SHA-256 integrity manifest
 
-Working mirrors (byte-for-byte copies): `schemas/`, `examples/`
+Working mirrors: `schemas/`, `examples/`
 
-## Documentation Skeletons
+## Completion Reports
 
-Phase 1 establishes governance skeletons under `docs/`. All contain the deferral statement:
-
-> Substantive content is intentionally deferred to the owning later phase.
-
-## Completion Report
-
-`docs/completion_reports/PHASE_01_COMPLETION_REPORT.md`
+Completion evidence lives under `docs/completion_reports/`. Reports must cite actual command results only.
 
 ## Agent Governance
 
-- `AGENTS.md` — root agent governance
-- `.agents/skills/` — five focused skill documents (control documents only)
+- `AGENTS.md` -- root agent governance
+- `docs/orientation/` -- mutable pass-start controls
+- `.agents/skills/` -- focused skill documents

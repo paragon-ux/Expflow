@@ -1,10 +1,3 @@
-/**
- * Prohibited-scope audit — repository-contract test.
- *
- * Verifies that the TypeScript scaffold contains no product runtime behavior.
- * This test enforces the Phase 1 closed-world allowlist (Section 23).
- */
-
 import { describe, it, expect } from 'vitest';
 import { readFileSync, readdirSync, existsSync } from 'node:fs';
 import { resolve, relative } from 'node:path';
@@ -24,7 +17,6 @@ function collectTypeScriptFiles(dir: string): string[] {
   return results;
 }
 
-// Prohibited runtime patterns — networking, databases, external integrations
 const PROHIBITED_IMPORTS = [
   'child_process',
   'worker_threads',
@@ -52,7 +44,7 @@ describe('Prohibited-scope audit', () => {
   });
 
   const srcFiles = collectTypeScriptFiles(srcDir).filter(
-    (f) => !f.includes('node_modules') && !f.includes('dist'),
+    (file) => !file.includes('node_modules') && !file.includes('dist'),
   );
 
   it('src/ contains TypeScript files', () => {
@@ -72,20 +64,9 @@ describe('Prohibited-scope audit', () => {
     });
   }
 
-  // Verify no command handler modules exist
-  it('no command handler modules exist', () => {
-    const cliDir = resolve(srcDir, 'cli');
-    if (existsSync(cliDir)) {
-      const files = readdirSync(cliDir);
-      const handlers = [
-        'init-command.ts',
-        'sync-command.ts',
-        'status-command.ts',
-        'restore-command.ts',
-      ];
-      for (const handler of handlers) {
-        expect(files).not.toContain(handler);
-      }
+  it('no adapter-only protocol modules exist in core src', () => {
+    for (const adapterOnlyDir of ['adapters', 'inspection', 'changes', 'reconciliation']) {
+      expect(existsSync(resolve(srcDir, adapterOnlyDir))).toBe(false);
     }
   });
 });

@@ -77,21 +77,36 @@ try {
   }
 
   const helpOutput = run(cliPath, ['--help'], installDir);
-  for (const expected of ['init', 'sync', 'status', 'restore', 'not implemented in Phase 1']) {
+  for (const expected of [
+    'init',
+    'sync',
+    'status',
+    'restore',
+    'Gate B implements local material-core',
+  ]) {
     assertContains(helpOutput, expected);
   }
+
+  const projectDir = resolve(tempRoot, 'project');
+  mkdirSync(projectDir);
+  const initOutput = run(cliPath, ['init', '--root', projectDir, '--json'], installDir);
+  assertContains(initOutput, '"status": "committed"');
+  const statusOutput = run(cliPath, ['status', '--root', projectDir, '--json'], installDir);
+  assertContains(statusOutput, '"working_tree_state": "clean"');
 
   const importOutput = run(
     nodeCommand,
     [
       '--input-type=module',
       '--eval',
-      "const { VERSION } = await import('expflow'); console.log(VERSION);",
+      "const { VERSION, createRuntime } = await import('expflow'); console.log(`${VERSION}:${typeof createRuntime}`);",
     ],
     installDir,
   );
-  if (importOutput !== VERSION) {
-    throw new Error(`Expected package export version ${VERSION}, got ${importOutput}`);
+  if (importOutput !== `${VERSION}:function`) {
+    throw new Error(
+      `Expected package export version/runtime ${VERSION}:function, got ${importOutput}`,
+    );
   }
 
   console.log(`PASS - npm package installs outside checkout and reports ${VERSION}`);

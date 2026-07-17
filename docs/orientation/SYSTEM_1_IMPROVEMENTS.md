@@ -7,7 +7,7 @@ System 1 improvements are low-level rules learned from project execution. They a
 
 ## Recognizing System 1 Friction
 
-System 1 friction is small, repeatable execution drag that blocks progress without changing the architecture. It usually appears as a preventable timeout, stale status assumption, wrong source-of-truth lookup, accidental parallel command collision, or validation claim that outruns the evidence.
+System 1 friction is small, repeatable execution drag that blocks progress without changing the architecture. It usually appears as a preventable timeout, stale status assumption, wrong source-of-truth lookup, stale top-level directory README, accidental parallel command collision, or validation claim that outruns the evidence.
 
 Add or update a System 1 ADR when the fix is a reusable habit or operating rule that future passes should apply before they lose time.
 
@@ -90,3 +90,13 @@ Challenge an existing ADR when it is too broad, stale, contradicted by a higher 
 **Rule:** After changing files, rerun the focused checks that cover the edit, then the broader validation set when the change affects shared contracts or reports.
 
 **Prevents:** Reporting validation as current when it only applied to an earlier revision.
+
+## ADR-S1-010 Directory README Currency
+
+**Issue:** Top-level directory READMEs can become stale when a pass changes the purpose, contents, generated/manual boundary, runtime status, or validation role of a major repository area.
+
+**Rule:** Treat top-level directory READMEs as mutable local orientation. During any pass that materially affects a major top-level area, update that area's primary README once before handoff so it describes the current purpose, ownership boundary, and relevant validation or usage notes.
+
+**Default:** Apply this rule only to primary READMEs directly under major repository directories such as `docs/`, `examples/`, `registries/`, `schemas/`, `tests/`, and `src/`. Do not recurse into subdirectory READMEs during ordinary pass cleanup. Subdirectory README updates require an explicit user request or a change whose direct deliverable is that subdirectory README. Do not edit immutable architecture sources under `docs/architecture/**`; if a README beside immutable sources needs currency, update only mutable README/control text allowed by repository policy.
+
+**Prevents:** Review stalls caused by stale local maps, outdated validation instructions, hidden generated/manual boundary drift, and confusion about whether a directory reflects Gate A contracts or Gate B material-core behavior.

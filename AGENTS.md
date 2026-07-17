@@ -1,7 +1,7 @@
 # AGENTS.md — Expflow Agent Governance
 
-**Phase:** Gate A — Phases 1–4
-**Gate:** A — Contract Ready
+**Phase:** Gate B — Phases 5–8
+**Gate:** B — Material Core
 **Expflow version:** 2.3 architecture lock candidate
 
 ---
@@ -19,7 +19,7 @@ expflow status
 expflow restore
 ```
 
-In Phase 1, none of these commands have operational handlers. They appear only in CLI help text and documentation. No Expflow product runtime behavior exists.
+In Gate B, these commands have local material-core handlers. They do not implement adapter inspection/reconciliation, authority decisions, semantic stores, workflow detection, projections, hooks, migration, databases, brokers, or network services.
 
 ---
 
@@ -129,7 +129,7 @@ The architecture defines immutable material records. In Phase 1 these are docume
 - Immutable complete project tree revisions
 - Operation plans and immutable operation receipts
 
-No implementation exists in Phase 1. Agents must not implement storage, persistence, or mutation of these records.
+Gate B implements local storage, persistence, and mutation only for material-core records. Agents must not mutate historical records or conflate material records with semantic, workflow, or projection state.
 
 ---
 
@@ -152,7 +152,7 @@ No implementation exists in Phase 1. Agents must not implement semantic record c
 
 Expflow versions complete relative project trees, not individual files. A tree revision is one complete immutable material state. Workflow occurrences select input/output tree revisions and path selectors, distinguishing project state from workflow scope.
 
-In Phase 1, no tree scanning, revision creation, or tree-content digest computation exists.
+Gate B implements working-tree scanning, immutable tree-revision creation, and deterministic tree-content digest computation for the local material core.
 
 ---
 
@@ -176,7 +176,7 @@ These belong to separately versioned adapter profiles. Agents must not create ad
 
 Each native core mutation (init, sync, restore) produces an opaque operation ID and immutable operation receipt. The core does not claim cross-system idempotency-key grammar, canonical external request digest, retention interval, or lost-response lookup.
 
-In Phase 1, no operation receipts exist. Agents must not implement receipt creation or storage.
+Gate B implements immutable native operation receipts for the four local material-core operations. Agents must not implement adapter attempts, adapter outcomes, adapter idempotency, or lost-response reconciliation in core.
 
 ---
 
@@ -189,7 +189,7 @@ Material identity is opaque and continuity-based:
 - Only explicit `preserve` intent preserves identity across moves
 - Digest similarity produces semantic proposals only — it never silently preserves material identity
 
-Agents must not implement identity resolution algorithms, digest comparison, or continuity logic in Phase 1. These are Phase 5–6 concerns.
+Gate B implements same-path continuity, explicit `preserve`, `new`, and `replace` directives, and digest-similarity proposals. Agents must never silently preserve identity from digest similarity.
 
 ---
 
@@ -209,7 +209,7 @@ Each material transaction:
 
 Recovery classes cover interrupted commits at each stage. Recovery repairs structural state but never invents semantic decisions.
 
-In Phase 1, no transaction or recovery logic exists. Agents must not implement locks, staging, commit, or recovery.
+Gate B implements local project locks, material commit receipts, partial post-commit status, and local recovery checks for the material core. Recovery must never invent semantic decisions.
 
 ---
 
@@ -278,16 +278,16 @@ In Phase 1, no security enforcement exists. These rules are governance only.
 
 ## 19. Repository-Contract Test Expectations
 
-Phase 1 repository-contract tests must verify:
+Repository-contract and Gate B material-core tests must verify:
 
 1. Source integrity: every manifest entry matches byte-for-byte
 2. Required architecture Markdown files exist
 3. Working mirrors match immutable copies
 4. All supplied schemas parse and meta-validate as JSON Schema
 5. All supplied examples parse as valid JSON
-6. No command handler modules exist for init, sync, status, or restore
+6. Gate B material records persist and verify without adapter-only protocols
 7. No prohibited imports (networking, databases, message brokers) exist in src/
-8. No product runtime behavior exists in TypeScript or Python packages
+8. No adapter inspection, change cursor, idempotency, lost-response reconciliation, authority, semantic, workflow, projection, hook, or migration runtime exists in core
 
 Test commands:
 
@@ -300,7 +300,7 @@ Test commands:
 
 ## 20. Required Validation Set
 
-The canonical validation set for Phase 1:
+The canonical validation set for the current gate:
 
 | ID  | Command                             | Required Outcome                      |
 | --- | ----------------------------------- | ------------------------------------- |
@@ -375,14 +375,19 @@ Agents must NOT:
 
 ---
 
-## 24. Phase 1 Runtime Statement
+## 24. Gate B Runtime Statement
 
-**Expflow Phase 1 contains no Expflow product runtime implementation.**
+**Expflow Gate B contains a local material-core runtime implementation.**
 
-The TypeScript package (`src/`) implements only:
+The TypeScript package (`src/`) implements:
 
 - Package version export
-- CLI `--help`, `-h`, `--version`, `-v` handling
+- CLI handlers for `init`, `sync`, `status`, and `restore`
+- Local `.expflow/` object, node-revision, tree-revision, validation, receipt, change, and material-head stores
+- Working-tree scanning with `.expflow/**` exclusion
+- Same-path continuity, explicit identity directives, and digest-similarity proposals without silent identity preservation
+- Local project lock, validation, immutable receipts, partial post-commit material success status, recovery cleanup, and restore-source reads
+- Narrow extension host for native operations and read-only committed state
 - Read-only architecture-source and manifest discovery
 - Read-only repository-contract verification
 
@@ -391,7 +396,7 @@ The Python package (`python/expflow_hooks/`) implements only:
 - Package import and `__version__` reporting
 - Read-only discovery of the architecture schema-source directory
 
-No material scanning, storage, mutation, persistence, network access, subprocess-driven product behavior, hook execution, or domain algorithms exist in either package.
+No adapter inspection, composite external revisions, change cursors, adapter idempotency, lost-response reconciliation, authority decisions, semantic stores, workflow detection, projections, hook dispatch, migration runtime, network access, database access, broker access, or subprocess-driven product behavior exists in the core runtime.
 
 ---
 
@@ -445,4 +450,4 @@ tests/                       — Repository-contract tests
 
 ---
 
-_AGENTS.md — Expflow Phase 1 / Gate A. No Expflow product runtime behavior exists._
+_AGENTS.md — Expflow Gate B / Material Core. Adapter, semantic, workflow, projection, hook, and migration behavior remains out of scope._

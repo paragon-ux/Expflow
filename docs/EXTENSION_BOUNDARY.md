@@ -1,6 +1,6 @@
 # Extension Boundary
 
-**Status:** Gate A Phase 2 baseline
+**Status:** Gate B implemented baseline
 
 The core extension host is narrow and separately packaged adapters must stay outside the core repository.
 
@@ -18,6 +18,15 @@ The core extension host is narrow and separately packaged adapters must stay out
 - Undocumented records.
 - Adapter idempotency, cursors, reconciliation, capability policy, or writer partitioning.
 
-## Gate A Constraint
+## Gate B Implementation
 
-Gate A may document extension types and verify that adapter-only contracts remain absent. It must not implement an adapter package or adapter runtime.
+Gate B implements `createExtensionHost(projectRoot)`.
+
+The host exposes:
+
+- `init`, `sync`, `status`, and `restore` native operation invokers;
+- `readProjectState`;
+- `readTreeRevision`;
+- `readOperationReceipt`.
+
+The host does not expose raw `.expflow` paths, store classes, adapter inspection, change cursors, idempotency, lost-response reconciliation, capability policy, or writer partitioning.
