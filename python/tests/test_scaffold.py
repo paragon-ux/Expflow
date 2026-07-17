@@ -16,8 +16,8 @@ from expflow_hooks.discovery import (
 
 
 def test_package_version():
-    """The Python package reports the v1 release version."""
-    assert expflow_hooks.__version__ == "1.0.0"
+    """The Python package reports version 0.0.0-phase.1."""
+    assert expflow_hooks.__version__ == "0.0.0-phase.1"
 
 
 def test_package_imports():

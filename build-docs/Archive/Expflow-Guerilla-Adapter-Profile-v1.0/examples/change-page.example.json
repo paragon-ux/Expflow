@@ -1,0 +1,23 @@
+{
+  "schema_version": "1.0",
+  "project_ref": "expflow:example-project",
+  "from_cursor": null,
+  "changes": [
+    {
+      "schema_version": "1.0",
+      "change_id": "egc_01J00000000000000000000002",
+      "project_ref": "expflow:example-project",
+      "adapter_revision_id": "epr_01J00000000000000000000001",
+      "sequence": 1,
+      "change_type": "head_promoted",
+      "record_family": "trees",
+      "record_ref": "eft_01J00000000000000000000001",
+      "source_digest": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+      "occurred_at": "2026-07-15T15:00:00Z"
+    }
+  ],
+  "next_cursor": "egcur_01J00000000000000000000003",
+  "adapter_revision_id": "epr_01J00000000000000000000001",
+  "has_more": false,
+  "cursor_expires_at": null
+}

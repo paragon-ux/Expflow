@@ -1,0 +1,97 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://expflow.dev/adapters/guerilla/1.0/inspection-response.schema.json",
+  "title": "Revision-Bound Inspection Response",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "project_ref",
+    "at_revision",
+    "records",
+    "family_status",
+    "next_page_token"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "1.0"
+    },
+    "project_ref": {
+      "type": "string"
+    },
+    "at_revision": {
+      "type": "string",
+      "pattern": "^epr_[0-9A-HJKMNP-TV-Z]{26}$"
+    },
+    "records": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "family",
+          "record_ref",
+          "schema_uri",
+          "source_digest",
+          "record"
+        ],
+        "properties": {
+          "family": {
+            "type": "string"
+          },
+          "record_ref": {
+            "type": "string"
+          },
+          "schema_uri": {
+            "type": "string"
+          },
+          "source_digest": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "pattern": "^sha256:[a-f0-9]{64}$"
+          },
+          "record": {}
+        }
+      }
+    },
+    "family_status": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "family",
+          "status"
+        ],
+        "properties": {
+          "family": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "included",
+              "omitted",
+              "unavailable",
+              "truncated"
+            ]
+          },
+          "reason": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        }
+      }
+    },
+    "next_page_token": {
+      "type": [
+        "string",
+        "null"
+      ]
+    }
+  }
+}

@@ -1,6 +1,6 @@
 # Repository Directory Structure
 
-**Status:** authoritative mutable directory-structure control for the v1.0.0 release-candidate revision.
+**Status:** authoritative mutable directory-structure control for the Gate D production-release revision.
 
 This document defines how tracked, untracked, generated, package, and release-facing files should be separated for the current revision. It does not override `AGENTS.md`, immutable architecture sources, package manifests, or validation contracts. It gives release-closeout agents a stable placement rule so cleanup can happen by moving, ignoring, excluding, or curating files rather than deleting useful material.
 
@@ -49,8 +49,9 @@ This document defines how tracked, untracked, generated, package, and release-fa
     architecture/                  tracked immutable architecture source package
     completion_reports/            tracked phase, gate, and release evidence
     orientation/                   tracked mutable System 1/System 2 pass controls
-    release_notes/                 tracked standalone release notes for GitHub/releases
+    phase_prompts/                 tracked phase, gate, and release prompts
     reviews/                       tracked curated PR/review reports when they must persist
+    external_references/           tracked curated external-reference summaries only when required
 
   src/                             tracked TypeScript source
   python/                          tracked Python hook-package source and tests
@@ -83,9 +84,10 @@ Track a file when at least one of these is true:
 Tracked release evidence belongs under `docs/`, not `build-docs/`. Use:
 
 - `docs/completion_reports/` for phase, gate, and release closeout evidence.
+- `docs/phase_prompts/` for reusable handoff prompts and checklists.
 - `docs/orientation/` for System 1/System 2 operating decisions.
-- `docs/release_notes/` for standalone GitHub or package-release notes.
 - `docs/reviews/` for curated PR review reports that should remain versioned.
+- `docs/external_references/` for curated external-reference summaries that should remain versioned.
 
 ## Untracked Placement Rules
 
@@ -105,13 +107,14 @@ Do not delete these files during release cleanup. Leave them untracked, ignore t
 
 ## Build-Docs Split Rule
 
-For this revision, `build-docs/` is local/untracked by default. The tracked source tree should contain no `build-docs/**` paths.
+For this revision, `build-docs/` is local/untracked by default.
 
 If a file currently under `build-docs/` must remain tracked, move or copy its curated content to one of these tracked locations during release closeout:
 
 - `docs/reviews/` for PR review reports.
 - `docs/completion_reports/` for formal closeout evidence.
-- `docs/release_notes/` for GitHub or package release notes.
+- `docs/external_references/` for stable summaries of locked external architectures.
+- `docs/phase_prompts/` for reusable release or gate handoff prompts.
 
 After the curated tracked copy exists, the original local packet can remain under `build-docs/` as untracked local reference material. Do not delete it. Do not run `git rm --cached` on tracked `build-docs/**` files unless the release report names the exact paths, explains the tracked replacement, and the user approves untracking.
 
@@ -141,8 +144,7 @@ The source repository and package contents are not the same surface.
 Use this checklist during the Gate D production release closeout:
 
 - Confirm all tracked release evidence lives under `docs/`.
-- Confirm `git ls-files build-docs .reasonix` returns no paths.
-- Identify any tracked `build-docs/**` paths and move curated content into `docs/` before untracking the local reference packet.
+- Identify any tracked `build-docs/**` paths and decide whether to move curated content into `docs/` or keep them as an explicit tracked exception.
 - Identify untracked local/reference files and place them under local-only directories without deletion.
 - Update `.gitignore` or local exclude rules only after deciding which directories are intentionally local-only.
 - Verify package manifests exclude local-only directories.

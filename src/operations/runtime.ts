@@ -3,7 +3,6 @@ import { ExpflowError, toExpflowError } from '../core/errors.js';
 import { createExpflowId } from '../core/ids.js';
 import { cloneJson } from '../core/json.js';
 import { normalizeProjectRoot, PROJECTION_ROOT } from '../core/paths.js';
-import { VERSION } from '../core/version.js';
 import { scanWorkingTree, defaultPathSelector } from '../scan/scanner.js';
 import { treeContentDigest } from '../material/digest.js';
 import { planCandidateTree } from '../material/planner.js';
@@ -172,7 +171,7 @@ function validationResult(
     status,
     validation_id: createExpflowId('efv'),
     validator: 'expflow-core-material',
-    validator_version: VERSION,
+    validator_version: '0.0.0-gate-b',
   };
 }
 

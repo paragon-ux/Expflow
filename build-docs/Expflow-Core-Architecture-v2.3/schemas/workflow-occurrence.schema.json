@@ -1,0 +1,165 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://expflow.dev/schemas/2.3/workflow-occurrence.schema.json",
+  "title": "Workflow Occurrence",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "workflow_occurrence_id",
+    "project_id",
+    "input_tree_revision_id",
+    "input_path_selector",
+    "start_operation_id",
+    "authority_source_revision_refs",
+    "material_status",
+    "completion_status",
+    "verification_status",
+    "reuse_status",
+    "created_at"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "2.3"
+    },
+    "workflow_occurrence_id": {
+      "type": "string",
+      "pattern": "^efw_[0-9A-HJKMNP-TV-Z]{26}$"
+    },
+    "project_id": {
+      "type": "string",
+      "pattern": "^efp_[0-9A-HJKMNP-TV-Z]{26}$"
+    },
+    "input_tree_revision_id": {
+      "type": "string",
+      "pattern": "^eft_[0-9A-HJKMNP-TV-Z]{26}$"
+    },
+    "input_path_selector": {
+      "$ref": "path-selector.schema.json"
+    },
+    "output_tree_revision_id": {
+      "anyOf": [
+        {
+          "type": "string",
+          "pattern": "^eft_[0-9A-HJKMNP-TV-Z]{26}$"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "output_path_selector": {
+      "anyOf": [
+        {
+          "$ref": "path-selector.schema.json"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "start_operation_id": {
+      "type": "string",
+      "pattern": "^efo_[0-9A-HJKMNP-TV-Z]{26}$"
+    },
+    "completion_operation_id": {
+      "anyOf": [
+        {
+          "type": "string",
+          "pattern": "^efo_[0-9A-HJKMNP-TV-Z]{26}$"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "authority_source_revision_refs": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "authority_document_refs": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "virtual_artifact_refs": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "material_status": {
+      "type": "string",
+      "enum": [
+        "inputs_pinned",
+        "outputs_present",
+        "outputs_incomplete"
+      ]
+    },
+    "completion_status": {
+      "type": "string",
+      "enum": [
+        "none",
+        "asserted",
+        "accepted",
+        "rejected",
+        "conflicted"
+      ]
+    },
+    "verification_status": {
+      "type": "string",
+      "enum": [
+        "not_evaluated",
+        "passed",
+        "failed",
+        "partial"
+      ]
+    },
+    "reuse_status": {
+      "type": "string",
+      "enum": [
+        "not_evaluated",
+        "eligible",
+        "approved",
+        "rejected"
+      ]
+    },
+    "completion_assertion_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "completion_decision_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "verification_decision_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "reuse_decision_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "supersedes_occurrence_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    }
+  }
+}

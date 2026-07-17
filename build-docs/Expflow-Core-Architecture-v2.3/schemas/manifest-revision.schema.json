@@ -1,0 +1,184 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://expflow.dev/schemas/2.3/manifest-revision.schema.json",
+  "title": "Versioned Manifest Revision",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "manifest_revision_id",
+    "manifest_kind",
+    "project_id",
+    "tree_revision_id",
+    "readable_locator",
+    "content_digest",
+    "status",
+    "projector_class",
+    "projector_name",
+    "projector_version",
+    "source_refs",
+    "source_decision_refs",
+    "created_at"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "2.3"
+    },
+    "manifest_revision_id": {
+      "type": "string",
+      "pattern": "^efm_[0-9A-HJKMNP-TV-Z]{26}$"
+    },
+    "manifest_kind": {
+      "type": "string",
+      "enum": [
+        "import_tree",
+        "workflow_time_import_export",
+        "source_correspondence"
+      ]
+    },
+    "project_id": {
+      "type": "string",
+      "pattern": "^efp_[0-9A-HJKMNP-TV-Z]{26}$"
+    },
+    "tree_revision_id": {
+      "type": "string",
+      "pattern": "^eft_[0-9A-HJKMNP-TV-Z]{26}$"
+    },
+    "workflow_occurrence_id": {
+      "anyOf": [
+        {
+          "type": "string",
+          "pattern": "^efw_[0-9A-HJKMNP-TV-Z]{26}$"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "readable_locator": {
+      "type": "string",
+      "pattern": "^\\.expflow/projections/"
+    },
+    "content_digest": {
+      "type": "string",
+      "pattern": "^sha256:[a-f0-9]{64}$"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "generated",
+        "proposed",
+        "accepted",
+        "rejected",
+        "stale",
+        "superseded",
+        "conflicted"
+      ]
+    },
+    "projector_class": {
+      "type": "string",
+      "enum": [
+        "deterministic_template",
+        "model_assisted"
+      ]
+    },
+    "projector_name": {
+      "type": "string"
+    },
+    "projector_version": {
+      "type": "string"
+    },
+    "model": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "prompt_digest": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "pattern": "^sha256:[a-f0-9]{64}$"
+    },
+    "source_refs": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "source_decision_refs": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "accepted_by": {
+      "anyOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "kind",
+            "name"
+          ],
+          "properties": {
+            "kind": {
+              "type": "string",
+              "enum": [
+                "user",
+                "agent",
+                "policy",
+                "integration",
+                "model",
+                "system"
+              ]
+            },
+            "name": {
+              "type": "string",
+              "minLength": 1
+            },
+            "version": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "model": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          }
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "accepted_at": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
+    "superseded_by": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "stale_reason": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  }
+}

@@ -1,6 +1,7 @@
 {
   "name": "expflow",
-  "version": "1.0.0",
+  "version": "0.0.0-gate-d",
+  "private": true,
   "description": "Expflow - schema-governed, local-first workflow ownership and observability platform",
   "type": "module",
   "main": "./dist/index.js",
@@ -59,9 +60,5 @@
     "type": "git",
     "url": "https://github.com/paragon-ux/Expflow.git"
   },
-  "homepage": "https://github.com/paragon-ux/Expflow#readme",
-  "bugs": {
-    "url": "https://github.com/paragon-ux/Expflow/issues"
-  },
-  "license": "MIT"
+  "license": "UNLICENSED"
 }

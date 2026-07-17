@@ -1,0 +1,97 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://expflow.dev/schemas/2.3/node-revision.schema.json",
+  "title": "Immutable Material Node Revision",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "node_id",
+    "revision",
+    "original_filename",
+    "object_locator",
+    "content_digest",
+    "byte_size",
+    "storage_method",
+    "created_at",
+    "created_by_operation",
+    "continuity_basis"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "2.3"
+    },
+    "node_id": {
+      "type": "string",
+      "pattern": "^efn_[0-9A-HJKMNP-TV-Z]{26}$"
+    },
+    "revision": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "previous_revision": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "minimum": 1
+    },
+    "original_filename": {
+      "type": "string",
+      "minLength": 1
+    },
+    "media_type": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "object_locator": {
+      "type": "string",
+      "minLength": 1
+    },
+    "content_digest": {
+      "type": "string",
+      "pattern": "^sha256:[a-f0-9]{64}$"
+    },
+    "byte_size": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "storage_method": {
+      "type": "string",
+      "enum": [
+        "copy",
+        "reflink"
+      ]
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "created_by_operation": {
+      "type": "string",
+      "pattern": "^efo_[0-9A-HJKMNP-TV-Z]{26}$"
+    },
+    "source_kind": {
+      "type": "string",
+      "enum": [
+        "working_tree",
+        "historical_restore",
+        "external_import",
+        "generated_materialization",
+        "migration"
+      ]
+    },
+    "continuity_basis": {
+      "type": "string",
+      "enum": [
+        "new_explicit",
+        "same_path_default",
+        "preserve_explicit",
+        "replace_explicit",
+        "migration_declared"
+      ]
+    }
+  }
+}
