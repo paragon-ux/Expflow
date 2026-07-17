@@ -1,6 +1,6 @@
 # Test Matrix
 
-**Status:** Gate D validation baseline
+**Status:** Gate D validation baseline with native hardening closure
 
 ## Validation Commands
 
@@ -40,18 +40,18 @@
 
 ## Gate B Coverage
 
-| Area                          | Evidence                                                                  |
-| ----------------------------- | ------------------------------------------------------------------------- |
-| Immutable material stores     | `tests/unit/material-runtime.test.ts`                                     |
-| Object integrity              | Corruption verification test                                              |
-| Tree-content digest path      | Runtime tree revision creation and status clean/drift checks              |
-| Sync and identity             | Same-path, explicit move, explicit new-node, and digest proposal tests    |
-| Scoped selectors              | Selector-root sync keeps out-of-scope entries unchanged                   |
-| Transactions and receipts     | Stale-head guard, lock path, receipt status, and partial post-commit test |
-| Core recovery                 | Uncommitted staging cleanup and committed receipt/head-gap reconciliation |
-| Restore-source reads          | Tree restore reconciliation removes files absent from the restored tree   |
-| Extension host boundary       | `tests/unit/extension-host.test.ts`                                       |
-| Adapter-only contracts absent | `tests/unit/prohibited-scope.test.ts`                                     |
+| Area                          | Evidence                                                                                                                                                  |
+| ----------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Immutable material stores     | `tests/unit/material-runtime.test.ts`                                                                                                                     |
+| Object integrity              | Corruption verification test                                                                                                                              |
+| Tree-content digest path      | Runtime tree revision creation and status clean/drift checks                                                                                              |
+| Sync and identity             | Same-path, explicit move, explicit new-node, and digest proposal tests                                                                                    |
+| Scoped selectors              | Selector-root sync keeps out-of-scope entries unchanged                                                                                                   |
+| Transactions and receipts     | Stale-head guard, staged immutable promotion, receipt status, and partial post-commit test                                                                |
+| Core recovery                 | Uncommitted staging cleanup, real sync/init/restore interruption tests, stale/live lock classification, and committed receipt/head/project reconciliation |
+| Restore-source reads          | Tree restore reconciliation removes files absent from the restored tree and recovery completes interrupted installs                                       |
+| Extension host boundary       | `tests/unit/extension-host.test.ts`                                                                                                                       |
+| Adapter-only contracts absent | `tests/unit/prohibited-scope.test.ts`                                                                                                                     |
 
 ## Gate C Coverage
 
@@ -82,5 +82,6 @@
 | Generated-code non-execution     | default policy rejects generated-code execution                                                   |
 | Licensing restrictions           | reuse policy rejects blocked license and reuse labels                                             |
 | Legacy migration                 | typed-folder migration test preserves files and reports no authority fabrication                  |
+| Native durability closure        | `tests/unit/material-runtime.test.ts` covers F1-F7 from the Gate D hardening review               |
 | End-to-end proof                 | `tests/e2e/gate-d-proof.test.ts` covers 25 workflow-required proof scenarios                      |
 | Adapter boundary                 | prohibited-scope and e2e tests prove adapter-only protocols remain absent                         |

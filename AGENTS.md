@@ -168,7 +168,7 @@ The following contracts are explicitly excluded from the Expflow core repository
 - Capability policy and writer partitioning
 - Adapter operation attempts, outcomes, and recovery records
 
-These belong to separately versioned adapter profiles. Agents must not create adapter packages, adapter schemas, or adapter code within the Expflow core repository. The `build-docs/Expflow-Guerilla-Adapter-Profile-v1.0/` directory is a reference only; do not import or depend on it.
+These belong to separately versioned adapter profiles. Agents must not create adapter packages, adapter schemas, or adapter code within the Expflow core repository. The former Guerilla Phase 16 adapter profile is archived local reference material under `build-docs/Archive/`. The locked Guerilla universal-hook architecture under `build-docs/Guerilla-Universal-Hook-Architecture-Revision-Final/` is compatibility reference material only; do not import or depend on it.
 
 ---
 
@@ -209,7 +209,7 @@ Each material transaction:
 
 Recovery classes cover interrupted commits at each stage. Recovery repairs structural state but never invents semantic decisions.
 
-Gate B implements local project locks, material commit receipts, partial post-commit status, and local recovery checks for the material core. Recovery must never invent semantic decisions.
+Gate B implements local project locks, material commit receipts, partial post-commit status, and local recovery checks for the material core. Gate D hardening closure adds operation-scoped staging, recoverable init/restore intents, stale-lock liveness classification, and receipt-based repair for mutable material heads. Recovery must never invent semantic decisions.
 
 ---
 
@@ -287,7 +287,7 @@ Repository-contract, Gate B material-core, and Gate C ownership/reproduction tes
 5. All supplied examples parse as valid JSON
 6. Gate B material records persist and verify without adapter-only protocols
 7. No prohibited imports (networking, databases, message brokers) exist in src/
-8. No adapter inspection, change cursor, idempotency, lost-response reconciliation, semantic, workflow, projection, hook, or migration runtime exists in core
+8. No adapter inspection, change cursor, idempotency, lost-response reconciliation, hook dispatch, network, database, broker, or Guerilla-specific runtime exists in core
 9. Authority descriptors remain proposed until accepted by immutable source-registration decisions
 10. Current authority state is derived from decisions, supersession, effective intervals, and source-scope conflicts
 11. Semantic assertions remain distinct from decisions and conflicts remain visible
@@ -396,6 +396,7 @@ The TypeScript package (`src/`) implements:
 - Working-tree scanning with `.expflow/**` exclusion
 - Same-path continuity, explicit identity directives, and digest-similarity proposals without silent identity preservation
 - Local project lock, validation, immutable receipts, partial post-commit material success status, recovery cleanup, and restore-source reads
+- Operation-scoped staging, recoverable init/restore intents, stale-lock liveness classification, durable immutable-record promotion, and receipt-based `HEAD`/project metadata repair
 - Narrow extension host for native operations and read-only committed state
 - Library authority runtime for source revisions, source-registration decisions, readable authority documents, current-source projection, and authority scope-conflict checks
 - Library semantic runtime for assertions, decisions, conflicts, review requests, source correspondence, artifact clusters, and semantic change listing
@@ -413,7 +414,7 @@ The Python package (`python/expflow_hooks/`) implements only:
 - Package import and `__version__` reporting
 - Read-only discovery of the architecture schema-source directory
 
-No adapter inspection, composite external revisions, adapter change cursors, adapter idempotency, adapter lost-response reconciliation, hook dispatch, network access, database access, broker access, or subprocess-driven product behavior exists in the core runtime.
+No adapter inspection, composite external revisions, adapter change cursors, adapter idempotency, adapter lost-response reconciliation, Guerilla hook dispatch, network access, database access, broker access, or subprocess-driven product behavior exists in the core runtime.
 
 ---
 

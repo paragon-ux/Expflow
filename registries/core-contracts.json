@@ -53,6 +53,7 @@
     "hook_output_invalid",
     "hook_timeout",
     "idempotency_conflict",
+    "immutable_record_conflict",
     "internal_error",
     "license_restriction",
     "manifest_acceptance_required",

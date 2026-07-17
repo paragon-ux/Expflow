@@ -8,7 +8,7 @@ import {
   rmSync,
   writeFileSync,
 } from 'node:fs';
-import { tmpdir } from 'node:os';
+import { hostname, tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 import { createRuntime } from '../../src/operations/runtime.js';
 import { ExpflowError } from '../../src/core/errors.js';
@@ -16,6 +16,7 @@ import {
   objectPathForDigest,
   readHead,
   readNodeRevision,
+  readProject,
   readTreeRevision,
   storePaths,
   updateProjectHead,
@@ -232,6 +233,175 @@ describe('Gate B material runtime', () => {
       );
       expect(readHead(root)).toBe(syncReceipt.new_head);
     } finally {
+      cleanup(root);
+    }
+  });
+
+  it('recovers sync from a real interruption after immutable material records commit', async () => {
+    const root = tempProject();
+    try {
+      writeProjectFile(root, 'a.txt', 'one');
+      const runtime = createRuntime();
+      const initReceipt = await runtime.init({ root });
+
+      writeProjectFile(root, 'a.txt', 'two');
+      await expect(
+        runtime.sync({ root, simulateFailureAt: 'after_material_records' }),
+      ).rejects.toThrow(ExpflowError);
+      expect(readHead(root)).toBe(initReceipt.new_head);
+
+      const recovery = await runtime.recover({ root });
+      expect(recovery.findings).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({
+            recovery_class: 'tree_committed_head_not_advanced',
+            repaired: true,
+          }),
+        ]),
+      );
+      expect(readHead(root)).not.toBe(initReceipt.new_head);
+      expect((await runtime.status({ root })).working_tree_state).toBe('clean');
+    } finally {
+      cleanup(root);
+    }
+  });
+
+  it('recovers interrupted init publication after material records commit', async () => {
+    const root = tempProject();
+    try {
+      writeProjectFile(root, 'a.txt', 'one');
+      const runtime = createRuntime();
+
+      await expect(
+        runtime.init({ root, simulateFailureAt: 'after_material_records' }),
+      ).rejects.toThrow(ExpflowError);
+      expect(existsSync(storePaths(root).project)).toBe(false);
+
+      const recovery = await runtime.recover({ root });
+      expect(recovery.findings).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({
+            recovery_class: 'init_publication_incomplete',
+            repaired: true,
+          }),
+        ]),
+      );
+      expect(readProject(root).head_tree_revision_id).toBe(readHead(root));
+      expect((await runtime.status({ root })).working_tree_state).toBe('clean');
+    } finally {
+      cleanup(root);
+    }
+  });
+
+  it('recovers interrupted restore working-tree installation', async () => {
+    const root = tempProject();
+    try {
+      writeProjectFile(root, 'a.txt', 'one');
+      const runtime = createRuntime();
+      const initReceipt = await runtime.init({ root });
+
+      writeProjectFile(root, 'a.txt', 'two');
+      writeProjectFile(root, 'b.txt', 'added later');
+      const laterReceipt = await runtime.sync({ root });
+
+      await expect(
+        runtime.restore({
+          reference: `tree:${initReceipt.new_head ?? ''}`,
+          root,
+          simulateFailureAt: 'after_restore_delete',
+        }),
+      ).rejects.toThrow(ExpflowError);
+      expect(readHead(root)).toBe(laterReceipt.new_head);
+      expect(readFileSync(resolve(root, 'a.txt'), 'utf-8')).toBe('two');
+      expect(existsSync(resolve(root, 'b.txt'))).toBe(false);
+
+      const recovery = await runtime.recover({ root });
+      expect(recovery.findings).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({
+            recovery_class: 'restore_working_tree_incomplete',
+            repaired: true,
+          }),
+        ]),
+      );
+      expect(readFileSync(resolve(root, 'a.txt'), 'utf-8')).toBe('one');
+      expect(existsSync(resolve(root, 'b.txt'))).toBe(false);
+      expect((await runtime.status({ root })).working_tree_state).toBe('clean');
+    } finally {
+      cleanup(root);
+    }
+  });
+
+  it('repairs project metadata when it diverges from HEAD', async () => {
+    const root = tempProject();
+    try {
+      writeProjectFile(root, 'a.txt', 'one');
+      const runtime = createRuntime();
+      const initReceipt = await runtime.init({ root });
+
+      writeProjectFile(root, 'a.txt', 'two');
+      const syncReceipt = await runtime.sync({ root });
+      updateProjectHead(root, initReceipt.new_head);
+      expect(readHead(root)).toBe(syncReceipt.new_head);
+      expect(readProject(root).head_tree_revision_id).toBe(initReceipt.new_head);
+
+      const recovery = await runtime.recover({ root });
+      expect(recovery.findings).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({
+            recovery_class: 'material_head_diverged',
+            repaired: true,
+          }),
+        ]),
+      );
+      expect(readProject(root).head_tree_revision_id).toBe(syncReceipt.new_head);
+    } finally {
+      cleanup(root);
+    }
+  });
+
+  it('classifies stale and live project locks without age-based deletion', async () => {
+    const root = tempProject();
+    try {
+      writeProjectFile(root, 'a.txt', 'one');
+      const runtime = createRuntime();
+      await runtime.init({ root });
+
+      writeFileSync(
+        storePaths(root).lock,
+        JSON.stringify({
+          acquired_at: new Date().toISOString(),
+          host: hostname(),
+          pid: 99999999,
+          runtime: 'expflow-core',
+        }),
+        'utf-8',
+      );
+      const stale = await runtime.recover({ root });
+      expect(stale.findings).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({ recovery_class: 'stale_lock', repaired: true }),
+        ]),
+      );
+      expect(existsSync(storePaths(root).lock)).toBe(false);
+
+      writeFileSync(
+        storePaths(root).lock,
+        JSON.stringify({
+          acquired_at: new Date().toISOString(),
+          host: hostname(),
+          pid: process.pid,
+          runtime: 'expflow-core',
+        }),
+        'utf-8',
+      );
+      const live = await runtime.recover({ root });
+      expect(live.findings).toEqual([
+        expect.objectContaining({ recovery_class: 'live_lock', repaired: false }),
+      ]);
+      expect(existsSync(storePaths(root).lock)).toBe(true);
+    } finally {
+      rmSync(storePaths(root).lock, { force: true });
       cleanup(root);
     }
   });

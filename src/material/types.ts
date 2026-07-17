@@ -184,6 +184,33 @@ export interface StatusReportRecord {
   readonly recommended_action?: string | null;
 }
 
+export interface InitRecoveryIntentRecord {
+  readonly schema_version: '2.3';
+  readonly intent_type: 'init_project';
+  readonly operation_id: string;
+  readonly project: ProjectRecord;
+  readonly target_head: string;
+  readonly created_at: string;
+}
+
+export interface RestoreFileIntentRecord {
+  readonly relative_path: string;
+  readonly content_digest: string;
+}
+
+export interface RestoreRecoveryIntentRecord {
+  readonly schema_version: '2.3';
+  readonly intent_type: 'restore_working_tree';
+  readonly operation_id: string;
+  readonly previous_head: string | null;
+  readonly target_head: string;
+  readonly delete_paths: readonly string[];
+  readonly write_files: readonly RestoreFileIntentRecord[];
+  readonly created_at: string;
+}
+
+export type RecoveryIntentRecord = InitRecoveryIntentRecord | RestoreRecoveryIntentRecord;
+
 export interface ScannedFile {
   readonly relative_path: string;
   readonly absolute_path: string;

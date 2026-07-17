@@ -1,6 +1,6 @@
 # Codex Build Plan
 
-**Status:** Gate D complete locally on `codex/gate-d-hardening`
+**Status:** Gate D native hardening closure on `codex/gate-d-hardening-review-format`
 **Workflow SSOT:** `docs/architecture/EXPFLOW_WORKFLOW_CURRENT.md`
 
 ## Current Path
@@ -14,13 +14,14 @@
 7. Phase 13 -- Regeneration and Equivalence Evaluation: regeneration attempts, unknown-outcome preservation, and equivalence evaluations.
 8. Phase 14 -- Structural Reuse: reuse results, policy gates, output workflow references, and no-transfer behavior.
 9. Gate C Exit: complete and merged to `main` through PR #5.
-10. Gate D -- Security, migration, packaging hardening, and end-to-end proof.
-11. Next step after validation: PR review and hosted checks for Gate D.
+10. Gate D -- Security, migration, packaging hardening, and end-to-end proof: complete and merged through PR #6.
+11. Gate D native hardening closure -- staged immutable promotion, init/restore recovery intents, stale-lock classification, and material-head repair.
+12. Next step after validation: closure PR review and hosted checks.
 
 ## Execution Rules
 
 - Do not modify immutable `docs/architecture/**` sources.
 - Gate C record families are library runtimes, not new ordinary commands.
-- Do not add adapter inspection, change cursors, idempotency, lost-response reconciliation, hook dispatch, network services, databases, or brokers.
+- Do not add adapter inspection, change cursors, idempotency, lost-response reconciliation, Guerilla hook dispatch, network services, databases, or brokers.
 - Keep `docs/CURRENT_STATUS_MATRIX.md` mutable and outside validation.
 - Update completion evidence with actual command results only.

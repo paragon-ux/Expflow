@@ -1,4 +1,12 @@
-import { closeSync, mkdirSync, openSync, readFileSync, renameSync, writeFileSync } from 'node:fs';
+import {
+  closeSync,
+  fsyncSync,
+  mkdirSync,
+  openSync,
+  readFileSync,
+  renameSync,
+  writeFileSync,
+} from 'node:fs';
 import { dirname } from 'node:path';
 
 export type JsonPrimitive = string | number | boolean | null;
@@ -35,21 +43,43 @@ export function readJsonFile(path: string): unknown {
   return JSON.parse(readFileSync(path, 'utf-8')) as unknown;
 }
 
+export function syncDirectory(path: string): void {
+  try {
+    const fd = openSync(path, 'r');
+    try {
+      fsyncSync(fd);
+    } finally {
+      closeSync(fd);
+    }
+  } catch {
+    // Directory fsync is not supported consistently on every filesystem/OS.
+  }
+}
+
 export function writeJsonFileExclusive(path: string, value: unknown): void {
   mkdirSync(dirname(path), { recursive: true });
   const fd = openSync(path, 'wx');
   try {
     writeFileSync(fd, prettyJson(value), 'utf-8');
+    fsyncSync(fd);
   } finally {
     closeSync(fd);
   }
+  syncDirectory(dirname(path));
 }
 
 export function writeJsonFileAtomic(path: string, value: unknown): void {
   mkdirSync(dirname(path), { recursive: true });
   const tempPath = `${path}.${String(process.pid)}.${String(Date.now())}.tmp`;
-  writeFileSync(tempPath, prettyJson(value), 'utf-8');
+  const fd = openSync(tempPath, 'w');
+  try {
+    writeFileSync(fd, prettyJson(value), 'utf-8');
+    fsyncSync(fd);
+  } finally {
+    closeSync(fd);
+  }
   renameSync(tempPath, path);
+  syncDirectory(dirname(path));
 }
 
 export function cloneJson<T>(value: T): T {

@@ -76,3 +76,17 @@ Before marking any future gate complete, reviewers should ask:
 5. Did the gate add only the evidence needed for its owning behavior?
 
 If any answer is no, the fix is to correct the claim, add a slot, or move the obligation to the owning gate. The default fix is not to expand the current gate.
+
+## ADR-S2-002 Universal Hook Compatibility Boundary
+
+### Issue
+
+The Guerilla universal-hook architecture replaces the archived bespoke-adapter direction, which can make Expflow review findings look like integration work rather than native core work.
+
+### Decision
+
+Expflow remains authoritative for native material transactions, restore behavior, project locks, immutable record promotion, material heads, and recovery. A future Guerilla `expflow.cli.v1` profile may classify commands, bracket invocation, capture observations, and resynchronize evidence, but it must not repair Expflow-native partial restores, stale locks, corrupt immutable paths, or `HEAD`/`project.json` divergence.
+
+### Review Response
+
+Fix Expflow-owned durability defects inside Expflow core without adding Guerilla hook dispatch, provider drivers, adapter idempotency, external cursors, network services, or lost-response reconciliation. Treat the locked Guerilla hook revision as a compatibility boundary reference, not as an Expflow deliverable.
