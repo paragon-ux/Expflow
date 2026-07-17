@@ -72,7 +72,7 @@ None.
 
 ## Git Summary
 
-- Repository root: `C:/Users/USER/Desktop/Frameworks/Expflow`
+- Repository root: local repository checkout
 - Branch: `feature/expflow-gate-a-status-matrix`
 - Gate A implementation commit: `b8e06874d6ddcbf5655da51dbf362498b276e8c6`
 - Base: `origin/main`
