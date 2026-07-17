@@ -1,9 +1,9 @@
 # Current Status Matrix
 
 **Status:** Gate C complete locally -- PR update pending
-**Last updated:** 2026-07-16  
-**Current baseline:** `main` at `00373ff55690d153d301057b34175c5ff8f9068f`; Gate B PR #4 review-clean at `5fe54ec67ade75b283636181b0b2fce59e498072`; Gate C work on `feature/expflow-gate-c-authority-model`  
-**Workflow SSOT:** `docs/architecture/EXPFLOW_WORKFLOW_CURRENT.md`  
+**Last updated:** 2026-07-16
+**Current baseline:** `main` at `00373ff55690d153d301057b34175c5ff8f9068f`; Gate B PR #4 review-clean at `5fe54ec67ade75b283636181b0b2fce59e498072`; Gate C work on `feature/expflow-gate-c-authority-model`
+**Workflow SSOT:** `docs/architecture/EXPFLOW_WORKFLOW_CURRENT.md`
 **Evidence:** [Gate A completion report](completion_reports/GATE_A_COMPLETION_REPORT.md), [Gate B completion report](completion_reports/GATE_B_COMPLETION_REPORT.md), [Phase 9 completion report](completion_reports/PHASE_09_COMPLETION_REPORT.md), [PR #4](https://github.com/paragon-ux/Expflow/pull/4), [PR #5](https://github.com/paragon-ux/Expflow/pull/5)
 
 **Orientation:** Mutable pass-start controls live in [docs/orientation/](orientation/README.md) and are intentionally excluded from stable contract validation.
@@ -104,7 +104,7 @@ Current local evidence under the requested 60-second command cap:
 - `python -m pytest`;
 - `python -m build --wheel`;
 - `python tests/contracts/verify_python_wheel.py`;
-- `git diff --check -- ':!docs/architecture/**'`.
+- `git diff --check origin/main...HEAD -- ':!docs/architecture/**'`.
 
 The aggregate `npm run validate` command is not claimed as a pass under the explicit 60-second cap.
 

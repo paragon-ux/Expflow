@@ -41,7 +41,7 @@ Final component validation was run under the requested 60-second command cap.
 | `python -m pytest`                                                                   |         0 | PASS   | 9 Python tests passed                                                                                     |
 | `python -m build --wheel`                                                            |         0 | PASS   | `expflow_hooks-0.0.0.dev1-py3-none-any.whl` built                                                         |
 | `python tests/contracts/verify_python_wheel.py`                                      |         0 | PASS   | Wheel imports outside checkout, excludes tests, enforces repo-only discovery, and reports `0.0.0-phase.1` |
-| `git diff --check -- ':!docs/architecture/**'`                                       |         0 | PASS   | Working diff has no whitespace errors outside immutable architecture sources                              |
+| `git diff --check origin/main...HEAD -- ':!docs/architecture/**'`                    |         0 | PASS   | Branch diff has no whitespace errors outside immutable architecture sources                               |
 
 ## Exit-Criteria Matrix
 
@@ -94,7 +94,7 @@ None locally. PR #5 is stacked on PR #4; hosted-check behavior depends on whethe
 ## Git Summary
 
 - Branch: `feature/expflow-gate-c-authority-model`
-- Commit: `COMMIT_PENDING`
+- Commit: `c44594e4e3f14561ae6d914df72efe4687d5d442`
 - PR: [#5 Gate C Phase 9 authority model](https://github.com/paragon-ux/Expflow/pull/5), to be updated for full Gate C
 - Base: `feature/expflow-gate-b-material-core`
 

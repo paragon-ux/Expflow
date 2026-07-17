@@ -48,7 +48,7 @@ None.
 ## Git Summary
 
 - Branch: `feature/expflow-gate-c-authority-model`
-- Commit: `COMMIT_PENDING`
+- Commit: `c44594e4e3f14561ae6d914df72efe4687d5d442`
 - PR: [#5 Gate C Phase 9 authority model](https://github.com/paragon-ux/Expflow/pull/5), to be updated for full Gate C
 
 ## Handoff
