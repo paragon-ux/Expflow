@@ -71,14 +71,14 @@ Final validation was run under the requested 60-second command cap using compone
 
 ## Blockers and Contradictions
 
-None locally. Hosted checks require a Gate D PR.
+None locally. Hosted checks are pending on PR #6.
 
 ## Git Summary
 
 - Branch: `codex/gate-d-hardening`
 - Base: `main` at `17fb82a083399f1228c556ff2d3b82455e42a8de`
-- PR: pending
+- PR: [#6 Gate D hardening and proof](https://github.com/paragon-ux/Expflow/pull/6)
 
 ## Handoff
 
-Gate D is locally complete and ready for PR review/hosted validation.
+Gate D is locally complete and open for PR review/hosted validation in PR #6.
