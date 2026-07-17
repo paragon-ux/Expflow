@@ -31,14 +31,15 @@ The release branch intentionally incorporates the Gate D native hardening closur
 
 ## Legal And License Decision
 
-| Area                   | Status       | Evidence                                                                                   |
-| ---------------------- | ------------ | ------------------------------------------------------------------------------------------ |
-| Owner license decision | PASS         | MIT selected by owner for v1.                                                              |
-| Root license file      | PASS         | `LICENSE` contains MIT license text for Paragon UX.                                        |
-| npm metadata           | PASS         | `package.json` and `package-lock.json` use `license: MIT`.                                 |
-| Python metadata        | PASS         | `pyproject.toml` uses `license = "MIT"` and includes `LICENSE` in the wheel.               |
-| Unlicensed metadata    | PASS         | No active package metadata retains `UNLICENSED` or `LicenseRef-UNLICENSED`.                |
-| NOTICE                 | NOT REQUIRED | MIT release does not require a NOTICE file for this repository's current metadata posture. |
+| Area                   | Status       | Evidence                                                                                                              |
+| ---------------------- | ------------ | --------------------------------------------------------------------------------------------------------------------- |
+| Owner license decision | PASS         | MIT selected by owner for v1.                                                                                         |
+| Root license file      | PASS         | `LICENSE` contains MIT license text for Paragon UX.                                                                   |
+| npm metadata           | PASS         | `package.json` and `package-lock.json` use `license: MIT`.                                                            |
+| Python metadata        | PASS         | `pyproject.toml` uses `license = "MIT"` and includes `LICENSE` in the wheel.                                          |
+| Unlicensed metadata    | PASS         | No active package metadata retains `UNLICENSED` or `LicenseRef-UNLICENSED`.                                           |
+| Source reuse policy    | PASS         | `UNLICENSED` remains accepted by the default source-reuse allowlist; stricter callers can override `allowedLicenses`. |
+| NOTICE                 | NOT REQUIRED | MIT release does not require a NOTICE file for this repository's current metadata posture.                            |
 
 ## Package Metadata Changes
 
@@ -50,7 +51,7 @@ The release branch intentionally incorporates the Gate D native hardening closur
 
 ## Documentation Changes
 
-- `README.md` now presents Expflow v1.0.0 release scope, install steps, command surface, repository map, validation, and MIT license.
+- `README.md` now presents a CI badge, Expflow v1.0.0 release scope, quickstart, workflow, command table, delegated boundaries, repository map, validation, documentation links, and MIT license.
 - `README_DEV.md` now presents v1 release-candidate setup and validation.
 - `CHANGELOG.md` records v1.0.0 outcomes.
 - `docs/release_notes/GITHUB_RELEASE_NOTE_V1_0_0.md` provides standalone text for a GitHub release.
@@ -66,6 +67,9 @@ The release branch intentionally incorporates the Gate D native hardening closur
 | F1 status matrix conflated Gate D Phase 16 package evidence with post-Gate-D v1 release metadata                  | FIXED  | `docs/CURRENT_STATUS_MATRIX.md` now keeps Gate D Phase 16 on the original `0.0.0-gate-d` package identity and records `1.0.0` MIT metadata as release-closeout evidence.                                            |
 | F2 agent governance validation list was narrower than the release-closeout required validation set                | FIXED  | `AGENTS.md` now includes registry verification, schema example validation, fixture verification, wheel import verification, and release diff whitespace validation in the current required set and quick reference. |
 | F3 README overclaimed production status while the release report classifies the branch as release-candidate-ready | FIXED  | `README.md` now says v1.0.0 is release-candidate-ready for implemented local core surfaces.                                                                                                                         |
+| F4 setuptools lower bound did not guarantee PEP 639 license metadata support                                      | FIXED  | `pyproject.toml` now requires `setuptools>=77.0.3` for the SPDX `license` string and `license-files` metadata.                                                                                                      |
+| F5 default reuse policy blocked `UNLICENSED` source inputs                                                        | FIXED  | `src/security/runtime.ts` now keeps `UNLICENSED` in the default source-reuse allowlist while tests verify explicit policy overrides can still reject it.                                                            |
+| F6 README was less readable than the Reqtrace release README                                                      | FIXED  | `README.md` now follows the Reqtrace-style badge, current-release, quickstart, workflow, commands, delegation, validation, documentation, and license structure.                                                    |
 
 ## Repository Hygiene Audit
 
@@ -141,6 +145,18 @@ Release-structure follow-up validation also passed:
 | `git diff --check -- ':!docs/architecture/**'`                                                               |         0 | PASS   | No whitespace errors outside immutable architecture sources.   |
 | `git ls-files build-docs .reasonix` structure check                                                          |         0 | PASS   | No tracked local-only reference or tool-state paths remain.    |
 | `git check-ignore build-docs/Expflow-Gate-D-Hardening-PR-Review.md .reasonix/skills/starter-prompt/SKILL.md` |         0 | PASS   | Local reference and tool-state paths are ignored.              |
+
+Devin review and README follow-up validation also passed:
+
+| Command                                                     | Exit code | Result | Evidence                                                                                      |
+| ----------------------------------------------------------- | --------: | ------ | --------------------------------------------------------------------------------------------- |
+| `npm run format:check`                                      |         0 | PASS   | README, report, and TypeScript formatting passed.                                             |
+| `npm run typecheck`                                         |         0 | PASS   | TypeScript typecheck passed after source-reuse policy update.                                 |
+| `npm test -- tests/unit/security-migration-runtime.test.ts` |         0 | PASS   | 5 security/migration tests passed, including default `UNLICENSED` allow and explicit reject.  |
+| `python -m build --wheel`                                   |         0 | PASS   | Isolated wheel build installed `setuptools>=77.0.3` and built `expflow_hooks-1.0.0`.          |
+| `python tests/contracts/verify_python_wheel.py`             |         0 | PASS   | Wheel imports outside checkout, excludes tests, enforces repo-only discovery, and reports v1. |
+| `npm run package:verify`                                    |         0 | PASS   | npm package installs outside checkout and reports `1.0.0`.                                    |
+| `git diff --check -- ':!docs/architecture/**'`              |         0 | PASS   | No whitespace errors outside immutable architecture sources.                                  |
 
 ## Hosted CI Evidence
 
