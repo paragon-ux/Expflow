@@ -1,6 +1,27 @@
 import { randomBytes } from 'node:crypto';
 
-export type ExpflowIdPrefix = 'efp' | 'efo' | 'efn' | 'eft' | 'efv';
+export type ExpflowIdPrefix =
+  | 'efp'
+  | 'efo'
+  | 'efn'
+  | 'eft'
+  | 'efv'
+  | 'efs'
+  | 'efrd'
+  | 'efad'
+  | 'efa'
+  | 'efsd'
+  | 'efc'
+  | 'efrr'
+  | 'efsc'
+  | 'efcl'
+  | 'efw'
+  | 'efva'
+  | 'efme'
+  | 'efm'
+  | 'efra'
+  | 'efee'
+  | 'efru';
 
 const CROCKFORD_NO_ILOU = '0123456789ABCDEFGHJKMNPQRSTVWXYZ';
 

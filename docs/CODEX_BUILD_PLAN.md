@@ -1,21 +1,25 @@
 # Codex Build Plan
 
-**Status:** Gate B review fixes, then Gate C Phase 9
+**Status:** Gate C PR #5 retargeted to main and merge-ready
 **Workflow SSOT:** `docs/architecture/EXPFLOW_WORKFLOW_CURRENT.md`
 
 ## Current Path
 
 1. Gate A -- Contract Ready: complete and merged to `origin/main`.
-2. Phase 5 -- Immutable Material Stores: implement local object, node-revision, tree-revision, project, material-head, receipt, validation, and change stores.
-3. Phase 6 -- Sync, Scanning, and Identity: implement scanner exclusion, deterministic candidate trees, same-path continuity, explicit identity directives, and digest-similarity proposals.
-4. Phase 7 -- Transactions and Core Recovery: implement lock, validation, immutable receipts, partial post-commit status, and local recovery checks.
-5. Phase 8 -- Four Commands and Extension Host: implement native runtime operations, CLI handlers, package verification, and narrow extension host.
-6. Gate B Exit: resolve PR review findings, confirm local validation, commit, push, PR review, and hosted CI.
-7. Phase 9 -- Authority Model: after Gate B is review-clean, implement authority-source records, registration decisions, current-source projection, and source policy behavior without adding adapter-specific contracts.
+2. Gate B -- Material Core Ready: complete and merged to `main` through PR #4.
+3. Phase 9 -- Authority Model: authority-source records, registration decisions, current-source projection, readable documents, and authority policy behavior.
+4. Phase 10 -- Semantic Ownership: assertions, decisions, conflicts, review requests, source correspondence, artifact clusters, and semantic change listing.
+5. Phase 11 -- Workflow Boundaries: workflow occurrences, virtual artifacts, materialization events, and immutable workflow transitions.
+6. Phase 12 -- Projection System: manifest revisions, scanner-excluded projection locators, model-assisted proposal defaults, and accepted manifest-head derivation.
+7. Phase 13 -- Regeneration and Equivalence Evaluation: regeneration attempts, unknown-outcome preservation, and equivalence evaluations.
+8. Phase 14 -- Structural Reuse: reuse results, policy gates, output workflow references, and no-transfer behavior.
+9. Gate C Exit: component validation, PR update, review, and PR #5 merge.
+10. Next gate after PR #5 merge: Gate D -- Security, migration, packaging hardening, and end-to-end proof.
 
 ## Execution Rules
 
 - Do not modify immutable `docs/architecture/**` sources.
-- In Gate B, implement only material-core runtime. Do not implement authority runtime, semantic stores, workflow detection, projections, hooks, adapters, migration runtime, network services, databases, brokers, external inspection, change cursors, idempotency, or reconciliation.
+- Gate C record families are library runtimes, not new ordinary commands.
+- Do not add adapter inspection, change cursors, idempotency, lost-response reconciliation, hook dispatch, network services, databases, or brokers.
 - Keep `docs/CURRENT_STATUS_MATRIX.md` mutable and outside validation.
 - Update completion evidence with actual command results only.

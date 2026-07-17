@@ -2,24 +2,26 @@
 
 Expflow is a local-first workflow ownership and observability platform for projects where people, agents, and tools produce changing artifact trees.
 
-It is designed to preserve the relationship between:
+It preserves the relationship between:
 
-- the material files that existed before and after a workflow run;
-- the authority sources that were accepted for that work;
-- the attributed claims, decisions, conflicts, and review requests created along the way;
-- the workflow inputs, outputs, projections, regeneration attempts, and reuse evidence that explain how an artifact was produced.
+- material files before and after a workflow run;
+- authority sources accepted for that work;
+- attributed claims, decisions, conflicts, and review requests;
+- workflow inputs, outputs, projections, regeneration attempts, equivalence evaluations, and reuse evidence.
 
-The goal is practical ownership of automated work: a project should be able to show what changed, why it changed, what evidence was trusted, what decisions remain durable, and which parts can be safely inspected, regenerated, restored, or reused.
+The goal is practical ownership of automated work: a project should be able to show what changed, why it changed, what evidence was trusted, what decisions remain durable, and which parts can be inspected, regenerated, restored, or reused.
 
 ## Current Availability
 
-Expflow is in a pre-release material-core phase. This repository provides architecture sources, schemas, examples, validation harnesses, and a local TypeScript material runtime.
+Expflow is in a pre-release Gate C ownership-runtime phase. This repository provides immutable architecture sources, schemas, examples, validation harnesses, a local TypeScript material runtime, and Gate C library runtimes for authority, semantic ownership, workflow boundaries, projections, regeneration/equivalence, and structural reuse.
 
-The Gate B runtime can initialize a project, scan the working tree, persist immutable material records under `.expflow/`, commit complete tree revisions, report drift, restore prior tree or node revisions, and expose a narrow extension host. It does not implement adapter inspection, change cursors, external idempotency, reconciliation, authority decisions, semantic stores, workflow detection, projections, hook dispatch, network services, or database-backed storage.
+The runtime can initialize a project, scan the working tree, persist immutable material records under `.expflow/`, commit complete tree revisions, report drift, restore prior tree or node revisions, register authority-source revisions with immutable decisions, derive current accepted authority sources, record semantic/workflow/projection/reproduction record families, and expose a narrow extension host.
 
-## Planned Command Surface
+It does not implement adapter inspection, change cursors, external idempotency, lost-response reconciliation, hook dispatch, network services, database-backed storage, archive execution, migration, or production hardening.
 
-Expflow is intentionally built around a small everyday interface:
+## Command Surface
+
+Expflow keeps a small everyday interface:
 
 ```text
 expflow init
@@ -28,21 +30,22 @@ expflow status
 expflow restore
 ```
 
-These commands are operational for local material-core behavior in Gate B. They intentionally remain the only ordinary commands.
+These commands are operational for local material-core behavior and intentionally remain the only ordinary commands. Gate C ownership and reproduction behavior is exposed through library runtimes, not additional ordinary commands.
 
-## What Is In This Repository
+## Repository Map
 
-- `docs/architecture/` contains the immutable architecture sources for the current contract.
-- `schemas/` and `examples/` mirror the published architecture schemas and examples.
-- `src/` contains the TypeScript package, CLI, local material runtime, and read-only contract tooling.
+- `docs/architecture/` contains immutable architecture sources.
+- `docs/` contains mutable implementation evidence, phase prompts, completion reports, and orientation.
+- `schemas/` and `examples/` mirror the architecture schemas and examples for tooling.
+- `src/` contains the TypeScript package, CLI, material runtime, Gate C library runtimes, and contract tooling.
 - `python/expflow_hooks/` contains the Python hook-package scaffold and repository-only schema discovery.
-- `tests/` contains repository-contract checks and Gate B material-runtime tests.
+- `tests/` contains repository-contract, material-runtime, authority, and Gate C ownership/reproduction tests.
 
-For implementation status, see [docs/CURRENT_STATUS_MATRIX.md](docs/CURRENT_STATUS_MATRIX.md). For contributor setup and validation commands, see [README_DEV.md](README_DEV.md).
+For implementation status, see [docs/CURRENT_STATUS_MATRIX.md](docs/CURRENT_STATUS_MATRIX.md). For setup and validation commands, see [README_DEV.md](README_DEV.md).
 
 ## Development Snapshot
 
-The current package version is `0.0.0-gate-b`. It can be installed locally for material-core validation and package-boundary checks, not for production use.
+The current package version is `0.0.0-gate-c`. It is suitable for local validation and PR review, not production use.
 
 ```bash
 npm ci

@@ -1,6 +1,8 @@
 # Expflow Developer Guide
 
-**Gate B -- Material Core.** Local material-core runtime behavior is implemented for the four ordinary commands. Adapter inspection/reconciliation and Gate C semantic/projection behavior remain out of scope.
+**Gate C -- Ownership and Reproduction.** Local material-core runtime behavior is implemented for the four ordinary commands. Gate C ownership and reproduction behavior is implemented through library runtimes for authority, semantics, workflows, projections, regeneration/equivalence, and reuse.
+
+Adapter inspection/reconciliation, hook dispatch, network services, databases, migration, and production hardening remain out of scope.
 
 ## Prerequisites
 
@@ -24,19 +26,14 @@ python -m pip install -e ".[dev]"
 ### Formatting
 
 ```bash
-npm run format        # Auto-fix formatting
-npm run format:check  # Check only
+npm run format
+npm run format:check
 ```
 
-### Linting
+### Linting And Type Checking
 
 ```bash
 npm run lint
-```
-
-### Type Checking
-
-```bash
 npm run typecheck
 ```
 
@@ -77,22 +74,25 @@ python -m build --wheel
 python tests/contracts/verify_python_wheel.py
 ```
 
-## Gate B Runtime Boundary
+## Current TypeScript Runtime Boundary
 
 The TypeScript package implements:
 
-- Package version reporting (`0.0.0-gate-b`)
+- Package version reporting (`0.0.0-gate-c`)
 - CLI handlers for `expflow init`, `expflow sync`, `expflow status`, and `expflow restore`
 - Local `.expflow/` material storage with immutable objects, node revisions, tree revisions, operation receipts, validations, changes, and material head state
-- Working-tree scanning with `.expflow/**` exclusion
-- Path-selector roots for scoped scans and scoped material planning
+- Working-tree scanning with `.expflow/**` exclusion and scoped path selectors
 - Same-path continuity, explicit `preserve`, `new`, and `replace` directives, and digest-similarity proposals without identity preservation
 - Local transaction locking, validation receipts, partial post-commit material success status, receipt/head recovery checks, and restore-source reads
-- Tree restore reconciles files absent from the restored tree before advancing the material head
 - A narrow extension host that invokes native operations and reads schema-shaped committed records without raw store exports
+- Authority-source revisions, source-registration decisions, readable authority documents, current-source projection, and scope-conflict checks
+- Semantic assertions, semantic decisions, conflicts, review requests, source correspondence, artifact clusters, and semantic change listing
+- Workflow occurrences, virtual artifacts, materialization events, and immutable workflow state transitions
+- Manifest revisions, projection-head derivation, projection-root constraints, and model-assisted proposal defaults
+- Regeneration attempts, equivalence evaluations, reuse results, and reuse policy-gate checks
 - Read-only architecture-source discovery and repository-contract verification
 
-The TypeScript package does not implement adapter inspection, composite external revisions, change cursors, adapter idempotency, lost-response reconciliation, authority decisions, semantic stores, workflow detection, projections, hook dispatch, network services, databases, or brokers. Repository-contract tests verify this boundary.
+The TypeScript package does not implement adapter inspection, composite external revisions, change cursors, adapter idempotency, lost-response reconciliation, hook dispatch, network services, databases, brokers, archive execution, migration, or production hardening.
 
 The Python wheel does not package `docs/architecture/`. Installed wheels import and report the hook package version, while architecture-source discovery remains explicitly repository-checkout-only.
 

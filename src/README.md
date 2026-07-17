@@ -1,6 +1,6 @@
 # Expflow Source
 
-**Status:** Gate B material-core runtime with Gate C packages still absent.
+**Status:** Gate C ownership and reproduction runtime on top of the Gate B material core.
 
 The TypeScript source implements the local material core for the four ordinary operations:
 
@@ -9,15 +9,21 @@ The TypeScript source implements the local material core for the four ordinary o
 - `status`
 - `restore`
 
-Material runtime code lives in:
+Gate C ownership and reproduction behavior is exposed through library runtimes, not new ordinary commands.
 
-- `material/` for record types, digesting, selector handling, planning, and stores.
-- `scan/` for working-tree scanning with managed exclusions and path-selector roots.
-- `operations/` for shared runtime handlers used by the CLI and extension host.
-- `transactions/` for local structural recovery checks.
-- `extensions/` for the narrow documented extension host.
-- `cli/` for the ordinary command surface.
+## Runtime Areas
 
-The following directories remain boundary placeholders until Gate C or later phases own them: `authority/`, `semantics/`, `workflows/`, `projections/`, `hooks/`, `protocol/`, and `status/`.
+- `material/` owns record types, digesting, selector handling, planning, and material stores.
+- `scan/` owns working-tree scanning with managed exclusions and selector roots.
+- `operations/` owns shared runtime handlers used by the CLI and extension host.
+- `transactions/` owns local structural recovery checks.
+- `extensions/` owns the narrow documented extension host.
+- `cli/` owns the ordinary command surface.
+- `authority/` owns authority-source revisions, source-registration decisions, durable decision ordering, readable authority documents, current-source projection, scope-conflict checks, and exact nested shape validation for authority source/document records.
+- `semantics/` owns assertions, decisions, conflicts, review requests, source correspondence, artifact clusters, semantic change listing, and schema-shape validation for persisted semantic records.
+- `workflows/` owns workflow occurrences, virtual artifacts, materialization events, immutable workflow transitions, exact selector shape validation, and explicit completion-decision guards.
+- `projections/` owns manifest revisions, accepted-only projection-head derivation, projection-root validation, and model-assisted proposal defaults.
+- `reproduction/` owns regeneration attempts, equivalence evaluations, reuse results, required regeneration prompt evidence, and reuse policy gates.
+- `hooks/`, `protocol/`, and `status/` remain boundary placeholders for later hardening or external surfaces.
 
-Core must not add adapter inspection, change cursors, adapter idempotency, lost-response reconciliation, authority decisions, semantic stores, workflow detection, projection generation, hook dispatch, databases, brokers, or network services in the Gate B material-core path.
+Core must not add adapter inspection, change cursors, adapter idempotency, lost-response reconciliation, hook dispatch, databases, brokers, or network services.
