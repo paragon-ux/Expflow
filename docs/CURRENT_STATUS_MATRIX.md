@@ -8,7 +8,7 @@
 
 **Orientation:** Mutable pass-start controls live in [docs/orientation/](orientation/README.md) and are intentionally excluded from stable contract validation.
 
-**Hosted CI evidence:** Phase 1 hosted checks passed in PR #1. Gate A continuation checks passed in PR #2. PR #4 hosted checks were green and PR #4 merged to `main` at `6fe8d82`. PR #5 hosted checks were green and PR #5 merged to `main` at `17fb82a`. Gate D PR #6 hosted checks were green and PR #6 merged to `main` at `2b194f1`. The native hardening closure has local validation; hosted checks are pending a closure PR.
+**Hosted CI evidence:** Phase 1 hosted checks passed in PR #1. Gate A continuation checks passed in PR #2. PR #4 hosted checks were green and PR #4 merged to `main` at `6fe8d82`. PR #5 hosted checks were green and PR #5 merged to `main` at `17fb82a`. Gate D PR #6 hosted checks were green and PR #6 merged to `main` at `2b194f1`. Gate D native hardening closure PR #7 hosted checks are green.
 
 **Validation status:** operational live-status artifact; intentionally excluded from repository formatting and contract validation.
 
@@ -136,7 +136,7 @@ The aggregate `npm run validate` command is not claimed as a pass under the expl
 
 ## Current Critical Path
 
-> Open a hardening-closure PR and run hosted checks. After merge, return to post-Gate D release/pilot work.
+> Merge the hardening-closure PR after review. After merge, return to post-Gate D release/pilot work.
 
 No Guerilla integration runtime is required in Expflow core. The current local closure addresses the post-merge Gate D native hardening review; remaining post-merge work after closure is production release hardening, pilots, empirical evaluation, and separate adapter/profile packages.
 

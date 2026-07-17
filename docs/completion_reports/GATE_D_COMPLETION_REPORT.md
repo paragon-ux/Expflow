@@ -93,14 +93,16 @@ Final validation was run under the requested 60-second command cap using compone
 
 ## Blockers and Contradictions
 
-None for the local hardening closure. Hosted checks must be rerun on the closure branch before merge.
+None. Hosted checks are green on PR #7.
 
 ## Git Summary
 
 - Branch: `codex/gate-d-hardening-review-format`
 - Base: post-PR #6 `main` at `2b194f10f839aa227d151241777d7ddb1cd721e0`
+- PR: [#7 Gate D native hardening closure](https://github.com/paragon-ux/Expflow/pull/7)
+- Hosted checks: green on PR #7
 - Review input: `build-docs/Expflow-Gate-D-Hardening-PR-Review.md`
 
 ## Handoff
 
-Gate D is complete locally with native hardening closure evidence. Next merge step is a closure PR with hosted validation.
+Gate D is complete with native hardening closure evidence. PR #7 is merge-ready after review.
