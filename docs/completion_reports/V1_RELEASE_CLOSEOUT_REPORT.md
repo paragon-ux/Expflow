@@ -2,7 +2,7 @@
 
 ## Result
 
-PASS -- Expflow v1.0.0 release candidate prepared locally
+PASS -- Expflow v1.0.0 release preparation completed locally
 
 ## Release Identity
 
@@ -11,7 +11,7 @@ PASS -- Expflow v1.0.0 release candidate prepared locally
 | Release version        | `1.0.0`                                    |
 | Branch                 | `codex/gate-d-v1-release-closeout`         |
 | Starting head          | `d1dd2ac925b219c50c7728963e908042793c7376` |
-| Release classification | `release-candidate-ready`                  |
+| Release classification | `release-ready`                            |
 | Tag status             | No tag created                             |
 | Publish status         | No package published                       |
 
@@ -45,14 +45,14 @@ The release branch intentionally incorporates the Gate D native hardening closur
 
 - TypeScript package version set to `1.0.0`.
 - Python hook package version set to `1.0.0`.
-- npm private marker removed for the release candidate.
+- npm private marker removed for the v1 release.
 - Package repository, homepage, issue URL, license, binary, exports, and files metadata are coherent for review.
 - Python wheel import verification reports `1.0.0` and confirms top-level tests are excluded.
 
 ## Documentation Changes
 
 - `README.md` now presents a CI badge, Expflow v1.0.0 release scope, quickstart, workflow, command table, delegated boundaries, repository map, validation, documentation links, and MIT license.
-- `README_DEV.md` now presents v1 release-candidate setup and validation.
+- `README_DEV.md` now presents v1 release setup and validation.
 - `CHANGELOG.md` records v1.0.0 outcomes.
 - `docs/release_notes/GITHUB_RELEASE_NOTE_V1_0_0.md` provides standalone text for a GitHub release.
 - `SECURITY.md` records supported versions, reporting expectations, and local-first security posture.
@@ -63,14 +63,14 @@ The release branch intentionally incorporates the Gate D native hardening closur
 
 ## PR Review Closure
 
-| Finding                                                                                                           | Status | Evidence                                                                                                                                                                                                            |
-| ----------------------------------------------------------------------------------------------------------------- | ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| F1 status matrix conflated Gate D Phase 16 package evidence with post-Gate-D v1 release metadata                  | FIXED  | `docs/CURRENT_STATUS_MATRIX.md` now keeps Gate D Phase 16 on the original `0.0.0-gate-d` package identity and records `1.0.0` MIT metadata as release-closeout evidence.                                            |
-| F2 agent governance validation list was narrower than the release-closeout required validation set                | FIXED  | `AGENTS.md` now includes registry verification, schema example validation, fixture verification, wheel import verification, and release diff whitespace validation in the current required set and quick reference. |
-| F3 README overclaimed production status while the release report classifies the branch as release-candidate-ready | FIXED  | `README.md` now says v1.0.0 is release-candidate-ready for implemented local core surfaces.                                                                                                                         |
-| F4 setuptools lower bound did not guarantee PEP 639 license metadata support                                      | FIXED  | `pyproject.toml` now requires `setuptools>=77.0.3` for the SPDX `license` string and `license-files` metadata.                                                                                                      |
-| F5 default reuse policy blocked `UNLICENSED` source inputs                                                        | FIXED  | `src/security/runtime.ts` now keeps `UNLICENSED` in the default source-reuse allowlist while tests verify explicit policy overrides can still reject it.                                                            |
-| F6 README was less readable than the Reqtrace release README                                                      | FIXED  | `README.md` now follows the Reqtrace-style badge, current-release, quickstart, workflow, commands, delegation, validation, documentation, and license structure.                                                    |
+| Finding                                                                                            | Status | Evidence                                                                                                                                                                                                            |
+| -------------------------------------------------------------------------------------------------- | ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| F1 status matrix conflated Gate D Phase 16 package evidence with post-Gate-D v1 release metadata   | FIXED  | `docs/CURRENT_STATUS_MATRIX.md` now keeps Gate D Phase 16 on the original `0.0.0-gate-d` package identity and records `1.0.0` MIT metadata as release-closeout evidence.                                            |
+| F2 agent governance validation list was narrower than the release-closeout required validation set | FIXED  | `AGENTS.md` now includes registry verification, schema example validation, fixture verification, wheel import verification, and release diff whitespace validation in the current required set and quick reference. |
+| F3 README overclaimed production status while the release report needed local-core scoping         | FIXED  | `README.md` now scopes v1.0.0 to implemented local core surfaces.                                                                                                                                                   |
+| F4 setuptools lower bound did not guarantee PEP 639 license metadata support                       | FIXED  | `pyproject.toml` now requires `setuptools>=77.0.3` for the SPDX `license` string and `license-files` metadata.                                                                                                      |
+| F5 default reuse policy blocked `UNLICENSED` source inputs                                         | FIXED  | `src/security/runtime.ts` now keeps `UNLICENSED` in the default source-reuse allowlist while tests verify explicit policy overrides can still reject it.                                                            |
+| F6 README was less readable than the Reqtrace release README                                       | FIXED  | `README.md` now follows the Reqtrace-style badge, current-release, quickstart, workflow, commands, delegation, validation, documentation, and license structure.                                                    |
 
 ## Repository Hygiene Audit
 
@@ -163,11 +163,11 @@ Devin review and README follow-up validation also passed:
 
 PR #7 hardening closure hosted checks were green at head `d1dd2ac925b219c50c7728963e908042793c7376`.
 
-PR #8 is intentionally stacked on `codex/gate-d-hardening-review-format`; the repository workflow currently runs pull-request hosted checks only for PRs targeting `main`, so no hosted checks are listed for the stacked release PR. Local release validation passed. Retargeting or rebasing PR #8 onto `main` after PR #7 merges should trigger hosted checks if required for final review.
+PR #10 is the active v1 release PR against `main` after PR #7 merged. Local release validation passed before this wording cleanup; hosted checks are tracked on the PR.
 
 ## Blockers And Release Risks
 
-None for `release-candidate-ready`.
+None for the locally validated v1.0.0 release branch.
 
 Remaining owner-controlled follow-ups:
 
@@ -178,4 +178,4 @@ Remaining owner-controlled follow-ups:
 
 ## Handoff
 
-Expflow is release-candidate-ready locally for v1.0.0. No tag was created and no package was published.
+Expflow is release-ready locally for v1.0.0. No tag was created and no package was published.

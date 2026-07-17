@@ -1,6 +1,6 @@
 # Expflow Developer Guide
 
-**v1.0.0 release candidate.** Local material-core runtime behavior is implemented for the four ordinary commands. Gate C ownership and reproduction behavior is implemented through library runtimes for authority, semantics, workflows, projections, regeneration/equivalence, and reuse. Gate D adds local security controls, migration evidence, package hardening, end-to-end proof, and native durability hardening for material transactions.
+**v1.0.0 release.** Local material-core runtime behavior is implemented for the four ordinary commands. Gate C ownership and reproduction behavior is implemented through library runtimes for authority, semantics, workflows, projections, regeneration/equivalence, and reuse. Gate D adds local security controls, migration evidence, package hardening, end-to-end proof, and native durability hardening for material transactions.
 
 Adapter inspection/reconciliation, Guerilla hook dispatch, network services, databases, brokers, and generated-code execution remain out of scope.
 

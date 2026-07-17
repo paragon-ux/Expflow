@@ -15,7 +15,7 @@
 
 - Added operation-scoped staging, recoverable init/restore intents, stale-lock liveness classification, causal tree/receipt head repair, and restore intent/tree agreement checks.
 - Verified restored tree digests against persisted entries, removed paths, and scope before durable tree reads and writes.
-- Removed prerelease and unlicensed package metadata for the v1 release candidate.
+- Removed prerelease package metadata and aligned npm/Python package licensing for v1.0.0.
 
 ### Boundaries
 
