@@ -311,22 +311,26 @@ Test commands:
 
 The canonical validation set for the current gate:
 
-| ID  | Command                             | Required Outcome                      |
-| --- | ----------------------------------- | ------------------------------------- |
-| V01 | `npm ci`                            | Clean dependency installation         |
-| V02 | `npm run format:check`              | Formatting contract passes            |
-| V03 | `npm run lint`                      | Lint contract passes                  |
-| V04 | `npm run typecheck`                 | Strict TypeScript typecheck passes    |
-| V05 | `npm test`                          | Node repository-contract tests pass   |
-| V06 | `npm run contracts:verify`          | Source and repository contract passes |
-| V07 | `npm run schemas:meta-validate`     | Supported schemas meta-validate       |
-| V08 | `npm run examples:index-check`      | Example discoverability index passes  |
-| V09 | `npm run build`                     | TypeScript build passes               |
-| V10 | `npm run package:verify`            | npm package verification              |
-| V11 | `python -m pip install -e ".[dev]"` | Editable Python dev install           |
-| V12 | `python -m pytest`                  | Python tests pass                     |
-| V13 | `python -m build --wheel`           | Python wheel build                    |
-| V14 | External wheel import               | Wheel imports and reports version     |
+| ID  | Command                                         | Required Outcome                        |
+| --- | ----------------------------------------------- | --------------------------------------- |
+| V01 | `npm ci`                                        | Clean dependency installation           |
+| V02 | `npm run format:check`                          | Formatting contract passes              |
+| V03 | `npm run lint`                                  | Lint contract passes                    |
+| V04 | `npm run typecheck`                             | Strict TypeScript typecheck passes      |
+| V05 | `npm test`                                      | Node repository-contract tests pass     |
+| V06 | `npm run contracts:verify`                      | Source and repository contract passes   |
+| V07 | `npm run registries:verify`                     | Registry coverage and boundary checks   |
+| V08 | `npm run schemas:meta-validate`                 | Supported schemas meta-validate         |
+| V09 | `npm run examples:index-check`                  | Example discoverability index passes    |
+| V10 | `npm run schemas:examples-validate`             | Example and fixture schema validation   |
+| V11 | `npm run fixtures:verify`                       | Fixture taxonomy and seed corpus verify |
+| V12 | `npm run build`                                 | TypeScript build passes                 |
+| V13 | `npm run package:verify`                        | npm package verification                |
+| V14 | `python -m pip install -e ".[dev]"`             | Editable Python dev install             |
+| V15 | `python -m pytest`                              | Python tests pass                       |
+| V16 | `python -m build --wheel`                       | Python wheel build                      |
+| V17 | `python tests/contracts/verify_python_wheel.py` | Wheel imports and reports version       |
+| V18 | `git diff --check -- ':!docs/architecture/**'`  | Working diff has no whitespace errors   |
 
 All validation statuses must be recorded with exit codes and evidence in the completion report.
 
@@ -421,7 +425,7 @@ No adapter inspection, composite external revisions, adapter change cursors, ada
 ## 25. Test Commands Quick Reference
 
 ```bash
-# Full Phase 1 validation
+# Full Node validation
 npm run validate
 
 # Individual checks
@@ -430,8 +434,11 @@ npm run lint
 npm run typecheck
 npm test
 npm run contracts:verify
+npm run registries:verify
 npm run schemas:meta-validate
 npm run examples:index-check
+npm run schemas:examples-validate
+npm run fixtures:verify
 npm run build
 npm run package:verify
 
@@ -439,6 +446,10 @@ npm run package:verify
 python -m pip install -e ".[dev]"
 python -m pytest
 python -m build --wheel
+python tests/contracts/verify_python_wheel.py
+
+# Release diff validation
+git diff --check -- ':!docs/architecture/**'
 ```
 
 ---

@@ -58,6 +58,14 @@ The release branch intentionally incorporates the Gate D native hardening closur
 - `docs/CURRENT_STATUS_MATRIX.md`, `docs/CODEX_BUILD_PLAN.md`, `docs/TEST_MATRIX.md`, and `docs/README.md` were updated for release-closeout status.
 - No `CODE_OF_CONDUCT.md` was added because the owner has not requested a public community contribution posture file.
 
+## PR Review Closure
+
+| Finding                                                                                                           | Status | Evidence                                                                                                                                                                                                            |
+| ----------------------------------------------------------------------------------------------------------------- | ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| F1 status matrix conflated Gate D Phase 16 package evidence with post-Gate-D v1 release metadata                  | FIXED  | `docs/CURRENT_STATUS_MATRIX.md` now keeps Gate D Phase 16 on the original `0.0.0-gate-d` package identity and records `1.0.0` MIT metadata as release-closeout evidence.                                            |
+| F2 agent governance validation list was narrower than the release-closeout required validation set                | FIXED  | `AGENTS.md` now includes registry verification, schema example validation, fixture verification, wheel import verification, and release diff whitespace validation in the current required set and quick reference. |
+| F3 README overclaimed production status while the release report classifies the branch as release-candidate-ready | FIXED  | `README.md` now says v1.0.0 is release-candidate-ready for implemented local core surfaces.                                                                                                                         |
+
 ## Repository Hygiene Audit
 
 | Area                           | Status               | Evidence                                                                                                                                                             |
