@@ -1,23 +1,40 @@
 # Expflow
 
-Expflow is a local-first workflow ownership and observability platform for projects where people, agents, and tools produce changing artifact trees.
+Expflow is a schema-governed, local-first workflow ownership and observability platform for projects where people, agents, and tools produce changing artifact trees.
 
-It preserves the relationship between:
+It records the relationship between:
 
-- material files before and after a workflow run;
-- authority sources accepted for that work;
+- material files before and after workflow activity;
+- accepted authority sources for the work;
 - attributed claims, decisions, conflicts, and review requests;
 - workflow inputs, outputs, projections, regeneration attempts, equivalence evaluations, and reuse evidence.
 
 The goal is practical ownership of automated work: a project should be able to show what changed, why it changed, what evidence was trusted, what decisions remain durable, and which parts can be inspected, regenerated, restored, or reused.
 
-## Current Availability
+## v1.0.0 Release Scope
 
-Expflow is in a pre-release Gate D hardened-proof phase with a native durability closure in progress on this branch. This repository provides immutable architecture sources, schemas, examples, validation harnesses, a local TypeScript material runtime, Gate C library runtimes for authority, semantic ownership, workflow boundaries, projections, regeneration/equivalence, and structural reuse, plus Gate D security, migration, end-to-end proof, and native transaction/recovery hardening surfaces.
+Expflow v1.0.0 is production-ready for the local core surfaces implemented in this repository:
 
-The runtime can initialize a project, scan the working tree, persist immutable material records under `.expflow/`, commit complete tree revisions, report drift, restore prior tree or node revisions, recover staged native material transactions, classify stale locks, repair material head metadata from causal tree/receipt evidence, register authority-source revisions with immutable decisions, derive current accepted authority sources, record semantic/workflow/projection/reproduction record families, validate security boundaries, record migration evidence, and expose a narrow extension host.
+- the four ordinary commands: `expflow init`, `expflow sync`, `expflow status`, and `expflow restore`;
+- local `.expflow/` material storage with immutable object, node-revision, tree-revision, receipt, validation, and change records;
+- complete-tree sync, drift status, tree/node restore, scoped path selection, explicit identity directives, and digest-similarity proposals without silent identity preservation;
+- project locks, operation-scoped staging, recoverable init/restore intents, stale-lock classification, causal tree/receipt head repair, and restore recovery;
+- library runtimes for authority sources, semantic decisions, workflow boundaries, projections, regeneration/equivalence, structural reuse, security controls, and migration evidence;
+- repository-contract checks for immutable architecture sources, schemas, examples, fixtures, registries, package boundaries, and end-to-end proof.
 
-It does not implement adapter inspection, adapter change cursors, external idempotency, adapter lost-response reconciliation, Guerilla hook dispatch, network services, database-backed storage, or archive/code execution.
+The core intentionally does not implement adapter inspection, adapter change cursors, external idempotency, adapter lost-response reconciliation, Guerilla hook dispatch, network services, database-backed storage, brokers, archive extraction, or generated-code execution.
+
+## Install From Source
+
+```bash
+git clone https://github.com/paragon-ux/Expflow.git
+cd Expflow
+npm ci
+npm run build
+python -m pip install -e ".[dev]"
+```
+
+The npm package exposes the `expflow` CLI and TypeScript library exports after `npm run build`. The Python package is a hook scaffold with read-only repository architecture discovery; it does not dispatch or execute hooks.
 
 ## Command Surface
 
@@ -30,30 +47,30 @@ expflow status
 expflow restore
 ```
 
-These commands are operational for local material-core behavior and intentionally remain the only ordinary commands. Gate C ownership/reproduction behavior and Gate D security/migration behavior are exposed through library runtimes, not additional ordinary commands.
+These commands operate on local material-core behavior. Gate C ownership/reproduction behavior and Gate D security/migration behavior are available through library runtimes rather than additional ordinary commands.
 
 ## Repository Map
 
 - `docs/architecture/` contains immutable architecture sources.
-- `docs/` contains mutable implementation evidence, phase prompts, completion reports, and orientation.
+- `docs/` contains mutable implementation evidence, phase prompts, completion reports, release evidence, and orientation.
 - `schemas/` and `examples/` mirror the architecture schemas and examples for tooling.
 - `src/` contains the TypeScript package, CLI, material runtime, Gate C library runtimes, Gate D security/migration runtimes, and contract tooling.
 - `python/expflow_hooks/` contains the Python hook-package scaffold and repository-only schema discovery.
-- `tests/` contains repository-contract, material-runtime, authority, Gate C ownership/reproduction, Gate D security/migration, and end-to-end proof tests.
+- `tests/` contains repository-contract, material-runtime, authority, Gate C ownership/reproduction, Gate D security/migration, package, and end-to-end proof tests.
 
-For implementation status, see [docs/CURRENT_STATUS_MATRIX.md](docs/CURRENT_STATUS_MATRIX.md). For setup and validation commands, see [README_DEV.md](README_DEV.md).
+For implementation status, see [docs/CURRENT_STATUS_MATRIX.md](docs/CURRENT_STATUS_MATRIX.md). For contributor setup and validation commands, see [README_DEV.md](README_DEV.md).
 
-## Development Snapshot
-
-The current package version is `0.0.0-gate-d`. It is suitable for local validation and PR review, not production use.
+## Validate
 
 ```bash
 npm ci
-python -m pip install -e ".[dev]"
 npm run validate
+python -m pip install -e ".[dev]"
 python -m pytest
+python -m build --wheel
+python tests/contracts/verify_python_wheel.py
 ```
 
 ## License
 
-UNLICENSED. This repository is not yet released for production use.
+Expflow is released under the [MIT License](LICENSE).
