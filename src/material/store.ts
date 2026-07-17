@@ -1,7 +1,10 @@
 import {
+  closeSync,
   copyFileSync,
   existsSync,
+  fsyncSync,
   mkdirSync,
+  openSync,
   readFileSync,
   readdirSync,
   renameSync,
@@ -10,16 +13,22 @@ import {
   unlinkSync,
   writeFileSync,
 } from 'node:fs';
-import { dirname, resolve } from 'node:path';
+import { hostname } from 'node:os';
+import { dirname, relative, resolve } from 'node:path';
 import { ExpflowError } from '../core/errors.js';
 import {
+  canonicalJson,
   cloneJson,
+  prettyJson,
   readJsonFile,
+  syncDirectory,
   writeJsonFileAtomic,
   writeJsonFileExclusive,
+  type JsonValue,
 } from '../core/json.js';
 import { EXPFLOW_STATE_DIR, PROJECTION_ROOT } from '../core/paths.js';
-import { sha256Bytes } from './digest.js';
+import { sha256Bytes, treeContentDigest } from './digest.js';
+import { defaultPathSelector } from './selectors.js';
 import type {
   NodeRevisionRecord,
   OperationReceiptRecord,
@@ -125,12 +134,102 @@ export function writeHead(projectRoot: string, treeRevisionId: string | null): v
   const path = storePaths(projectRoot).head;
   mkdirSync(dirname(path), { recursive: true });
   const tempPath = `${path}.${String(process.pid)}.${String(Date.now())}.tmp`;
-  writeFileSync(tempPath, treeRevisionId === null ? '\n' : `${treeRevisionId}\n`, 'utf-8');
+  const fd = openSync(tempPath, 'w');
+  try {
+    writeFileSync(fd, treeRevisionId === null ? '\n' : `${treeRevisionId}\n`, 'utf-8');
+    fsyncSync(fd);
+  } finally {
+    closeSync(fd);
+  }
   renameWithinVolume(tempPath, path);
 }
 
 function renameWithinVolume(from: string, to: string): void {
   renameSync(from, to);
+  syncDirectory(dirname(to));
+}
+
+export function operationStagingDir(projectRoot: string, operationId: string): string {
+  return resolve(storePaths(projectRoot).staging, operationId);
+}
+
+export function prepareOperationStaging(projectRoot: string, operationId: string): string {
+  const dir = operationStagingDir(projectRoot, operationId);
+  rmSync(dir, { recursive: true, force: true });
+  mkdirSync(dir, { recursive: true });
+  syncDirectory(dirname(dir));
+  return dir;
+}
+
+export function removeOperationStaging(projectRoot: string, operationId: string): void {
+  rmSync(operationStagingDir(projectRoot, operationId), { recursive: true, force: true });
+}
+
+function stagedPathForFinal(projectRoot: string, operationId: string, finalPath: string): string {
+  const paths = storePaths(projectRoot);
+  const relativeFinal = relative(paths.stateDir, finalPath);
+  if (relativeFinal.startsWith('..')) {
+    throw new ExpflowError('unsafe_relative_path', `Cannot stage outside .expflow: ${finalPath}`);
+  }
+  return resolve(operationStagingDir(projectRoot, operationId), 'promote', relativeFinal);
+}
+
+function writeBytesExclusiveDurable(path: string, bytes: Buffer | string): void {
+  mkdirSync(dirname(path), { recursive: true });
+  const fd = openSync(path, 'wx');
+  try {
+    writeFileSync(fd, bytes);
+    fsyncSync(fd);
+  } finally {
+    closeSync(fd);
+  }
+  syncDirectory(dirname(path));
+}
+
+function syncFile(path: string): void {
+  const fd = openSync(path, 'r+');
+  try {
+    fsyncSync(fd);
+  } finally {
+    closeSync(fd);
+  }
+}
+
+function jsonMatches(path: string, value: unknown): boolean {
+  return canonicalJson(readJsonFile(path) as JsonValue) === canonicalJson(value as JsonValue);
+}
+
+function verifyExistingImmutableJson(path: string, record: unknown): void {
+  if (!jsonMatches(path, record)) {
+    throw new ExpflowError(
+      'immutable_record_conflict',
+      `Immutable record path is already occupied by different bytes: ${path}`,
+      { recoverable: true },
+    );
+  }
+}
+
+function writeImmutableJsonRecord(
+  projectRoot: string,
+  operationId: string,
+  finalPath: string,
+  record: unknown,
+): void {
+  if (existsSync(finalPath)) {
+    verifyExistingImmutableJson(finalPath, record);
+    return;
+  }
+
+  const stagedPath = stagedPathForFinal(projectRoot, operationId, finalPath);
+  writeBytesExclusiveDurable(stagedPath, prettyJson(record));
+  if (existsSync(finalPath)) {
+    verifyExistingImmutableJson(finalPath, record);
+    rmSync(stagedPath, { force: true });
+    return;
+  }
+  mkdirSync(dirname(finalPath), { recursive: true });
+  renameWithinVolume(stagedPath, finalPath);
+  verifyExistingImmutableJson(finalPath, record);
 }
 
 function digestLocator(digest: string): {
@@ -152,6 +251,7 @@ export function storeObjectFromFile(
   projectRoot: string,
   sourcePath: string,
   expectedDigest: string,
+  operationId = `adhoc-${String(process.pid)}-${String(Date.now())}`,
 ): string {
   const actualDigest = sha256Bytes(readFileSync(sourcePath));
   if (actualDigest !== expectedDigest) {
@@ -168,9 +268,27 @@ export function storeObjectFromFile(
     return locator;
   }
 
+  const stagedPath = stagedPathForFinal(projectRoot, operationId, targetPath);
+  mkdirSync(dirname(stagedPath), { recursive: true });
+  copyFileSync(sourcePath, stagedPath);
+  syncFile(stagedPath);
+  syncDirectory(dirname(stagedPath));
+  rejectHardLinkedObject(sourcePath, stagedPath);
+  if (sha256Bytes(readFileSync(stagedPath)) !== expectedDigest) {
+    rmSync(stagedPath, { force: true });
+    throw new ExpflowError(
+      'object_integrity_failed',
+      `Staged object digest mismatch: ${expectedDigest}`,
+      { recoverable: true },
+    );
+  }
+  if (existsSync(targetPath)) {
+    verifyObject(projectRoot, expectedDigest);
+    rmSync(stagedPath, { force: true });
+    return locator;
+  }
   mkdirSync(dirname(targetPath), { recursive: true });
-  copyFileSync(sourcePath, targetPath);
-  rejectHardLinkedObject(sourcePath, targetPath);
+  renameWithinVolume(stagedPath, targetPath);
   verifyObject(projectRoot, expectedDigest);
   return locator;
 }
@@ -209,7 +327,12 @@ export function verifyObject(projectRoot: string, digest: string): void {
 }
 
 export function writeNodeRevision(projectRoot: string, record: NodeRevisionRecord): void {
-  writeJsonFileExclusive(nodeRevisionPath(projectRoot, record.node_id, record.revision), record);
+  writeImmutableJsonRecord(
+    projectRoot,
+    record.created_by_operation,
+    nodeRevisionPath(projectRoot, record.node_id, record.revision),
+    record,
+  );
 }
 
 export function readNodeRevision(
@@ -235,7 +358,13 @@ export function nodeRevisionPath(projectRoot: string, nodeId: string, revision: 
 }
 
 export function writeTreeRevision(projectRoot: string, record: TreeRevisionRecord): void {
-  writeJsonFileExclusive(treeRevisionPath(projectRoot, record.tree_revision_id), record);
+  verifyTreeContentDigest(record);
+  writeImmutableJsonRecord(
+    projectRoot,
+    record.created_by_operation,
+    treeRevisionPath(projectRoot, record.tree_revision_id),
+    record,
+  );
 }
 
 export function readTreeRevision(projectRoot: string, treeRevisionId: string): TreeRevisionRecord {
@@ -253,7 +382,12 @@ export function treeRevisionPath(projectRoot: string, treeRevisionId: string): s
 }
 
 export function writeOperationReceipt(projectRoot: string, record: OperationReceiptRecord): void {
-  writeJsonFileExclusive(operationReceiptPath(projectRoot, record.operation_id), record);
+  writeImmutableJsonRecord(
+    projectRoot,
+    record.operation_id,
+    operationReceiptPath(projectRoot, record.operation_id),
+    record,
+  );
 }
 
 export function readOperationReceipt(
@@ -292,14 +426,18 @@ export function listOperationReceipts(projectRoot: string): OperationReceiptReco
 }
 
 export function writeValidationResult(projectRoot: string, record: ValidationResultRecord): void {
-  writeJsonFileExclusive(
+  writeImmutableJsonRecord(
+    projectRoot,
+    record.operation_id,
     resolve(storePaths(projectRoot).validations, `${record.validation_id}.json`),
     record,
   );
 }
 
 export function writeChangeSet(projectRoot: string, operationId: string, changeSet: unknown): void {
-  writeJsonFileExclusive(
+  writeImmutableJsonRecord(
+    projectRoot,
+    operationId,
     resolve(storePaths(projectRoot).changes, `${operationId}.json`),
     changeSet,
   );
@@ -322,7 +460,9 @@ export function createLock(projectRoot: string): () => void {
   try {
     writeJsonFileExclusive(path, {
       acquired_at: new Date().toISOString(),
+      host: hostname(),
       pid: process.pid,
+      runtime: 'expflow-core',
     });
   } catch (error) {
     if (existsSync(path)) {
@@ -342,7 +482,56 @@ export function createLock(projectRoot: string): () => void {
   };
 }
 
+export interface ProjectLockRecord {
+  readonly acquired_at: string;
+  readonly host?: string;
+  readonly pid: number;
+  readonly runtime?: string;
+}
+
+export function readProjectLock(projectRoot: string): ProjectLockRecord | null {
+  const path = storePaths(projectRoot).lock;
+  if (!existsSync(path)) {
+    return null;
+  }
+  return readJsonFile(path) as ProjectLockRecord;
+}
+
+export function removeProjectLock(projectRoot: string): void {
+  rmSync(storePaths(projectRoot).lock, { force: true });
+  syncDirectory(storePaths(projectRoot).stateDir);
+}
+
+export function recoveryIntentPath(projectRoot: string, operationId: string): string {
+  return resolve(storePaths(projectRoot).recovery, `${operationId}.json`);
+}
+
+export function writeRecoveryIntent(
+  projectRoot: string,
+  operationId: string,
+  intent: unknown,
+): void {
+  writeJsonFileAtomic(recoveryIntentPath(projectRoot, operationId), intent);
+}
+
+export function removeRecoveryIntent(projectRoot: string, operationId: string): void {
+  rmSync(recoveryIntentPath(projectRoot, operationId), { force: true });
+  syncDirectory(storePaths(projectRoot).recovery);
+}
+
+export function listRecoveryIntentPaths(projectRoot: string): string[] {
+  const dir = storePaths(projectRoot).recovery;
+  if (!existsSync(dir)) {
+    return [];
+  }
+  return readdirSync(dir)
+    .filter((file) => file.endsWith('.json'))
+    .sort()
+    .map((file) => resolve(dir, file));
+}
+
 export function verifyTreeRevision(projectRoot: string, tree: TreeRevisionRecord): void {
+  verifyTreeContentDigest(tree);
   for (const entry of tree.entries) {
     if (entry.entry_kind !== 'file' || entry.node_id === null || entry.node_id === undefined) {
       continue;
@@ -365,6 +554,21 @@ export function verifyTreeRevision(projectRoot: string, tree: TreeRevisionRecord
       );
     }
     verifyObject(projectRoot, node.content_digest);
+  }
+}
+
+function verifyTreeContentDigest(tree: TreeRevisionRecord): void {
+  const actualDigest = treeContentDigest(
+    tree.entries,
+    tree.removed_paths ?? [],
+    tree.scope ?? defaultPathSelector(),
+  );
+  if (actualDigest !== tree.content_digest) {
+    throw new ExpflowError(
+      'object_integrity_failed',
+      `Tree content digest mismatch: ${tree.tree_revision_id}`,
+      { recoverable: true },
+    );
   }
 }
 

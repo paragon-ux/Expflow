@@ -43,6 +43,7 @@ const requiredErrorCodes = [
   'symlink_rejected',
   'archive_rejected',
   'object_integrity_failed',
+  'immutable_record_conflict',
   'node_revision_missing',
   'tree_revision_missing',
   'object_missing',
@@ -161,7 +162,7 @@ try {
     return decision.id;
   });
   const expectedIds = Array.from(
-    { length: 27 },
+    { length: 28 },
     (_, index) => `AD-${String(index + 1).padStart(3, '0')}`,
   );
   assertSameSet(ids, expectedIds, 'decision vector IDs');

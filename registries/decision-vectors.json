@@ -91,6 +91,10 @@
     {
       "id": "AD-027",
       "summary": "Gate D end-to-end proof automates core-owned scenarios and preserves adapter-only boundaries."
+    },
+    {
+      "id": "AD-028",
+      "summary": "Gate D native durability closure uses staged immutable promotion, recoverable init/restore intents, stale-lock liveness classification, and causal tree/receipt head repair."
     }
   ],
   "future_decision_slots": [

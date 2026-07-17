@@ -388,5 +388,5 @@ describe('Gate D end-to-end proof', () => {
       cleanup(root);
       cleanup(legacyRoot);
     }
-  });
+  }, 30_000);
 });

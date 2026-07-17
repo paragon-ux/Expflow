@@ -10,6 +10,7 @@ The rest of `docs/` is mutable implementation evidence and local orientation:
 - `orientation/` contains mutable System 1 and System 2 pass-start controls.
 - `completion_reports/` records phase and gate evidence with actual command results.
 - `phase_prompts/` contains the phase handoff prompts derived from the workflow source of truth.
+- `REPOSITORY_DIRECTORY_STRUCTURE.md` defines the tracked, untracked, generated, package, and release-facing directory boundaries for the current release revision.
 - The model documents such as `STORAGE_AND_RECOVERY.md`, `MATERIAL_RECORD_FORMAT.md`, and `AUTHORITY_AND_SEMANTIC_MODEL.md` describe the current mutable implementation stance.
 
 Workflow phase and gate sequencing are controlled by `docs/architecture/EXPFLOW_WORKFLOW_CURRENT.md`.

@@ -1,8 +1,8 @@
 # Expflow Developer Guide
 
-**Gate D -- Hardened and Proven.** Local material-core runtime behavior is implemented for the four ordinary commands. Gate C ownership and reproduction behavior is implemented through library runtimes for authority, semantics, workflows, projections, regeneration/equivalence, and reuse. Gate D adds local security controls, migration evidence, package hardening, and end-to-end proof.
+**Gate D -- Hardened and Proven.** Local material-core runtime behavior is implemented for the four ordinary commands. Gate C ownership and reproduction behavior is implemented through library runtimes for authority, semantics, workflows, projections, regeneration/equivalence, and reuse. Gate D adds local security controls, migration evidence, package hardening, end-to-end proof, and native durability hardening for material transactions.
 
-Adapter inspection/reconciliation, hook dispatch, network services, databases, brokers, and generated-code execution remain out of scope.
+Adapter inspection/reconciliation, Guerilla hook dispatch, network services, databases, brokers, and generated-code execution remain out of scope.
 
 ## Prerequisites
 
@@ -83,7 +83,7 @@ The TypeScript package implements:
 - Local `.expflow/` material storage with immutable objects, node revisions, tree revisions, operation receipts, validations, changes, and material head state
 - Working-tree scanning with `.expflow/**` exclusion and scoped path selectors
 - Same-path continuity, explicit `preserve`, `new`, and `replace` directives, and digest-similarity proposals without identity preservation
-- Local transaction locking, validation receipts, partial post-commit material success status, receipt/head recovery checks, and restore-source reads
+- Local transaction locking, operation-scoped staging, recoverable init/restore intents, validation receipts, partial post-commit material success status, stale-lock classification, causal tree/receipt head repair, and restore-source reads
 - A narrow extension host that invokes native operations and reads schema-shaped committed records without raw store exports
 - Authority-source revisions, source-registration decisions, readable authority documents, current-source projection, and scope-conflict checks
 - Semantic assertions, semantic decisions, conflicts, review requests, source correspondence, artifact clusters, and semantic change listing
@@ -95,7 +95,7 @@ The TypeScript package implements:
 - End-to-end proof covering material, authority, semantic, workflow, projection, reproduction, security, migration, and adapter-boundary scenarios
 - Read-only architecture-source discovery and repository-contract verification
 
-The TypeScript package does not implement adapter inspection, composite external revisions, adapter change cursors, adapter idempotency, adapter lost-response reconciliation, hook dispatch, network services, databases, brokers, archive extraction, or generated-code execution.
+The TypeScript package does not implement adapter inspection, composite external revisions, adapter change cursors, adapter idempotency, adapter lost-response reconciliation, Guerilla hook dispatch, network services, databases, brokers, archive extraction, or generated-code execution.
 
 The Python wheel does not package `docs/architecture/`. Installed wheels import and report the hook package version, while architecture-source discovery remains explicitly repository-checkout-only.
 

@@ -1,14 +1,14 @@
 # Current Status Matrix
 
-**Status:** Gate D complete on PR #6
+**Status:** Gate D native hardening closure locally validated
 **Last updated:** 2026-07-17
-**Current baseline:** `main` at Gate C merge commit `17fb82a083399f1228c556ff2d3b82455e42a8de`; Gate D branch `codex/gate-d-hardening`
+**Current baseline:** `main` after Gate D PR #6 merge at `2b194f10f839aa227d151241777d7ddb1cd721e0`; closure branch `codex/gate-d-hardening-review-format`
 **Workflow SSOT:** `docs/architecture/EXPFLOW_WORKFLOW_CURRENT.md`
 **Evidence:** [Gate A completion report](completion_reports/GATE_A_COMPLETION_REPORT.md), [Gate B completion report](completion_reports/GATE_B_COMPLETION_REPORT.md), [Gate C completion report](completion_reports/GATE_C_COMPLETION_REPORT.md), [Gate D completion report](completion_reports/GATE_D_COMPLETION_REPORT.md), [PR #4](https://github.com/paragon-ux/Expflow/pull/4), [PR #5](https://github.com/paragon-ux/Expflow/pull/5), [PR #6](https://github.com/paragon-ux/Expflow/pull/6)
 
 **Orientation:** Mutable pass-start controls live in [docs/orientation/](orientation/README.md) and are intentionally excluded from stable contract validation.
 
-**Hosted CI evidence:** Phase 1 hosted checks passed in PR #1. Gate A continuation checks passed in PR #2. PR #4 hosted checks were green and PR #4 merged to `main` at `6fe8d82`. PR #5 hosted checks were green and PR #5 merged to `main` at `17fb82a`. Gate D PR #6 hosted checks are green.
+**Hosted CI evidence:** Phase 1 hosted checks passed in PR #1. Gate A continuation checks passed in PR #2. PR #4 hosted checks were green and PR #4 merged to `main` at `6fe8d82`. PR #5 hosted checks were green and PR #5 merged to `main` at `17fb82a`. Gate D PR #6 hosted checks were green and PR #6 merged to `main` at `2b194f1`. Gate D native hardening closure PR #7 hosted checks are green.
 
 **Validation status:** operational live-status artifact; intentionally excluded from repository formatting and contract validation.
 
@@ -16,7 +16,7 @@
 
 ## Current Maturity
 
-Expflow has completed Gate A as defined by `EXPFLOW_WORKFLOW_CURRENT.md`. Gate B material core is merged into `main` through PR #4. Gate C Phases 9-14 are merged into `main` through PR #5. Gate D Phases 15-17 are complete locally on `codex/gate-d-hardening`.
+Expflow has completed Gate A as defined by `EXPFLOW_WORKFLOW_CURRENT.md`. Gate B material core is merged into `main` through PR #4. Gate C Phases 9-14 are merged into `main` through PR #5. Gate D Phases 15-17 are merged into `main` through PR #6. A Gate D native hardening closure is active locally on `codex/gate-d-hardening-review-format`.
 
 | Area                             | Estimated maturity | Assessment                                                                                                                                                                      |
 | -------------------------------- | -----------------: | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -25,11 +25,11 @@ Expflow has completed Gate A as defined by `EXPFLOW_WORKFLOW_CURRENT.md`. Gate B
 | Frozen contracts and schemas      |                85% | Supplied schemas/examples are preserved, registries are verified, seed fixtures exist, and TypeScript/Python validators agree on examples and seed fixtures.                     |
 | Protocol design                   |                88% | Native operation surface, adapter deferral, material runtime, Gate C record-family runtimes, and Gate D security/migration proof boundaries are documented.                       |
 | Implementation design             |                88% | Material core plus Gate C authority, semantic, workflow, projection, regeneration/equivalence, reuse, security, migration, and proof surfaces are implemented locally.            |
-| Reference implementation          |                75% | Gate B, Gate C, and Gate D local runtimes and proof tests exist; production pilots and adapter packages remain outside core.                                                      |
+| Reference implementation          |                78% | Gate B, Gate C, Gate D local runtimes, native hardening closure tests, and proof tests exist; production pilots and adapter packages remain outside core.                          |
 | Adapter SDK and integrations      |                 0% | Adapter contracts are explicitly deferred to separately versioned adapter profiles and remain absent from core.                                                                  |
 | Conformance and contract testing  |                92% | Source integrity, registries, schemas, examples, fixtures, package boundaries, material runtime, Gate C runtimes, Gate D security/migration, and e2e proof are tested locally.     |
 | Empirical evaluation              |                 0% | No pilots, benchmarks, or comparative evaluation have been run.                                                                                                                 |
-| Production readiness              |                15% | Core hardening proof exists locally; production release, pilots, adapter packages, and empirical evaluation remain future work.                                                  |
+| Production readiness              |                18% | Core hardening proof plus native transaction/recovery closure exists locally; production release, pilots, adapter packages, and empirical evaluation remain future work.          |
 
 ---
 
@@ -40,7 +40,7 @@ Expflow has completed Gate A as defined by `EXPFLOW_WORKFLOW_CURRENT.md`. Gate B
 | A -- Contract Ready | 1-4 | Repository governance, invariant decisions, future slots, schemas, registries, seed fixtures, generated descriptors, and validator parity | COMPLETE | Gate A completion report; local validation passed; PR #2 checks green |
 | B -- Material Core Ready | 5-8 | Immutable stores, sync, identity, transactions, recovery, commands, inspection, and operation resolution | COMPLETE | Gate B completion report; PR #4 merged to `main` at `6fe8d82`; hosted checks were green |
 | C -- Ownership and Reproduction Ready | 9-14 | Authority, semantics, workflow boundaries, projections, regeneration, equivalence, and reuse | COMPLETE | Gate C completion report; PR #5 merged to `main` at `17fb82a`; hosted checks green |
-| D -- Hardened and Proven | 15-17 | Security, migration, packaging, and end-to-end proof | COMPLETE | Gate D completion report; PR #6 hosted checks; security/migration tests; e2e proof; package verification |
+| D -- Hardened and Proven | 15-17 | Security, migration, packaging, end-to-end proof, and native hardening closure | LOCAL CLOSURE PASS | Gate D completion report; PR #6 hosted checks; security/migration tests; e2e proof; material fault-injection tests |
 
 ---
 
@@ -81,6 +81,14 @@ Expflow has completed Gate A as defined by `EXPFLOW_WORKFLOW_CURRENT.md`. Gate B
   - package version `0.0.0-gate-d` and clean package verification.
 - Gate D Phase 17 end-to-end proof:
   - automated 25-scenario proof across material, authority, semantic, workflow, projection, reproduction, security, migration, old-state, partial-success, and adapter-boundary behavior.
+- Gate D native hardening closure:
+  - operation-scoped staging for immutable object and JSON-record promotion;
+  - recoverable init and restore intents;
+  - restore working-tree installation recovery after mutation-boundary interruptions;
+  - stale/live/malformed lock classification based on same-host PID liveness;
+  - causal tree/receipt `HEAD` and `project.json` head repair;
+  - restore intent/tree agreement checks;
+  - focused fault-injection and convergence tests for init, sync, and restore.
 
 ---
 
@@ -98,13 +106,14 @@ Adapter inspection, external revision tokens, cursors, idempotency, lost-respons
 
 ## Current Evidence Base
 
-Current local evidence under the requested 60-second command cap:
+Current local hardening-closure evidence under the requested 60-second command cap:
 
+- `npm ci`;
 - `npm run format`;
 - `npm run format:check`;
 - `npm run lint`;
 - `npm run typecheck`;
-- `npm test -- tests/unit/authority-runtime.test.ts tests/unit/gate-c-runtime.test.ts`;
+- `npm test -- tests/unit/material-runtime.test.ts`;
 - `npm test -- tests/unit/security-migration-runtime.test.ts`;
 - `npm test -- tests/e2e/gate-d-proof.test.ts`;
 - `npm test`;
@@ -120,7 +129,7 @@ Current local evidence under the requested 60-second command cap:
 - `python -m pytest`;
 - `python -m build --wheel`;
 - `python tests/contracts/verify_python_wheel.py`;
-- `git diff --check origin/main...HEAD -- ':!docs/architecture/**'`.
+- `git diff --check -- ':!docs/architecture/**'`.
 
 The aggregate `npm run validate` command is not claimed as a pass under the explicit 60-second cap.
 
@@ -128,12 +137,12 @@ The aggregate `npm run validate` command is not claimed as a pass under the expl
 
 ## Current Critical Path
 
-> Post-Gate D release/pilot work.
+> Merge the hardening-closure PR after review. After merge, return to post-Gate D release/pilot work.
 
-No gate-blocking core implementation work remains after PR #6 hosted validation. Remaining work is production release hardening, pilots, empirical evaluation, and separate adapter packages.
+No Guerilla integration runtime is required in Expflow core. The current local closure addresses the post-merge Gate D native hardening review through F10 and DCR-1 through DCR-6; remaining post-merge work after closure is production release hardening, pilots, empirical evaluation, and separate adapter/profile packages.
 
 ---
 
 ## Practical Status Statement
 
-> Expflow has completed Gate A, merged Gate B through PR #4, merged Gate C through PR #5, and completed Gate D on PR #6. Gate D adds local security controls, migration evidence, packaging hardening, and automated end-to-end proof while preserving the four-command and adapter-deferral boundaries.
+> Expflow has completed Gate A, merged Gate B through PR #4, merged Gate C through PR #5, and merged Gate D through PR #6. The active closure branch hardens Gate D native storage, restore, lock, init, and recovery behavior while preserving the four-command and adapter-deferral boundaries.

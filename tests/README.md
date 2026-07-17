@@ -9,7 +9,7 @@ Current test areas:
 - `contracts/` verifies immutable architecture sources, registries, schema examples, fixtures, generated controls, and package installation boundaries.
 - `fixtures/` contains seed conformance fixtures used by the contract verifiers.
 
-Gate B material-runtime coverage includes immutable stores, object integrity, same-path identity, explicit identity overrides, digest-similarity proposals, stale-head rejection, partial post-commit material success, tree restore reconciliation, receipt/head recovery, and scoped sync selector roots.
+Gate B/Gate D material-runtime coverage includes immutable stores, staged object and record promotion, object integrity, same-path identity, explicit identity overrides, digest-similarity proposals, stale-head rejection, partial post-commit material success, tree restore reconciliation, real interruption recovery for sync/init/restore, stale/live lock classification, receipt-based `HEAD` and project metadata repair, and scoped sync selector roots.
 
 Gate C coverage includes:
 
@@ -25,6 +25,6 @@ Gate D coverage includes:
 - archive quarantine manifest validation and unsafe archive rejection;
 - source instruction/data separation, secret redaction, local-only remote disclosure blocking, generated-code non-execution, and reuse license restrictions;
 - in-place typed-folder migration evidence without user-path moves or authority fabrication;
-- end-to-end proof across material, authority, semantic, workflow, projection, reproduction, security, migration, old-state inspection, partial automation success, and adapter-boundary scenarios.
+- end-to-end proof across material, authority, semantic, workflow, projection, reproduction, security, migration, old-state inspection, partial automation success, native recovery hardening, and adapter-boundary scenarios.
 
 Use the repository validation commands in `README_DEV.md` and record actual exit codes in completion reports.

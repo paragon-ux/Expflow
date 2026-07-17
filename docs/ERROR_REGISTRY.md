@@ -15,6 +15,7 @@ Core error codes are contract values. Gate D emits material, authority, semantic
 - `symlink_rejected`
 - `archive_rejected`
 - `object_integrity_failed`
+- `immutable_record_conflict`
 - `node_revision_missing`
 - `tree_revision_missing`
 - `object_missing`
