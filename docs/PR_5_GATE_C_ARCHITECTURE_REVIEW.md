@@ -1,9 +1,10 @@
 # PR #5 Gate C Architecture Review
 
-**Status:** RESOLVED LOCALLY
+**Status:** RESOLVED AND MERGED
 **Date:** 2026-07-17
 **Review target:** PR #5, `feature/expflow-gate-c-authority-model`
-**Retargeted head:** `c4890b639180f83a6f5976dfc90256319c6ed2f6`
+**Merged head:** `79823d9579a2347cd9cb9bc6d9808a3e7e815390`
+**Merge commit:** `17fb82a083399f1228c556ff2d3b82455e42a8de`
 **Resolution implementation commits:** `09a4b7d`, `311d83f`
 **Base:** `main` after PR #4 merge commit `6fe8d823e9a57b21dc7474104f842a25d62b457e`
 
@@ -11,7 +12,7 @@ This report consolidates the initial PR review with Devin's architecture review.
 
 ## Release Risk
 
-The original review blocked Gate C because the implementation overclaimed AD-021 and AD-022, projection-head semantics were underspecified, and mutable evidence docs were stale. Implementation commit `09a4b7d` fixes F1, F3, F4, F5, F6, and the first F2 slice. Follow-up implementation commit `311d83f` closes the remaining F2 gap by rejecting undeclared keys in path selectors, authority effective intervals, authority document sections, and workflow selectors. PR #4 has merged, and PR #5 now targets `main` directly with clean merge state.
+The original review blocked Gate C because the implementation overclaimed AD-021 and AD-022, projection-head semantics were underspecified, and mutable evidence docs were stale. Implementation commit `09a4b7d` fixes F1, F3, F4, F5, F6, and the first F2 slice. Follow-up implementation commit `311d83f` closes the remaining F2 gap by rejecting undeclared keys in path selectors, authority effective intervals, authority document sections, and workflow selectors. PR #4 and PR #5 have both merged to `main`.
 
 ## Resolution Update
 
@@ -66,7 +67,7 @@ No System 1 or System 2 ADR addition is needed for this review. These findings a
 
 ## Gate Readiness
 
-Merge-ready after final validation. PR #5 targets `main`, has clean merge state, and no hosted check rollup is listed for the retargeted PR. Local validation evidence is current; no unresolved Gate C implementation blocker remains.
+Merged after final validation. PR #5 targeted `main`, hosted checks completed successfully, and merge commit `17fb82a083399f1228c556ff2d3b82455e42a8de` is now on `main`. No unresolved Gate C implementation blocker remains.
 
 ## Verification
 

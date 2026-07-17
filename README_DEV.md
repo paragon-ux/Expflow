@@ -1,8 +1,8 @@
 # Expflow Developer Guide
 
-**Gate C -- Ownership and Reproduction.** Local material-core runtime behavior is implemented for the four ordinary commands. Gate C ownership and reproduction behavior is implemented through library runtimes for authority, semantics, workflows, projections, regeneration/equivalence, and reuse.
+**Gate D -- Hardened and Proven.** Local material-core runtime behavior is implemented for the four ordinary commands. Gate C ownership and reproduction behavior is implemented through library runtimes for authority, semantics, workflows, projections, regeneration/equivalence, and reuse. Gate D adds local security controls, migration evidence, package hardening, and end-to-end proof.
 
-Adapter inspection/reconciliation, hook dispatch, network services, databases, migration, and production hardening remain out of scope.
+Adapter inspection/reconciliation, hook dispatch, network services, databases, brokers, and generated-code execution remain out of scope.
 
 ## Prerequisites
 
@@ -78,7 +78,7 @@ python tests/contracts/verify_python_wheel.py
 
 The TypeScript package implements:
 
-- Package version reporting (`0.0.0-gate-c`)
+- Package version reporting (`0.0.0-gate-d`)
 - CLI handlers for `expflow init`, `expflow sync`, `expflow status`, and `expflow restore`
 - Local `.expflow/` material storage with immutable objects, node revisions, tree revisions, operation receipts, validations, changes, and material head state
 - Working-tree scanning with `.expflow/**` exclusion and scoped path selectors
@@ -90,9 +90,12 @@ The TypeScript package implements:
 - Workflow occurrences, virtual artifacts, materialization events, and immutable workflow state transitions
 - Manifest revisions, projection-head derivation, projection-root constraints, and model-assisted proposal defaults
 - Regeneration attempts, equivalence evaluations, reuse results, and reuse policy-gate checks
+- Security controls for archive quarantine manifests, source instruction/data separation, secret redaction, local-only remote disclosure policy, generated-code non-execution, and reuse license restrictions
+- Migration evidence for in-place typed-folder projects without fabricating authority or semantic acceptance
+- End-to-end proof covering material, authority, semantic, workflow, projection, reproduction, security, migration, and adapter-boundary scenarios
 - Read-only architecture-source discovery and repository-contract verification
 
-The TypeScript package does not implement adapter inspection, composite external revisions, change cursors, adapter idempotency, lost-response reconciliation, hook dispatch, network services, databases, brokers, archive execution, migration, or production hardening.
+The TypeScript package does not implement adapter inspection, composite external revisions, adapter change cursors, adapter idempotency, adapter lost-response reconciliation, hook dispatch, network services, databases, brokers, archive extraction, or generated-code execution.
 
 The Python wheel does not package `docs/architecture/`. Installed wheels import and report the hook package version, while architecture-source discovery remains explicitly repository-checkout-only.
 

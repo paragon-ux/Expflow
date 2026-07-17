@@ -1,6 +1,6 @@
 # Expflow Source
 
-**Status:** Gate C ownership and reproduction runtime on top of the Gate B material core.
+**Status:** Gate D hardened proof runtime on top of the Gate B material core and Gate C ownership/reproduction runtimes.
 
 The TypeScript source implements the local material core for the four ordinary operations:
 
@@ -9,7 +9,7 @@ The TypeScript source implements the local material core for the four ordinary o
 - `status`
 - `restore`
 
-Gate C ownership and reproduction behavior is exposed through library runtimes, not new ordinary commands.
+Gate C ownership/reproduction behavior and Gate D security/migration behavior are exposed through library runtimes, not new ordinary commands.
 
 ## Runtime Areas
 
@@ -24,6 +24,8 @@ Gate C ownership and reproduction behavior is exposed through library runtimes, 
 - `workflows/` owns workflow occurrences, virtual artifacts, materialization events, immutable workflow transitions, exact selector shape validation, and explicit completion-decision guards.
 - `projections/` owns manifest revisions, accepted-only projection-head derivation, projection-root validation, and model-assisted proposal defaults.
 - `reproduction/` owns regeneration attempts, equivalence evaluations, reuse results, required regeneration prompt evidence, and reuse policy gates.
+- `security/` owns archive quarantine manifests, source instruction/data separation, secret redaction, local-only disclosure policy, generated-code non-execution, and reuse licensing gates.
+- `migration/` owns representative legacy typed-folder migration evidence without authority or semantic fabrication.
 - `hooks/`, `protocol/`, and `status/` remain boundary placeholders for later hardening or external surfaces.
 
-Core must not add adapter inspection, change cursors, adapter idempotency, lost-response reconciliation, hook dispatch, databases, brokers, or network services.
+Core must not add adapter inspection, adapter change cursors, adapter idempotency, adapter lost-response reconciliation, hook dispatch, databases, brokers, network services, archive extraction, or generated-code execution.

@@ -23,6 +23,10 @@ Completion reports provide phase and gate evidence. They are mutable project rec
 | [Phase 13 Completion Report](PHASE_13_COMPLETION_REPORT.md) | PASS   | Regeneration and equivalence evaluation |
 | [Phase 14 Completion Report](PHASE_14_COMPLETION_REPORT.md) | PASS   | Structural reuse                        |
 | [Gate C Completion Report](GATE_C_COMPLETION_REPORT.md)     | PASS   | Ownership and Reproduction gate closure |
+| [Phase 15 Completion Report](PHASE_15_COMPLETION_REPORT.md) | PASS   | Security and execution boundaries       |
+| [Phase 16 Completion Report](PHASE_16_COMPLETION_REPORT.md) | PASS   | Legacy migration and packaging          |
+| [Phase 17 Completion Report](PHASE_17_COMPLETION_REPORT.md) | PASS   | End-to-end proof                        |
+| [Gate D Completion Report](GATE_D_COMPLETION_REPORT.md)     | PASS   | Hardened and Proven gate closure        |
 
 ## Validation
 

@@ -1,6 +1,6 @@
 # Workflow and Projection Model
 
-**Status:** Gate C implementation
+**Status:** Gate D implementation baseline
 
 Workflow ownership requires explicit workflow state, not inference from files alone.
 
@@ -28,4 +28,4 @@ Regeneration attempts preserve unknown outcomes as durable records. Equivalence 
 
 ## Current Boundary
 
-Gate C records projection and reproduction state but does not run projectors, call models, execute generated code, dispatch hooks, inspect adapters, reconcile lost responses, or add ordinary commands beyond `init`, `sync`, `status`, and `restore`.
+Gate C records projection and reproduction state. Gate D adds security and proof controls that keep generated code non-executable by default. Core still does not run projectors, call models, dispatch hooks, inspect adapters, reconcile adapter lost responses, or add ordinary commands beyond `init`, `sync`, `status`, and `restore`.

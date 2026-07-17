@@ -1,6 +1,6 @@
 # Codex Build Plan
 
-**Status:** Gate C PR #5 retargeted to main and merge-ready
+**Status:** Gate D complete locally on `codex/gate-d-hardening`
 **Workflow SSOT:** `docs/architecture/EXPFLOW_WORKFLOW_CURRENT.md`
 
 ## Current Path
@@ -13,8 +13,9 @@
 6. Phase 12 -- Projection System: manifest revisions, scanner-excluded projection locators, model-assisted proposal defaults, and accepted manifest-head derivation.
 7. Phase 13 -- Regeneration and Equivalence Evaluation: regeneration attempts, unknown-outcome preservation, and equivalence evaluations.
 8. Phase 14 -- Structural Reuse: reuse results, policy gates, output workflow references, and no-transfer behavior.
-9. Gate C Exit: component validation, PR update, review, and PR #5 merge.
-10. Next gate after PR #5 merge: Gate D -- Security, migration, packaging hardening, and end-to-end proof.
+9. Gate C Exit: complete and merged to `main` through PR #5.
+10. Gate D -- Security, migration, packaging hardening, and end-to-end proof.
+11. Next step after validation: PR review and hosted checks for Gate D.
 
 ## Execution Rules
 

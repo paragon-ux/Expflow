@@ -1,14 +1,14 @@
 # Current Status Matrix
 
-**Status:** Gate C PR #5 retargeted to main and merge-ready
+**Status:** Gate D complete locally on `codex/gate-d-hardening`
 **Last updated:** 2026-07-17
-**Current baseline:** `main` at Gate B merge commit `6fe8d823e9a57b21dc7474104f842a25d62b457e`; Gate C PR #5 head `c4890b639180f83a6f5976dfc90256319c6ed2f6`; Gate C review-fix implementation commits `09a4b7d` and `311d83f`
+**Current baseline:** `main` at Gate C merge commit `17fb82a083399f1228c556ff2d3b82455e42a8de`; Gate D branch `codex/gate-d-hardening`
 **Workflow SSOT:** `docs/architecture/EXPFLOW_WORKFLOW_CURRENT.md`
-**Evidence:** [Gate A completion report](completion_reports/GATE_A_COMPLETION_REPORT.md), [Gate B completion report](completion_reports/GATE_B_COMPLETION_REPORT.md), [Gate C completion report](completion_reports/GATE_C_COMPLETION_REPORT.md), [PR #5 review resolution](PR_5_GATE_C_ARCHITECTURE_REVIEW.md), [PR #4](https://github.com/paragon-ux/Expflow/pull/4), [PR #5](https://github.com/paragon-ux/Expflow/pull/5)
+**Evidence:** [Gate A completion report](completion_reports/GATE_A_COMPLETION_REPORT.md), [Gate B completion report](completion_reports/GATE_B_COMPLETION_REPORT.md), [Gate C completion report](completion_reports/GATE_C_COMPLETION_REPORT.md), [Gate D completion report](completion_reports/GATE_D_COMPLETION_REPORT.md), [PR #4](https://github.com/paragon-ux/Expflow/pull/4), [PR #5](https://github.com/paragon-ux/Expflow/pull/5)
 
 **Orientation:** Mutable pass-start controls live in [docs/orientation/](orientation/README.md) and are intentionally excluded from stable contract validation.
 
-**Hosted CI evidence:** Phase 1 hosted checks passed in PR #1. Gate A continuation checks passed in PR #2. PR #4 hosted checks were green at `5fe54ec` and PR #4 merged to `main` at `6fe8d82`. PR #5 now targets `main` with merge state `CLEAN`; no hosted check rollup is listed for the retargeted PR, and local validation evidence is current.
+**Hosted CI evidence:** Phase 1 hosted checks passed in PR #1. Gate A continuation checks passed in PR #2. PR #4 hosted checks were green and PR #4 merged to `main` at `6fe8d82`. PR #5 hosted checks were green and PR #5 merged to `main` at `17fb82a`. Gate D hosted checks are pending PR creation.
 
 **Validation status:** operational live-status artifact; intentionally excluded from repository formatting and contract validation.
 
@@ -16,20 +16,20 @@
 
 ## Current Maturity
 
-Expflow has completed Gate A as defined by `EXPFLOW_WORKFLOW_CURRENT.md`. Gate B material core is merged into `main` through PR #4. Gate C Phases 9-14 are complete locally on `feature/expflow-gate-c-authority-model`, with PR #5 review blockers F1-F6 fixed in implementation commits `09a4b7d` and `311d83f`.
+Expflow has completed Gate A as defined by `EXPFLOW_WORKFLOW_CURRENT.md`. Gate B material core is merged into `main` through PR #4. Gate C Phases 9-14 are merged into `main` through PR #5. Gate D Phases 15-17 are complete locally on `codex/gate-d-hardening`.
 
 | Area                             | Estimated maturity | Assessment                                                                                                                                                                      |
 | -------------------------------- | -----------------: | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Problem definition and motivation |                90% | Expflow 2.3 architecture sources define automated workflow ownership through distinct material, authority, semantic, workflow, and projection state.                             |
 | Architectural boundaries          |                90% | Ordinary command boundary, core/adapter separation, source immutability, and record-family separation are documented and checked.                                                |
 | Frozen contracts and schemas      |                85% | Supplied schemas/examples are preserved, registries are verified, seed fixtures exist, and TypeScript/Python validators agree on examples and seed fixtures.                     |
-| Protocol design                   |                84% | Native operation surface, adapter deferral, material runtime, and Gate C record-family runtimes are documented.                                                                  |
-| Implementation design             |                82% | Material core plus Gate C authority, semantic, workflow, projection, regeneration/equivalence, and reuse record families are implemented as local library runtimes.              |
-| Reference implementation          |                60% | Gate B and Gate C local runtimes exist; Gate D security/migration/end-to-end hardening remains future work.                                                                      |
+| Protocol design                   |                88% | Native operation surface, adapter deferral, material runtime, Gate C record-family runtimes, and Gate D security/migration proof boundaries are documented.                       |
+| Implementation design             |                88% | Material core plus Gate C authority, semantic, workflow, projection, regeneration/equivalence, reuse, security, migration, and proof surfaces are implemented locally.            |
+| Reference implementation          |                75% | Gate B, Gate C, and Gate D local runtimes and proof tests exist; production pilots and adapter packages remain outside core.                                                      |
 | Adapter SDK and integrations      |                 0% | Adapter contracts are explicitly deferred to separately versioned adapter profiles and remain absent from core.                                                                  |
-| Conformance and contract testing  |                86% | Source integrity, registries, schemas, examples, fixtures, package boundaries, material runtime, authority runtime, and Gate C ownership/reproduction runtimes are tested locally. |
+| Conformance and contract testing  |                92% | Source integrity, registries, schemas, examples, fixtures, package boundaries, material runtime, Gate C runtimes, Gate D security/migration, and e2e proof are tested locally.     |
 | Empirical evaluation              |                 0% | No pilots, benchmarks, or comparative evaluation have been run.                                                                                                                 |
-| Production readiness              |                 0% | Hardening and end-to-end proof remain future gate work.                                                                                                                        |
+| Production readiness              |                15% | Core hardening proof exists locally; production release, pilots, adapter packages, and empirical evaluation remain future work.                                                  |
 
 ---
 
@@ -39,8 +39,8 @@ Expflow has completed Gate A as defined by `EXPFLOW_WORKFLOW_CURRENT.md`. Gate B
 | --- | --- | --- | --- | --- |
 | A -- Contract Ready | 1-4 | Repository governance, invariant decisions, future slots, schemas, registries, seed fixtures, generated descriptors, and validator parity | COMPLETE | Gate A completion report; local validation passed; PR #2 checks green |
 | B -- Material Core Ready | 5-8 | Immutable stores, sync, identity, transactions, recovery, commands, inspection, and operation resolution | COMPLETE | Gate B completion report; PR #4 merged to `main` at `6fe8d82`; hosted checks were green |
-| C -- Ownership and Reproduction Ready | 9-14 | Authority, semantics, workflow boundaries, projections, regeneration, equivalence, and reuse | MERGE READY | Gate C completion report; PR #5 targets `main`, merge state `CLEAN`; component validation passed under 60-second command caps |
-| D -- Hardened and Proven | 15-17 | Security, migration, packaging, and end-to-end proof | BLOCKED | Requires Gate C merge |
+| C -- Ownership and Reproduction Ready | 9-14 | Authority, semantics, workflow boundaries, projections, regeneration, equivalence, and reuse | COMPLETE | Gate C completion report; PR #5 merged to `main` at `17fb82a`; hosted checks green |
+| D -- Hardened and Proven | 15-17 | Security, migration, packaging, and end-to-end proof | COMPLETE LOCALLY | Gate D completion report; security/migration tests; e2e proof; package verification |
 
 ---
 
@@ -70,14 +70,25 @@ Expflow has completed Gate A as defined by `EXPFLOW_WORKFLOW_CURRENT.md`. Gate B
   - regeneration attempts, unknown-outcome preservation, retry identities, and equivalence evaluations.
 - Gate C Phase 14 structural reuse:
   - reuse-result records, policy gates, output workflow references, and no-transfer behavior.
+- Gate D Phase 15 security and execution boundaries:
+  - archive quarantine manifest validation and unsafe archive rejection;
+  - instruction/data separation for source content;
+  - secret detection/redaction and local-only remote-disclosure policy;
+  - generated-code non-execution and reuse license/restriction gates.
+- Gate D Phase 16 legacy migration and packaging:
+  - in-place typed-folder migration evidence;
+  - user-path preservation and no authority/semantic fabrication report;
+  - package version `0.0.0-gate-d` and clean package verification.
+- Gate D Phase 17 end-to-end proof:
+  - automated 25-scenario proof across material, authority, semantic, workflow, projection, reproduction, security, migration, old-state, partial-success, and adapter-boundary behavior.
 
 ---
 
 ## Incomplete
 
-### Gate D
+### Core Release
 
-Security enforcement, legacy migration, packaging hardening, and end-to-end proof remain future gate work.
+Production release hardening, pilots, empirical evaluation, and separate adapter packages remain future work.
 
 ### Adapter Packages
 
@@ -89,12 +100,13 @@ Adapter inspection, external revision tokens, cursors, idempotency, lost-respons
 
 Current local evidence under the requested 60-second command cap:
 
-- `npm ci`;
 - `npm run format`;
 - `npm run format:check`;
 - `npm run lint`;
 - `npm run typecheck`;
 - `npm test -- tests/unit/authority-runtime.test.ts tests/unit/gate-c-runtime.test.ts`;
+- `npm test -- tests/unit/security-migration-runtime.test.ts`;
+- `npm test -- tests/e2e/gate-d-proof.test.ts`;
 - `npm test`;
 - `npm run contracts:verify`;
 - `npm run registries:verify`;
@@ -116,12 +128,12 @@ The aggregate `npm run validate` command is not claimed as a pass under the expl
 
 ## Current Critical Path
 
-> Merge PR #5 -> Gate D.
+> Gate D PR review and hosted checks.
 
-The central near-term risk is entering Gate D before PR #5 lands on `main`; PR #5 is retargeted and merge-ready but not yet merged at this matrix revision.
+The central near-term risk is validating Gate D hosted checks after PR creation; local validation evidence is current.
 
 ---
 
 ## Practical Status Statement
 
-> Expflow has completed Gate A, merged Gate B material-core evidence through PR #4, and completed Gate C Phases 9-14 locally on `feature/expflow-gate-c-authority-model`. PR #5 review findings F1-F6, including the final AD-021 nested-shape blocker, have been fixed and validated locally. PR #5 now targets `main` directly and is merge-ready.
+> Expflow has completed Gate A, merged Gate B through PR #4, merged Gate C through PR #5, and completed Gate D Phases 15-17 locally on `codex/gate-d-hardening`. Gate D adds local security controls, migration evidence, packaging hardening, and automated end-to-end proof while preserving the four-command and adapter-deferral boundaries.

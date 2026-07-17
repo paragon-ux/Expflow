@@ -1,6 +1,6 @@
 # Architecture Decisions
 
-**Status:** Gate C implementation decision register
+**Status:** Gate D implementation decision register
 **Workflow SSOT:** `docs/architecture/EXPFLOW_WORKFLOW_CURRENT.md`
 **Source basis:** `EXPFLOW_CONCEPT_PAPER_V2_3.md`, `EXPFLOW_IMPLEMENTATION_SPEC_V2_3.md`, `EXPFLOW_PROTOCOL_SPEC_V2_3.md`, `EXPFLOW_PROJECT_SNAPSHOT_V2_3.md`, `Note-On-Architecture.md`, `V2_3_REVIEW_RESOLUTION.md`, `V2_3_ARCHITECTURE_DELTA.md`
 
@@ -36,6 +36,9 @@ Gate A freezes invariants and registers future decision slots. It must not force
 | AD-022 | Current authority sources are derived from accepted registration decisions replayed in durable write order, source supersession, and effective intervals.                      | A stale, expired, revoked, or superseded source must not remain current because of random identifier ordering or an earlier acceptance decision.                                                                                                                                                 | Authority model       |
 | AD-023 | Gate C exposes family-specific library runtimes and derived views, not a generic database, adapter cursor, or ordinary command expansion.                                      | Gate C needs inspectable committed record families without violating the four-command and adapter-deferral boundaries.                                                                                                                                                                           | Gate C runtime        |
 | AD-024 | Projection manifest heads are accepted-only derived views; stale, superseded, rejected, or conflicted records remain inspectable but do not evict accepted heads.              | A terminal projection status is evidence about freshness or conflict, not a silent replacement of the last accepted manifest revision.                                                                                                                                                           | Projection model      |
+| AD-025 | Gate D security defaults are local-only, network-blocked, minimal-environment, generated-code execution disabled, and archive-manifest quarantine before extraction.           | Imported and generated content must remain data unless a future explicit execution profile authorizes otherwise.                                                                                                                                                                                 | Security model        |
+| AD-026 | Gate D migration evidence is in-place, material-only, and must report limitations without fabricating authority, semantic acceptance, workflow completion, or verification.    | Legacy projects can become Expflow projects only when the migration preserves user paths and keeps ambiguity visible.                                                                                                                                                                            | Migration model       |
+| AD-027 | Gate D end-to-end proof automates core-owned scenarios and proves adapter-only idempotency, cursors, and reconciliation remain absent from core.                               | Final proof must cover implemented behavior without smuggling deferred adapter contracts into the core repository.                                                                                                                                                                               | End-to-end proof      |
 
 ## Decision Maturity Model
 
@@ -57,7 +60,7 @@ These slots prevent Gate A from absorbing later-gate design work while preservin
 | DS-B-IDENTIFIERS       | B           | Concrete identifier generation library and prefix grammar validation.                    | Identifiers remain opaque, prefix-scoped, and non-semantic.                                                                     |
 | DS-B-STORAGE-ATOMICITY | B           | Locking, staging, rename, fsync, reflink, object retention, and integrity-audit profile. | Material commits remain atomic and recoverable; hard links to writable files remain prohibited.                                 |
 | DS-C-SEMANTIC-TRUST    | C           | Authority-source trust defaults and local versus remote semantic profiles.               | Partially resolved locally by Gate C authority and semantic decision runtimes; remote trust profiles remain future policy work. |
-| DS-D-SECURITY-PROFILES | D           | Archive quarantine, secret handling, sandbox, licensing, and remote-processing defaults. | Imported and generated content remains untrusted data until enforcement exists.                                                 |
+| DS-D-SECURITY-PROFILES | D           | Archive quarantine, secret handling, sandbox, licensing, and remote-processing defaults. | Resolved locally by AD-025; future execution profiles still require a separate explicit authorization decision.                 |
 
 ## Deferred Decisions
 

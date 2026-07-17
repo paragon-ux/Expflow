@@ -19,6 +19,8 @@ export {
   regenerationAttemptRef,
   reuseResultRef,
 } from './reproduction/runtime.js';
+export { createSecurityRuntime } from './security/runtime.js';
+export { createMigrationRuntime } from './migration/runtime.js';
 export type {
   ExpflowRuntime,
   InitInput,
@@ -33,6 +35,8 @@ export type { SemanticRuntime } from './semantics/runtime.js';
 export type { WorkflowRuntime } from './workflows/runtime.js';
 export type { ProjectionRuntime } from './projections/runtime.js';
 export type { ReproductionRuntime } from './reproduction/runtime.js';
+export type { SecurityRuntime } from './security/runtime.js';
+export type { MigrationRuntime } from './migration/runtime.js';
 export type {
   AuthorityDocumentInput,
   AuthorityDocumentRecord,
@@ -80,6 +84,21 @@ export type {
   ReuseResultInput,
   ReuseResultRecord,
 } from './reproduction/types.js';
+export type {
+  ArchiveEntryInput,
+  ArchiveQuarantineReport,
+  PrepareSourceContentInput,
+  RemoteDisclosureRecord,
+  ReusePolicyInput,
+  SecretFinding,
+  SecurityPolicy,
+  SourceContentPreparation,
+} from './security/types.js';
+export type {
+  LegacyInventoryEntry,
+  LegacyMigrationInput,
+  LegacyMigrationReport,
+} from './migration/types.js';
 export type {
   OperationReceiptRecord,
   ProjectRecord,
