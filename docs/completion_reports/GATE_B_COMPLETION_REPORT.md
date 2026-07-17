@@ -113,7 +113,7 @@ None.
 
 ## Git Summary
 
-- Repository root: `C:/Users/USER/Desktop/Frameworks/Expflow`
+- Repository root: local repository checkout
 - Branch: `feature/expflow-gate-b-material-core`
 - Base: `origin/main` at Gate A completion
 - Gate B implementation commit: `4044b32`

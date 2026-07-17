@@ -152,7 +152,7 @@ Packaging note: Python distribution metadata uses the PEP 440-compliant package 
 
 ## Git Summary
 
-- Repository root: `C:/Users/USER/Desktop/Frameworks/Expflow`
+- Repository root: local repository checkout
 - Branch: `feature/expflow-phase-1-kickoff`
 - Commit status at report update: pending final PR fix commit
 - Remote: `https://github.com/paragon-ux/Expflow.git`
