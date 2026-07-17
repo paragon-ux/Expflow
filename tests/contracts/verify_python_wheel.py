@@ -1,4 +1,4 @@
-"""External Python wheel import verification for Phase 1."""
+"""External Python wheel import verification."""
 
 from __future__ import annotations
 
@@ -10,7 +10,7 @@ import tempfile
 import zipfile
 from pathlib import Path
 
-EXPECTED_VERSION = "0.0.0-phase.1"
+EXPECTED_VERSION = "1.0.0"
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 DIST_DIR = REPO_ROOT / "dist"
@@ -89,7 +89,7 @@ def main() -> int:
                     "import expflow_hooks;"
                     "from expflow_hooks.discovery import "
                     "architecture_sources_available, require_repository_architecture;"
-                    "assert expflow_hooks.__version__ == '0.0.0-phase.1';"
+                    "assert expflow_hooks.__version__ == '1.0.0';"
                     "assert importlib.util.find_spec('tests') is None;"
                     "assert architecture_sources_available() is False\n"
                     "try:\n"

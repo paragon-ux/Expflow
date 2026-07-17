@@ -125,6 +125,21 @@ describe('Gate D security runtime', () => {
 
     await expect(
       security.assertReuseAllowed({
+        licenseExpression: 'UNLICENSED',
+        reuseRestrictions: [],
+      }),
+    ).resolves.toBeUndefined();
+
+    await expect(
+      security.assertReuseAllowed({
+        licenseExpression: 'UNLICENSED',
+        policy: { allowedLicenses: ['MIT'] },
+        reuseRestrictions: [],
+      }),
+    ).rejects.toMatchObject<Partial<ExpflowError>>({ code: 'license_restriction' });
+
+    await expect(
+      security.assertReuseAllowed({
         licenseExpression: 'MIT',
         reuseRestrictions: ['no-reuse'],
       }),

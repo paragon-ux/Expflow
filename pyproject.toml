@@ -1,14 +1,19 @@
 [build-system]
-requires = ["setuptools>=75.8.0"]
+requires = ["setuptools>=77.0.3"]
 build-backend = "setuptools.build_meta"
 
 [project]
 name = "expflow-hooks"
-version = "0.0.0.dev1"
+version = "1.0.0"
 description = "Expflow Python hook package - schema-conforming validation and automation hooks"
 requires-python = ">=3.11"
-license = "LicenseRef-UNLICENSED"
+license = "MIT"
+license-files = ["LICENSE"]
 readme = "README.md"
+
+[project.urls]
+Repository = "https://github.com/paragon-ux/Expflow"
+Issues = "https://github.com/paragon-ux/Expflow/issues"
 
 [project.optional-dependencies]
 dev = [
