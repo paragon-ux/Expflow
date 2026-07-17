@@ -27,8 +27,8 @@ Final validation was run under the requested 60-second command cap using compone
 | `npm run typecheck`                                         |         0 | PASS   | Strict TypeScript check passed                            |
 | `npm test -- tests/unit/security-migration-runtime.test.ts` |         0 | PASS   | 5 Gate D security/migration tests passed                  |
 | `npm test -- tests/e2e/gate-d-proof.test.ts`                |         0 | PASS   | 1 Gate D proof test passed, covering 25 scenarios         |
-| `npm test -- tests/unit/material-runtime.test.ts`           |         0 | PASS   | 13 material runtime and native hardening tests passed     |
-| `npm test`                                                  |         0 | PASS   | 10 Node test files and 86 tests passed                    |
+| `npm test -- tests/unit/material-runtime.test.ts`           |         0 | PASS   | 14 material runtime and native hardening tests passed     |
+| `npm test`                                                  |         0 | PASS   | 10 Node test files and 87 tests passed                    |
 | `npm run contracts:verify`                                  |         0 | PASS   | 54 immutable architecture files verified                  |
 | `npm run registries:verify`                                 |         0 | PASS   | ADR/register set verified through AD-028                  |
 | `npm run schemas:meta-validate`                             |         0 | PASS   | 26/26 schemas meta-validated                              |
@@ -54,21 +54,23 @@ Final validation was run under the requested 60-second command cap using compone
 | Adapter-only contracts remain absent                       | PASS   | Prohibited-scope and e2e tests                  |
 | Native restore is recoverable across mutation boundaries   | PASS   | Fault-injected restore install test             |
 | Immutable records use staged promotion and conflict checks | PASS   | Store implementation and material tests         |
+| Tree revision digests match persisted tree preimages       | PASS   | Store verification and restore regression test  |
 | Locks are classified by owner liveness, not age alone      | PASS   | Stale/live lock recovery test                   |
 | Mutable material heads repair from committed receipts      | PASS   | Sync interruption and metadata divergence tests |
 
 ## Hardening Review Closure
 
-| Finding                                               | Status | Evidence                                                                                                                                                                                        |
-| ----------------------------------------------------- | ------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| F1 restore partial mutation before recoverable commit | FIXED  | Restore precomputes a target tree, stages replacement bytes, writes `restore_working_tree` intent, commits material records, then installs user files; recovery completes interrupted installs. |
-| F2 immutable objects/records direct final writes      | FIXED  | Object and immutable JSON record writes use operation-scoped staging, verification, promotion, and occupied-path conflict checks.                                                               |
-| F3 stale `.expflow/LOCK` recovery absent              | FIXED  | Recovery classifies stale, live, and malformed locks using same-host PID liveness and refuses live/ambiguous owners.                                                                            |
-| F4 `HEAD`/`project.json` divergence                   | FIXED  | Recovery derives repair from latest verified material-success receipt and repairs both mutable representations.                                                                                 |
-| F5 init publishes partial state                       | FIXED  | Init writes an `init_project` recovery intent and publishes `project.json` only after first material records and receipt exist.                                                                 |
-| F6 recovery tests only simulated end states           | FIXED  | Material tests fault-inject real init, sync, and restore operation paths.                                                                                                                       |
-| F7 staging cleanup-only claim                         | FIXED  | Staging is used for object/record promotion and restore replacement bytes; recovery still cleans uncommitted staging.                                                                           |
-| F8 evidence overclaimed crash durability              | FIXED  | This report distinguishes functional proof, native durability hardening, and remaining production/pilot work.                                                                                   |
+| Finding                                               | Status | Evidence                                                                                                                                                                                                     |
+| ----------------------------------------------------- | ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| F1 restore partial mutation before recoverable commit | FIXED  | Restore precomputes a target tree, stages replacement bytes, writes `restore_working_tree` intent, commits material records, then installs user files; recovery completes interrupted installs.              |
+| F2 immutable objects/records direct final writes      | FIXED  | Object and immutable JSON record writes use operation-scoped staging, verification, promotion, and occupied-path conflict checks.                                                                            |
+| F3 stale `.expflow/LOCK` recovery absent              | FIXED  | Recovery classifies stale, live, and malformed locks using same-host PID liveness and refuses live/ambiguous owners.                                                                                         |
+| F4 `HEAD`/`project.json` divergence                   | FIXED  | Recovery derives repair from latest verified material-success receipt and repairs both mutable representations.                                                                                              |
+| F5 init publishes partial state                       | FIXED  | Init writes an `init_project` recovery intent and publishes `project.json` only after first material records and receipt exist.                                                                              |
+| F6 recovery tests only simulated end states           | FIXED  | Material tests fault-inject real init, sync, and restore operation paths.                                                                                                                                    |
+| F7 staging cleanup-only claim                         | FIXED  | Staging is used for object/record promotion and restore replacement bytes; recovery still cleans uncommitted staging.                                                                                        |
+| F8 evidence overclaimed crash durability              | FIXED  | This report distinguishes functional proof, native durability hardening, and remaining production/pilot work.                                                                                                |
+| F9 restored tree digest mismatch                      | FIXED  | Restored tree records persist the restore-specific `removed_paths`, and store verification recomputes tree `content_digest` from persisted entries, removed paths, and scope before write/read verification. |
 
 ## Invariant Audit
 
@@ -77,6 +79,7 @@ Final validation was run under the requested 60-second command cap using compone
 - Hook dispatch, network services, databases, brokers, adapter idempotency, adapter reconciliation, and adapter cursors remain absent.
 - Security defaults are local-only and generated-code execution remains disabled.
 - Migration never fabricates authority, semantic acceptance, workflow completion, verification, or reuse decisions.
+- Tree revision `content_digest` values are verified against the record's persisted entries, removed paths, and scope.
 - Guerilla universal-hook compatibility is a profile/observation boundary; Expflow native recovery remains core-owned and no Guerilla hook runtime was added.
 
 ## Scope Audit

@@ -27,7 +27,8 @@ import {
   type JsonValue,
 } from '../core/json.js';
 import { EXPFLOW_STATE_DIR, PROJECTION_ROOT } from '../core/paths.js';
-import { sha256Bytes } from './digest.js';
+import { sha256Bytes, treeContentDigest } from './digest.js';
+import { defaultPathSelector } from './selectors.js';
 import type {
   NodeRevisionRecord,
   OperationReceiptRecord,
@@ -355,6 +356,7 @@ export function nodeRevisionPath(projectRoot: string, nodeId: string, revision: 
 }
 
 export function writeTreeRevision(projectRoot: string, record: TreeRevisionRecord): void {
+  verifyTreeContentDigest(record);
   writeImmutableJsonRecord(
     projectRoot,
     record.created_by_operation,
@@ -527,6 +529,7 @@ export function listRecoveryIntentPaths(projectRoot: string): string[] {
 }
 
 export function verifyTreeRevision(projectRoot: string, tree: TreeRevisionRecord): void {
+  verifyTreeContentDigest(tree);
   for (const entry of tree.entries) {
     if (entry.entry_kind !== 'file' || entry.node_id === null || entry.node_id === undefined) {
       continue;
@@ -549,6 +552,21 @@ export function verifyTreeRevision(projectRoot: string, tree: TreeRevisionRecord
       );
     }
     verifyObject(projectRoot, node.content_digest);
+  }
+}
+
+function verifyTreeContentDigest(tree: TreeRevisionRecord): void {
+  const actualDigest = treeContentDigest(
+    tree.entries,
+    tree.removed_paths ?? [],
+    tree.scope ?? defaultPathSelector(),
+  );
+  if (actualDigest !== tree.content_digest) {
+    throw new ExpflowError(
+      'object_integrity_failed',
+      `Tree content digest mismatch: ${tree.tree_revision_id}`,
+      { recoverable: true },
+    );
   }
 }
 

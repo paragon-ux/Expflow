@@ -12,6 +12,8 @@ import { hostname, tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 import { createRuntime } from '../../src/operations/runtime.js';
 import { ExpflowError } from '../../src/core/errors.js';
+import { treeContentDigest } from '../../src/material/digest.js';
+import { defaultPathSelector } from '../../src/material/selectors.js';
 import {
   objectPathForDigest,
   readHead,
@@ -19,6 +21,7 @@ import {
   readProject,
   readTreeRevision,
   storePaths,
+  treeRevisionPath,
   updateProjectHead,
   writeHead,
 } from '../../src/material/store.js';
@@ -78,6 +81,27 @@ describe('Gate B material runtime', () => {
       const entry = tree.entries[0];
       const node = readNodeRevision(root, entry?.node_id ?? '', entry?.node_revision ?? 0);
       writeFileSync(objectPathForDigest(root, node.content_digest), 'corrupt', 'utf-8');
+
+      const verify = await runtime.verify({ root });
+      expect(verify.status).toBe('fail');
+      expect(verify.findings[0]?.code).toBe('object_integrity_failed');
+    } finally {
+      cleanup(root);
+    }
+  });
+
+  it('detects tree content digest corruption during material verification', async () => {
+    const root = tempProject();
+    try {
+      writeProjectFile(root, 'a.txt', 'alpha');
+      const runtime = createRuntime();
+      const initReceipt = await runtime.init({ root });
+      const tree = readTreeRevision(root, initReceipt.new_head ?? '');
+      writeFileSync(
+        treeRevisionPath(root, tree.tree_revision_id),
+        JSON.stringify({ ...tree, removed_paths: ['ghost.txt'] }, null, 2),
+        'utf-8',
+      );
 
       const verify = await runtime.verify({ root });
       expect(verify.status).toBe('fail');
@@ -198,6 +222,15 @@ describe('Gate B material runtime', () => {
       expect(readFileSync(resolve(root, 'a.txt'), 'utf-8')).toBe('one');
       expect(existsSync(resolve(root, 'b.txt'))).toBe(false);
       expect(readHead(root)).toBe(restoreReceipt.new_head);
+      const restoredTree = readTreeRevision(root, restoreReceipt.new_head ?? '');
+      expect(restoredTree.removed_paths).toEqual(['b.txt']);
+      expect(
+        treeContentDigest(
+          restoredTree.entries,
+          restoredTree.removed_paths ?? [],
+          restoredTree.scope ?? defaultPathSelector(),
+        ),
+      ).toBe(restoredTree.content_digest);
       const status = await runtime.status({ root });
       expect(status.working_tree_state).toBe('clean');
 

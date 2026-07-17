@@ -698,6 +698,7 @@ export function createRuntime(): ExpflowRuntime {
             content_digest: contentDigest,
             created_at: startedAt,
             created_by_operation: operationId,
+            removed_paths: removedPaths,
             parent_tree_revision_id: previousHead,
             sequence: (currentTree?.sequence ?? 0) + 1,
             source: 'restore',

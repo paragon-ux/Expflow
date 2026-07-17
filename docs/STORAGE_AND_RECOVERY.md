@@ -28,6 +28,7 @@ Recovery repairs structural state from durable evidence. It must never invent se
 - Project transactions acquire `.expflow/LOCK` and release it in a `finally` path.
 - Objects, node revisions, tree revisions, validations, changes, and operation receipts are written as local files through operation-scoped staging before final promotion.
 - Immutable records use staged exclusive writes; existing final paths are verified before reuse and rejected if occupied by different bytes.
+- Tree revisions are rejected when `content_digest` does not match the persisted entries, removed paths, and scope.
 - Material head replacement is separated from immutable record writes and does not delete the old `HEAD` before replacement.
 - `init` publishes `project.json` only after the first material records and operation receipt exist; an `init_project` recovery intent completes interrupted publication.
 - `restore` precomputes and verifies the target tree, stages replacement bytes, records a `restore_working_tree` intent, commits material records, then installs working-tree changes.
