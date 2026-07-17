@@ -116,7 +116,7 @@ Focused preflight also passed:
 
 PR #7 hardening closure hosted checks were green at head `d1dd2ac925b219c50c7728963e908042793c7376`.
 
-Release-closeout hosted checks will be available after the release branch is pushed and the PR is opened.
+PR #8 is intentionally stacked on `codex/gate-d-hardening-review-format`; the repository workflow currently runs pull-request hosted checks only for PRs targeting `main`, so no hosted checks are listed for the stacked release PR. Local release validation passed. Retargeting or rebasing PR #8 onto `main` after PR #7 merges should trigger hosted checks if required for final review.
 
 ## Blockers And Release Risks
 
