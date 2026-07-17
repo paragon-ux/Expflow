@@ -57,7 +57,8 @@ The release branch intentionally incorporates the Gate D native hardening closur
 - `docs/release_notes/GITHUB_RELEASE_NOTE_V1_0_0.md` provides standalone text for a GitHub release.
 - `SECURITY.md` records supported versions, reporting expectations, and local-first security posture.
 - `CONTRIBUTING.md` records branch, validation, architecture-source, and scope-boundary rules.
-- `docs/CURRENT_STATUS_MATRIX.md`, `docs/CODEX_BUILD_PLAN.md`, `docs/TEST_MATRIX.md`, and `docs/README.md` were updated for release-closeout status.
+- `docs/CURRENT_STATUS_MATRIX.md`, `docs/TEST_MATRIX.md`, and `docs/README.md` were updated for release-closeout status.
+- `docs/CODEX_BUILD_PLAN.md`, `docs/phase_prompts/`, and `docs/external_references/GUERILLA_UNIVERSAL_HOOK_BOUNDARY.md` were removed from tracking as internal build artifacts during final release hygiene. Immutable architecture references to these paths remain unchanged per AGENTS.md §6.
 - No `CODE_OF_CONDUCT.md` was added because the owner has not requested a public community contribution posture file.
 
 ## PR Review Closure
@@ -78,7 +79,7 @@ The release branch intentionally incorporates the Gate D native hardening closur
 | Immutable architecture sources | PASS   | `docs/architecture/**` was not edited; source integrity check passed.                                                                           |
 | Generated output               | PASS   | `build/`, `dist/`, wheels, npm tarballs, caches, and `.expflow/` remain ignored/generated.                                                      |
 | Local reference state          | PASS   | `.reasonix/` and `build-docs/` are ignored local-only directories.                                                                              |
-| Tracked `build-docs/**`        | PASS   | No tracked `build-docs/**` paths remain; curated hardening and Guerilla-boundary summaries live under `docs/`.                                  |
+| Tracked `build-docs/**`        | PASS   | No tracked `build-docs/**` paths remain.                                                                                                        |
 | Release-facing docs            | PASS   | No local absolute paths or private scratch links were added to public release docs.                                                             |
 | Package surface                | PASS   | npm package verification installs outside checkout and reports `1.0.0`; Python wheel verification imports outside checkout and reports `1.0.0`. |
 
@@ -90,7 +91,7 @@ The release branch intentionally incorporates the Gate D native hardening closur
 | Standalone GitHub release note      | PASS   | `docs/release_notes/GITHUB_RELEASE_NOTE_V1_0_0.md` is tracked separately from changelog and reports.  |
 | Curated Gate C review evidence      | PASS   | `docs/reviews/PR_5_GATE_C_ARCHITECTURE_REVIEW.md` keeps the historical PR #5 review under reviews.    |
 | Curated hardening review evidence   | PASS   | `docs/reviews/GATE_D_HARDENING_REVIEW_SUMMARY.md` preserves release-relevant hardening review status. |
-| Curated Guerilla boundary reference | PASS   | `docs/external_references/GUERILLA_UNIVERSAL_HOOK_BOUNDARY.md` records the compatibility boundary.    |
+| Curated Guerilla boundary reference | PASS   | Removed during final release hygiene; AGENTS.md §10 already covers the Guerilla exclusion.            |
 
 ## Scope Audit
 
