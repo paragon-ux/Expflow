@@ -209,6 +209,12 @@ function assertWorkflowOccurrence(record: WorkflowOccurrenceRecord): void {
   assertStringArray(record.virtual_artifact_refs ?? [], 'virtual_artifact_refs');
   assertEnum(record.material_status, MATERIAL_STATUSES, 'material_status');
   assertEnum(record.completion_status, COMPLETION_STATUSES, 'completion_status');
+  if (
+    record.completion_status === 'accepted' &&
+    (record.completion_decision_ref === null || record.completion_decision_ref === undefined)
+  ) {
+    throw schemaInvalid('Accepted workflow completion requires a completion decision ref.');
+  }
   assertEnum(record.verification_status, VERIFICATION_STATUSES, 'verification_status');
   assertEnum(record.reuse_status, REUSE_STATUSES, 'reuse_status');
   assertDateTime(record.created_at, 'created_at');
@@ -289,7 +295,7 @@ export function createWorkflowRuntime(root?: string): WorkflowRuntime {
       await Promise.resolve();
       ensureWorkflowStore(projectRoot);
       const previous = assertKnownWorkflow(projectRoot, input.workflowOccurrenceId);
-      if (input.completionStatus === 'accepted' && input.completionDecisionRef === undefined) {
+      if (input.completionStatus === 'accepted' && input.completionDecisionRef == null) {
         throw schemaInvalid('Accepted workflow completion requires a completion decision ref.');
       }
       const record = stateTransitionRecord(previous, input, new Date().toISOString());

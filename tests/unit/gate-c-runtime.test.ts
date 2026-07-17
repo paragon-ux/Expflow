@@ -113,6 +113,50 @@ describe('Gate C ownership and reproduction runtime', () => {
     }
   });
 
+  it('rejects semantic assertion shape drift before immutable write', async () => {
+    const { root, inputTree } = await initializedProject();
+    try {
+      const semantics = createSemanticRuntime(root);
+
+      await expect(
+        semantics.recordAssertion({
+          assertionType: 'completion_declaration',
+          claims: [{ predicate: 'completed', value: true }],
+          issuer: { extra: true, kind: 'user', name: 'tester' },
+          subjectRefs: [`tree:${inputTree}`],
+        } as unknown as Parameters<typeof semantics.recordAssertion>[0]),
+      ).rejects.toMatchObject<Partial<ExpflowError>>({
+        code: 'schema_invalid',
+      });
+
+      await expect(
+        semantics.recordAssertion({
+          assertionType: 'completion_declaration',
+          claims: [{ predicate: 'completed' }],
+          issuer: { kind: 'user', name: 'tester' },
+          subjectRefs: [`tree:${inputTree}`],
+        } as unknown as Parameters<typeof semantics.recordAssertion>[0]),
+      ).rejects.toMatchObject<Partial<ExpflowError>>({
+        code: 'schema_invalid',
+      });
+
+      await expect(
+        semantics.recordAssertion({
+          assertionType: 'completion_declaration',
+          claims: [{ extra: true, predicate: 'completed', value: true }],
+          issuer: { kind: 'user', name: 'tester' },
+          subjectRefs: [`tree:${inputTree}`],
+        } as unknown as Parameters<typeof semantics.recordAssertion>[0]),
+      ).rejects.toMatchObject<Partial<ExpflowError>>({
+        code: 'schema_invalid',
+      });
+
+      expect(await semantics.listAssertions()).toEqual([]);
+    } finally {
+      cleanup(root);
+    }
+  });
+
   it('records workflow output without implying accepted completion', async () => {
     const { root, initOperationId, inputTree, outputTree, syncOperationId } =
       await initializedProject();
@@ -151,6 +195,30 @@ describe('Gate C ownership and reproduction runtime', () => {
     }
   });
 
+  it('requires an immutable decision ref before accepting workflow completion', async () => {
+    const { root, initOperationId, inputTree } = await initializedProject();
+    try {
+      const workflows = createWorkflowRuntime(root);
+      const workflow = await workflows.startWorkflowOccurrence({
+        inputPathSelector: { exclude: [], include: ['docs/**'], root: '.' },
+        inputTreeRevisionId: inputTree,
+        startOperationId: initOperationId,
+      });
+
+      await expect(
+        workflows.transitionWorkflowState({
+          completionDecisionRef: null,
+          completionStatus: 'accepted',
+          workflowOccurrenceId: workflowOccurrenceRef(workflow),
+        } as unknown as Parameters<typeof workflows.transitionWorkflowState>[0]),
+      ).rejects.toMatchObject<Partial<ExpflowError>>({
+        code: 'schema_invalid',
+      });
+    } finally {
+      cleanup(root);
+    }
+  });
+
   it('keeps projections scanner-excluded and derives accepted manifest heads', async () => {
     const { root, outputTree } = await initializedProject();
     try {
@@ -167,6 +235,18 @@ describe('Gate C ownership and reproduction runtime', () => {
         readableLocator: '.expflow/projections/model.json',
         treeRevisionId: outputTree,
       });
+      await expect(
+        projections.recordManifestRevision({
+          manifestKind: 'import_tree',
+          projectorClass: 'deterministic_template',
+          projectorName: 'test-template',
+          projectorVersion: '1',
+          readableLocator: '.expflow/projections/missing-digest.json',
+          treeRevisionId: outputTree,
+        } as unknown as Parameters<typeof projections.recordManifestRevision>[0]),
+      ).rejects.toMatchObject<Partial<ExpflowError>>({
+        code: 'schema_invalid',
+      });
       const accepted = await projections.recordManifestRevision({
         acceptedBy: { kind: 'policy', name: 'deterministic-template' },
         contentDigest: 'sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc',
@@ -178,6 +258,25 @@ describe('Gate C ownership and reproduction runtime', () => {
         status: 'accepted',
         treeRevisionId: outputTree,
       });
+      const terminalStatusDigests = {
+        conflicted: 'sha256:ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff',
+        stale: 'sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd',
+        superseded: 'sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',
+      } as const;
+      for (const status of ['stale', 'superseded', 'conflicted'] as const) {
+        await projections.recordManifestRevision({
+          contentDigest: terminalStatusDigests[status],
+          manifestKind: 'import_tree',
+          projectorClass: 'deterministic_template',
+          projectorName: 'test-template',
+          projectorVersion: '1',
+          readableLocator: `.expflow/projections/${status}.json`,
+          staleReason: status === 'stale' ? 'Input tree changed.' : null,
+          status,
+          supersededBy: manifestRevisionRef(accepted),
+          treeRevisionId: outputTree,
+        });
+      }
       writeProjectFile(root, '.expflow/projections/local.json', '{"internal":true}');
 
       expect(proposed.status).toBe('proposed');
@@ -229,6 +328,18 @@ describe('Gate C ownership and reproduction runtime', () => {
         status: 'unknown',
         targetKind: 'workflow',
         toolProfile: 'test-tool',
+      });
+      await expect(
+        reproduction.recordRegenerationAttempt({
+          inputTreeRevisionId: inputTree,
+          modelProfile: 'test-model',
+          sourceWorkflowOccurrenceId: workflow.workflow_occurrence_id,
+          status: 'queued',
+          targetKind: 'workflow',
+          toolProfile: 'test-tool',
+        } as unknown as Parameters<typeof reproduction.recordRegenerationAttempt>[0]),
+      ).rejects.toMatchObject<Partial<ExpflowError>>({
+        code: 'schema_invalid',
       });
       const retry = await reproduction.recordRegenerationAttempt({
         inputTreeRevisionId: inputTree,

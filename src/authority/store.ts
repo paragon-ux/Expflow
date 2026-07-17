@@ -1,4 +1,4 @@
-import { existsSync, mkdirSync, readdirSync } from 'node:fs';
+import { appendFileSync, existsSync, mkdirSync, readFileSync, readdirSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { readJsonFile, writeJsonFileExclusive } from '../core/json.js';
 import { readProject, storePaths } from '../material/store.js';
@@ -11,6 +11,7 @@ import type {
 export interface AuthorityStorePaths {
   readonly authoritySources: string;
   readonly sourceRegistrationDecisions: string;
+  readonly sourceRegistrationDecisionOrder: string;
   readonly authorityDocuments: string;
 }
 
@@ -19,6 +20,7 @@ export function authorityStorePaths(projectRoot: string): AuthorityStorePaths {
   return {
     authorityDocuments: resolve(records, 'authority-documents'),
     authoritySources: resolve(records, 'authority-sources'),
+    sourceRegistrationDecisionOrder: resolve(records, 'source-registration-decisions.order'),
     sourceRegistrationDecisions: resolve(records, 'source-registration-decisions'),
   };
 }
@@ -110,13 +112,14 @@ export function writeSourceRegistrationDecision(
   projectRoot: string,
   record: SourceRegistrationDecisionRecord,
 ): void {
+  const paths = authorityStorePaths(projectRoot);
   writeJsonFileExclusive(
-    resolve(
-      authorityStorePaths(projectRoot).sourceRegistrationDecisions,
-      `${record.decision_id}.json`,
-    ),
+    resolve(paths.sourceRegistrationDecisions, `${record.decision_id}.json`),
     record,
   );
+  appendFileSync(paths.sourceRegistrationDecisionOrder, `${record.decision_id}\n`, {
+    encoding: 'utf-8',
+  });
 }
 
 export function listSourceRegistrationDecisions(
@@ -126,13 +129,37 @@ export function listSourceRegistrationDecisions(
   if (!existsSync(root)) {
     return [];
   }
-  return readdirSync(root)
+  const records = readdirSync(root)
     .filter((file) => file.endsWith('.json'))
-    .map((file) => readJsonFile(resolve(root, file)) as SourceRegistrationDecisionRecord)
+    .map((file) => readJsonFile(resolve(root, file)) as SourceRegistrationDecisionRecord);
+  const byId = new Map(records.map((record) => [record.decision_id, record]));
+  const ordered: SourceRegistrationDecisionRecord[] = [];
+  const seen = new Set<string>();
+  for (const decisionId of readDecisionOrder(projectRoot)) {
+    const record = byId.get(decisionId);
+    if (record !== undefined && !seen.has(decisionId)) {
+      ordered.push(record);
+      seen.add(decisionId);
+    }
+  }
+  const unindexed = records
+    .filter((record) => !seen.has(record.decision_id))
     .sort((left, right) => {
       const created = left.created_at.localeCompare(right.created_at);
       return created === 0 ? left.decision_id.localeCompare(right.decision_id) : created;
     });
+  return [...ordered, ...unindexed];
+}
+
+function readDecisionOrder(projectRoot: string): string[] {
+  const path = authorityStorePaths(projectRoot).sourceRegistrationDecisionOrder;
+  if (!existsSync(path)) {
+    return [];
+  }
+  return readFileSync(path, 'utf-8')
+    .split(/\r?\n/u)
+    .map((line) => line.trim())
+    .filter((line) => line.length > 0);
 }
 
 export function writeAuthorityDocument(projectRoot: string, record: AuthorityDocumentRecord): void {

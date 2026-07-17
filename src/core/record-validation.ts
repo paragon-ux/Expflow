@@ -20,8 +20,14 @@ export function assertSourceRevisionRef(value: string, field: string): void {
   assertPattern(value, SOURCE_REVISION_REF, field);
 }
 
-export function assertSha256Digest(value: string | undefined, field: string): void {
-  if (value !== undefined && !SHA256_DIGEST.test(value)) {
+export function assertSha256Digest(value: unknown, field: string): void {
+  if (value !== undefined) {
+    assertRequiredSha256Digest(value, field);
+  }
+}
+
+export function assertRequiredSha256Digest(value: unknown, field: string): asserts value is string {
+  if (typeof value !== 'string' || !SHA256_DIGEST.test(value)) {
     throw schemaInvalid(`${field} must be a sha256 digest.`);
   }
 }
@@ -66,9 +72,7 @@ export function assertEnum<T extends string>(
 }
 
 export function assertRequestedBy(value: unknown, field: string): asserts value is RequestedBy {
-  if (typeof value !== 'object' || value === null) {
-    throw schemaInvalid(`${field} must be an attribution object.`);
-  }
+  assertNoAdditionalProperties(value, ['kind', 'name', 'version', 'model'], field);
   const record = value as Partial<RequestedBy>;
   if (typeof record.kind !== 'string') {
     throw schemaInvalid(`${field}.kind is required.`);
@@ -78,6 +82,25 @@ export function assertRequestedBy(value: unknown, field: string): asserts value 
   }
   assertEnum(record.kind, REQUESTED_BY_KINDS, `${field}.kind`);
   assertNonEmptyString(record.name, `${field}.name`);
+  assertOptionalStringOrNull(record.version, `${field}.version`);
+  assertOptionalStringOrNull(record.model, `${field}.model`);
+}
+
+export function assertNoAdditionalProperties(
+  value: unknown,
+  allowedKeys: readonly string[],
+  field: string,
+): asserts value is Record<string, unknown> {
+  if (typeof value !== 'object' || value === null || Array.isArray(value)) {
+    throw schemaInvalid(`${field} must be an object.`);
+  }
+  const allowed = new Set(allowedKeys);
+  const extraKeys = Object.keys(value).filter((key) => !allowed.has(key));
+  if (extraKeys.length > 0) {
+    throw schemaInvalid(
+      `${field} must not contain additional properties: ${extraKeys.join(', ')}.`,
+    );
+  }
 }
 
 export function assertPathSelectorShape(
@@ -102,5 +125,11 @@ export function schemaInvalid(message: string): ExpflowError {
 function assertPattern(value: string, pattern: RegExp, field: string): void {
   if (typeof value !== 'string' || !pattern.test(value)) {
     throw schemaInvalid(`${field} does not match the required pattern.`);
+  }
+}
+
+function assertOptionalStringOrNull(value: unknown, field: string): void {
+  if (value !== undefined && value !== null && typeof value !== 'string') {
+    throw schemaInvalid(`${field} must be a string or null.`);
   }
 }

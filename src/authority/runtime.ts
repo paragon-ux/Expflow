@@ -9,6 +9,7 @@ import {
   assertNonEmptyString,
   assertPathSelectorShape,
   assertRequestedBy,
+  assertRequiredSha256Digest,
   assertSha256Digest,
   assertSourceRevisionRef,
   assertStringArray,
@@ -196,7 +197,7 @@ function assertAuthorityDocumentRecord(record: AuthorityDocumentRecord): void {
   assertExpflowId(record.project_id, 'efp', 'project_id');
   assertEnum(record.profile, AUTHORITY_DOCUMENT_PROFILES, 'profile');
   assertNonEmptyString(record.readable_locator, 'readable_locator');
-  assertSha256Digest(record.content_digest, 'content_digest');
+  assertRequiredSha256Digest(record.content_digest, 'content_digest');
   assertDateTime(record.created_at, 'created_at');
   if (record.sections.length === 0) {
     throw schemaInvalid('sections must contain at least one section.');

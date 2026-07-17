@@ -7,6 +7,7 @@ import {
   assertExpflowId,
   assertNonEmptyString,
   assertRequestedBy,
+  assertRequiredSha256Digest,
   assertSha256Digest,
   assertStringArray,
   schemaInvalid,
@@ -83,7 +84,7 @@ function assertManifestRevision(record: ManifestRevisionRecord): void {
   if (!record.readable_locator.startsWith(`${PROJECTION_ROOT}/`)) {
     throw schemaInvalid(`readable_locator must be under ${PROJECTION_ROOT}/.`);
   }
-  assertSha256Digest(record.content_digest, 'content_digest');
+  assertRequiredSha256Digest(record.content_digest, 'content_digest');
   assertEnum(record.status, MANIFEST_STATUSES, 'status');
   assertEnum(record.projector_class, PROJECTOR_CLASSES, 'projector_class');
   assertNonEmptyString(record.projector_name, 'projector_name');
@@ -115,16 +116,6 @@ function manifestHeads(projectRoot: string): ManifestHeadRecord[] {
     const key = `${record.manifest_kind}:${record.workflow_occurrence_id ?? 'project'}`;
     if (record.status === 'accepted') {
       heads.set(key, record);
-    } else if (
-      record.status === 'rejected' ||
-      record.status === 'stale' ||
-      record.status === 'superseded' ||
-      record.status === 'conflicted'
-    ) {
-      const current = heads.get(key);
-      if (current?.manifest_revision_id === record.superseded_by) {
-        heads.delete(key);
-      }
     }
   }
   return [...heads.entries()]

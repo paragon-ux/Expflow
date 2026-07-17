@@ -6,6 +6,7 @@ import {
   assertDateTime,
   assertEnum,
   assertExpflowId,
+  assertNoAdditionalProperties,
   assertNonEmptyString,
   assertRequestedBy,
   assertSha256Digest,
@@ -252,13 +253,28 @@ function assertSemanticAssertion(record: SemanticAssertionRecord): void {
     throw schemaInvalid('claims must contain at least one claim.');
   }
   for (const claim of record.claims) {
+    assertNoAdditionalProperties(
+      claim,
+      ['predicate', 'value', 'confidence', 'explanation'],
+      'claims',
+    );
     assertNonEmptyString(claim.predicate, 'claims.predicate');
+    if (!Object.hasOwn(claim, 'value')) {
+      throw schemaInvalid('claims.value is required.');
+    }
     if (
       claim.confidence !== null &&
       claim.confidence !== undefined &&
       (claim.confidence < 0 || claim.confidence > 1)
     ) {
       throw schemaInvalid('claims.confidence must be between 0 and 1.');
+    }
+    if (
+      claim.explanation !== null &&
+      claim.explanation !== undefined &&
+      typeof claim.explanation !== 'string'
+    ) {
+      throw schemaInvalid('claims.explanation must be a string or null.');
     }
   }
 }

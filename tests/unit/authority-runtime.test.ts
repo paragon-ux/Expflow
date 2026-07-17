@@ -4,8 +4,12 @@ import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 import { createRuntime } from '../../src/operations/runtime.js';
 import { createAuthorityRuntime, sourceRef } from '../../src/authority/runtime.js';
+import { writeSourceRegistrationDecision } from '../../src/authority/store.js';
 import { ExpflowError } from '../../src/core/errors.js';
-import type { AuthoritySourceInput } from '../../src/authority/types.js';
+import type {
+  AuthoritySourceInput,
+  SourceRegistrationDecisionRecord,
+} from '../../src/authority/types.js';
 
 function tempProject(): string {
   return mkdtempSync(join(tmpdir(), 'expflow-gate-c-'));
@@ -130,6 +134,44 @@ describe('Gate C Phase 9 authority runtime', () => {
       const status = await authority.listCurrentAuthoritySources();
       expect(status.accepted_source_refs).toEqual([]);
       expect(status.decisions).toHaveLength(2);
+    } finally {
+      cleanup(root);
+    }
+  });
+
+  it('replays same-timestamp source decisions in durable write order', async () => {
+    const root = await initializedProject();
+    try {
+      const authority = createAuthorityRuntime(root);
+      const source = await authority.createSourceRevision(sourceInput());
+      const sameCreatedAt = '2026-07-17T00:00:00.000Z';
+      const baseDecision = {
+        schema_version: '2.3',
+        automated: false,
+        consequences: [],
+        created_at: sameCreatedAt,
+        evidence_refs: [],
+        made_by: { kind: 'user', name: 'reviewer' },
+        policy_profile: null,
+        rationale: 'Manual same-timestamp ordering regression.',
+        source_revision_ref: sourceRef(source),
+        supersedes_decision_ref: null,
+      } as const satisfies Omit<SourceRegistrationDecisionRecord, 'decision_id' | 'outcome'>;
+
+      writeSourceRegistrationDecision(root, {
+        ...baseDecision,
+        decision_id: `efrd_${'Z'.repeat(26)}`,
+        outcome: 'accepted',
+      });
+      writeSourceRegistrationDecision(root, {
+        ...baseDecision,
+        decision_id: `efrd_${'0'.repeat(26)}`,
+        outcome: 'revoked',
+      });
+
+      const status = await authority.listCurrentAuthoritySources();
+      expect(status.decisions.map((decision) => decision.outcome)).toEqual(['accepted', 'revoked']);
+      expect(status.accepted_source_refs).toEqual([]);
     } finally {
       cleanup(root);
     }
@@ -283,6 +325,22 @@ describe('Gate C Phase 9 authority runtime', () => {
             },
           ],
         }),
+      ).rejects.toMatchObject<Partial<ExpflowError>>({
+        code: 'schema_invalid',
+      });
+
+      await expect(
+        authority.recordAuthorityDocument({
+          profile: 'unified',
+          readableLocator: 'authority/SOURCE.md',
+          sections: [
+            {
+              anchor: 'source',
+              authority_role: 'registered_authority_source',
+              source_revision_refs: [sourceRef(source)],
+            },
+          ],
+        } as unknown as Parameters<typeof authority.recordAuthorityDocument>[0]),
       ).rejects.toMatchObject<Partial<ExpflowError>>({
         code: 'schema_invalid',
       });

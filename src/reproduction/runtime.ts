@@ -8,7 +8,7 @@ import {
   assertExpflowId,
   assertNonEmptyString,
   assertRequestedBy,
-  assertSha256Digest,
+  assertRequiredSha256Digest,
   assertStringArray,
   schemaInvalid,
 } from '../core/record-validation.js';
@@ -165,7 +165,7 @@ function assertRegenerationAttempt(record: RegenerationAttemptRecord): void {
   assertExpflowId(record.source_workflow_occurrence_id, 'efw', 'source_workflow_occurrence_id');
   assertExpflowId(record.input_tree_revision_id, 'eft', 'input_tree_revision_id');
   assertNonEmptyString(record.model_profile, 'model_profile');
-  assertSha256Digest(record.prompt_digest, 'prompt_digest');
+  assertRequiredSha256Digest(record.prompt_digest, 'prompt_digest');
   assertNonEmptyString(record.tool_profile, 'tool_profile');
   assertEnum(record.status, REGENERATION_STATUSES, 'status');
   assertStringArray(record.output_refs ?? [], 'output_refs');
