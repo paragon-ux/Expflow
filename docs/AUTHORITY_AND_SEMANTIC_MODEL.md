@@ -1,28 +1,35 @@
 # Authority and Semantic Model
 
-**Status:** Gate C Phase 9 authority-model implementation
+**Status:** Gate C implementation
 
-Authority is extensible, but acceptance requires immutable decisions.
+Authority, assertions, decisions, conflicts, and source correspondence are separate record families. Durable records are validated before immutable writes.
 
 ## Authority Sources
 
-An authority-source descriptor is not accepted authority until a source-registration decision accepts it. Split and unified readable authority documents remain supported profiles.
+An authority-source descriptor is not accepted authority until a source-registration decision accepts it. Split and unified readable authority documents remain supported profiles and do not grant authority by themselves.
 
-Gate C Phase 9 implements:
+Gate C implements:
 
 - immutable authority-source revisions;
 - immutable source-registration decisions;
 - split and unified readable authority document records;
-- a current-source projection derived from decisions;
+- current-source projection derived from decisions, source supersession, and effective intervals;
 - default source-scope conflict checks for overlapping accepted authority sources.
 
 ## Semantic Records
 
-- Assertions are attributed claims.
-- Decisions accept, reject, modify, defer, revoke, or supersede assertions and sources.
-- Conflicts and review requests remain visible after resolution.
-- Source correspondence records connect imported evidence to Expflow records without making source content authoritative.
+Gate C implements:
+
+- semantic assertions as attributed proposals or claims;
+- semantic decisions as immutable accept/reject/modify/defer/revoke/supersede records;
+- conflicts that remain visible after resolution decisions;
+- review requests;
+- source correspondence records;
+- artifact clusters as derived projection records;
+- semantic change listing across the semantic record families.
+
+Assertions and decisions remain distinct. Decisions supersede by reference without mutating earlier decisions.
 
 ## Current Boundary
 
-Phase 9 does not implement semantic assertion stores, semantic decision stores, conflicts, review requests, source correspondence, workflow occurrences, projections, regeneration, equivalence, or reuse.
+Gate C does not implement hook dispatch, external adapter inspection, change cursors, databases, brokers, network services, or source-content execution. Remote trust profiles and production hardening remain Gate D or adapter-package work.

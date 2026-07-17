@@ -88,6 +88,25 @@ describe('Gate C Phase 9 authority runtime', () => {
     }
   });
 
+  it('rejects invalid caller-supplied authority source ids before writing records', async () => {
+    const root = await initializedProject();
+    try {
+      const authority = createAuthorityRuntime(root);
+
+      await expect(
+        authority.createSourceRevision(
+          sourceInput({
+            sourceId: '../outside',
+          }),
+        ),
+      ).rejects.toMatchObject<Partial<ExpflowError>>({
+        code: 'schema_invalid',
+      });
+    } finally {
+      cleanup(root);
+    }
+  });
+
   it('derives revocation from later decisions without mutating source records', async () => {
     const root = await initializedProject();
     try {
@@ -111,6 +130,66 @@ describe('Gate C Phase 9 authority runtime', () => {
       const status = await authority.listCurrentAuthoritySources();
       expect(status.accepted_source_refs).toEqual([]);
       expect(status.decisions).toHaveLength(2);
+    } finally {
+      cleanup(root);
+    }
+  });
+
+  it('filters current authority through supersession and effective intervals', async () => {
+    const root = await initializedProject();
+    try {
+      const authority = createAuthorityRuntime(root);
+      const expired = await authority.createSourceRevision(
+        sourceInput({
+          effectiveInterval: {
+            end: '2001-01-01T00:00:00.000Z',
+            start: '2000-01-01T00:00:00.000Z',
+          },
+          origin: 'file:authority/expired.json',
+          readableRepresentation: 'authority/EXPIRED.md',
+        }),
+      );
+      await authority.recordSourceRegistrationDecision({
+        automated: true,
+        madeBy: { kind: 'policy', name: 'trusted-local-source' },
+        outcome: 'accepted',
+        rationale: 'Accepted but outside its effective interval.',
+        sourceRevisionRef: sourceRef(expired),
+      });
+
+      const first = await authority.createSourceRevision(
+        sourceInput({
+          origin: 'file:authority/current.json',
+          readableRepresentation: 'authority/CURRENT.md',
+          subjectScope: { exclude: [], include: ['**/*'], root: 'src' },
+        }),
+      );
+      await authority.recordSourceRegistrationDecision({
+        automated: true,
+        madeBy: { kind: 'policy', name: 'trusted-local-source' },
+        outcome: 'accepted',
+        rationale: 'Accepted for test.',
+        sourceRevisionRef: sourceRef(first),
+      });
+
+      const replacement = await authority.createSourceRevision(
+        sourceInput({
+          origin: 'file:authority/replacement.json',
+          readableRepresentation: 'authority/REPLACEMENT.md',
+          subjectScope: { exclude: [], include: ['**/*'], root: 'src' },
+          supersedesSourceRevisionRef: sourceRef(first),
+        }),
+      );
+      await authority.recordSourceRegistrationDecision({
+        automated: true,
+        madeBy: { kind: 'policy', name: 'trusted-local-source' },
+        outcome: 'accepted',
+        rationale: 'Accepted replacement for test.',
+        sourceRevisionRef: sourceRef(replacement),
+      });
+
+      const status = await authority.listCurrentAuthoritySources();
+      expect(status.accepted_source_refs).toEqual([sourceRef(replacement)]);
     } finally {
       cleanup(root);
     }
@@ -174,6 +253,61 @@ describe('Gate C Phase 9 authority runtime', () => {
               anchor: 'two',
               authority_role: 'user_provided_event_history',
               source_revision_refs: [sourceRef(source)],
+            },
+          ],
+        }),
+      ).rejects.toMatchObject<Partial<ExpflowError>>({
+        code: 'schema_invalid',
+      });
+    } finally {
+      cleanup(root);
+    }
+  });
+
+  it('enforces authority document schema constraints before immutable write', async () => {
+    const root = await initializedProject();
+    try {
+      const authority = createAuthorityRuntime(root);
+      const source = await authority.createSourceRevision(sourceInput());
+
+      await expect(
+        authority.recordAuthorityDocument({
+          contentDigest: 'not-a-digest',
+          profile: 'unified',
+          readableLocator: 'authority/SOURCE.md',
+          sections: [
+            {
+              anchor: 'source',
+              authority_role: 'registered_authority_source',
+              source_revision_refs: [sourceRef(source)],
+            },
+          ],
+        }),
+      ).rejects.toMatchObject<Partial<ExpflowError>>({
+        code: 'schema_invalid',
+      });
+
+      await expect(
+        authority.recordAuthorityDocument({
+          contentDigest: 'sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc',
+          profile: 'unified',
+          readableLocator: 'authority/SOURCE.md',
+          sections: [],
+        }),
+      ).rejects.toMatchObject<Partial<ExpflowError>>({
+        code: 'schema_invalid',
+      });
+
+      await expect(
+        authority.recordAuthorityDocument({
+          contentDigest: 'sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd',
+          profile: 'unified',
+          readableLocator: 'authority/SOURCE.md',
+          sections: [
+            {
+              anchor: 'source',
+              authority_role: 'registered_authority_source',
+              source_revision_refs: [],
             },
           ],
         }),

@@ -1,21 +1,31 @@
 # Workflow and Projection Model
 
-**Status:** Gate A Phase 2 baseline
+**Status:** Gate C implementation
 
 Workflow ownership requires explicit workflow state, not inference from files alone.
 
 ## Workflow Occurrences
 
-Workflow occurrences select input and output tree revisions and path selectors. Material status, completion status, verification status, and reuse status are separate concerns.
+Workflow occurrences select input and output tree revisions and path selectors. Material status, completion status, verification status, and reuse status are separate fields and transition through new immutable records.
+
+Attaching output material records `outputs_present`; it does not imply accepted completion, verification, or reuse.
+
+## Virtual Artifacts And Materialization
+
+Virtual artifacts are explicit records tied to workflow occurrences. Materialization events link a virtual artifact to material output by attribution. A materialization event does not mutate the virtual artifact or imply workflow acceptance.
 
 ## Projections
 
-Deterministic projectors use accepted material records, accepted decisions, and fixed template versions. Model-assisted projectors also record model profile, prompt digest, and source limitations. Model-assisted output is proposed by default.
+Manifest revisions are immutable projection records. Their readable locators must live under `.expflow/projections/`, which is excluded from working-tree scanning.
 
-## Materialization
+Deterministic projectors may produce generated or accepted manifests under policy. Model-assisted manifests default to `proposed` and require model/prompt evidence and acceptance attribution before accepted state is allowed.
 
-A projection becomes a user-tree artifact only through an explicit sync operation with `materialize_projection`.
+Manifest heads are derived from accepted manifest revisions.
 
-## Gate A Boundary
+## Regeneration, Equivalence, And Reuse
 
-No workflow runtime, projector, regeneration algorithm, equivalence evaluator, or reuse algorithm exists in Gate A.
+Regeneration attempts preserve unknown outcomes as durable records. Equivalence is an attributed evaluation record, not an inferred fact. Structural reuse creates reuse-result records gated by license and authority-policy checks and does not transfer authority, completion, verification, or reuse status from the source workflow.
+
+## Current Boundary
+
+Gate C records projection and reproduction state but does not run projectors, call models, execute generated code, dispatch hooks, inspect adapters, reconcile lost responses, or add ordinary commands beyond `init`, `sync`, `status`, and `restore`.
