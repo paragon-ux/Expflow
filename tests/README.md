@@ -13,10 +13,10 @@ Gate B material-runtime coverage includes immutable stores, object integrity, sa
 Gate C coverage includes:
 
 - authority descriptors remaining proposed until accepted by immutable decisions;
-- current-source projection with revocation, supersession, effective intervals, document validation, and scope conflicts;
-- semantic assertions and decisions remaining distinct from conflicts and review records;
-- workflow output attachment not implying accepted completion;
-- projection-root exclusion, model-assisted proposal defaults, and accepted manifest-head derivation;
-- regeneration unknown-outcome preservation, equivalence evaluation records, and structural reuse policy gates.
+- current-source projection with revocation, supersession, effective intervals, same-timestamp decision ordering, document validation, and scope conflicts;
+- semantic assertions and decisions remaining distinct from conflicts and review records, with nested assertion shape validation;
+- workflow output attachment not implying accepted completion, and accepted completion requiring a decision reference;
+- projection-root exclusion, model-assisted proposal defaults, accepted-only manifest-head derivation, and terminal projection statuses not evicting accepted heads;
+- regeneration unknown-outcome preservation, required prompt digests, equivalence evaluation records, and structural reuse policy gates.
 
 Use the repository validation commands in `README_DEV.md` and record actual exit codes in completion reports.

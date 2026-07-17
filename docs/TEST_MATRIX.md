@@ -55,17 +55,19 @@
 
 ## Gate C Coverage
 
-| Area                                  | Evidence                                   |
-| ------------------------------------- | ------------------------------------------ |
-| Authority source validation           | `tests/unit/authority-runtime.test.ts`     |
-| Registration decisions                | accepted, revoked, and superseded tests    |
-| Current-source projection             | effective interval and supersession test   |
-| Readable authority documents          | split/unified schema constraint tests      |
-| Authority scope conflicts             | overlapping accepted-source conflict test  |
-| Semantic ownership                    | `tests/unit/gate-c-runtime.test.ts`        |
-| Conflict retention                    | conflict remains after resolution test     |
-| Workflow boundaries                   | output attachment leaves completion `none` |
-| Virtual artifacts and materialization | workflow runtime test                      |
-| Projection root and manifest heads    | projection runtime test                    |
-| Regeneration and equivalence          | unknown attempt and evaluation tests       |
-| Structural reuse                      | reuse policy-gate and no-transfer tests    |
+| Area                                  | Evidence                                                       |
+| ------------------------------------- | -------------------------------------------------------------- |
+| Authority source validation           | `tests/unit/authority-runtime.test.ts`                         |
+| Registration decisions                | accepted, revoked, superseded, and same-timestamp replay tests |
+| Current-source projection             | effective interval and supersession test                       |
+| Readable authority documents          | split/unified schema and required digest tests                 |
+| Authority scope conflicts             | overlapping accepted-source conflict test                      |
+| Semantic ownership                    | `tests/unit/gate-c-runtime.test.ts`                            |
+| Semantic schema-shape guards          | nested issuer/claim rejection tests                            |
+| Conflict retention                    | conflict remains after resolution test                         |
+| Workflow boundaries                   | output attachment leaves completion `none`                     |
+| Completion decision guard             | accepted completion rejects null decision refs                 |
+| Virtual artifacts and materialization | workflow runtime test                                          |
+| Projection root and manifest heads    | projection runtime and terminal-status tests                   |
+| Regeneration and equivalence          | unknown attempt, prompt-digest, and evaluation tests           |
+| Structural reuse                      | reuse policy-gate and no-transfer tests                        |

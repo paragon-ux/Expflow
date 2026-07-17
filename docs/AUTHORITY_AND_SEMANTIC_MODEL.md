@@ -13,7 +13,7 @@ Gate C implements:
 - immutable authority-source revisions;
 - immutable source-registration decisions;
 - split and unified readable authority document records;
-- current-source projection derived from decisions, source supersession, and effective intervals;
+- current-source projection derived from durable decision replay order, source supersession, and effective intervals;
 - default source-scope conflict checks for overlapping accepted authority sources.
 
 ## Semantic Records
@@ -29,6 +29,8 @@ Gate C implements:
 - semantic change listing across the semantic record families.
 
 Assertions and decisions remain distinct. Decisions supersede by reference without mutating earlier decisions.
+
+Runtime validation rejects schema-shape drift before immutable writes, including extra attribution keys and malformed assertion claims supplied by untyped callers.
 
 ## Current Boundary
 

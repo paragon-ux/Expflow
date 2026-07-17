@@ -20,7 +20,7 @@ Manifest revisions are immutable projection records. Their readable locators mus
 
 Deterministic projectors may produce generated or accepted manifests under policy. Model-assisted manifests default to `proposed` and require model/prompt evidence and acceptance attribution before accepted state is allowed.
 
-Manifest heads are derived from accepted manifest revisions.
+Manifest heads are accepted-only derived views. Stale, superseded, rejected, and conflicted manifest records remain inspectable evidence but do not silently remove or replace the last accepted manifest head.
 
 ## Regeneration, Equivalence, And Reuse
 
