@@ -6,7 +6,7 @@ Workflow ownership requires explicit workflow state, not inference from files al
 
 ## Workflow Occurrences
 
-Workflow occurrences select input and output tree revisions and path selectors. Material status, completion status, verification status, and reuse status are separate fields and transition through new immutable records.
+Workflow occurrences select input and output tree revisions and path selectors. Runtime validation rejects path-selector shape drift before immutable workflow writes. Material status, completion status, verification status, and reuse status are separate fields and transition through new immutable records.
 
 Attaching output material records `outputs_present`; it does not imply accepted completion, verification, or reuse.
 

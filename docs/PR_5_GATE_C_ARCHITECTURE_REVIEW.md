@@ -3,26 +3,30 @@
 **Status:** RESOLVED LOCALLY
 **Date:** 2026-07-17
 **Review target:** PR #5, `feature/expflow-gate-c-authority-model`
-**Reviewed head:** `7df328d7883428942620301778a1e359346533b1`
-**Resolution implementation commit:** `206c2ab0ea5af68ccc734319562920d02a6e4f5f`
+**Reviewed head:** `5a9434263e757c894087e59cd33a778356865f27`
+**Resolution implementation commits:** `206c2ab0ea5af68ccc734319562920d02a6e4f5f`, `619891e0c39ca09aa1fe45e6742c34957a77c762`
 **Base:** `feature/expflow-gate-b-material-core`
 
 This report consolidates the initial PR review with Devin's architecture review. It is a mutable review artifact, not an immutable architecture source.
 
 ## Release Risk
 
-The original review blocked Gate C because the implementation overclaimed AD-021 and AD-022, projection-head semantics were underspecified, and mutable evidence docs were stale. The implementation commit `206c2ab0ea5af68ccc734319562920d02a6e4f5f` fixes F1-F6 and adds regression coverage for each behavior. PR #5 remains stacked on PR #4, so hosted-check visibility depends on the PR base configuration.
+The original review blocked Gate C because the implementation overclaimed AD-021 and AD-022, projection-head semantics were underspecified, and mutable evidence docs were stale. Implementation commit `206c2ab0ea5af68ccc734319562920d02a6e4f5f` fixed F1, F3, F4, F5, F6, and the first F2 slice. Follow-up implementation commit `619891e0c39ca09aa1fe45e6742c34957a77c762` closes the remaining F2 gap by rejecting undeclared keys in path selectors, authority effective intervals, authority document sections, and workflow selectors. PR #5 remains stacked on PR #4 until PR #4 merges.
 
 ## Resolution Update
 
-| ID  | Final status | Evidence                                                                                                                                                                                              | Impact                                                                                                                                      |
-| --- | ------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
-| F1  | fixed        | `src/core/record-validation.ts`, `src/authority/runtime.ts`, `src/projections/runtime.ts`, `src/reproduction/runtime.ts`, `tests/unit/authority-runtime.test.ts`, `tests/unit/gate-c-runtime.test.ts` | Required authority-document, manifest, and regeneration digests now reject missing/untyped values before immutable writes.                  |
-| F2  | fixed        | `src/core/record-validation.ts`, `src/semantics/runtime.ts`, `tests/unit/gate-c-runtime.test.ts`                                                                                                      | Nested attribution and semantic claim objects reject extra keys and missing required claim values before persistence.                       |
-| F3  | fixed        | `src/workflows/runtime.ts`, `tests/unit/gate-c-runtime.test.ts`                                                                                                                                       | Accepted workflow completion now requires a non-null completion decision reference.                                                         |
-| F4  | fixed        | `docs/CURRENT_STATUS_MATRIX.md`, `docs/completion_reports/GATE_C_COMPLETION_REPORT.md`, this review artifact                                                                                          | Mutable Gate C evidence is updated for the post-review implementation commit and stacked PR reality.                                        |
-| F5  | fixed        | `src/projections/runtime.ts`, `docs/ARCHITECTURE_DECISIONS.md`, `docs/WORKFLOW_AND_PROJECTION_MODEL.md`, `tests/unit/gate-c-runtime.test.ts`                                                          | Manifest heads are accepted-only derived views; terminal projection-status records remain visible without silently evicting accepted heads. |
-| F6  | fixed        | `src/authority/store.ts`, `tests/unit/authority-runtime.test.ts`                                                                                                                                      | Source-registration decisions replay in durable write order, so same-timestamp accept/revoke chains no longer depend on random ID order.    |
+| ID  | Final status | Evidence                                                                                                                                                                                              | Impact                                                                                                                                                                                                        |
+| --- | ------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| F1  | fixed        | `src/core/record-validation.ts`, `src/authority/runtime.ts`, `src/projections/runtime.ts`, `src/reproduction/runtime.ts`, `tests/unit/authority-runtime.test.ts`, `tests/unit/gate-c-runtime.test.ts` | Required authority-document, manifest, and regeneration digests now reject missing/untyped values before immutable writes.                                                                                    |
+| F2  | fixed        | `src/core/record-validation.ts`, `src/authority/runtime.ts`, `src/semantics/runtime.ts`, `tests/unit/authority-runtime.test.ts`, `tests/unit/gate-c-runtime.test.ts`                                  | Schema-owned nested objects reject extra keys before persistence, including attribution, semantic claims, path selectors, authority effective intervals, authority document sections, and workflow selectors. |
+| F3  | fixed        | `src/workflows/runtime.ts`, `tests/unit/gate-c-runtime.test.ts`                                                                                                                                       | Accepted workflow completion now requires a non-null completion decision reference.                                                                                                                           |
+| F4  | fixed        | `docs/CURRENT_STATUS_MATRIX.md`, `docs/completion_reports/GATE_C_COMPLETION_REPORT.md`, this review artifact                                                                                          | Mutable Gate C evidence is updated for the post-review implementation commit and stacked PR reality.                                                                                                          |
+| F5  | fixed        | `src/projections/runtime.ts`, `docs/ARCHITECTURE_DECISIONS.md`, `docs/WORKFLOW_AND_PROJECTION_MODEL.md`, `tests/unit/gate-c-runtime.test.ts`                                                          | Manifest heads are accepted-only derived views; terminal projection-status records remain visible without silently evicting accepted heads.                                                                   |
+| F6  | fixed        | `src/authority/store.ts`, `tests/unit/authority-runtime.test.ts`                                                                                                                                      | Source-registration decisions replay in durable write order, so same-timestamp accept/revoke chains no longer depend on random ID order.                                                                      |
+
+## Final F2 Follow-Up
+
+The final Gate C review pass found F2 still open for three schema-owned authority shapes: path selectors, authority source `effective_interval`, and authority document `sections`. Commit `619891e0c39ca09aa1fe45e6742c34957a77c762` fixes that follow-up by tightening `assertPathSelectorShape`, validating authority effective intervals with exact allowed keys, validating authority document sections with exact allowed keys, and adding regressions for authority and workflow selector shape drift.
 
 ## Devin Review Triage
 
@@ -50,7 +54,7 @@ The original review blocked Gate C because the implementation overclaimed AD-021
 
 ## ADR Impact
 
-AD-021 is upheld after F1, F2, and F3. The runtime now distinguishes required and optional digest checks, rejects nested semantic shape drift, and blocks accepted workflow completion without a decision reference.
+AD-021 is upheld after F1, F2, and F3. The runtime now distinguishes required and optional digest checks, rejects schema-owned nested shape drift for authority, semantic, and workflow records, and blocks accepted workflow completion without a decision reference.
 
 AD-022 is upheld after F6. Source-registration decisions now replay from a durable insertion-order log before falling back to legacy timestamp ordering.
 
@@ -62,7 +66,7 @@ No System 1 or System 2 ADR addition is needed for this review. These findings a
 
 ## Gate Readiness
 
-Merge-ready locally after final validation. PR #5 is still stacked on PR #4, so the remaining remote caveat is hosted-check/base behavior rather than an unresolved Gate C implementation blocker.
+Merge-ready locally after final validation. PR #5 is still stacked on PR #4 until PR #4 merges, so hosted-check/base behavior remains a PR sequencing issue rather than an unresolved Gate C implementation blocker.
 
 ## Verification
 
@@ -70,7 +74,7 @@ Focused verification after the implementation commit:
 
 | Command                                                                              | Exit code | Result         |
 | ------------------------------------------------------------------------------------ | --------: | -------------- |
-| `npm test -- tests/unit/authority-runtime.test.ts tests/unit/gate-c-runtime.test.ts` |         0 | PASS, 14 tests |
+| `npm test -- tests/unit/authority-runtime.test.ts tests/unit/gate-c-runtime.test.ts` |         0 | PASS, 16 tests |
 | `npm run typecheck`                                                                  |         0 | PASS           |
 | `npm run lint`                                                                       |         0 | PASS           |
 

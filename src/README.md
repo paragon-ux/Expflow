@@ -19,9 +19,9 @@ Gate C ownership and reproduction behavior is exposed through library runtimes, 
 - `transactions/` owns local structural recovery checks.
 - `extensions/` owns the narrow documented extension host.
 - `cli/` owns the ordinary command surface.
-- `authority/` owns authority-source revisions, source-registration decisions, durable decision ordering, readable authority documents, current-source projection, and scope-conflict checks.
+- `authority/` owns authority-source revisions, source-registration decisions, durable decision ordering, readable authority documents, current-source projection, scope-conflict checks, and exact nested shape validation for authority source/document records.
 - `semantics/` owns assertions, decisions, conflicts, review requests, source correspondence, artifact clusters, semantic change listing, and schema-shape validation for persisted semantic records.
-- `workflows/` owns workflow occurrences, virtual artifacts, materialization events, immutable workflow transitions, and explicit completion-decision guards.
+- `workflows/` owns workflow occurrences, virtual artifacts, materialization events, immutable workflow transitions, exact selector shape validation, and explicit completion-decision guards.
 - `projections/` owns manifest revisions, accepted-only projection-head derivation, projection-root validation, and model-assisted proposal defaults.
 - `reproduction/` owns regeneration attempts, equivalence evaluations, reuse results, required regeneration prompt evidence, and reuse policy gates.
 - `hooks/`, `protocol/`, and `status/` remain boundary placeholders for later hardening or external surfaces.

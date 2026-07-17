@@ -2,7 +2,7 @@
 
 **Status:** Gate C review fixes validated locally for PR #5
 **Last updated:** 2026-07-17
-**Current baseline:** `main` at `00373ff55690d153d301057b34175c5ff8f9068f`; Gate B PR #4 review-clean at `5fe54ec67ade75b283636181b0b2fce59e498072`; Gate C review-fix implementation commit `206c2ab0ea5af68ccc734319562920d02a6e4f5f`
+**Current baseline:** `main` at `00373ff55690d153d301057b34175c5ff8f9068f`; Gate B PR #4 review-clean at `5fe54ec67ade75b283636181b0b2fce59e498072`; Gate C review-fix implementation commits `206c2ab0ea5af68ccc734319562920d02a6e4f5f` and `619891e0c39ca09aa1fe45e6742c34957a77c762`
 **Workflow SSOT:** `docs/architecture/EXPFLOW_WORKFLOW_CURRENT.md`
 **Evidence:** [Gate A completion report](completion_reports/GATE_A_COMPLETION_REPORT.md), [Gate B completion report](completion_reports/GATE_B_COMPLETION_REPORT.md), [Gate C completion report](completion_reports/GATE_C_COMPLETION_REPORT.md), [PR #5 review resolution](PR_5_GATE_C_ARCHITECTURE_REVIEW.md), [PR #4](https://github.com/paragon-ux/Expflow/pull/4), [PR #5](https://github.com/paragon-ux/Expflow/pull/5)
 
@@ -16,7 +16,7 @@
 
 ## Current Maturity
 
-Expflow has completed Gate A as defined by `EXPFLOW_WORKFLOW_CURRENT.md`. Gate B material core is review-clean in PR #4. Gate C Phases 9-14 are complete locally on `feature/expflow-gate-c-authority-model`, with PR #5 review blockers F1-F6 fixed in implementation commit `206c2ab0ea5af68ccc734319562920d02a6e4f5f`.
+Expflow has completed Gate A as defined by `EXPFLOW_WORKFLOW_CURRENT.md`. Gate B material core is review-clean in PR #4. Gate C Phases 9-14 are complete locally on `feature/expflow-gate-c-authority-model`, with PR #5 review blockers F1-F6 fixed in implementation commits `206c2ab0ea5af68ccc734319562920d02a6e4f5f` and `619891e0c39ca09aa1fe45e6742c34957a77c762`.
 
 | Area                             | Estimated maturity | Assessment                                                                                                                                                                      |
 | -------------------------------- | -----------------: | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -56,12 +56,12 @@ Expflow has completed Gate A as defined by `EXPFLOW_WORKFLOW_CURRENT.md`. Gate B
   - derived current-source projection with supersession and effective intervals;
   - durable source-registration decision replay order for same-timestamp decisions;
   - source-scope conflict checks;
-  - authority record validation before durable writes.
+  - authority record validation before durable writes, including exact nested shape for subject selectors, effective intervals, and authority document sections.
 - Gate C Phase 10 semantic ownership:
   - assertions, decisions, conflicts, review requests, source correspondence, artifact clusters, and change listing.
   - schema-shape validation for nested attribution and assertion claims.
 - Gate C Phase 11 workflow boundaries:
-  - workflow occurrences, virtual artifacts, materialization events, and immutable workflow transitions.
+  - workflow occurrences, virtual artifacts, materialization events, immutable workflow transitions, and exact workflow selector shape validation.
   - accepted completion requires an explicit completion decision reference.
 - Gate C Phase 12 projection system:
   - manifest revisions, scanner-excluded projection locators, model-assisted proposal defaults, and accepted manifest-head derivation.
@@ -124,4 +124,4 @@ The central near-term risk is reviewing the stacked PR without PR #4 merged; PR 
 
 ## Practical Status Statement
 
-> Expflow has completed Gate A, has review-clean Gate B material-core evidence in PR #4, and has completed Gate C Phases 9-14 locally on `feature/expflow-gate-c-authority-model`. PR #5 review findings F1-F6 have been fixed and validated locally. The remaining remote caveat is stacked-PR hosted-check visibility while PR #5 depends on the Gate B branch base.
+> Expflow has completed Gate A, has review-clean Gate B material-core evidence in PR #4, and has completed Gate C Phases 9-14 locally on `feature/expflow-gate-c-authority-model`. PR #5 review findings F1-F6, including the final AD-021 nested-shape blocker, have been fixed and validated locally. The remaining remote caveat is stacked-PR hosted-check visibility while PR #5 depends on the Gate B branch base.

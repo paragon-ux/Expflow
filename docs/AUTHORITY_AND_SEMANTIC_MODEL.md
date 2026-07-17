@@ -30,7 +30,7 @@ Gate C implements:
 
 Assertions and decisions remain distinct. Decisions supersede by reference without mutating earlier decisions.
 
-Runtime validation rejects schema-shape drift before immutable writes, including extra attribution keys and malformed assertion claims supplied by untyped callers.
+Runtime validation rejects schema-shape drift before immutable writes, including extra attribution keys, malformed assertion claims, undeclared path-selector keys, malformed authority effective intervals, and undeclared authority document section keys supplied by untyped callers.
 
 ## Current Boundary
 
