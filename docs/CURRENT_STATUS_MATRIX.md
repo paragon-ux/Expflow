@@ -1,6 +1,6 @@
 # Current Status Matrix
 
-**Status:** v1.0.0 release closeout in progress
+**Status:** v1.0.0 release closeout locally validated
 **Last updated:** 2026-07-17
 **Current baseline:** Gate D native hardening closure head `d1dd2ac925b219c50c7728963e908042793c7376`; release branch `codex/gate-d-v1-release-closeout`
 **Workflow SSOT:** `docs/architecture/EXPFLOW_WORKFLOW_CURRENT.md`
@@ -78,7 +78,7 @@ Expflow has completed Gate A as defined by `EXPFLOW_WORKFLOW_CURRENT.md`. Gate B
 - Gate D Phase 16 legacy migration and packaging:
   - in-place typed-folder migration evidence;
   - user-path preservation and no authority/semantic fabrication report;
-  - package version `1.0.0`, MIT license metadata, and clean package verification.
+  - Gate D package verification originally closed on the `0.0.0-gate-d` package identity.
 - Gate D Phase 17 end-to-end proof:
   - automated 25-scenario proof across material, authority, semantic, workflow, projection, reproduction, security, migration, old-state, partial-success, and adapter-boundary behavior.
 - Gate D native hardening closure:
@@ -96,7 +96,7 @@ Expflow has completed Gate A as defined by `EXPFLOW_WORKFLOW_CURRENT.md`. Gate B
 
 ### Core Release
 
-The v1.0.0 release-closeout branch is preparing release-candidate evidence. Pilots, empirical evaluation, and separate adapter packages remain future work.
+The v1.0.0 release-closeout branch has prepared release-candidate evidence, MIT license metadata, coherent `1.0.0` package versions, and public release documentation. Pilots, empirical evaluation, and separate adapter packages remain future work.
 
 ### Adapter Packages
 
@@ -137,7 +137,7 @@ The aggregate `npm run validate` command is not claimed as a pass under the expl
 
 ## Current Critical Path
 
-> Finish v1.0.0 release-closeout validation, publish the release-closeout PR for review, then decide whether to tag or publish.
+> Review stacked PR #8 for v1.0.0 release closeout. After PR #7 merges, retarget or rebase PR #8 onto `main` for hosted checks, then decide whether to tag or publish.
 
 No Guerilla integration runtime is required in Expflow core. The hardening closure addresses the post-merge Gate D native hardening review through F10 and DCR-1 through DCR-6; remaining post-v1 work is pilots, empirical evaluation, and separate adapter/profile packages.
 

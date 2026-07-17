@@ -13,7 +13,7 @@ The goal is practical ownership of automated work: a project should be able to s
 
 ## v1.0.0 Release Scope
 
-Expflow v1.0.0 is production-ready for the local core surfaces implemented in this repository:
+Expflow v1.0.0 is release-candidate-ready for the local core surfaces implemented in this repository:
 
 - the four ordinary commands: `expflow init`, `expflow sync`, `expflow status`, and `expflow restore`;
 - local `.expflow/` material storage with immutable object, node-revision, tree-revision, receipt, validation, and change records;
