@@ -6,16 +6,16 @@ PARTIAL -- repository revision complete; listed external publication steps remai
 
 ## Release Identity
 
-| Field                  | Value                                                                                                            |
-| ---------------------- | ---------------------------------------------------------------------------------------------------------------- |
-| Release version        | `1.0.0`                                                                                                          |
-| Final release commit   | Pending final tag                                                                                                |
-| Latest validated main  | `c3ed67613ac951f5199081ac1f64fff546c06165`                                                                       |
-| Pull requests          | [PR #12](https://github.com/paragon-ux/Expflow/pull/12), [PR #13](https://github.com/paragon-ux/Expflow/pull/13) |
-| Release classification | `dual-registry publication prep`                                                                                 |
-| Tag status             | Remote tag `v1.0.0` is absent after stale-tag cleanup                                                            |
-| GitHub Release status  | No GitHub Release exists for `v1.0.0`                                                                            |
-| Publish status         | npm and PyPI publication not verified                                                                            |
+| Field                       | Value                                                                                                            |
+| --------------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| Release version             | `1.0.0`                                                                                                          |
+| Final release commit        | Pending final tag                                                                                                |
+| Latest package-readiness CI | `c3ed67613ac951f5199081ac1f64fff546c06165`                                                                       |
+| Pull requests               | [PR #12](https://github.com/paragon-ux/Expflow/pull/12), [PR #13](https://github.com/paragon-ux/Expflow/pull/13) |
+| Release classification      | `dual-registry publication prep`                                                                                 |
+| Tag status                  | Remote tag `v1.0.0` is absent after stale-tag cleanup                                                            |
+| GitHub Release status       | No GitHub Release exists for `v1.0.0`                                                                            |
+| Publish status              | npm and PyPI publication not verified                                                                            |
 
 The repository revision for v1.0.0 dual-registry publication is merged to `main`. The stale `v1.0.0` tag and GitHub Release conflict is cleared, GitHub release environments are configured, Private Vulnerability Reporting is enabled, and the public README quickstart now requires the package rather than developer setup. Public npm and PyPI publication remains incomplete until the registry Trusted Publisher setup is verified, the final `v1.0.0` tag is created on the exact intended release commit, and the release workflow publishes and verifies both registries.
 
@@ -24,10 +24,10 @@ The repository revision for v1.0.0 dual-registry publication is merged to `main`
 | Check                           | Result  | Evidence                                                                                     |
 | ------------------------------- | ------- | -------------------------------------------------------------------------------------------- |
 | Repository root                 | PASS    | `C:/Users/USER/Desktop/Frameworks/Expflow`                                                   |
-| Current branch                  | PASS    | `codex/release-status-final-preflight` for this status refresh                               |
+| Status refresh branch model     | PASS    | Non-protected `codex/` branches are used for release-status refreshes                        |
 | Worktree                        | PASS    | Clean before release-status edits                                                            |
-| `origin/main`                   | PASS    | `c3ed67613ac951f5199081ac1f64fff546c06165`                                                   |
-| Open pull requests              | PASS    | No open PRs before this status-refresh branch                                                |
+| `origin/main`                   | PASS    | Includes merged release workflow, package-only quickstart, and status refreshes              |
+| Open release pull requests      | PASS    | No open release-publication PRs remain                                                       |
 | Remote tag `v1.0.0`             | PASS    | `git ls-remote --tags origin v1.0.0` returned no tag after stale-tag cleanup                 |
 | GitHub Release `v1.0.0`         | PASS    | `gh release view v1.0.0` returned `release not found`                                        |
 | Hosted CI on `main`             | PASS    | Run `29623452896` succeeded for commit `c3ed676`                                             |
@@ -228,7 +228,7 @@ Package-only quickstart and final-preflight validation also passed:
 
 PR #7 hardening closure hosted checks were green at head `d1dd2ac925b219c50c7728963e908042793c7376`.
 
-PR #10 and PR #11 are merged. PR #12 merged at `4482e2e6b3a133fd1a18c24b6150e7269ee31310`. PR #13 merged at `c3ed67613ac951f5199081ac1f64fff546c06165` and simplified the public quickstart to package installation plus CLI usage. Hosted CI run `29623452896` passed on `c3ed67613ac951f5199081ac1f64fff546c06165`.
+PR #10 and PR #11 are merged. PR #12 merged at `4482e2e6b3a133fd1a18c24b6150e7269ee31310`. PR #13 merged at `c3ed67613ac951f5199081ac1f64fff546c06165` and simplified the public quickstart to package installation plus CLI usage. PR #14 merged as a release-status refresh. Hosted CI run `29623452896` passed on package-readiness commit `c3ed67613ac951f5199081ac1f64fff546c06165`.
 
 ## Blockers And Release Risks
 

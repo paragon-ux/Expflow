@@ -17,8 +17,8 @@ Tag: v1.0.0
 
 As of the local preflight on 2026-07-18:
 
-- `origin/main` is `c3ed67613ac951f5199081ac1f64fff546c06165`.
-- PR #12 and PR #13 are merged; the latest validated package-readiness commit is `c3ed67613ac951f5199081ac1f64fff546c06165`.
+- `origin/main` includes the merged dual-registry release workflow, package-only quickstart, and release-status refreshes.
+- The latest validated package-readiness commit is `c3ed67613ac951f5199081ac1f64fff546c06165`; later status-only documentation refreshes do not change packaged npm or PyPI artifact bytes.
 - Hosted CI run `29623452896` passed on `c3ed67613ac951f5199081ac1f64fff546c06165`.
 - Remote tag `v1.0.0` is absent after stale-tag cleanup.
 - GitHub Release `v1.0.0` is absent.
