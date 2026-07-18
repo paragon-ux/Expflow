@@ -95,7 +95,7 @@ The repository revision for v1.0.0 dual-registry publication is merged to `main`
 - `CHANGELOG.md` records v1.0.0 outcomes.
 - `docs/release_notes/GITHUB_RELEASE_NOTE_V1_0_0.md` provides standalone text for a GitHub release.
 - `docs/V1_COMPATIBILITY.md` records the v1 public compatibility promise.
-- `docs/RELEASE_PUBLISHING.md` records completed GitHub release settings plus remaining npm Trusted Publishing and PyPI pending Trusted Publisher actions.
+- `docs/RELEASE_PUBLISHING.md` records published registry state, release-environment maintenance, and future tokenless publishing guidance.
 - `.github/workflows/release.yml` builds once from `v1.0.0`, attests the exact artifacts, publishes through OIDC, and creates or verifies the GitHub Release only after npm and PyPI verify.
 - `SECURITY.md` directs suspected vulnerabilities to GitHub Private Vulnerability Reporting and keeps public issues for non-sensitive hardening requests.
 - `CONTRIBUTING.md` records branch, validation, architecture-source, and scope-boundary rules.
