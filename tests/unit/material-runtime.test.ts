@@ -275,6 +275,47 @@ describe('Gate B material runtime', () => {
     }
   });
 
+  it('allocates node revisions above historical records after restoring an old tree', async () => {
+    const root = tempProject();
+    try {
+      writeProjectFile(root, 'a.txt', 'one');
+      const runtime = createRuntime();
+      const initReceipt = await runtime.init({ root });
+      const initialTree = readTreeRevision(root, initReceipt.new_head ?? '');
+      const initialEntry = initialTree.entries[0];
+
+      writeProjectFile(root, 'a.txt', 'two');
+      const secondReceipt = await runtime.sync({ root });
+      const secondTree = readTreeRevision(root, secondReceipt.new_head ?? '');
+      const secondEntry = secondTree.entries[0];
+      expect(secondEntry?.node_id).toBe(initialEntry?.node_id);
+      expect(secondEntry?.node_revision).toBe(2);
+
+      await runtime.restore({ reference: `tree:${initReceipt.new_head ?? ''}`, root });
+      writeProjectFile(root, 'a.txt', 'three');
+
+      const plan = await runtime.planSync({ root });
+      expect(plan.new_node_revisions).toContain(`${initialEntry?.node_id ?? ''}@3`);
+
+      const thirdReceipt = await runtime.sync({ root });
+      const thirdTree = readTreeRevision(root, thirdReceipt.new_head ?? '');
+      const thirdEntry = thirdTree.entries[0];
+      expect(thirdEntry?.node_id).toBe(initialEntry?.node_id);
+      expect(thirdEntry?.node_revision).toBe(3);
+
+      const node = readNodeRevision(
+        root,
+        thirdEntry?.node_id ?? '',
+        thirdEntry?.node_revision ?? 0,
+      );
+      expect(node.previous_revision).toBe(1);
+      expect(readFileSync(objectPathForDigest(root, node.content_digest), 'utf-8')).toBe('three');
+      expect((await runtime.status({ root })).working_tree_state).toBe('clean');
+    } finally {
+      cleanup(root);
+    }
+  });
+
   it('recovers a committed receipt when head advancement was interrupted', async () => {
     const root = tempProject();
     try {

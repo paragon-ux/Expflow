@@ -127,10 +127,6 @@ function findDigestSimilarityProposal(
   return null;
 }
 
-function previousRevisionNumber(entry: TreeEntryRecord): number {
-  return typeof entry.node_revision === 'number' ? entry.node_revision : 0;
-}
-
 export function planCandidateTree(input: {
   readonly operationId: string;
   readonly projectId: string;
@@ -140,13 +136,24 @@ export function planCandidateTree(input: {
   readonly scope: PathSelectorRecord;
   readonly source: TreeRevisionRecord['source'];
   readonly createdAt: string;
+  readonly nextRevisionForNode?: (nodeId: string) => number;
 }): CandidateTree {
   const currentEntries = currentEntryByPath(input.currentTree);
   const scannedByPath = fileByPath(input.scannedFiles);
   const changesByPath = new Map(input.changes.map((change) => [changeKey(change), change]));
+  const reservedNextRevisions = new Map<string, number>();
   const entries: TreeEntryRecord[] = [];
   const newNodeRevisions: CandidateNodeRevision[] = [];
   const identityProposals: IdentityProposal[] = [];
+
+  function allocateRevision(nodeId: string, previousRevision: number | null | undefined): number {
+    const visibleNext = (previousRevision ?? 0) + 1;
+    const persistedNext = input.nextRevisionForNode?.(nodeId) ?? 1;
+    const reservedNext = reservedNextRevisions.get(nodeId) ?? 1;
+    const revision = Math.max(visibleNext, persistedNext, reservedNext);
+    reservedNextRevisions.set(nodeId, revision + 1);
+    return revision;
+  }
 
   for (const entry of currentEntries.values()) {
     if (!selectorIncludesPath(input.scope, entry.relative_path)) {
@@ -198,7 +205,10 @@ export function planCandidateTree(input: {
         });
         continue;
       }
-      const revision = previousRevisionNumber(preserveFromEntry) + 1;
+      const revision = allocateRevision(
+        preserveFromEntry.node_id,
+        preserveFromEntry.node_revision ?? null,
+      );
       const node = makeNodeRevision({
         continuityBasis: 'preserve_explicit',
         createdAt: input.createdAt,
@@ -261,6 +271,10 @@ export function planCandidateTree(input: {
     }
 
     const nodeId = currentEntry.node_id ?? createExpflowId('efn');
+    const revision =
+      currentEntry.node_id === null || currentEntry.node_id === undefined
+        ? 1
+        : allocateRevision(nodeId, currentEntry.node_revision ?? null);
     const node = makeNodeRevision({
       continuityBasis: 'same_path_default',
       createdAt: input.createdAt,
@@ -269,7 +283,7 @@ export function planCandidateTree(input: {
       objectLocator: objectLocatorForDigest(file.content_digest),
       operationId: input.operationId,
       previousRevision: currentEntry.node_revision ?? null,
-      revision: previousRevisionNumber(currentEntry) + 1,
+      revision,
     });
     newNodeRevisions.push({ record: node, source_path: file.absolute_path });
     entries.push(newFileEntry(file, node));

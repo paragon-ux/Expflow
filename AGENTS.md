@@ -2,7 +2,7 @@
 
 **Phase:** Post-Gate D release closeout
 **Gate:** D — Hardened and Proven
-**Expflow version:** 1.0.0 release
+**Expflow version:** 1.0.1 release
 
 ---
 
@@ -311,29 +311,29 @@ Test commands:
 
 The canonical validation set for the current gate:
 
-| ID  | Command                                              | Required Outcome                        |
-| --- | ---------------------------------------------------- | --------------------------------------- |
-| V01 | `npm ci`                                             | Clean dependency installation           |
-| V02 | `npm run format:check`                               | Formatting contract passes              |
-| V03 | `npm run lint`                                       | Lint contract passes                    |
-| V04 | `npm run typecheck`                                  | Strict TypeScript typecheck passes      |
-| V05 | `npm test`                                           | Node repository-contract tests pass     |
-| V06 | `npm run contracts:verify`                           | Source and repository contract passes   |
-| V07 | `npm run registries:verify`                          | Registry coverage and boundary checks   |
-| V08 | `npm run schemas:meta-validate`                      | Supported schemas meta-validate         |
-| V09 | `npm run examples:index-check`                       | Example discoverability index passes    |
-| V10 | `npm run schemas:examples-validate`                  | Example and fixture schema validation   |
-| V11 | `npm run fixtures:verify`                            | Fixture taxonomy and seed corpus verify |
-| V12 | `npm run build`                                      | TypeScript build passes                 |
-| V13 | `npm run package:verify`                             | npm package verification                |
-| V14 | `python -m pip install -e ".[dev]"`                  | Editable Python dev install             |
-| V15 | `python -m pytest`                                   | Python tests pass                       |
-| V16 | `python -m build`                                    | Python sdist and wheel build            |
-| V17 | `python tests/contracts/verify_python_wheel.py`      | Wheel imports and reports version       |
-| V18 | `git diff --check -- ':!docs/architecture/**'`       | Working diff has no whitespace errors   |
-| V19 | `npm pack --dry-run`                                 | npm package contents preview            |
-| V20 | `python -m twine check dist/*`                       | Python distribution metadata check      |
-| V21 | `npx prettier --check .github/workflows/release.yml` | Release workflow formatting check       |
+| ID  | Command                                                            | Required Outcome                                            |
+| --- | ------------------------------------------------------------------ | ----------------------------------------------------------- |
+| V01 | `npm ci`                                                           | Clean dependency installation                               |
+| V02 | `npm run format:check`                                             | Formatting contract passes                                  |
+| V03 | `npm run lint`                                                     | Lint contract passes                                        |
+| V04 | `npm run typecheck`                                                | Strict TypeScript typecheck passes                          |
+| V05 | `npm test`                                                         | Node repository-contract tests pass                         |
+| V06 | `npm run contracts:verify`                                         | Source and repository contract passes                       |
+| V07 | `npm run registries:verify`                                        | Registry coverage and boundary checks                       |
+| V08 | `npm run schemas:meta-validate`                                    | Supported schemas meta-validate                             |
+| V09 | `npm run examples:index-check`                                     | Example discoverability index passes                        |
+| V10 | `npm run schemas:examples-validate`                                | Example and fixture schema validation                       |
+| V11 | `npm run fixtures:verify`                                          | Fixture taxonomy and seed corpus verify                     |
+| V12 | `npm run build`                                                    | TypeScript build passes                                     |
+| V13 | `npm run package:verify`                                           | npm package verification                                    |
+| V14 | `python -m pip install -e ".[dev]"`                                | Editable Python dev install                                 |
+| V15 | `python -m pytest`                                                 | Python tests pass                                           |
+| V16 | `python -m build`                                                  | Python sdist and wheel build                                |
+| V17 | `python tests/contracts/verify_python_wheel.py`                    | Wheel imports and reports version                           |
+| V18 | `git diff --check -- ':!docs/architecture/**'`                     | Working diff has no whitespace errors                       |
+| V19 | `npm pack --dry-run`                                               | npm package contents preview                                |
+| V20 | `npm run clean && python -m build && python -m twine check dist/*` | Python distribution metadata check from a clean Python dist |
+| V21 | `npx prettier --check .github/workflows/release.yml`               | Release workflow formatting check                           |
 
 All validation statuses must be recorded with exit codes and evidence in the completion report.
 
@@ -448,6 +448,7 @@ npm run package:verify
 # Python validation
 python -m pip install -e ".[dev]"
 python -m pytest
+npm run clean
 python -m build
 python -m twine check dist/*
 python tests/contracts/verify_python_wheel.py
@@ -464,7 +465,7 @@ git diff --check -- ':!docs/architecture/**'
 AGENTS.md                    — This file
 README.md                    — Project overview
 README_DEV.md                — Developer setup and validation
-package.json                 — Node package (1.0.0)
+package.json                 — Node package (1.0.1)
 tsconfig.json                — TypeScript configuration
 pyproject.toml               — Python package configuration
 
