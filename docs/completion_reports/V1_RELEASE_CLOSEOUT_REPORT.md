@@ -39,7 +39,7 @@ The repository code for v1.0.0 is on `main`, but the dual-registry release seque
 | Item            | Value                                                              |
 | --------------- | ------------------------------------------------------------------ |
 | Workflow file   | `.github/workflows/release.yml`                                    |
-| Workflow digest | `ef9f985fe6e192001485c546c85231e5b4fcf959678a47432fb783a872e644fb` |
+| Workflow digest | `e8018fba22769ff67d8200ff57ab15b5d9bd8b8baeeff602eaec8c240401b1a5` |
 | Workflow run ID | Not run; workflow is prepared on an unmerged branch                |
 
 | Artifact                               | SHA-256                                                            | GitHub     | npm/PyPI      | Verified                                      |
