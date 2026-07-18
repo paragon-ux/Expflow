@@ -96,7 +96,7 @@ Expflow has completed Gate A as defined by `EXPFLOW_WORKFLOW_CURRENT.md`. Gate B
 
 ### Core Release
 
-The v1.0.0 repository code is merged to `main`, and remote tag `v1.0.0` plus a GitHub Release already exist at `7b91cf7`. Registry preflight still reports `npm view expflow --json` as 404 and PyPI project `expflow-hooks` as 404. The dual-registry OIDC publication workflow, owner publishing checklist, private vulnerability reporting policy, and v1 compatibility promise are being prepared in PR #12 on `codex/v1-dual-registry-release-prep`.
+The v1.0.0 repository code is merged to `main`, and remote tag `v1.0.0` plus a GitHub Release already exist at `7b91cf7`. Registry preflight still reports `npm view expflow --json` as 404 and PyPI project `expflow-hooks` as 404. GitHub API preflight reports zero configured environments and Private Vulnerability Reporting `enabled: false`. The dual-registry OIDC publication workflow, owner publishing checklist, private vulnerability reporting policy, and v1 compatibility promise are being prepared in PR #12 on `codex/v1-dual-registry-release-prep`.
 
 This is a release-state inconsistency under the dual-registry prompt because the GitHub Release exists before npm and PyPI publication are verified. Do not move or recreate `v1.0.0` without explicit owner authorization.
 

@@ -22,6 +22,8 @@ As of the local preflight on 2026-07-17:
 - GitHub Release `v1.0.0` exists at <https://github.com/paragon-ux/Expflow/releases/tag/v1.0.0>.
 - `npm view expflow --json` returns registry 404, so npm package ownership is not proven by package metadata.
 - PyPI project `expflow-hooks` returns registry 404, so PyPI project ownership is not proven by package metadata and needs a pending Trusted Publisher.
+- GitHub environments API reports zero configured environments, so `release-npm` and `release-pypi` still need owner setup.
+- GitHub Private Vulnerability Reporting API reports `enabled: false`, so private vulnerability reporting still needs owner setup.
 
 Because the GitHub Release already exists while public npm and PyPI publication are absent, release state is inconsistent with the final dual-registry sequence. Do not move or recreate `v1.0.0` without explicit owner authorization.
 

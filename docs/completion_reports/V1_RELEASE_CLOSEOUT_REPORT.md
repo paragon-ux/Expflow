@@ -21,18 +21,20 @@ The repository code for v1.0.0 is on `main`, but the dual-registry release seque
 
 ## Dual-Registry Preflight
 
-| Check                        | Result   | Evidence                                                                                     |
-| ---------------------------- | -------- | -------------------------------------------------------------------------------------------- |
-| Repository root              | PASS     | `C:/Users/USER/Desktop/Frameworks/Expflow`                                                   |
-| Current branch               | PASS     | `codex/v1-dual-registry-release-prep`                                                        |
-| Worktree                     | PASS     | Clean before release-prep edits                                                              |
-| `origin/main`                | PASS     | `7b91cf71c464ba2610503d3e70ecef6277503370`                                                   |
-| Open pull requests           | PASS     | `gh pr list --state open` returned `[]` before this branch was created                       |
-| Remote tag `v1.0.0`          | CONFLICT | Tag exists at `7b91cf71c464ba2610503d3e70ecef6277503370`                                     |
-| GitHub Release `v1.0.0`      | CONFLICT | Final release exists before registries are verified                                          |
-| Hosted CI on `main`          | PASS     | Run `29618950830` succeeded for commit `7b91cf7`                                             |
-| npm package `expflow`        | BLOCKED  | `npm view expflow --json` returned registry 404; ownership is not proven by package metadata |
-| PyPI project `expflow-hooks` | BLOCKED  | PyPI JSON returned 404; pending Trusted Publisher must be configured                         |
+| Check                           | Result   | Evidence                                                                                     |
+| ------------------------------- | -------- | -------------------------------------------------------------------------------------------- |
+| Repository root                 | PASS     | `C:/Users/USER/Desktop/Frameworks/Expflow`                                                   |
+| Current branch                  | PASS     | `codex/v1-dual-registry-release-prep`                                                        |
+| Worktree                        | PASS     | Clean before release-prep edits                                                              |
+| `origin/main`                   | PASS     | `7b91cf71c464ba2610503d3e70ecef6277503370`                                                   |
+| Open pull requests              | PASS     | `gh pr list --state open` returned `[]` before this branch was created                       |
+| Remote tag `v1.0.0`             | CONFLICT | Tag exists at `7b91cf71c464ba2610503d3e70ecef6277503370`                                     |
+| GitHub Release `v1.0.0`         | CONFLICT | Final release exists before registries are verified                                          |
+| Hosted CI on `main`             | PASS     | Run `29618950830` succeeded for commit `7b91cf7`                                             |
+| npm package `expflow`           | BLOCKED  | `npm view expflow --json` returned registry 404; ownership is not proven by package metadata |
+| PyPI project `expflow-hooks`    | BLOCKED  | PyPI JSON returned 404; pending Trusted Publisher must be configured                         |
+| GitHub environments             | BLOCKED  | `gh api repos/paragon-ux/Expflow/environments` returned `total_count: 0`                     |
+| Private Vulnerability Reporting | BLOCKED  | `gh api repos/paragon-ux/Expflow/private-vulnerability-reporting` returned `enabled: false`  |
 
 ## Release Workflow And Artifact Manifest
 
@@ -224,8 +226,8 @@ The release is blocked for publication until these items are resolved:
 - Existing GitHub Release `v1.0.0` exists before verified npm and PyPI publication.
 - npm package ownership for `expflow` is not proven by package metadata because the package is absent.
 - PyPI project `expflow-hooks` is absent; a pending Trusted Publisher must be configured.
-- Protected GitHub environments `release-npm` and `release-pypi` are not verified.
-- GitHub Private Vulnerability Reporting setting is not verified.
+- Protected GitHub environments `release-npm` and `release-pypi` are not configured.
+- GitHub Private Vulnerability Reporting is disabled.
 - `.github/workflows/release.yml` is prepared in PR #12 and must be reviewed and merged before an authorized release rerun.
 
 ## Handoff
