@@ -1,12 +1,22 @@
-# GitHub Release Note: v1.0.0
+# Expflow v1.0.0
 
-## Title
+Expflow v1.0.0 is the first MIT-licensed release of the local Expflow core.
 
-Expflow v1.0.0
+This release completes Gates A through D: repository contracts, the material-core runtime, ownership and reproduction record families, local security and migration controls, native hardening, package metadata, and end-to-end proof.
 
-## Summary
+## Install
 
-Expflow v1.0.0 is the first MIT-licensed release of the local Expflow core. This release closes Gates A through D: repository contracts, material-core runtime behavior, ownership and reproduction record families, local security and migration controls, native hardening, package metadata, and end-to-end proof.
+```bash
+npm install -g expflow
+```
+
+The npm package provides the `expflow` CLI, TypeScript library exports, schemas, and architecture assets.
+
+```bash
+pip install expflow-hooks
+```
+
+The Python package is a hook scaffold and read-only architecture schema discovery surface. It does not dispatch or execute hooks.
 
 ## Included
 
@@ -16,10 +26,9 @@ Expflow v1.0.0 is the first MIT-licensed release of the local Expflow core. This
 - Operation-scoped staging, recoverable init and restore intents, stale-lock classification, causal tree/receipt head repair, restore intent/tree agreement checks, and restored-tree digest verification.
 - Library runtimes for authority sources, semantic decisions, workflow boundaries, projections, regeneration/equivalence, structural reuse, security controls, migration evidence, and the native extension host.
 - Repository validation for immutable architecture sources, schemas, examples, fixtures, registries, package boundaries, and end-to-end proof.
-- MIT license metadata for npm and Python package surfaces.
 - A v1 compatibility promise for CLI names, npm root exports, TypeScript runtime interfaces, persisted v1 state, and package identities.
 
-## Explicitly Out Of Scope
+## Out Of Scope
 
 - Adapter inspection or external revision protocols.
 - Adapter change cursors, external idempotency, or lost-response reconciliation.
@@ -27,14 +36,12 @@ Expflow v1.0.0 is the first MIT-licensed release of the local Expflow core. This
 - Network services, database-backed storage, message brokers, archive extraction, or generated-code execution.
 - Production pilots, benchmarks, empirical evaluation, and separately packaged adapters.
 
-## Validation
+## Validation And Provenance
 
-Local release validation passed on 2026-07-17 for Node, TypeScript, repository contracts, package verification, Python tests, wheel build, wheel import, and release diff whitespace checks. Detailed command evidence is recorded in `docs/completion_reports/V1_RELEASE_CLOSEOUT_REPORT.md`.
+The release workflow builds npm and Python artifacts from the `v1.0.0` tag, verifies repository contracts and package behavior, checks Python distribution metadata, records checksums, publishes through registry trusted publishing, and attaches provenance attestations for the release artifacts.
+
+Detailed local release evidence is recorded in `docs/completion_reports/V1_RELEASE_CLOSEOUT_REPORT.md`.
 
 ## Compatibility
 
 The v1 compatibility promise is documented in `docs/V1_COMPATIBILITY.md`.
-
-## Registry Publication
-
-Registry publication is owner-controlled through the OIDC release workflow documented in `docs/RELEASE_PUBLISHING.md`. Do not treat npm or PyPI installation as available until registry metadata and external installation checks verify the published artifacts.

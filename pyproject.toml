@@ -5,8 +5,16 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "expflow-hooks"
 version = "1.0.0"
-description = "Expflow Python hook package - schema-conforming validation and automation hooks"
+authors = [
+  { name="Paragon AI", email="work.jlines@gmail.com" },
+]
+description = "Expflow Python hook scaffold and read-only architecture schema discovery"
 requires-python = ">=3.11"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+    "Intended Audience :: Developers",
+]
 license = "MIT"
 license-files = ["LICENSE"]
 readme = "README.md"
