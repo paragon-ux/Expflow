@@ -583,13 +583,13 @@ jobs:
           test -f registry-results/pypi/pypi-publication-result.json
           if gh release view "${RELEASE_TAG}" --json tagName,targetCommitish,isDraft,isPrerelease,url > github-release.json 2>/dev/null; then
             node <<'NODE'
-            const fs = require('fs');
-            const release = JSON.parse(fs.readFileSync('github-release.json', 'utf8'));
-            if (release.tagName !== 'v1.0.1') throw new Error('Unexpected release tag');
-            if (release.isDraft || release.isPrerelease) {
-              throw new Error('Existing GitHub Release must be final');
-            }
-            NODE
+          const fs = require('fs');
+          const release = JSON.parse(fs.readFileSync('github-release.json', 'utf8'));
+          if (release.tagName !== 'v1.0.1') throw new Error('Unexpected release tag');
+          if (release.isDraft || release.isPrerelease) {
+            throw new Error('Existing GitHub Release must be final');
+          }
+          NODE
           fi
 
       - name: Create or update final GitHub Release
