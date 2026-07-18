@@ -298,7 +298,6 @@ jobs:
             echo "expflow@1.0.1 already exists; verifying metadata"
             PUBLISHED="already-published"
           else
-            unset NODE_AUTH_TOKEN
             npm publish "${TARBALL}" --access public --provenance
             PUBLISHED="published"
           fi
