@@ -2,9 +2,9 @@
 
 **Status:** v1.0.0 dual-registry release-state remediation
 **Last updated:** 2026-07-17
-**Current baseline:** `origin/main` at `7b91cf71c464ba2610503d3e70ecef6277503370`; PR #10 and PR #11 are merged; active remediation branch `codex/v1-dual-registry-release-prep`
+**Current baseline:** `origin/main` at `7b91cf71c464ba2610503d3e70ecef6277503370`; PR #10 and PR #11 are merged; active remediation PR #12 on branch `codex/v1-dual-registry-release-prep`
 **Workflow SSOT:** `docs/architecture/EXPFLOW_WORKFLOW_CURRENT.md`
-**Evidence:** [Gate A completion report](completion_reports/GATE_A_COMPLETION_REPORT.md), [Gate B completion report](completion_reports/GATE_B_COMPLETION_REPORT.md), [Gate C completion report](completion_reports/GATE_C_COMPLETION_REPORT.md), [Gate D completion report](completion_reports/GATE_D_COMPLETION_REPORT.md), [v1 release closeout report](completion_reports/V1_RELEASE_CLOSEOUT_REPORT.md), [v1 GitHub release note](release_notes/GITHUB_RELEASE_NOTE_V1_0_0.md), [v1 compatibility](V1_COMPATIBILITY.md), [release publishing checklist](RELEASE_PUBLISHING.md), [PR #4](https://github.com/paragon-ux/Expflow/pull/4), [PR #5](https://github.com/paragon-ux/Expflow/pull/5), [PR #6](https://github.com/paragon-ux/Expflow/pull/6), [PR #7](https://github.com/paragon-ux/Expflow/pull/7), [PR #10](https://github.com/paragon-ux/Expflow/pull/10), [PR #11](https://github.com/paragon-ux/Expflow/pull/11), [GitHub Release v1.0.0](https://github.com/paragon-ux/Expflow/releases/tag/v1.0.0)
+**Evidence:** [Gate A completion report](completion_reports/GATE_A_COMPLETION_REPORT.md), [Gate B completion report](completion_reports/GATE_B_COMPLETION_REPORT.md), [Gate C completion report](completion_reports/GATE_C_COMPLETION_REPORT.md), [Gate D completion report](completion_reports/GATE_D_COMPLETION_REPORT.md), [v1 release closeout report](completion_reports/V1_RELEASE_CLOSEOUT_REPORT.md), [v1 GitHub release note](release_notes/GITHUB_RELEASE_NOTE_V1_0_0.md), [v1 compatibility](V1_COMPATIBILITY.md), [release publishing checklist](RELEASE_PUBLISHING.md), [PR #4](https://github.com/paragon-ux/Expflow/pull/4), [PR #5](https://github.com/paragon-ux/Expflow/pull/5), [PR #6](https://github.com/paragon-ux/Expflow/pull/6), [PR #7](https://github.com/paragon-ux/Expflow/pull/7), [PR #10](https://github.com/paragon-ux/Expflow/pull/10), [PR #11](https://github.com/paragon-ux/Expflow/pull/11), [PR #12](https://github.com/paragon-ux/Expflow/pull/12), [GitHub Release v1.0.0](https://github.com/paragon-ux/Expflow/releases/tag/v1.0.0)
 
 **Orientation:** Mutable pass-start controls live in [docs/orientation/](orientation/README.md) and are intentionally excluded from stable contract validation.
 
@@ -96,7 +96,7 @@ Expflow has completed Gate A as defined by `EXPFLOW_WORKFLOW_CURRENT.md`. Gate B
 
 ### Core Release
 
-The v1.0.0 repository code is merged to `main`, and remote tag `v1.0.0` plus a GitHub Release already exist at `7b91cf7`. Registry preflight still reports `npm view expflow --json` as 404 and PyPI project `expflow-hooks` as 404. The dual-registry OIDC publication workflow, owner publishing checklist, private vulnerability reporting policy, and v1 compatibility promise are being prepared on `codex/v1-dual-registry-release-prep`.
+The v1.0.0 repository code is merged to `main`, and remote tag `v1.0.0` plus a GitHub Release already exist at `7b91cf7`. Registry preflight still reports `npm view expflow --json` as 404 and PyPI project `expflow-hooks` as 404. The dual-registry OIDC publication workflow, owner publishing checklist, private vulnerability reporting policy, and v1 compatibility promise are being prepared in PR #12 on `codex/v1-dual-registry-release-prep`.
 
 This is a release-state inconsistency under the dual-registry prompt because the GitHub Release exists before npm and PyPI publication are verified. Do not move or recreate `v1.0.0` without explicit owner authorization.
 
@@ -139,7 +139,7 @@ The aggregate `npm run validate` command is not claimed as a pass under the expl
 
 ## Current Critical Path
 
-> Review the dual-registry release remediation branch, configure npm and PyPI Trusted Publishing plus protected GitHub environments, decide how to handle the existing `v1.0.0` GitHub Release/tag state, then run the OIDC release sequence only from the validated main commit.
+> Review PR #12, configure npm and PyPI Trusted Publishing plus protected GitHub environments, decide how to handle the existing `v1.0.0` GitHub Release/tag state, then run the OIDC release sequence only from the validated main commit.
 
 No Guerilla integration runtime is required in Expflow core. The hardening closure addresses the post-merge Gate D native hardening review through F10 and DCR-1 through DCR-6; remaining post-v1 work is pilots, empirical evaluation, and separate adapter/profile packages.
 

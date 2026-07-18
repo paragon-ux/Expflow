@@ -11,6 +11,7 @@ FAIL -- release or registry state is inconsistent
 | Release version        | `1.0.0`                                                                                    |
 | Main release commit    | `7b91cf71c464ba2610503d3e70ecef6277503370`                                                 |
 | Branch                 | `codex/v1-dual-registry-release-prep`                                                      |
+| Pull request           | [PR #12](https://github.com/paragon-ux/Expflow/pull/12)                                    |
 | Release classification | `release-state remediation required`                                                       |
 | Tag status             | Remote tag `v1.0.0` exists at `7b91cf71c464ba2610503d3e70ecef6277503370`                   |
 | GitHub Release status  | Existing final GitHub Release: <https://github.com/paragon-ux/Expflow/releases/tag/v1.0.0> |
@@ -214,7 +215,7 @@ Devin review and README follow-up validation also passed:
 
 PR #7 hardening closure hosted checks were green at head `d1dd2ac925b219c50c7728963e908042793c7376`.
 
-PR #10 and PR #11 are merged. Hosted checks on `origin/main` commit `7b91cf7` passed in workflow run `29618950830`. The dual-registry remediation branch has not been merged or tagged.
+PR #10 and PR #11 are merged. Hosted checks on `origin/main` commit `7b91cf7` passed in workflow run `29618950830`. PR #12 contains the dual-registry remediation branch; it has not been merged or tagged.
 
 ## Blockers And Release Risks
 
@@ -225,7 +226,7 @@ The release is blocked for publication until these items are resolved:
 - PyPI project `expflow-hooks` is absent; a pending Trusted Publisher must be configured.
 - Protected GitHub environments `release-npm` and `release-pypi` are not verified.
 - GitHub Private Vulnerability Reporting setting is not verified.
-- `.github/workflows/release.yml` is prepared on a branch and must be reviewed and merged before an authorized release rerun.
+- `.github/workflows/release.yml` is prepared in PR #12 and must be reviewed and merged before an authorized release rerun.
 
 ## Handoff
 
