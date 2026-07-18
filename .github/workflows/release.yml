@@ -34,7 +34,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
-          node-version: 22.14.0
+          node-version: 24
           cache: ''
 
       - name: Set up Python
@@ -128,10 +128,63 @@ jobs:
       - name: Build exact Python distributions
         run: |
           set -euo pipefail
+          mkdir -p release-artifacts/python-built
+          python -m build --sdist --wheel --outdir release-artifacts/python-built
+          test -f release-artifacts/python-built/expflow_hooks-1.0.1-py3-none-any.whl
+          test -f release-artifacts/python-built/expflow_hooks-1.0.1.tar.gz
+
+      - name: Select Python release artifacts
+        run: |
+          set -euo pipefail
           mkdir -p release-artifacts/python
-          python -m build --sdist --wheel --outdir release-artifacts/python
-          test -f release-artifacts/python/expflow_hooks-1.0.1-py3-none-any.whl
-          test -f release-artifacts/python/expflow_hooks-1.0.1.tar.gz
+          python - <<'PY'
+          import json
+          import pathlib
+          import shutil
+          import urllib.error
+          import urllib.request
+
+          project = "expflow-hooks"
+          version = "1.0.1"
+          expected = {
+              "expflow_hooks-1.0.1-py3-none-any.whl",
+              "expflow_hooks-1.0.1.tar.gz",
+          }
+          built_dir = pathlib.Path("release-artifacts/python-built")
+          target_dir = pathlib.Path("release-artifacts/python")
+          registry_url = f"https://pypi.org/pypi/{project}/{version}/json"
+
+          try:
+              with urllib.request.urlopen(registry_url, timeout=30) as response:
+                  pypi_data = json.load(response)
+          except urllib.error.HTTPError as exc:
+              if exc.code == 404:
+                  pypi_data = None
+              else:
+                  raise
+
+          if pypi_data is None:
+              for filename in expected:
+                  shutil.copy2(built_dir / filename, target_dir / filename)
+              pathlib.Path("release-artifacts/python-artifact-source.txt").write_text(
+                  "local-build\n",
+              )
+          else:
+              urls = {
+                  file_info["filename"]: file_info["url"]
+                  for file_info in pypi_data.get("urls", [])
+                  if file_info.get("filename") in expected
+              }
+              missing = expected - set(urls)
+              if missing:
+                  raise SystemExit(f"Missing PyPI files: {sorted(missing)}")
+              for filename, url in urls.items():
+                  with urllib.request.urlopen(url, timeout=60) as response:
+                      (target_dir / filename).write_bytes(response.read())
+              pathlib.Path("release-artifacts/python-artifact-source.txt").write_text(
+                  "pypi\n",
+              )
+          PY
 
       - name: Check Python distribution metadata
         run: python -m twine check release-artifacts/python/*
@@ -180,6 +233,10 @@ jobs:
               build: sh('python -m build --version'),
               twine: sh('python -m twine --version'),
             },
+            python_artifact_source: readFileSync(
+              'release-artifacts/python-artifact-source.txt',
+              'utf8',
+            ).trim(),
             validation_summary: [
               'npm ci',
               'npm run validate',
@@ -262,12 +319,12 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
-          node-version: 22.14.0
+          node-version: 24
           registry-url: https://registry.npmjs.org
           cache: ''
 
-      - name: Install npm 11.5.1
-        run: npm install --global npm@11.5.1
+      - name: Install npm 11.18.0
+        run: npm install --global npm@11.18.0
 
       - name: Download release artifacts
         uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
@@ -298,7 +355,7 @@ jobs:
             echo "expflow@1.0.1 already exists; verifying metadata"
             PUBLISHED="already-published"
           else
-            npm publish "${TARBALL}" --access public --provenance
+            npm publish "${TARBALL}" --access public
             PUBLISHED="published"
           fi
           npm view expflow@1.0.1 --json > npm-metadata.json
