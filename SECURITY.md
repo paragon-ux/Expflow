@@ -9,7 +9,9 @@
 
 ## Reporting A Vulnerability
 
-Report security issues through the repository issue tracker unless a private reporting channel is published by the maintainers. Include:
+Use GitHub Private Vulnerability Reporting for suspected vulnerabilities. Private vulnerability reporting is enabled for this repository and must remain enabled before public release publication.
+
+Do not open a public issue for a suspected vulnerability before maintainers approve disclosure. Include:
 
 - affected version or commit;
 - operating system and runtime versions;
@@ -17,7 +19,7 @@ Report security issues through the repository issue tracker unless a private rep
 - expected and observed behavior;
 - whether any sensitive source content, generated files, or archives were involved.
 
-Do not include real secrets in public reports. Redact tokens, credentials, private keys, and private source content before sharing evidence.
+Redact tokens, credentials, private keys, and private source content before sharing evidence. Ordinary non-sensitive hardening requests may use public issues.
 
 ## Security Posture
 

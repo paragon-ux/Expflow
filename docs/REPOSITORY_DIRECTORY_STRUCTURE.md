@@ -51,6 +51,8 @@ This document defines how tracked, untracked, generated, package, and release-fa
     orientation/                   tracked mutable System 1/System 2 pass controls
     release_notes/                 tracked standalone release notes for GitHub/releases
     reviews/                       tracked curated PR/review reports when they must persist
+    RELEASE_PUBLISHING.md          tracked owner checklist for registry publication
+    V1_COMPATIBILITY.md            tracked v1 public compatibility promise
 
   src/                             tracked TypeScript source
   python/                          tracked Python hook-package source and tests
@@ -126,6 +128,7 @@ Generated output should remain outside the tracked source surface unless a repos
 | `node_modules/`              | generated dependency install | Never track.                                                                                                                       |
 | `.pytest_cache/`             | generated cache              | Never track.                                                                                                                       |
 | Python wheel/build artifacts | generated                    | Rebuild during validation; do not track unless a release artifact publication step explicitly creates them outside source control. |
+| `release-artifacts/`         | generated                    | Produced by `.github/workflows/release.yml`; publish from workflow artifacts, not source control.                                  |
 
 ## Package And Public Release Surface
 
@@ -135,6 +138,7 @@ The source repository and package contents are not the same surface.
 - The Python package should include only the hook-package source and intended package metadata.
 - Local reference material under `build-docs/` must not be included in package artifacts.
 - Public release docs should be tracked under root docs or `docs/`; private/local reference packs should not be linked as required user documentation.
+- Registry publication is controlled by `.github/workflows/release.yml` and `docs/RELEASE_PUBLISHING.md`; release artifacts are generated, attested, and uploaded by the workflow rather than tracked in the repository.
 
 ## Transition Checklist
 

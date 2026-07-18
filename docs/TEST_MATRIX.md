@@ -4,26 +4,30 @@
 
 ## Validation Commands
 
-| ID  | Command                                                           | Purpose                                          |
-| --- | ----------------------------------------------------------------- | ------------------------------------------------ |
-| V01 | `npm ci`                                                          | Clean dependency installation                    |
-| V02 | `npm run format:check`                                            | Formatting contract for stable files             |
-| V03 | `npm run lint`                                                    | TypeScript lint contract                         |
-| V04 | `npm run typecheck`                                               | Strict TypeScript typecheck                      |
-| V05 | `npm test`                                                        | Node repository and runtime tests                |
-| V06 | `npm run contracts:verify`                                        | Source integrity and repository contract         |
-| V07 | `npm run registries:verify`                                       | Registry coverage and boundary checks            |
-| V08 | `npm run schemas:meta-validate`                                   | JSON Schema meta-validation                      |
-| V09 | `npm run examples:index-check`                                    | Example discoverability and parse check          |
-| V10 | `npm run schemas:examples-validate`                               | TypeScript example and fixture schema validation |
-| V11 | `npm run fixtures:verify`                                         | Fixture taxonomy and seed corpus verification    |
-| V12 | `npm run build`                                                   | TypeScript build                                 |
-| V13 | `npm run package:verify`                                          | npm package verification                         |
-| V14 | `python -m pip install -e ".[dev]"`                               | Editable Python dev install                      |
-| V15 | `python -m pytest`                                                | Python schema parity tests                       |
-| V16 | `python -m build --wheel`                                         | Python wheel build                               |
-| V17 | `python tests/contracts/verify_python_wheel.py`                   | External wheel import                            |
-| V18 | `git diff --check origin/main...HEAD -- ':!docs/architecture/**'` | Whitespace check outside immutable sources       |
+| ID  | Command                                                            | Purpose                                                     |
+| --- | ------------------------------------------------------------------ | ----------------------------------------------------------- |
+| V01 | `npm ci`                                                           | Clean dependency installation                               |
+| V02 | `npm run format:check`                                             | Formatting contract for stable files                        |
+| V03 | `npm run lint`                                                     | TypeScript lint contract                                    |
+| V04 | `npm run typecheck`                                                | Strict TypeScript typecheck                                 |
+| V05 | `npm test`                                                         | Node repository and runtime tests                           |
+| V06 | `npm run contracts:verify`                                         | Source integrity and repository contract                    |
+| V07 | `npm run registries:verify`                                        | Registry coverage and boundary checks                       |
+| V08 | `npm run schemas:meta-validate`                                    | JSON Schema meta-validation                                 |
+| V09 | `npm run examples:index-check`                                     | Example discoverability and parse check                     |
+| V10 | `npm run schemas:examples-validate`                                | TypeScript example and fixture schema validation            |
+| V11 | `npm run fixtures:verify`                                          | Fixture taxonomy and seed corpus verification               |
+| V12 | `npm run build`                                                    | TypeScript build                                            |
+| V13 | `npm run package:verify`                                           | npm package verification                                    |
+| V14 | `python -m pip install -e ".[dev]"`                                | Editable Python dev install                                 |
+| V15 | `python -m pytest`                                                 | Python schema parity tests                                  |
+| V16 | `python -m build`                                                  | Python sdist and wheel build                                |
+| V17 | `python tests/contracts/verify_python_wheel.py`                    | External wheel import                                       |
+| V18 | `git diff --check -- ':!docs/architecture/**'`                     | Whitespace check outside immutable sources                  |
+| V19 | `npm pack --dry-run`                                               | npm package contents preview                                |
+| V20 | `npm run clean && python -m build && python -m twine check dist/*` | Python distribution metadata check from a clean Python dist |
+| V21 | `npx prettier --check .github/workflows/release.yml`               | Release workflow formatting check                           |
+| V22 | Release workflow static review                                     | Tag-only OIDC publication workflow inspection               |
 
 `docs/CURRENT_STATUS_MATRIX.md` is a live operational status artifact and is intentionally excluded from formatting and contract validation.
 
@@ -85,3 +89,14 @@
 | Native durability closure        | `tests/unit/material-runtime.test.ts` covers F1-F10 and DCR-1 through DCR-4 from the Gate D hardening review |
 | End-to-end proof                 | `tests/e2e/gate-d-proof.test.ts` covers 25 workflow-required proof scenarios                                 |
 | Adapter boundary                 | prohibited-scope and e2e tests prove adapter-only protocols remain absent                                    |
+
+## Release Publication Coverage
+
+| Area                         | Evidence                                                                                                  |
+| ---------------------------- | --------------------------------------------------------------------------------------------------------- |
+| npm package identity         | `package.json`, `package-lock.json`, `npm view expflow --json`, `npm pack --dry-run`                      |
+| PyPI package identity        | `pyproject.toml`, PyPI JSON preflight for `expflow-hooks`, `python -m build`, `python -m twine check`     |
+| Exact artifact verification  | `tests/contracts/package-verify.ts --tarball` and `tests/contracts/verify_python_wheel.py --wheel`        |
+| OIDC publication workflow    | `.github/workflows/release.yml` tag-only trigger, release environments, id-token permissions, pinned uses |
+| Compatibility promise        | `docs/V1_COMPATIBILITY.md`                                                                                |
+| Owner registry configuration | `docs/RELEASE_PUBLISHING.md`                                                                              |

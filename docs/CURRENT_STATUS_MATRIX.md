@@ -1,14 +1,14 @@
 # Current Status Matrix
 
-**Status:** v1.0.0 release branch locally validated
-**Last updated:** 2026-07-17
-**Current baseline:** Gate D native hardening closure merged to `main` through PR #7; active v1 release PR #10 on branch `codex/gate-d-v1-release-closeout`
+**Status:** v1.0.0 dual-registry publication prep
+**Last updated:** 2026-07-18
+**Current baseline:** `origin/main` at `7b91cf71c464ba2610503d3e70ecef6277503370`; PR #10 and PR #11 are merged; active remediation PR #12 on branch `codex/v1-dual-registry-release-prep`
 **Workflow SSOT:** `docs/architecture/EXPFLOW_WORKFLOW_CURRENT.md`
-**Evidence:** [Gate A completion report](completion_reports/GATE_A_COMPLETION_REPORT.md), [Gate B completion report](completion_reports/GATE_B_COMPLETION_REPORT.md), [Gate C completion report](completion_reports/GATE_C_COMPLETION_REPORT.md), [Gate D completion report](completion_reports/GATE_D_COMPLETION_REPORT.md), [v1 release closeout report](completion_reports/V1_RELEASE_CLOSEOUT_REPORT.md), [v1 GitHub release note](release_notes/GITHUB_RELEASE_NOTE_V1_0_0.md), [PR #4](https://github.com/paragon-ux/Expflow/pull/4), [PR #5](https://github.com/paragon-ux/Expflow/pull/5), [PR #6](https://github.com/paragon-ux/Expflow/pull/6), [PR #7](https://github.com/paragon-ux/Expflow/pull/7), [PR #10](https://github.com/paragon-ux/Expflow/pull/10)
+**Evidence:** [Gate A completion report](completion_reports/GATE_A_COMPLETION_REPORT.md), [Gate B completion report](completion_reports/GATE_B_COMPLETION_REPORT.md), [Gate C completion report](completion_reports/GATE_C_COMPLETION_REPORT.md), [Gate D completion report](completion_reports/GATE_D_COMPLETION_REPORT.md), [v1 release closeout report](completion_reports/V1_RELEASE_CLOSEOUT_REPORT.md), [v1 GitHub release note](release_notes/GITHUB_RELEASE_NOTE_V1_0_0.md), [v1 compatibility](V1_COMPATIBILITY.md), [release publishing checklist](RELEASE_PUBLISHING.md), [PR #4](https://github.com/paragon-ux/Expflow/pull/4), [PR #5](https://github.com/paragon-ux/Expflow/pull/5), [PR #6](https://github.com/paragon-ux/Expflow/pull/6), [PR #7](https://github.com/paragon-ux/Expflow/pull/7), [PR #10](https://github.com/paragon-ux/Expflow/pull/10), [PR #11](https://github.com/paragon-ux/Expflow/pull/11), [PR #12](https://github.com/paragon-ux/Expflow/pull/12)
 
 **Orientation:** Mutable pass-start controls live in [docs/orientation/](orientation/README.md) and are intentionally excluded from stable contract validation.
 
-**Hosted CI evidence:** Phase 1 hosted checks passed in PR #1. Gate A continuation checks passed in PR #2. PR #4 hosted checks were green and PR #4 merged to `main` at `6fe8d82`. PR #5 hosted checks were green and PR #5 merged to `main` at `17fb82a`. Gate D PR #6 hosted checks were green and PR #6 merged to `main` at `2b194f1`. Gate D native hardening closure PR #7 hosted checks were green and PR #7 merged to `main` at `69fd4aa`. Active v1 release PR #10 now targets `main`.
+**Hosted CI evidence:** Phase 1 hosted checks passed in PR #1. Gate A continuation checks passed in PR #2. PR #4 hosted checks were green and PR #4 merged to `main` at `6fe8d82`. PR #5 hosted checks were green and PR #5 merged to `main` at `17fb82a`. Gate D PR #6 hosted checks were green and PR #6 merged to `main` at `2b194f1`. Gate D native hardening closure PR #7 hosted checks were green and PR #7 merged to `main` at `69fd4aa`. PR #10 and PR #11 were merged; hosted checks on `origin/main` commit `7b91cf7` passed in run `29618950830`.
 
 **Validation status:** operational live-status artifact; intentionally excluded from repository formatting and contract validation.
 
@@ -29,7 +29,7 @@ Expflow has completed Gate A as defined by `EXPFLOW_WORKFLOW_CURRENT.md`. Gate B
 | Adapter SDK and integrations      |                 0% | Adapter contracts are explicitly deferred to separately versioned adapter profiles and remain absent from core.                                                                  |
 | Conformance and contract testing  |                92% | Source integrity, registries, schemas, examples, fixtures, package boundaries, material runtime, Gate C runtimes, Gate D security/migration, and e2e proof are tested locally.     |
 | Empirical evaluation              |                 0% | No pilots, benchmarks, or comparative evaluation have been run.                                                                                                                 |
-| Production readiness              |                72% | Core hardening proof, native transaction/recovery closure, MIT release metadata, standalone GitHub release note, and public release docs are locally validated for v1.0.0; pilots, adapter packages, and empirical evaluation remain future work. |
+| Production readiness              |                78% | Core hardening proof, native transaction/recovery closure, MIT release metadata, standalone GitHub release note, public release docs, release environments, and private vulnerability reporting are prepared for v1.0.0; dual-registry publication and registry Trusted Publisher setup remain unresolved. |
 
 ---
 
@@ -96,7 +96,9 @@ Expflow has completed Gate A as defined by `EXPFLOW_WORKFLOW_CURRENT.md`. Gate B
 
 ### Core Release
 
-The v1.0.0 release branch has prepared release evidence, MIT license metadata, coherent `1.0.0` package versions, public release documentation, a standalone GitHub release note, and repository-structure compliance with local reference packets untracked. Pilots, empirical evaluation, and separate adapter packages remain future work.
+The v1.0.0 repository code is merged to `main`, while the dual-registry OIDC publication workflow, owner publishing checklist, private vulnerability reporting policy, and v1 compatibility promise are prepared in PR #12 on `codex/v1-dual-registry-release-prep`. The stale remote tag `v1.0.0` and premature GitHub Release conflict has been cleared. Registry preflight still reports `npm view expflow --json` as 404 and PyPI project `expflow-hooks` as 404. GitHub API preflight reports configured release environments `release-npm` and `release-pypi` with required reviewer `paragon-ux`, and Private Vulnerability Reporting reports `enabled: true`.
+
+This remains a partial release state, not a published release. Do not recreate `v1.0.0` until PR #12 is merged, hosted CI is green on the exact merge commit, and npm/PyPI Trusted Publisher setup has been verified.
 
 ### Adapter Packages
 
@@ -131,13 +133,13 @@ Current local release-closeout evidence uses the required validation set under t
 - `python tests/contracts/verify_python_wheel.py`;
 - `git diff --check -- ':!docs/architecture/**'`.
 
-The aggregate `npm run validate` command is not claimed as a pass under the explicit 60-second cap.
+The aggregate `npm run validate` command is not claimed as a pass under the explicit 60-second cap. The release remediation pass adds `npm pack --dry-run`, `npm run clean` before Python distribution validation, `python -m build`, `python -m twine check dist/*`, exact tarball/wheel verification, and `.github/workflows/release.yml` static review to the required release evidence.
 
 ---
 
 ## Current Critical Path
 
-> Review active PR #10 for v1.0.0 release closeout, then decide whether to tag or publish.
+> Review and merge PR #12, configure npm and PyPI Trusted Publishing, wait for hosted CI on the exact merge commit, create `v1.0.0` on that commit, approve the protected npm/PyPI release environments, then let the OIDC workflow publish and verify both registries before it creates the GitHub Release.
 
 No Guerilla integration runtime is required in Expflow core. The hardening closure addresses the post-merge Gate D native hardening review through F10 and DCR-1 through DCR-6; remaining post-v1 work is pilots, empirical evaluation, and separate adapter/profile packages.
 
@@ -145,4 +147,4 @@ No Guerilla integration runtime is required in Expflow core. The hardening closu
 
 ## Practical Status Statement
 
-> Expflow has completed Gate A, merged Gate B through PR #4, merged Gate C through PR #5, merged Gate D through PR #6, and merged Gate D native hardening closure through PR #7. The active release branch prepares Expflow v1.0.0 with MIT license metadata, standalone GitHub release notes, and directory-structure compliance while preserving the four-command and adapter-deferral boundaries.
+> Expflow has completed Gate A, merged Gate B through PR #4, merged Gate C through PR #5, merged Gate D through PR #6, and merged Gate D native hardening closure through PR #7. The v1.0.0 code is on `main`, and the dual-registry release workflow is prepared in PR #12, but publication is not complete until npm `expflow` and PyPI `expflow-hooks` are published and independently verified from the exact release artifacts.

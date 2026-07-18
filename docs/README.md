@@ -11,6 +11,8 @@ The rest of `docs/` is mutable implementation evidence and local orientation:
 - `completion_reports/` records phase and gate evidence with actual command results.
 - `release_notes/` contains standalone text prepared for GitHub releases.
 - `reviews/` is reserved for curated review evidence that should remain versioned.
+- `V1_COMPATIBILITY.md` defines the v1 public compatibility promise.
+- `RELEASE_PUBLISHING.md` records the owner-controlled npm, PyPI, and GitHub release checklist.
 - `REPOSITORY_DIRECTORY_STRUCTURE.md` defines the tracked, untracked, generated, package, and release-facing directory boundaries for the current release revision.
 - The model documents such as `STORAGE_AND_RECOVERY.md`, `MATERIAL_RECORD_FORMAT.md`, and `AUTHORITY_AND_SEMANTIC_MODEL.md` describe the current mutable implementation stance.
 

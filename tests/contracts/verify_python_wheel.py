@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import os
+import argparse
 import shutil
 import subprocess
 import sys
@@ -57,6 +58,8 @@ def verify_wheel_contents(wheel: Path) -> None:
     missing = sorted(required.difference(names))
     if missing:
         raise RuntimeError("Python wheel missing package file(s): " + ", ".join(missing))
+    if not any(name == "LICENSE" or name.endswith("/LICENSE") for name in names):
+        raise RuntimeError("Python wheel missing LICENSE file")
 
 
 def clean_python_build_artifacts() -> None:
@@ -67,12 +70,22 @@ def clean_python_build_artifacts() -> None:
 
 
 def main() -> int:
-    clean_python_build_artifacts()
-    run([sys.executable, "-m", "build", "--wheel"], REPO_ROOT)
-    wheels = sorted(DIST_DIR.glob("expflow_hooks-*.whl"), key=lambda path: path.stat().st_mtime)
-    if not wheels:
-        raise RuntimeError(f"No expflow_hooks wheel found in {DIST_DIR}")
-    wheel = wheels[-1]
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--wheel", type=Path, help="Verify an existing expflow_hooks wheel")
+    args = parser.parse_args()
+
+    if args.wheel is not None:
+        wheel = args.wheel.resolve()
+    else:
+        clean_python_build_artifacts()
+        run([sys.executable, "-m", "build", "--wheel"], REPO_ROOT)
+        wheels = sorted(DIST_DIR.glob("expflow_hooks-*.whl"), key=lambda path: path.stat().st_mtime)
+        if not wheels:
+            raise RuntimeError(f"No expflow_hooks wheel found in {DIST_DIR}")
+        wheel = wheels[-1]
+
+    if not wheel.exists():
+        raise RuntimeError(f"No expflow_hooks wheel found at {wheel}")
     verify_wheel_contents(wheel)
 
     temp_dir = Path(tempfile.mkdtemp(prefix="expflow-wheel-verify-"))
