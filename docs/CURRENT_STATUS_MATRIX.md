@@ -1,10 +1,10 @@
 # Current Status Matrix
 
-**Status:** v1.0.1 hotfix candidate; v1.0.0 published
+**Status:** v1.0.1 hotfix candidate
 **Last updated:** 2026-07-18
-**Current baseline:** `v1.0.0` is tagged at `605d249f7e09adcaecc2a102f2fb874ef460a6fa`; npm `expflow@1.0.0`, PyPI `expflow-hooks==1.0.0`, and the GitHub Release are public and externally verified. The `v1.0.1` hotfix candidate updates material revision allocation after historical tree restore and is not published until the release tag workflow completes.
+**Current baseline:** `v1.0.1` is the active hotfix candidate. It updates material revision allocation after historical tree restore and is not published until the release tag workflow completes.
 **Workflow SSOT:** `docs/architecture/EXPFLOW_WORKFLOW_CURRENT.md`
-**Evidence:** [Gate A completion report](completion_reports/GATE_A_COMPLETION_REPORT.md), [Gate B completion report](completion_reports/GATE_B_COMPLETION_REPORT.md), [Gate C completion report](completion_reports/GATE_C_COMPLETION_REPORT.md), [Gate D completion report](completion_reports/GATE_D_COMPLETION_REPORT.md), [v1 release closeout report](completion_reports/V1_RELEASE_CLOSEOUT_REPORT.md), [v1.0.1 hotfix release note](release_notes/GITHUB_RELEASE_NOTE_V1_0_1.md), [v1.0.0 GitHub release note](release_notes/GITHUB_RELEASE_NOTE_V1_0_0.md), [v1 compatibility](V1_COMPATIBILITY.md), [release publishing checklist](RELEASE_PUBLISHING.md), [PR #4](https://github.com/paragon-ux/Expflow/pull/4), [PR #5](https://github.com/paragon-ux/Expflow/pull/5), [PR #6](https://github.com/paragon-ux/Expflow/pull/6), [PR #7](https://github.com/paragon-ux/Expflow/pull/7), [PR #10](https://github.com/paragon-ux/Expflow/pull/10), [PR #11](https://github.com/paragon-ux/Expflow/pull/11), [PR #12](https://github.com/paragon-ux/Expflow/pull/12), [PR #13](https://github.com/paragon-ux/Expflow/pull/13), [PR #14](https://github.com/paragon-ux/Expflow/pull/14)
+**Evidence:** [Gate A completion report](completion_reports/GATE_A_COMPLETION_REPORT.md), [Gate B completion report](completion_reports/GATE_B_COMPLETION_REPORT.md), [Gate C completion report](completion_reports/GATE_C_COMPLETION_REPORT.md), [Gate D completion report](completion_reports/GATE_D_COMPLETION_REPORT.md), [v1 release closeout report](completion_reports/V1_RELEASE_CLOSEOUT_REPORT.md), [v1.0.1 hotfix release note](release_notes/GITHUB_RELEASE_NOTE_V1_0_1.md), [v1 compatibility](V1_COMPATIBILITY.md), [release publishing checklist](RELEASE_PUBLISHING.md), [PR #4](https://github.com/paragon-ux/Expflow/pull/4), [PR #5](https://github.com/paragon-ux/Expflow/pull/5), [PR #6](https://github.com/paragon-ux/Expflow/pull/6), [PR #7](https://github.com/paragon-ux/Expflow/pull/7), [PR #10](https://github.com/paragon-ux/Expflow/pull/10), [PR #11](https://github.com/paragon-ux/Expflow/pull/11), [PR #12](https://github.com/paragon-ux/Expflow/pull/12), [PR #13](https://github.com/paragon-ux/Expflow/pull/13), [PR #14](https://github.com/paragon-ux/Expflow/pull/14)
 
 **Orientation:** Mutable pass-start controls live in [docs/orientation/](orientation/README.md) and are intentionally excluded from stable contract validation.
 
@@ -29,7 +29,7 @@ Expflow has completed Gate A as defined by `EXPFLOW_WORKFLOW_CURRENT.md`. Gate B
 | Adapter SDK and integrations      |                 0% | Adapter contracts are explicitly deferred to separately versioned adapter profiles and remain absent from core.                                                                  |
 | Conformance and contract testing  |                92% | Source integrity, registries, schemas, examples, fixtures, package boundaries, material runtime, Gate C runtimes, Gate D security/migration, and e2e proof are tested locally.     |
 | Empirical evaluation              |                 0% | No pilots, benchmarks, or comparative evaluation have been run.                                                                                                                 |
-| Production readiness              |                88% | Core hardening proof, native transaction/recovery closure, MIT release metadata, standalone GitHub release note, package-only quickstart, public release docs, release environments, private vulnerability reporting, npm publication, PyPI publication, and the GitHub Release are complete for v1.0.0. |
+| Production readiness              |                88% | Core hardening proof, native transaction/recovery closure, MIT release metadata, standalone GitHub release note, package-only quickstart, public release docs, release environments, private vulnerability reporting, npm publication, PyPI publication, and GitHub Release coverage are complete for the v1 line. |
 
 ---
 
@@ -99,9 +99,9 @@ Expflow has completed Gate A as defined by `EXPFLOW_WORKFLOW_CURRENT.md`. Gate B
 
 ### Core Release Follow-Up
 
-The v1.0.0 repository code, dual-registry OIDC publication workflow, private vulnerability reporting policy, v1 compatibility promise, and package-only README quickstart are merged to `main`. Remote tag `v1.0.0` exists at `605d249f7e09adcaecc2a102f2fb874ef460a6fa`. npm `expflow@1.0.0`, PyPI `expflow-hooks==1.0.0`, and the GitHub Release are public and externally verified. The v1.0.1 hotfix candidate is PR-ready after local validation, but not published until the `v1.0.1` release tag workflow completes.
+The v1 repository code, dual-registry OIDC publication workflow, private vulnerability reporting policy, v1 compatibility promise, and package-only README quickstart are merged to `main`. The previous public v1 release remains tagged, published, and externally verified. The v1.0.1 hotfix candidate is PR-ready after local validation, but not published until the `v1.0.1` release tag workflow completes.
 
-The first `v1.0.0` release workflow run published PyPI and validated the release build, but failed after publication because npm verification rejected an ambient `NODE_AUTH_TOKEN` and PyPI verification queried the version endpoint before propagation completed. The workflow has been updated for future releases; do not move or delete the `v1.0.0` tag.
+The first public v1 release workflow run published PyPI and validated the release build, but failed after publication because npm verification rejected an ambient `NODE_AUTH_TOKEN` and PyPI verification queried the version endpoint before propagation completed. The workflow has been updated for future releases; do not move or delete existing public release tags.
 
 ### Adapter Packages
 
@@ -150,4 +150,4 @@ No Guerilla integration runtime is required in Expflow core. The hardening closu
 
 ## Practical Status Statement
 
-> Expflow has completed Gate A, merged Gate B through PR #4, merged Gate C through PR #5, merged Gate D through PR #6, and merged Gate D native hardening closure through PR #7. Expflow v1.0.0 is public on npm as `expflow`, public on PyPI as `expflow-hooks`, and published as a final GitHub Release. The current branch is a v1.0.1 hotfix candidate for post-restore material revision allocation.
+> Expflow has completed Gate A, merged Gate B through PR #4, merged Gate C through PR #5, merged Gate D through PR #6, and merged Gate D native hardening closure through PR #7. The current branch is a v1.0.1 hotfix candidate for post-restore material revision allocation and release workflow redeployment.

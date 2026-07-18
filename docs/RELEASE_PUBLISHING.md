@@ -1,6 +1,6 @@
 # Release Publishing
 
-**Status:** v1.0.1 hotfix candidate; v1.0.0 published baseline
+**Status:** v1.0.1 hotfix candidate
 
 Expflow releases use short-lived OIDC credentials through registry Trusted Publishing. Do not add persistent npm or PyPI tokens to repository files, workflow secrets, logs, artifacts, or completion reports.
 
@@ -23,20 +23,18 @@ The v1.0.1 hotfix candidate updates package metadata, release workflow guards, a
 - the release workflow verifies `expflow-hooks==1.0.1`;
 - the GitHub Release `v1.0.1` is created from `docs/release_notes/GITHUB_RELEASE_NOTE_V1_0_1.md`.
 
-## v1.0.0 Publication Result
+## Prior Public v1 Publication Result
 
 As of the local publication check on 2026-07-18:
 
-- Remote tag `v1.0.0` exists at commit `605d249f7e09adcaecc2a102f2fb874ef460a6fa`.
-- GitHub Release `v1.0.0` exists at <https://github.com/paragon-ux/Expflow/releases/tag/v1.0.0>.
-- `npm view expflow@1.0.0` verifies public package `expflow` version `1.0.0` under the MIT license.
-- A clean external npm install of `expflow@1.0.0` reports version `1.0.0`.
-- PyPI JSON verifies public package `expflow-hooks` version `1.0.0` with both sdist and wheel files.
-- A clean external Python install of `expflow-hooks==1.0.0` imports `expflow_hooks` and reports version `1.0.0`.
+- The previous public v1 tag exists and is protected as release history.
+- The previous public v1 GitHub Release exists with registry-matching assets.
+- Public npm and PyPI registry artifacts for the previous v1 release are externally verified.
+- Clean external npm and Python installs for the previous v1 release report the expected package versions.
 - GitHub environments API reports `release-npm` and `release-pypi` configured with required reviewer `paragon-ux`.
 - GitHub Private Vulnerability Reporting API reports `enabled: true`.
 
-The first `v1.0.0` release workflow run built, validated, uploaded, and attested release artifacts, then published PyPI successfully. The run failed after publication because npm verification rejected an ambient `NODE_AUTH_TOKEN` and PyPI verification queried the version endpoint before propagation completed. Public registry installation checks and the GitHub Release assets now verify the published release.
+The first public v1 release workflow run built, validated, uploaded, and attested release artifacts, then published PyPI successfully. The run failed after publication because npm verification rejected an ambient `NODE_AUTH_TOKEN` and PyPI verification queried the version endpoint before propagation completed. Public registry installation checks and the GitHub Release assets now verify the published release.
 
 ## npm Owner Maintenance
 
@@ -73,7 +71,7 @@ Before publication:
 
 - verify GitHub Private Vulnerability Reporting remains enabled for suspected vulnerabilities;
 - verify protected release environments `release-npm` and `release-pypi` remain configured with required reviewer `paragon-ux`;
-- protect the `v1.0.1` tag and the existing `v1.0.0` tag, or a matching release-tag pattern where repository settings permit it;
+- protect the `v1.0.1` tag and existing public release tags, or a matching release-tag pattern where repository settings permit it;
 - protect changes to `.github/workflows/release.yml` through normal branch review.
 
 ## Publication Order

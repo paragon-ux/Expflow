@@ -6,7 +6,7 @@ This document preserves the tracked release-relevant summary of the Gate D harde
 
 ## Review Outcome
 
-The hardening review focused on native Expflow durability and recovery behavior, not adapter integration work. The release branch incorporates the Gate D native hardening closure before the v1.0.0 release.
+The hardening review focused on native Expflow durability and recovery behavior, not adapter integration work. The release branch incorporates the Gate D native hardening closure before the v1 release.
 
 ## Closed Areas
 

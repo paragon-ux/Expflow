@@ -30,4 +30,4 @@ This release does not change the v1 compatibility promise, public command names,
 - npm package: `expflow@1.0.1`
 - PyPI package: `expflow-hooks==1.0.1`
 
-The `v1.0.0` release remains the first public v1 release. This release supersedes it for users who rely on `expflow restore` followed by ordinary same-path `expflow sync`.
+The prior public v1 release remains available as historical release evidence. This hotfix is recommended for users who rely on `expflow restore` followed by ordinary same-path `expflow sync`.
