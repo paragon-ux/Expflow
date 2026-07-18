@@ -33,15 +33,15 @@ Expflow v1.0.0 covers the local core surfaces implemented in this repository:
 
 ## Quickstart
 
+With the npm package available from the public registry:
+
 ```bash
-git clone https://github.com/paragon-ux/Expflow.git
-cd Expflow
-npm ci
-npm run build
-python -m pip install -e ".[dev]"
+npm install -g expflow
+expflow init
+expflow status
 ```
 
-The npm package exposes the `expflow` CLI and TypeScript library exports after build. The Python package is a hook scaffold with read-only repository architecture discovery; it does not dispatch or execute hooks.
+The npm package exposes the `expflow` CLI and TypeScript library exports. The Python package is a separate hook scaffold with read-only repository architecture discovery; it does not dispatch or execute hooks.
 
 ## Installation
 
