@@ -1,6 +1,6 @@
 # Expflow v1 Compatibility
 
-**Status:** v1.0.0 public compatibility promise
+**Status:** v1 public compatibility promise
 
 This document defines what Expflow keeps stable throughout the `1.x` release line. It applies to the released core repository and package surfaces, not to separately versioned adapter or integration packages.
 

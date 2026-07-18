@@ -1,6 +1,6 @@
 # Test Matrix
 
-**Status:** v1.0.0 release validation baseline with native hardening closure
+**Status:** v1.0.1 hotfix validation baseline with native hardening closure
 
 ## Validation Commands
 
@@ -54,6 +54,7 @@
 | Transactions and receipts     | Stale-head guard, staged immutable promotion, receipt status, and partial post-commit test                                                                |
 | Core recovery                 | Uncommitted staging cleanup, real sync/init/restore interruption tests, stale/live lock classification, and committed receipt/head/project reconciliation |
 | Restore-source reads          | Tree restore reconciliation removes files absent from the restored tree and recovery completes interrupted installs                                       |
+| Restore revision continuity   | Same-path edits after historical tree restore allocate above persisted node history without immutable-record collision                                    |
 | Extension host boundary       | `tests/unit/extension-host.test.ts`                                                                                                                       |
 | Adapter-only contracts absent | `tests/unit/prohibited-scope.test.ts`                                                                                                                     |
 

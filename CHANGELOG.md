@@ -1,5 +1,15 @@
 # Changelog
 
+## v1.0.1 - 2026-07-18
+
+### Fixed
+
+- Fixed post-restore same-path material revision allocation so edits after restoring an older tree commit create the next persisted node revision instead of colliding with historical immutable node-revision records.
+
+### Release
+
+- Updated npm, Python, release workflow, and release-note metadata for the v1.0.1 hotfix.
+
 ## v1.0.0 - 2026-07-17
 
 ### Added

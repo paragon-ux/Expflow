@@ -2,7 +2,7 @@
 
 **Phase:** Post-Gate D release closeout
 **Gate:** D — Hardened and Proven
-**Expflow version:** 1.0.0 release
+**Expflow version:** 1.0.1 release
 
 ---
 
@@ -464,7 +464,7 @@ git diff --check -- ':!docs/architecture/**'
 AGENTS.md                    — This file
 README.md                    — Project overview
 README_DEV.md                — Developer setup and validation
-package.json                 — Node package (1.0.0)
+package.json                 — Node package (1.0.1)
 tsconfig.json                — TypeScript configuration
 pyproject.toml               — Python package configuration
 
