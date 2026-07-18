@@ -9,7 +9,7 @@
 
 ## Reporting A Vulnerability
 
-Use GitHub Private Vulnerability Reporting for suspected vulnerabilities. If private vulnerability reporting is not enabled in repository settings, the owner must enable it before public release publication.
+Use GitHub Private Vulnerability Reporting for suspected vulnerabilities. Private vulnerability reporting is enabled for this repository and must remain enabled before public release publication.
 
 Do not open a public issue for a suspected vulnerability before maintainers approve disclosure. Include:
 

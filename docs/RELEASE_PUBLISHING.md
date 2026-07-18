@@ -15,17 +15,17 @@ Tag: v1.0.0
 
 ## Current Preflight Result
 
-As of the local preflight on 2026-07-17:
+As of the local preflight on 2026-07-18:
 
 - `origin/main` is `7b91cf71c464ba2610503d3e70ecef6277503370`.
-- Remote tag `v1.0.0` exists at `7b91cf71c464ba2610503d3e70ecef6277503370`.
-- GitHub Release `v1.0.0` exists at <https://github.com/paragon-ux/Expflow/releases/tag/v1.0.0>.
+- Remote tag `v1.0.0` is absent after stale-tag cleanup.
+- GitHub Release `v1.0.0` is absent.
 - `npm view expflow --json` returns registry 404, so npm package ownership is not proven by package metadata.
 - PyPI project `expflow-hooks` returns registry 404, so PyPI project ownership is not proven by package metadata and needs a pending Trusted Publisher.
-- GitHub environments API reports zero configured environments, so `release-npm` and `release-pypi` still need owner setup.
-- GitHub Private Vulnerability Reporting API reports `enabled: false`, so private vulnerability reporting still needs owner setup.
+- GitHub environments API reports `release-npm` and `release-pypi` configured with required reviewer `paragon-ux`.
+- GitHub Private Vulnerability Reporting API reports `enabled: true`.
 
-Because the GitHub Release already exists while public npm and PyPI publication are absent, release state is inconsistent with the final dual-registry sequence. Do not move or recreate `v1.0.0` without explicit owner authorization.
+The stale tag/release conflict is cleared. Do not recreate `v1.0.0` until PR #12 is merged, hosted CI is green on the exact merge commit, and npm/PyPI Trusted Publisher setup has been verified.
 
 ## npm Owner Actions
 
@@ -38,7 +38,7 @@ Before tagging or rerunning publication:
   - workflow filename: `release.yml`;
   - environment: `release-npm`;
   - allowed action: `npm publish`;
-- create the protected GitHub environment `release-npm` and require owner or maintainer approval;
+- approve the protected GitHub environment `release-npm` when the release workflow pauses;
 - after successful OIDC publication, restrict or disallow traditional publish tokens where appropriate;
 - revoke obsolete automation tokens.
 
@@ -60,16 +60,15 @@ Before tagging or rerunning publication:
   - repository: `Expflow`;
   - workflow: `release.yml`;
   - environment: `release-pypi`;
-- create the protected GitHub environment `release-pypi` and require owner or maintainer approval;
+- approve the protected GitHub environment `release-pypi` when the release workflow pauses;
 - do not create a long-lived PyPI API token.
 
 ## GitHub Owner Actions
 
 Before publication:
 
-- enable GitHub Private Vulnerability Reporting for suspected vulnerabilities;
-- create protected release environments `release-npm` and `release-pypi`;
-- add required reviewers to both environments;
+- verify GitHub Private Vulnerability Reporting remains enabled for suspected vulnerabilities;
+- verify protected release environments `release-npm` and `release-pypi` remain configured with required reviewer `paragon-ux`;
 - protect the `v1.0.0` tag or a matching release-tag pattern where repository settings permit it;
 - protect changes to `.github/workflows/release.yml` through normal branch review.
 

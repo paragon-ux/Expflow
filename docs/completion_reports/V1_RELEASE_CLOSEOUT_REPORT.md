@@ -2,39 +2,39 @@
 
 ## Result
 
-FAIL -- release or registry state is inconsistent
+PARTIAL -- repository revision complete; listed external publication steps remain
 
 ## Release Identity
 
-| Field                  | Value                                                                                      |
-| ---------------------- | ------------------------------------------------------------------------------------------ |
-| Release version        | `1.0.0`                                                                                    |
-| Main release commit    | `7b91cf71c464ba2610503d3e70ecef6277503370`                                                 |
-| Branch                 | `codex/v1-dual-registry-release-prep`                                                      |
-| Pull request           | [PR #12](https://github.com/paragon-ux/Expflow/pull/12)                                    |
-| Release classification | `release-state remediation required`                                                       |
-| Tag status             | Remote tag `v1.0.0` exists at `7b91cf71c464ba2610503d3e70ecef6277503370`                   |
-| GitHub Release status  | Existing final GitHub Release: <https://github.com/paragon-ux/Expflow/releases/tag/v1.0.0> |
-| Publish status         | npm and PyPI publication not verified                                                      |
+| Field                  | Value                                                   |
+| ---------------------- | ------------------------------------------------------- |
+| Release version        | `1.0.0`                                                 |
+| Main release commit    | `7b91cf71c464ba2610503d3e70ecef6277503370`              |
+| Branch                 | `codex/v1-dual-registry-release-prep`                   |
+| Pull request           | [PR #12](https://github.com/paragon-ux/Expflow/pull/12) |
+| Release classification | `dual-registry publication prep`                        |
+| Tag status             | Remote tag `v1.0.0` is absent after stale-tag cleanup   |
+| GitHub Release status  | No GitHub Release exists for `v1.0.0`                   |
+| Publish status         | npm and PyPI publication not verified                   |
 
-The repository code for v1.0.0 is on `main`, but the dual-registry release sequence is not complete. The current external state has a GitHub Release before verified npm and PyPI publication, which violates the final dual-registry publication order. This pass does not move tags, delete releases, publish packages, or introduce registry tokens.
+The repository revision for v1.0.0 dual-registry publication is prepared in PR #12. The stale `v1.0.0` tag and GitHub Release conflict is cleared, GitHub release environments are configured, and Private Vulnerability Reporting is enabled. Public npm and PyPI publication remains incomplete until the registry Trusted Publisher setup is verified, PR #12 is merged, the final `v1.0.0` tag is created on the exact merge commit, and the release workflow publishes and verifies both registries.
 
 ## Dual-Registry Preflight
 
-| Check                           | Result   | Evidence                                                                                     |
-| ------------------------------- | -------- | -------------------------------------------------------------------------------------------- |
-| Repository root                 | PASS     | `C:/Users/USER/Desktop/Frameworks/Expflow`                                                   |
-| Current branch                  | PASS     | `codex/v1-dual-registry-release-prep`                                                        |
-| Worktree                        | PASS     | Clean before release-prep edits                                                              |
-| `origin/main`                   | PASS     | `7b91cf71c464ba2610503d3e70ecef6277503370`                                                   |
-| Open pull requests              | PASS     | `gh pr list --state open` returned `[]` before this branch was created                       |
-| Remote tag `v1.0.0`             | CONFLICT | Tag exists at `7b91cf71c464ba2610503d3e70ecef6277503370`                                     |
-| GitHub Release `v1.0.0`         | CONFLICT | Final release exists before registries are verified                                          |
-| Hosted CI on `main`             | PASS     | Run `29618950830` succeeded for commit `7b91cf7`                                             |
-| npm package `expflow`           | BLOCKED  | `npm view expflow --json` returned registry 404; ownership is not proven by package metadata |
-| PyPI project `expflow-hooks`    | BLOCKED  | PyPI JSON returned 404; pending Trusted Publisher must be configured                         |
-| GitHub environments             | BLOCKED  | `gh api repos/paragon-ux/Expflow/environments` returned `total_count: 0`                     |
-| Private Vulnerability Reporting | BLOCKED  | `gh api repos/paragon-ux/Expflow/private-vulnerability-reporting` returned `enabled: false`  |
+| Check                           | Result  | Evidence                                                                                     |
+| ------------------------------- | ------- | -------------------------------------------------------------------------------------------- |
+| Repository root                 | PASS    | `C:/Users/USER/Desktop/Frameworks/Expflow`                                                   |
+| Current branch                  | PASS    | `codex/v1-dual-registry-release-prep`                                                        |
+| Worktree                        | PASS    | Clean before release-prep edits                                                              |
+| `origin/main`                   | PASS    | `7b91cf71c464ba2610503d3e70ecef6277503370`                                                   |
+| Open pull requests              | PASS    | PR #12 is open, targets `main`, and hosted checks are green at head `38f9651`                |
+| Remote tag `v1.0.0`             | PASS    | `git ls-remote --tags origin v1.0.0` returned no tag after stale-tag cleanup                 |
+| GitHub Release `v1.0.0`         | PASS    | `gh release view v1.0.0` returned `release not found`                                        |
+| Hosted CI on `main`             | PASS    | Run `29618950830` succeeded for commit `7b91cf7`                                             |
+| npm package `expflow`           | BLOCKED | `npm view expflow --json` returned registry 404; ownership is not proven by package metadata |
+| PyPI project `expflow-hooks`    | BLOCKED | PyPI JSON returned 404; pending Trusted Publisher must be configured                         |
+| GitHub environments             | PASS    | `release-npm` and `release-pypi` exist with required reviewer `paragon-ux`                   |
+| Private Vulnerability Reporting | PASS    | `gh api repos/paragon-ux/Expflow/private-vulnerability-reporting` returned `enabled: true`   |
 
 ## Release Workflow And Artifact Manifest
 
@@ -93,7 +93,7 @@ The repository code for v1.0.0 is on `main`, but the dual-registry release seque
 - `CHANGELOG.md` records v1.0.0 outcomes.
 - `docs/release_notes/GITHUB_RELEASE_NOTE_V1_0_0.md` provides standalone text for a GitHub release.
 - `docs/V1_COMPATIBILITY.md` records the v1 public compatibility promise.
-- `docs/RELEASE_PUBLISHING.md` records owner actions for npm Trusted Publishing, PyPI pending Trusted Publisher, protected release environments, and GitHub Private Vulnerability Reporting.
+- `docs/RELEASE_PUBLISHING.md` records completed GitHub release settings plus remaining npm Trusted Publishing and PyPI pending Trusted Publisher actions.
 - `.github/workflows/release.yml` builds once from `v1.0.0`, attests the exact artifacts, publishes through OIDC, and creates or verifies the GitHub Release only after npm and PyPI verify.
 - `SECURITY.md` directs suspected vulnerabilities to GitHub Private Vulnerability Reporting and keeps public issues for non-sensitive hardening requests.
 - `CONTRIBUTING.md` records branch, validation, architecture-source, and scope-boundary rules.
@@ -217,19 +217,18 @@ Devin review and README follow-up validation also passed:
 
 PR #7 hardening closure hosted checks were green at head `d1dd2ac925b219c50c7728963e908042793c7376`.
 
-PR #10 and PR #11 are merged. Hosted checks on `origin/main` commit `7b91cf7` passed in workflow run `29618950830`. PR #12 contains the dual-registry remediation branch; it has not been merged or tagged.
+PR #10 and PR #11 are merged. Hosted checks on `origin/main` commit `7b91cf7` passed in workflow run `29618950830`. PR #12 contains the dual-registry remediation branch and hosted checks are green at head `38f965148d78b80a3a38ab276cd5596dadd42004`; it has not been merged or tagged.
 
 ## Blockers And Release Risks
 
 The release is blocked for publication until these items are resolved:
 
-- Existing GitHub Release `v1.0.0` exists before verified npm and PyPI publication.
-- npm package ownership for `expflow` is not proven by package metadata because the package is absent.
+- npm package ownership and Trusted Publishing for `expflow` are not proven by package metadata because the package is absent.
 - PyPI project `expflow-hooks` is absent; a pending Trusted Publisher must be configured.
-- Protected GitHub environments `release-npm` and `release-pypi` are not configured.
-- GitHub Private Vulnerability Reporting is disabled.
-- `.github/workflows/release.yml` is prepared in PR #12 and must be reviewed and merged before an authorized release rerun.
+- `.github/workflows/release.yml` is prepared in PR #12 and must be reviewed, merged, and pass hosted CI on the exact merge commit before tagging.
+- The authorized `v1.0.0` tag must be created only on the validated merge commit.
+- The protected `release-npm` and `release-pypi` environments must be approved when the release workflow pauses.
 
 ## Handoff
 
-Expflow core remains v1.0.0-ready from a code and local-validation standpoint, but publication is not release-complete. Owner action is required before any tag movement, release replacement, npm publication, or PyPI publication.
+Expflow core remains v1.0.0-ready from a code and local-validation standpoint, and the stale tag/release conflict is cleared. Owner action remains required for npm Trusted Publishing, PyPI pending Trusted Publisher setup, PR #12 merge, final tag creation on the validated merge commit, environment approvals, and independent registry verification.
