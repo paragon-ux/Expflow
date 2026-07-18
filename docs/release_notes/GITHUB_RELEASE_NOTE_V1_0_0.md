@@ -38,9 +38,9 @@ The Python package is a hook scaffold and read-only architecture schema discover
 
 ## Validation And Provenance
 
-The release workflow builds npm and Python artifacts from the `v1.0.0` tag, verifies repository contracts and package behavior, checks Python distribution metadata, records checksums, publishes through registry trusted publishing, and attaches provenance attestations for the release artifacts.
+The release artifacts attached to the GitHub Release were downloaded from the public npm and PyPI registries after publication and verified by SHA-256 checksum. Public install checks passed for `expflow@1.0.0` and `expflow-hooks==1.0.0`.
 
-Detailed local release evidence is recorded in `docs/completion_reports/V1_RELEASE_CLOSEOUT_REPORT.md`.
+The GitHub Actions release run built, validated, uploaded, and attested release artifacts from the `v1.0.0` tag before registry verification encountered workflow-side timing/token handling failures. Detailed local release evidence is recorded in `docs/completion_reports/V1_RELEASE_CLOSEOUT_REPORT.md`.
 
 ## Compatibility
 

@@ -289,10 +289,6 @@ jobs:
             echo "Missing ${TARBALL}" >&2
             exit 1
           fi
-          if [[ -n "${NODE_AUTH_TOKEN:-}" ]]; then
-            echo "NODE_AUTH_TOKEN must not be set for Trusted Publishing" >&2
-            exit 1
-          fi
           node - <<'NODE'
           const fs = require('fs');
           const tarball = 'release-artifacts/npm/expflow-1.0.0.tgz';
@@ -302,6 +298,7 @@ jobs:
             echo "expflow@1.0.0 already exists; verifying metadata"
             PUBLISHED="already-published"
           else
+            unset NODE_AUTH_TOKEN
             npm publish "${TARBALL}" --access public --provenance
             PUBLISHED="published"
           fi
@@ -409,10 +406,24 @@ jobs:
           import tempfile
           import subprocess
           import sys
+          import time
+          import urllib.error
           import urllib.request
 
-          with urllib.request.urlopen("https://pypi.org/pypi/expflow-hooks/1.0.0/json", timeout=60) as response:
-              data = json.load(response)
+          url = "https://pypi.org/pypi/expflow-hooks/1.0.0/json"
+          last_error = None
+          for attempt in range(12):
+              try:
+                  with urllib.request.urlopen(url, timeout=60) as response:
+                      data = json.load(response)
+                  break
+              except urllib.error.HTTPError as exc:
+                  last_error = exc
+                  if exc.code != 404 or attempt == 11:
+                      raise
+                  time.sleep(10)
+          else:
+              raise last_error
           info = data.get("info", {})
           if info.get("name") != "expflow-hooks":
               raise SystemExit("Unexpected PyPI project name")

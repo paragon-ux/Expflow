@@ -1,6 +1,6 @@
 # Release Publishing
 
-**Status:** owner-action checklist for v1.0.0 registry publication
+**Status:** v1.0.0 published; registry maintenance checklist
 
 Expflow v1.0.0 publication uses short-lived OIDC credentials through registry Trusted Publishing. Do not add persistent npm or PyPI tokens to repository files, workflow secrets, logs, artifacts, or completion reports.
 
@@ -13,29 +13,27 @@ Workflow: release.yml
 Tag: v1.0.0
 ```
 
-## Current Preflight Result
+## Current Publication Result
 
-As of the local preflight on 2026-07-18:
+As of the local publication check on 2026-07-18:
 
-- `origin/main` includes the merged dual-registry release workflow, package-only quickstart, and release-status refreshes.
-- The latest validated package-readiness commit is `c3ed67613ac951f5199081ac1f64fff546c06165`; later status-only documentation refreshes do not change packaged npm or PyPI artifact bytes.
-- Hosted CI run `29623452896` passed on `c3ed67613ac951f5199081ac1f64fff546c06165`.
-- Remote tag `v1.0.0` is absent after stale-tag cleanup.
-- GitHub Release `v1.0.0` is absent.
-- `npm view expflow --json` returns registry 404, so npm package ownership is not proven by package metadata.
-- `npm whoami` returns `ENEEDAUTH`, so this machine cannot verify npm owner-side Trusted Publishing state.
-- PyPI project `expflow-hooks` returns registry 404, so PyPI project ownership is not proven by package metadata and needs a pending Trusted Publisher.
+- Remote tag `v1.0.0` exists at commit `605d249f7e09adcaecc2a102f2fb874ef460a6fa`.
+- GitHub Release `v1.0.0` exists at <https://github.com/paragon-ux/Expflow/releases/tag/v1.0.0>.
+- `npm view expflow@1.0.0` verifies public package `expflow` version `1.0.0` under the MIT license.
+- A clean external npm install of `expflow@1.0.0` reports version `1.0.0`.
+- PyPI JSON verifies public package `expflow-hooks` version `1.0.0` with both sdist and wheel files.
+- A clean external Python install of `expflow-hooks==1.0.0` imports `expflow_hooks` and reports version `1.0.0`.
 - GitHub environments API reports `release-npm` and `release-pypi` configured with required reviewer `paragon-ux`.
 - GitHub Private Vulnerability Reporting API reports `enabled: true`.
 
-The stale tag/release conflict is cleared. Do not create `v1.0.0` until npm/PyPI Trusted Publisher setup has been verified and hosted CI is green on the exact intended tag commit.
+The first `v1.0.0` release workflow run built, validated, uploaded, and attested release artifacts, then published PyPI successfully. The run failed after publication because npm verification rejected an ambient `NODE_AUTH_TOKEN` and PyPI verification queried the version endpoint before propagation completed. Public registry installation checks and the GitHub Release assets now verify the published release.
 
-## npm Owner Actions
+## npm Owner Maintenance
 
-Before tagging or rerunning publication:
+For future releases:
 
-- verify account or organization ownership for the public npm package name `expflow`;
-- configure npm Trusted Publishing for GitHub Actions:
+- keep account or organization ownership for the public npm package name `expflow`;
+- keep npm Trusted Publishing configured for GitHub Actions:
   - owner or user: `paragon-ux`;
   - repository: `Expflow`;
   - workflow filename: `release.yml`;
@@ -45,19 +43,12 @@ Before tagging or rerunning publication:
 - after successful OIDC publication, restrict or disallow traditional publish tokens where appropriate;
 - revoke obsolete automation tokens.
 
-If npm cannot establish Trusted Publishing for an unpublished `expflow` package, stop for an owner decision. Do not rename the package or add token fallback logic in `release.yml`.
+## PyPI Owner Maintenance
 
-Acceptable owner-controlled bootstrap choices are:
+For future releases:
 
-- establish the package through an npm-supported trusted or staged first-publication path; or
-- perform a one-time separately authorized bootstrap publication, immediately configure Trusted Publishing, restrict token access, and revoke any bootstrap credential.
-
-## PyPI Owner Actions
-
-Before tagging or rerunning publication:
-
-- create or verify project `expflow-hooks`;
-- for a new project, create a pending PyPI Trusted Publisher:
+- keep project `expflow-hooks` under the expected owner;
+- keep PyPI Trusted Publishing configured:
   - project: `expflow-hooks`;
   - owner: `paragon-ux`;
   - repository: `Expflow`;
@@ -82,7 +73,7 @@ The release workflow builds npm and Python artifacts once from the tag commit, v
 If one registry succeeds and the other fails:
 
 - do not delete or move the tag;
-- do not create the GitHub Release yet;
+- do not create the GitHub Release unless both public registry artifacts are independently verified;
 - correct only the failing registry configuration;
 - rerun failed jobs;
 - treat an existing matching `1.0.0` registry version as verified success;
