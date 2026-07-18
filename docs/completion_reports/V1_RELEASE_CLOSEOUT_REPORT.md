@@ -6,32 +6,33 @@ PARTIAL -- repository revision complete; listed external publication steps remai
 
 ## Release Identity
 
-| Field                  | Value                                                   |
-| ---------------------- | ------------------------------------------------------- |
-| Release version        | `1.0.0`                                                 |
-| Main release commit    | `7b91cf71c464ba2610503d3e70ecef6277503370`              |
-| Branch                 | `codex/v1-dual-registry-release-prep`                   |
-| Pull request           | [PR #12](https://github.com/paragon-ux/Expflow/pull/12) |
-| Release classification | `dual-registry publication prep`                        |
-| Tag status             | Remote tag `v1.0.0` is absent after stale-tag cleanup   |
-| GitHub Release status  | No GitHub Release exists for `v1.0.0`                   |
-| Publish status         | npm and PyPI publication not verified                   |
+| Field                  | Value                                                                                                            |
+| ---------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| Release version        | `1.0.0`                                                                                                          |
+| Final release commit   | Pending final tag                                                                                                |
+| Latest validated main  | `c3ed67613ac951f5199081ac1f64fff546c06165`                                                                       |
+| Pull requests          | [PR #12](https://github.com/paragon-ux/Expflow/pull/12), [PR #13](https://github.com/paragon-ux/Expflow/pull/13) |
+| Release classification | `dual-registry publication prep`                                                                                 |
+| Tag status             | Remote tag `v1.0.0` is absent after stale-tag cleanup                                                            |
+| GitHub Release status  | No GitHub Release exists for `v1.0.0`                                                                            |
+| Publish status         | npm and PyPI publication not verified                                                                            |
 
-The repository revision for v1.0.0 dual-registry publication is prepared in PR #12. The stale `v1.0.0` tag and GitHub Release conflict is cleared, GitHub release environments are configured, and Private Vulnerability Reporting is enabled. Public npm and PyPI publication remains incomplete until the registry Trusted Publisher setup is verified, PR #12 is merged, the final `v1.0.0` tag is created on the exact merge commit, and the release workflow publishes and verifies both registries.
+The repository revision for v1.0.0 dual-registry publication is merged to `main`. The stale `v1.0.0` tag and GitHub Release conflict is cleared, GitHub release environments are configured, Private Vulnerability Reporting is enabled, and the public README quickstart now requires the package rather than developer setup. Public npm and PyPI publication remains incomplete until the registry Trusted Publisher setup is verified, the final `v1.0.0` tag is created on the exact intended release commit, and the release workflow publishes and verifies both registries.
 
 ## Dual-Registry Preflight
 
 | Check                           | Result  | Evidence                                                                                     |
 | ------------------------------- | ------- | -------------------------------------------------------------------------------------------- |
 | Repository root                 | PASS    | `C:/Users/USER/Desktop/Frameworks/Expflow`                                                   |
-| Current branch                  | PASS    | `codex/v1-dual-registry-release-prep`                                                        |
-| Worktree                        | PASS    | Clean before release-prep edits                                                              |
-| `origin/main`                   | PASS    | `7b91cf71c464ba2610503d3e70ecef6277503370`                                                   |
-| Open pull requests              | PASS    | PR #12 is open, targets `main`, and hosted checks are green at head `38f9651`                |
+| Current branch                  | PASS    | `codex/release-status-final-preflight` for this status refresh                               |
+| Worktree                        | PASS    | Clean before release-status edits                                                            |
+| `origin/main`                   | PASS    | `c3ed67613ac951f5199081ac1f64fff546c06165`                                                   |
+| Open pull requests              | PASS    | No open PRs before this status-refresh branch                                                |
 | Remote tag `v1.0.0`             | PASS    | `git ls-remote --tags origin v1.0.0` returned no tag after stale-tag cleanup                 |
 | GitHub Release `v1.0.0`         | PASS    | `gh release view v1.0.0` returned `release not found`                                        |
-| Hosted CI on `main`             | PASS    | Run `29618950830` succeeded for commit `7b91cf7`                                             |
+| Hosted CI on `main`             | PASS    | Run `29623452896` succeeded for commit `c3ed676`                                             |
 | npm package `expflow`           | BLOCKED | `npm view expflow --json` returned registry 404; ownership is not proven by package metadata |
+| npm owner authentication        | BLOCKED | `npm whoami` returned `ENEEDAUTH`; this machine cannot verify owner-side Trusted Publishing  |
 | PyPI project `expflow-hooks`    | BLOCKED | PyPI JSON returned 404; pending Trusted Publisher must be configured                         |
 | GitHub environments             | PASS    | `release-npm` and `release-pypi` exist with required reviewer `paragon-ux`                   |
 | Private Vulnerability Reporting | PASS    | `gh api repos/paragon-ux/Expflow/private-vulnerability-reporting` returned `enabled: true`   |
@@ -42,13 +43,13 @@ The repository revision for v1.0.0 dual-registry publication is prepared in PR #
 | --------------- | ------------------------------------------------------------------ |
 | Workflow file   | `.github/workflows/release.yml`                                    |
 | Workflow digest | `e8018fba22769ff67d8200ff57ab15b5d9bd8b8baeeff602eaec8c240401b1a5` |
-| Workflow run ID | Not run; workflow is prepared on an unmerged branch                |
+| Workflow run ID | Not run; no release tag has been pushed                            |
 
 | Artifact                               | SHA-256                                                            | GitHub     | npm/PyPI      | Verified                                      |
 | -------------------------------------- | ------------------------------------------------------------------ | ---------- | ------------- | --------------------------------------------- |
-| `expflow-1.0.0.tgz`                    | `6e659ef1adcc6af71e2e750c2c84803c7a0c066d72a716ccd78919ad666bd911` | Local only | Not published | Exact npm tarball install verifier passed     |
-| `expflow_hooks-1.0.0.tar.gz`           | `eb6b14ca03c064da549f6b834652ec4c5e48a41a4d90c5ab16da8ec3a60cc4b8` | Local only | Not published | `twine check` passed                          |
-| `expflow_hooks-1.0.0-py3-none-any.whl` | `18211976fdf5436c659c73c7cd8772fc59c3c194ef74f5a4164553be2fc3160c` | Local only | Not published | `twine check` and exact wheel verifier passed |
+| `expflow-1.0.0.tgz`                    | `89cb3c50703140902acd0b0061d34b31c6002935dc3462d62b1ccb1363adc8ae` | Local only | Not published | Exact npm tarball install verifier passed     |
+| `expflow_hooks-1.0.0.tar.gz`           | `9046448f87fb01f6f0a7b13c2935f8e0125239a95f1831187c5ad66971367417` | Local only | Not published | `twine check` passed                          |
+| `expflow_hooks-1.0.0-py3-none-any.whl` | `12208993d0dc71dd404d3e4c5f466600201d942d2c5fc6b7fc2a647cf7995434` | Local only | Not published | `twine check` and exact wheel verifier passed |
 | `release-manifest.json`                | Pending                                                            | Pending    | Not published | Generated by release workflow                 |
 | `SHA256SUMS`                           | Pending                                                            | Pending    | Not published | Generated by release workflow                 |
 
@@ -88,7 +89,7 @@ The repository revision for v1.0.0 dual-registry publication is prepared in PR #
 
 ## Documentation Changes
 
-- `README.md` now presents a CI badge, Expflow v1.0.0 release scope, quickstart, workflow, command table, delegated boundaries, repository map, validation, documentation links, and MIT license.
+- `README.md` now presents a CI badge, Expflow v1.0.0 release scope, package-only quickstart, workflow, command table, delegated boundaries, repository map, validation, documentation links, and MIT license.
 - `README_DEV.md` now presents v1 release setup and validation.
 - `CHANGELOG.md` records v1.0.0 outcomes.
 - `docs/release_notes/GITHUB_RELEASE_NOTE_V1_0_0.md` provides standalone text for a GitHub release.
@@ -213,22 +214,32 @@ Devin review and README follow-up validation also passed:
 | `npm run package:verify`                                    |         0 | PASS   | npm package installs outside checkout and reports `1.0.0`.                                    |
 | `git diff --check -- ':!docs/architecture/**'`              |         0 | PASS   | No whitespace errors outside immutable architecture sources.                                  |
 
+Package-only quickstart and final-preflight validation also passed:
+
+| Command                                                                              | Exit code | Result | Evidence                                                                  |
+| ------------------------------------------------------------------------------------ | --------: | ------ | ------------------------------------------------------------------------- |
+| `npm run format:check`                                                               |         0 | PASS   | README quickstart and release-status docs use Prettier style.             |
+| `git diff --check -- ':!docs/architecture/**'`                                       |         0 | PASS   | No whitespace errors outside immutable architecture sources.              |
+| `npx tsx tests/contracts/package-verify.ts --tarball <README-inclusive release tgz>` |         0 | PASS   | Exact locally built npm tarball installs outside checkout and reports v1. |
+| `python tests/contracts/verify_python_wheel.py --wheel <README-inclusive wheel>`     |         0 | PASS   | Exact locally built wheel imports outside checkout and reports v1.        |
+| `python -m twine check <README-inclusive Python distributions>`                      |         0 | PASS   | README-inclusive Python sdist and wheel metadata passed.                  |
+
 ## Hosted CI Evidence
 
 PR #7 hardening closure hosted checks were green at head `d1dd2ac925b219c50c7728963e908042793c7376`.
 
-PR #10 and PR #11 are merged. Hosted checks on `origin/main` commit `7b91cf7` passed in workflow run `29618950830`. PR #12 contains the dual-registry remediation branch and hosted checks are green at head `38f965148d78b80a3a38ab276cd5596dadd42004`; it has not been merged or tagged.
+PR #10 and PR #11 are merged. PR #12 merged at `4482e2e6b3a133fd1a18c24b6150e7269ee31310`. PR #13 merged at `c3ed67613ac951f5199081ac1f64fff546c06165` and simplified the public quickstart to package installation plus CLI usage. Hosted CI run `29623452896` passed on `c3ed67613ac951f5199081ac1f64fff546c06165`.
 
 ## Blockers And Release Risks
 
 The release is blocked for publication until these items are resolved:
 
 - npm package ownership and Trusted Publishing for `expflow` are not proven by package metadata because the package is absent.
+- npm owner-side state cannot be verified from this machine because `npm whoami` returns `ENEEDAUTH`.
 - PyPI project `expflow-hooks` is absent; a pending Trusted Publisher must be configured.
-- `.github/workflows/release.yml` is prepared in PR #12 and must be reviewed, merged, and pass hosted CI on the exact merge commit before tagging.
-- The authorized `v1.0.0` tag must be created only on the validated merge commit.
+- The authorized `v1.0.0` tag must be created only on the validated intended release commit.
 - The protected `release-npm` and `release-pypi` environments must be approved when the release workflow pauses.
 
 ## Handoff
 
-Expflow core remains v1.0.0-ready from a code and local-validation standpoint, and the stale tag/release conflict is cleared. Owner action remains required for npm Trusted Publishing, PyPI pending Trusted Publisher setup, PR #12 merge, final tag creation on the validated merge commit, environment approvals, and independent registry verification.
+Expflow core remains v1.0.0-ready from a code and local-validation standpoint, and the stale tag/release conflict is cleared. Owner action remains required for npm Trusted Publishing or owner-authorized bootstrap, PyPI pending Trusted Publisher setup, final tag creation on the validated intended release commit, environment approvals, and independent registry verification.
