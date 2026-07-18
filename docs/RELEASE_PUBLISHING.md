@@ -17,15 +17,18 @@ Tag: v1.0.0
 
 As of the local preflight on 2026-07-18:
 
-- `origin/main` is `7b91cf71c464ba2610503d3e70ecef6277503370`.
+- `origin/main` is `c3ed67613ac951f5199081ac1f64fff546c06165`.
+- PR #12 and PR #13 are merged; the latest validated package-readiness commit is `c3ed67613ac951f5199081ac1f64fff546c06165`.
+- Hosted CI run `29623452896` passed on `c3ed67613ac951f5199081ac1f64fff546c06165`.
 - Remote tag `v1.0.0` is absent after stale-tag cleanup.
 - GitHub Release `v1.0.0` is absent.
 - `npm view expflow --json` returns registry 404, so npm package ownership is not proven by package metadata.
+- `npm whoami` returns `ENEEDAUTH`, so this machine cannot verify npm owner-side Trusted Publishing state.
 - PyPI project `expflow-hooks` returns registry 404, so PyPI project ownership is not proven by package metadata and needs a pending Trusted Publisher.
 - GitHub environments API reports `release-npm` and `release-pypi` configured with required reviewer `paragon-ux`.
 - GitHub Private Vulnerability Reporting API reports `enabled: true`.
 
-The stale tag/release conflict is cleared. Do not recreate `v1.0.0` until PR #12 is merged, hosted CI is green on the exact merge commit, and npm/PyPI Trusted Publisher setup has been verified.
+The stale tag/release conflict is cleared. Do not create `v1.0.0` until npm/PyPI Trusted Publisher setup has been verified and hosted CI is green on the exact intended tag commit.
 
 ## npm Owner Actions
 
