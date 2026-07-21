@@ -11,6 +11,7 @@
 - Implementation checkpoint: `c6ad308700f66eab784fddebda1a823846f6855f` (`Complete Phase 1 CLI UX checkpoint`).
 - Evidence closeout: `5a84ef43fd2614303c030ce757d74bd22ea029b3` (`Close out Phase 1 evidence`).
 - Precision-review remediation: `a4796b830b4d755b179e9f0591592d7f925ec46b` (`Resolve Phase 1 precision review finding`).
+- Independent-review remediation: pending commit after `011de6b1c69e0fe0fecbb68395d799c0b8976101`.
 - Final documentation state: report, review evidence, and validation updated after remediation.
 
 ## Scope delivered
@@ -22,6 +23,7 @@ Phase 1 preserved the four ordinary commands and improved only the ordinary CLI/
 - `restore --dry-run` now previews path effects without mutation.
 - `restore` now refuses conflicting unrecorded drift by default, including node-restore target deletion, and supports explicit `--force` override.
 - Per-command help is non-mutating and documents Phase 1 options.
+- Help documents the exit-code contract: status query success `0`, operational failure `1`, and usage failure `2`.
 - Unsupported options and malformed usage fail with exit `2`.
 - Runtime errors use remediation-first human output and JSON error objects under `--json`.
 - Machine output compatibility is additive: existing status and receipt fields remain unchanged.
@@ -43,12 +45,13 @@ No GUI, Phase 2+ feature, fifth ordinary command, immutable architecture edit, o
 
 See `PHASE_01_FINDING_INVENTORY.md`.
 
-All active Phase 1 findings F1-F12, F14, and F15 are implemented and covered by focused tests or package verification. F13 remains historical and not reproduced on v1.0.1.
+All active Phase 1 findings F1-F12 and F14-F16 are implemented and covered by focused tests or package verification. F13 remains historical and not reproduced on v1.0.1.
 
 Precision review evidence:
 
 - Initial review: `PHASE_01_PRECISION_REVIEW_INITIAL.md` returned `BLOCK` with F15.
 - Re-review: `PHASE_01_PRECISION_REVIEW_REREVIEW.md` returned `PASS` with no verified findings.
+- Independent review at `011de6b1c69e0fe0fecbb68395d799c0b8976101` returned `BLOCK` with F16, missing exit-code help documentation.
 
 ## Evidence
 
@@ -63,6 +66,7 @@ The after transcripts show:
 - `sync --dry-run` is non-mutating and labels provisional identities;
 - unsupported `status --dry-run` exits `2`;
 - per-command `sync --help` exits `0` without executing;
+- help documents status query success `0`, operational failure `1`, and usage failure `2`;
 - `restore --dry-run` previews conflicting drift without mutation;
 - default `restore` refuses conflicting drift with exit `1`;
 - `restore --force` overwrites explicitly and records a forward commit.
@@ -84,6 +88,9 @@ The after transcripts show:
 | Inline `npx tsx` node-restore deletion reproduction                                                                                                | `a4796b830b4d755b179e9f0591592d7f925ec46b`                                         |         0 | PASS - plan requires force, default restore rejects with `restore_conflict`, explicit overwrite commits |
 | `npx vitest run tests/unit/restore-safety.test.ts`                                                                                                 | `a4796b830b4d755b179e9f0591592d7f925ec46b`                                         |         0 | PASS - 8 tests                                                                                          |
 | `npm run validate`                                                                                                                                 | staged remediation state before `a4796b830b4d755b179e9f0591592d7f925ec46b`         |         0 | PASS - 17 test files, 143 tests, contracts, registries, schemas, fixtures, build, package verify        |
+| `npx vitest run tests/unit/cli-ux.test.ts`                                                                                                         | F16 remediation worktree                                                           |         0 | PASS - 6 tests, including help exit-code assertions                                                     |
+| `npm run package:verify`                                                                                                                           | F16 remediation worktree                                                           |         0 | PASS - installed package help includes exit-code assertions                                             |
+| `npm run typecheck`                                                                                                                                | F16 remediation worktree                                                           |         0 | PASS                                                                                                    |
 
 ## Scope audit
 
@@ -96,6 +103,6 @@ The after transcripts show:
 
 ## Handoff state
 
-At report completion, implementation checkpoint `c6ad308700f66eab784fddebda1a823846f6855f`, evidence closeout `5a84ef43fd2614303c030ce757d74bd22ea029b3`, and precision-review remediation `a4796b830b4d755b179e9f0591592d7f925ec46b` are committed. The precision re-review returns `PASS`.
+At report completion, implementation checkpoint `c6ad308700f66eab784fddebda1a823846f6855f`, evidence closeout `5a84ef43fd2614303c030ce757d74bd22ea029b3`, and precision-review remediation `a4796b830b4d755b179e9f0591592d7f925ec46b` are committed. Independent review at `011de6b1c69e0fe0fecbb68395d799c0b8976101` found F16; this report records the in-progress remediation and requires independent re-review before Phase 1 acceptance.
 
 Next authorized action after accepting this report: select Phase 2 according to `docs/internal/BUILD_WEEK_WORKFLOW_CURRENT.md`.

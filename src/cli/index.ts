@@ -35,6 +35,11 @@ GLOBAL OPTIONS
 Run "expflow <command> --help" for command-specific options.
 Gate B implements local material-core behavior only. Adapter inspection,
 change cursors, request idempotency, and reconciliation are not core commands.
+
+EXIT CODES
+  0  Success, including uninitialized status queries
+  1  Operational mutation or runtime failure
+  2  Usage failure, unknown command, or unsupported option
 `;
 
 const COMMAND_HELP: Record<string, string> = {
@@ -42,6 +47,11 @@ const COMMAND_HELP: Record<string, string> = {
   expflow init [--root <path>] [--json]
 
 Initializes a new Expflow project and commits the first project version.
+
+EXIT CODES
+  0  Project initialized
+  1  Operational failure, including an already initialized project
+  2  Usage failure or unsupported option
 `,
   restore: `USAGE
   expflow restore <tree:<tree_revision_id>|node:<node_id>@<revision>:<path>> [options]
@@ -53,6 +63,11 @@ OPTIONS
                    Restore a node reference to a different path
   --root <path>     Project root
   --json            Print machine-readable JSON
+
+EXIT CODES
+  0  Preview or restore completed
+  1  Operational failure, including restore conflict or missing reference
+  2  Usage failure or unsupported option
 `,
   status: `USAGE
   expflow status [options]
@@ -63,6 +78,11 @@ OPTIONS
   --node-history <path>  List node revisions for a tracked path
   --root <path>          Project root
   --json                 Print machine-readable JSON
+
+EXIT CODES
+  0  Status query completed, including uninitialized roots
+  1  Operational runtime failure
+  2  Usage failure or unsupported option
 `,
   sync: `USAGE
   expflow sync [options]
@@ -75,6 +95,11 @@ OPTIONS
   --replace-node <path>  Replace a node identity for a changed path
   --root <path>          Project root
   --json                 Print machine-readable JSON
+
+EXIT CODES
+  0  Preview or sync completed
+  1  Operational failure, including stale expected head or lock failure
+  2  Usage failure or unsupported option
 `,
 };
 

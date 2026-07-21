@@ -68,10 +68,30 @@ describe('ordinary CLI UX', () => {
   it('provides command-specific help without executing the command', () => {
     const root = tempProject();
     try {
+      const topLevel = runCli(['--help']);
+      expectExit(topLevel, 0);
+      expect(topLevel.stdout).toContain('EXIT CODES');
+      expect(topLevel.stdout).toContain('0  Success, including uninitialized status queries');
+      expect(topLevel.stdout).toContain('1  Operational mutation or runtime failure');
+      expect(topLevel.stdout).toContain('2  Usage failure, unknown command, or unsupported option');
+
       const result = runCli(['init', '--root', root, '--help']);
       expectExit(result, 0);
       expect(result.stdout).toContain('expflow init');
       expect(result.stdout).toContain('commits the first project version');
+      expect(result.stdout).toContain('EXIT CODES');
+
+      const statusHelp = runCli(['status', '--root', root, '--help']);
+      expectExit(statusHelp, 0);
+      expect(statusHelp.stdout).toContain(
+        '0  Status query completed, including uninitialized roots',
+      );
+      expect(statusHelp.stdout).toContain('1  Operational runtime failure');
+      expect(statusHelp.stdout).toContain('2  Usage failure or unsupported option');
+
+      const restoreHelp = runCli(['restore', '--root', root, '--help']);
+      expectExit(restoreHelp, 0);
+      expect(restoreHelp.stdout).toContain('1  Operational failure, including restore conflict');
       expect(runCli(['status', '--root', root, '--json']).stdout).toContain(
         '"working_tree_state": "uninitialized"',
       );
