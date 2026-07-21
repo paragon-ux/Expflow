@@ -7,6 +7,7 @@
 **Integration base:** `43db9b2dd55731282c967620406191fcebfba843`
 **Phase branch:** `feat/build-week-phase-02-gui-foundation`
 **Candidate head:** `f148ecee3646da889f69dde3eff35e8f9235c8a7`
+**Remediation head:** `895e681f71630c39b14e6dd378c74c5667ae5bb6`
 
 ## Runtime versions
 
@@ -38,9 +39,9 @@ Phase 2 establishes the first local Expflow GUI client over documented applicati
 
 ## Phase review finding ledger
 
-| ID  | Status                       | Disposition                                                     | Evidence                                                                                                                                                                                                                                                                                                                  |
-| --- | ---------------------------- | --------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| F1  | fixed pending closure review | GUI sync execution was not bound to the previewed material head | Bridge sync execution now requires `expectedHead`; browser sync execution stores the last preview and sends `expectedHead: lastSyncPlan.previous_head`; focused regression covers missing-preview refusal and stale-head refusal after an intervening sync. Focused GUI tests and full validation pass after remediation. |
+| ID  | Status                       | Disposition                                                     | Evidence                                                                                                                                                                                                                                                                                                                                                                       |
+| --- | ---------------------------- | --------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| F1  | fixed pending closure review | GUI sync execution was not bound to the previewed material head | Fixed at `895e681f71630c39b14e6dd378c74c5667ae5bb6`. Bridge sync execution now requires `expectedHead`; browser sync execution stores the last preview and sends `expectedHead: lastSyncPlan.previous_head`; focused regression covers missing-preview refusal and stale-head refusal after an intervening sync. Focused GUI tests and full validation pass after remediation. |
 
 ## Delivered surfaces
 
