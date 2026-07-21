@@ -5,6 +5,7 @@ node_modules/
 dist/
 package-lock.json
 docs/architecture/
+docs/releases/
 docs/V2_3_REVIEW_RESOLUTION.md
 docs/CURRENT_STATUS_MATRIX.md
 docs/orientation/

@@ -1,0 +1,69 @@
+# Config Reference Skill Outcome Test Report
+
+## Result
+
+GO -- config-reference skill drift corrections completed.
+
+## Scope
+
+This report covers the skill and configuration drift check requested after the config-reference reconciliation closeout. It records the problem statements, required inference, corrections, and outcome tests for the repository-local Expflow skills and release workflow.
+
+The work used:
+
+- `.agents/skills/config-reference-reconciliation/SKILL.md`
+- `C:\Users\USER\.codex\skills\config-reference-reconciliation-manager\SKILL.md`
+- `AGENTS.md`
+- `docs/internal/CONFIG_REFERENCE_RECONCILIATION.md`
+- staged repository checker output
+- path-resolution and stale-reference searches over `.agents/skills` and `.github`
+
+## Problem Statements
+
+| ID  | Problem statement                                                                            | Details                                                                                                                                                                                                                                                                                                                                             | Impact                                                                                                    | Correction                                                                                                                                                                                                                         | Outcome test                                                                                                    |
+| --- | -------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------- |
+| P1  | Expflow domain skills had no stable current paths for required documents.                    | The skills referenced documents by bare names such as `EXPFLOW_WORKFLOW_CURRENT.md`, `Note-On-Architecture.md`, and `V2_3_ARCHITECTURE_DELTA.md`. After Build Week activation, those names require explicit placement because current governance now lives under `docs/internal/` while immutable v1 architecture lives under `docs/architecture/`. | Agents had to infer where required reading lived before using the skills.                                 | Updated the five domain skills to name active `docs/internal/...` controls first, then historical or immutable `docs/architecture/...` sources with full paths.                                                                    | Path-resolution script reported `All referenced docs paths resolve.`                                            |
+| P2  | Skills still referenced moved legacy root-level docs.                                        | The domain skills pointed at files such as `docs/DATA_MODEL.md`, `docs/SECURITY_MODEL.md`, `docs/WORKFLOW_AND_PROJECTION_MODEL.md`, and `docs/ARCHITECTURE_DECISIONS.md`. Those files were moved out of active `docs/` during the freeze/overlay and now exist only in the frozen v1.0.1 archive.                                                   | Required reading could fail or, worse, encourage recreating duplicate active documents.                   | Retargeted historical v1 support references to `docs/releases/v1.0.1/files/docs/...`.                                                                                                                                              | Stale-reference search found no remaining moved-document references in `.agents/skills` or `.github`.           |
+| P3  | Skills did not distinguish active Build Week authority from historical v1 workflow evidence. | The skills treated `EXPFLOW_WORKFLOW_CURRENT.md` as the workflow source without making clear that current execution authority is `docs/internal/BUILD_WEEK_WORKFLOW_CURRENT.md` and that `docs/architecture/EXPFLOW_WORKFLOW_CURRENT.md` is historical v1 architecture evidence.                                                                    | Agents could incorrectly follow historical Gate A-D sequencing instead of current Build Week controls.    | Added active internal workflow, status matrix, and glossary before architecture workflow sources in required-reading order.                                                                                                        | Stale-reference search found no bare `Read in order: AGENTS.md, EXPFLOW_WORKFLOW_CURRENT` entries.              |
+| P4  | One stale support reference had no replacement target.                                       | `docs/CODEX_BUILD_PLAN.md` was referenced by the testing/security/migration skill but no matching active or frozen path was found in the repository.                                                                                                                                                                                                | Keeping the reference would require agents to infer, search repeatedly, or invent a replacement.          | Removed the unresolved `docs/CODEX_BUILD_PLAN.md` reference instead of fabricating a target.                                                                                                                                       | Path-resolution script passed; stale-reference search found no unresolved `docs/CODEX_BUILD_PLAN.md` reference. |
+| P5  | Some important references were outside marked config-docref enforcement.                     | The stale skill references were unmarked, so `npm run check:config-references` could pass while those operational references still drifted.                                                                                                                                                                                                         | The deterministic checker correctly passed its governed scope but did not prove every skill path current. | Used the global manager skill's drift-checking role to run targeted stale-reference and path-resolution checks. Did not mark the old support references as governed because that would create a broader enforcement-policy change. | `npm run check:config-references` passed, and the supplemental stale-reference search passed.                   |
+| P6  | Release workflow still used the pre-freeze release-note path.                                | `.github/workflows/release.yml` invoked GitHub release creation/editing with `--notes-file docs/release_notes/GITHUB_RELEASE_NOTE_V1_0_1.md`, but the release note now lives under `docs/releases/v1.0.1/files/docs/release_notes/`.                                                                                                                | A release job could fail after the documentation freeze because the notes file no longer resolves.        | Updated both release workflow references to `docs/releases/v1.0.1/files/docs/release_notes/GITHUB_RELEASE_NOTE_V1_0_1.md`.                                                                                                         | Path-resolution script passed for `.github/workflows/release.yml`.                                              |
+| P7  | Domain skills had previously needed discovery metadata.                                      | The edited skill diffs include YAML frontmatter additions with `name` and `description`. Without that metadata, Codex skill triggering depends on external registration or manual invocation rather than the skill's own canonical metadata.                                                                                                        | Skills were harder to discover and activate predictably.                                                  | Retained the frontmatter additions and validated all five edited domain skills.                                                                                                                                                    | `quick_validate.py` reported `Skill is valid!` for all five edited domain skills.                               |
+
+## Inference Required
+
+The corrections required limited path/provenance inference:
+
+| Inference                                                                                    | Source used                                                                                                      | Decision                                                                                                                                                          |
+| -------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Current execution authority should precede historical workflow sources.                      | `AGENTS.md` source-of-truth order and Build Week activation gate.                                                | Put `docs/internal/BUILD_WEEK_WORKFLOW_CURRENT.md`, `docs/internal/CURRENT_STATUS_MATRIX.md`, and `docs/internal/GLOSSARY.md` before architecture workflow files. |
+| Historical v1 workflow source remains available but is not current Build Week authority.     | `AGENTS.md`, `docs/internal/BUILD_WEEK_WORKFLOW_CURRENT.md`, and `docs/README.md`.                               | Use `docs/architecture/EXPFLOW_WORKFLOW_CURRENT.md` only as architecture/historical context.                                                                      |
+| Legacy model/support documents should resolve to frozen v1.0.1 copies, not active root docs. | User instruction to fully move docs plus active docs layout and `docs/releases/v1.0.1/files/docs/...` inventory. | Retarget support references to the frozen release archive.                                                                                                        |
+| `docs/CODEX_BUILD_PLAN.md` should not be replaced by guesswork.                              | Repository file inventory showed no matching active or frozen file.                                              | Remove the unresolved reference.                                                                                                                                  |
+| Stale references in unmarked skill prose still matter.                                       | Global manager skill says it may diagnose drift but repository checker governs only marked references.           | Add supplemental targeted searches without expanding marker policy.                                                                                               |
+
+## Files Corrected
+
+- `.agents/skills/expflow-authority-semantics-workflows/SKILL.md`
+- `.agents/skills/expflow-contracts-protocol/SKILL.md`
+- `.agents/skills/expflow-material-storage-sync/SKILL.md`
+- `.agents/skills/expflow-projections-reproduction/SKILL.md`
+- `.agents/skills/expflow-testing-security-migration/SKILL.md`
+- `.github/workflows/release.yml`
+
+## Outcome Tests
+
+| Check                                                           | Result                                                                               |
+| --------------------------------------------------------------- | ------------------------------------------------------------------------------------ |
+| `npm run check:config-references`                               | PASS; 21 governed source files, five added references, zero unreconciled references. |
+| `quick_validate.py` for the five edited domain skills           | PASS for all five skills.                                                            |
+| Path-resolution check over edited skill/workflow files          | PASS; all referenced `docs/...` paths resolve.                                       |
+| Stale moved-document search over `.agents/skills` and `.github` | PASS; no stale moved-document references remain in those surfaces.                   |
+| Prettier check over edited files                                | PASS.                                                                                |
+| `git diff --cached --check`                                     | PASS.                                                                                |
+
+## Remaining Limits
+
+- The config-reference checker enforces only marked `config-docref` references. Unmarked support references still require targeted drift checks unless a future policy marks them.
+- The repository still has broader pre-existing staged and untracked Build Week activation material. This report covers only the config-reference skill drift correction.
+- `.prettierignore` still emits a pre-existing line-ending warning during broad `git diff --check`; it was not changed by this report.
+- No hook manager was installed, no direct `.git/hooks/` file was edited, no runtime source was changed, and no Phase 1 runtime implementation began.

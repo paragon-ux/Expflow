@@ -1,0 +1,4 @@
+interface:
+  display_name: "Expflow Projections and Reproduction"
+  short_description: "Govern projections, regeneration, and reuse"
+  default_prompt: "Use $expflow-projections-reproduction to evaluate this Expflow projection or reproduction change."

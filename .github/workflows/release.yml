@@ -18,6 +18,7 @@ env:
   NPM_PACKAGE: expflow
   PYPI_PACKAGE: expflow-hooks
   PYTHON_IMPORT: expflow_hooks
+  RELEASE_NOTES_FILE: docs/releases/v1.0.1/files/docs/release_notes/GITHUB_RELEASE_NOTE_V1_0_1.md # config-docref
 
 jobs:
   build-release:
@@ -607,7 +608,7 @@ jobs:
           if gh release view "${RELEASE_TAG}" >/dev/null 2>&1; then
             gh release edit "${RELEASE_TAG}" \
               --title "Expflow v1.0.1" \
-              --notes-file docs/release_notes/GITHUB_RELEASE_NOTE_V1_0_1.md \
+              --notes-file "${RELEASE_NOTES_FILE}" \
               --latest
             for asset in "${ASSETS[@]}"; do
               name="$(basename "${asset}")"
@@ -620,6 +621,6 @@ jobs:
           else
             gh release create "${RELEASE_TAG}" "${ASSETS[@]}" \
               --title "Expflow v1.0.1" \
-              --notes-file docs/release_notes/GITHUB_RELEASE_NOTE_V1_0_1.md \
+              --notes-file "${RELEASE_NOTES_FILE}" \
               --verify-tag
           fi

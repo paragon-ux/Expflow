@@ -1,0 +1,4 @@
+interface:
+  display_name: "Expflow Testing Security and Migration"
+  short_description: "Govern tests, security, migration, and packaging"
+  default_prompt: "Use $expflow-testing-security-migration to review this Expflow testing, security, or migration task."

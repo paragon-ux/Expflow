@@ -6,7 +6,8 @@ Expflow is a schema-governed, local-first workflow ownership and observability p
 
 Expflow records what changed, which evidence was trusted, which decisions remain durable, and which outputs can be inspected, regenerated, restored, or reused.
 
-Current release: [`v1.0.1`](docs/release_notes/GITHUB_RELEASE_NOTE_V1_0_1.md).
+Current release:
+[`v1.0.1`](docs/releases/v1.0.1/files/docs/release_notes/GITHUB_RELEASE_NOTE_V1_0_1.md).
 
 ## What Expflow Tracks
 
@@ -92,13 +93,17 @@ Expflow core intentionally does not implement every surrounding integration surf
 ## Repository Map
 
 - `docs/architecture/` contains immutable architecture sources.
-- `docs/` contains mutable implementation evidence, completion reports, release notes, review summaries, and orientation.
+- `docs/internal/` contains current Build Week governance, status, prompts, and activation records.
+- `docs/external/` contains current product overviews and narratives.
+- `docs/releases/v1.0.1/` contains the frozen v1.0.1 release documentation record.
 - `schemas/` and `examples/` mirror the architecture schemas and examples for tooling.
 - `src/` contains the TypeScript package, CLI, material runtime, Gate C library runtimes, Gate D security/migration runtimes, and contract tooling.
 - `python/expflow_hooks/` contains the Python hook-package scaffold and repository-only schema discovery.
 - `tests/` contains repository-contract, material-runtime, authority, Gate C ownership/reproduction, Gate D security/migration, package, and end-to-end proof tests.
 
-For implementation status, see [docs/CURRENT_STATUS_MATRIX.md](docs/CURRENT_STATUS_MATRIX.md). For contributor setup and validation commands, see [README_DEV.md](README_DEV.md).
+For implementation status, see
+[docs/internal/CURRENT_STATUS_MATRIX.md](docs/internal/CURRENT_STATUS_MATRIX.md). For contributor setup
+and validation commands, see [README_DEV.md](README_DEV.md).
 
 ## Validation
 
@@ -113,12 +118,11 @@ python tests/contracts/verify_python_wheel.py
 
 ## Documentation
 
-- [v1.0.1 GitHub release note](docs/release_notes/GITHUB_RELEASE_NOTE_V1_0_1.md)
-- [v1 compatibility promise](docs/V1_COMPATIBILITY.md)
-- [Release publishing checklist](docs/RELEASE_PUBLISHING.md)
-- [Current status matrix](docs/CURRENT_STATUS_MATRIX.md)
+- [v1.0.1 GitHub release note](docs/releases/v1.0.1/files/docs/release_notes/GITHUB_RELEASE_NOTE_V1_0_1.md)
+- [v1 compatibility promise](docs/releases/v1.0.1/files/docs/V1_COMPATIBILITY.md)
+- [Release publishing checklist](docs/releases/v1.0.1/files/docs/RELEASE_PUBLISHING.md)
+- [Current status matrix](docs/internal/CURRENT_STATUS_MATRIX.md)
 - [Developer guide](README_DEV.md)
-- [Repository directory structure](docs/REPOSITORY_DIRECTORY_STRUCTURE.md)
 - [Security policy](SECURITY.md)
 
 ## License

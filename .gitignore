@@ -4,9 +4,9 @@ dist/
 release-artifacts/
 build-docs/
 .reasonix/
-reasonix.toml
 .mypy_cache/
 .ruff_cache/
+.pytest_cache/
 .coverage
 coverage/
 htmlcov/

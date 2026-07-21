@@ -1,3 +1,8 @@
+---
+name: expflow-testing-security-migration
+description: Govern Expflow contract parity, crash testing, archive quarantine, prompt-injection isolation, secret handling, licensing, sandbox profiles, legacy migration, packaging, and end-to-end evidence. Use for Expflow test strategy, security controls, archive handling, secret detection, migration tooling, package verification, or end-to-end automation during Gates B–D, phases 5–17.
+---
+
 # Expflow Testing, Security, and Migration
 
 ## Purpose
@@ -5,15 +10,23 @@
 - Defines: the governance responsibility for contract parity, crash tests, archive quarantine, prompt-injection isolation, secret handling, licensing, sandbox profiles, legacy migration, packaging, and end-to-end evidence
 - Phase boundary: Gates B, C, and D (Phases 5–17); this skill may guide work related to testing strategy, security controls, migration tooling, and packaging
 
-## Activation Criteria
+## Required Reading Roles
 
-- Activate when: test strategy definition, security profile implementation, archive handling, secret detection, prompt-injection isolation, legacy project migration, package verification, or end-to-end scenario automation is needed
-- Route elsewhere when: work involves schema or contract definition (route to expflow-contracts-protocol), material storage (route to expflow-material-storage-sync), authority or workflow records (route to expflow-authority-semantics-workflows), or projection/reproduction (route to expflow-projections-reproduction)
+1. `repository_governance`
+2. `active_workflow`
+3. `active_status`
+4. `glossary`
+5. `historical_workflow`
+6. `concept_paper`
+7. `implementation_spec`
+8. `protocol_spec`
+9. `project_snapshot`
+10. `architecture_note`
+11. `architecture_delta`
 
-## Required Reading
+## Supporting References
 
-- Read in order: AGENTS.md, EXPFLOW_WORKFLOW_CURRENT.md, EXPFLOW_CONCEPT_PAPER_V2_3.md, EXPFLOW_IMPLEMENTATION_SPEC_V2_3.md, EXPFLOW_PROTOCOL_SPEC_V2_3.md, EXPFLOW_PROJECT_SNAPSHOT_V2_3.md, Note-On-Architecture.md, V2_3_ARCHITECTURE_DELTA.md
-- Supporting references: docs/architecture/schemas/hook-envelope.schema.json, docs/architecture/schemas/validation-result.schema.json, docs/architecture/schemas/status-report.schema.json, docs/SECURITY_MODEL.md, docs/ERROR_REGISTRY.md, docs/TEST_MATRIX.md, docs/CODEX_BUILD_PLAN.md
+- docs/architecture/schemas/hook-envelope.schema.json, docs/architecture/schemas/validation-result.schema.json, docs/architecture/schemas/status-report.schema.json, docs/releases/v1.0.1/files/docs/SECURITY_MODEL.md, docs/releases/v1.0.1/files/docs/ERROR_REGISTRY.md, docs/releases/v1.0.1/files/docs/TEST_MATRIX.md
 
 ## Invariants
 

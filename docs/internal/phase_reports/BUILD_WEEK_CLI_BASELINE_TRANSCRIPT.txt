@@ -1,0 +1,130 @@
+﻿Project: C:\Users\USER\AppData\Local\Temp\expflow-activation-cli-1240d1da53d045989052a001ffdf3f12
+CLI: node dist/cli/index.js
+
+## init initial project
+Command: node dist/cli/index.js init --root C:\Users\USER\AppData\Local\Temp\expflow-activation-cli-1240d1da53d045989052a001ffdf3f12 --json
+Exit: 0
+OUTPUT:
+{
+  "schema_version": "2.3",
+  "error": null,
+  "finished_at": "2026-07-20T11:20:08.542Z",
+  "new_head": "eft_TKC5E9QF8R0KJYXVRXDPW6CM9C",
+  "node_revision_refs": [
+    "efn_3PYWB6DBR3X3J16JC8WKE9CFB5@1"
+  ],
+  "operation_id": "efo_7ZDZ1CAAEHKASZA3RKAD201Y00",
+  "previous_head": null,
+  "project_id": "efp_FWBYWXPJ0GFF5MG97MP7RQSW5C",
+  "status": "committed",
+  "started_at": "2026-07-20T11:20:08.408Z",
+  "validation_refs": [
+    "efv_FK6QXSENE13CHSPYRJ020V4WTN"
+  ],
+  "warnings": []
+}
+
+## status after init
+Command: node dist/cli/index.js status --root C:\Users\USER\AppData\Local\Temp\expflow-activation-cli-1240d1da53d045989052a001ffdf3f12 --json
+Exit: 0
+OUTPUT:
+{
+  "schema_version": "2.3",
+  "automation_state": {
+    "failed_hooks": [],
+    "pending_hooks": []
+  },
+  "generated_at": "2026-07-20T11:20:09.627Z",
+  "head_tree_revision_id": "eft_TKC5E9QF8R0KJYXVRXDPW6CM9C",
+  "manifest_heads": {},
+  "pending_changes": [],
+  "project_id": "efp_FWBYWXPJ0GFF5MG97MP7RQSW5C",
+  "recommended_action": null,
+  "unresolved_items": [],
+  "working_tree_state": "clean"
+}
+
+## sync changed project
+Command: node dist/cli/index.js sync --root C:\Users\USER\AppData\Local\Temp\expflow-activation-cli-1240d1da53d045989052a001ffdf3f12 --json
+Exit: 0
+OUTPUT:
+{
+  "schema_version": "2.3",
+  "error": null,
+  "finished_at": "2026-07-20T11:20:10.522Z",
+  "new_head": "eft_HND7GC1CSA88974VRZR95ES14S",
+  "node_revision_refs": [
+    "efn_3PYWB6DBR3X3J16JC8WKE9CFB5@2",
+    "efn_MW479BZ1A649F04YJS4X3HZ953@1"
+  ],
+  "operation_id": "efo_BB17SA8DDFKBQJ7NRKPDJEDQF5",
+  "previous_head": "eft_TKC5E9QF8R0KJYXVRXDPW6CM9C",
+  "project_id": "efp_FWBYWXPJ0GFF5MG97MP7RQSW5C",
+  "status": "committed",
+  "started_at": "2026-07-20T11:20:10.296Z",
+  "validation_refs": [
+    "efv_HFX85W4BHM0SK4WM7RNNN3B9HC"
+  ],
+  "warnings": []
+}
+
+## status after sync
+Command: node dist/cli/index.js status --root C:\Users\USER\AppData\Local\Temp\expflow-activation-cli-1240d1da53d045989052a001ffdf3f12 --json
+Exit: 0
+OUTPUT:
+{
+  "schema_version": "2.3",
+  "automation_state": {
+    "failed_hooks": [],
+    "pending_hooks": []
+  },
+  "generated_at": "2026-07-20T11:20:11.470Z",
+  "head_tree_revision_id": "eft_HND7GC1CSA88974VRZR95ES14S",
+  "manifest_heads": {},
+  "pending_changes": [],
+  "project_id": "efp_FWBYWXPJ0GFF5MG97MP7RQSW5C",
+  "recommended_action": null,
+  "unresolved_items": [],
+  "working_tree_state": "clean"
+}
+
+## restore initial tree
+Command: node dist/cli/index.js restore --root C:\Users\USER\AppData\Local\Temp\expflow-activation-cli-1240d1da53d045989052a001ffdf3f12 tree:eft_TKC5E9QF8R0KJYXVRXDPW6CM9C --json
+Exit: 0
+OUTPUT:
+{
+  "schema_version": "2.3",
+  "error": null,
+  "finished_at": "2026-07-20T11:20:12.780Z",
+  "new_head": "eft_GVP6EZ1QMZ4NDS602A5YMV8F55",
+  "node_revision_refs": [],
+  "operation_id": "efo_VPWP9RRZQTRPS3CYBPB5MZXNE8",
+  "previous_head": "eft_HND7GC1CSA88974VRZR95ES14S",
+  "project_id": "efp_FWBYWXPJ0GFF5MG97MP7RQSW5C",
+  "status": "committed",
+  "started_at": "2026-07-20T11:20:12.600Z",
+  "validation_refs": [
+    "efv_2PSXT2RBEBPPXXY7S6BH273TX5"
+  ],
+  "warnings": []
+}
+
+## status after restore
+Command: node dist/cli/index.js status --root C:\Users\USER\AppData\Local\Temp\expflow-activation-cli-1240d1da53d045989052a001ffdf3f12 --json
+Exit: 0
+OUTPUT:
+{
+  "schema_version": "2.3",
+  "automation_state": {
+    "failed_hooks": [],
+    "pending_hooks": []
+  },
+  "generated_at": "2026-07-20T11:20:13.509Z",
+  "head_tree_revision_id": "eft_GVP6EZ1QMZ4NDS602A5YMV8F55",
+  "manifest_heads": {},
+  "pending_changes": [],
+  "project_id": "efp_FWBYWXPJ0GFF5MG97MP7RQSW5C",
+  "recommended_action": null,
+  "unresolved_items": [],
+  "working_tree_state": "clean"
+}

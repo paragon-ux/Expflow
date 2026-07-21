@@ -1,0 +1,57 @@
+{
+  "verdict": "GO",
+  "fixed_tests": {
+    "M8c": "PASS",
+    "M9": "PASS",
+    "S4b": "PASS",
+    "S7": "PASS",
+    "F9": "PASS",
+    "C3": "PASS",
+    "C5b": "PASS"
+  },
+  "checker_modes": {
+    "staged": true,
+    "commit_range": true,
+    "unknown_arguments_rejected": true
+  },
+  "ci": {
+    "integrated": true,
+    "verify_only": true,
+    "workflow": ".github/workflows/phase-1-contract.yml",
+    "mode": "commit-range",
+    "command": "npm run check:config-references -- --base \"$BASE_SHA\" --head \"$HEAD_SHA\""
+  },
+  "validation": {
+    "focused_tests": "PASS, 11 tests",
+    "vitest_global_test_timeout_ms": 45000,
+    "focused_typecheck": "PASS",
+    "npm_validate": "PASS",
+    "npm_pack_dry_run": "PASS",
+    "git_diff_check": "PASS",
+    "git_diff_cached_check": "PASS",
+    "config_reference_check": "PASS",
+    "skill_validation": "PASS",
+    "limit_test_rerun": {
+      "tests": 81,
+      "pass": 79,
+      "fail": 0,
+      "blocked": 0,
+      "not_applicable": 2,
+      "fixture_root": "C:\\Users\\USER\\Desktop\\Frameworks\\Expflow-Skill-Test\\config-reference-skill-forward-tests\\run-2026-07-20T22-14-11-600Z"
+    }
+  },
+  "immutability": {
+    "runtime_unchanged": true,
+    "architecture_unchanged": true,
+    "release_archive_unchanged": true,
+    "evidence_reports_unchanged": true,
+    "direct_git_hooks_installed": false,
+    "hook_bypass_introduced": false,
+    "phase_1_runtime_started": false
+  },
+  "remaining_blockers": [],
+  "remaining_limitations": [
+    "The external limit-test report generator still emits stale hardcoded top-level verdict text even when all machine test rows pass.",
+    "Only marked config-docref references are enforced; unmarked references remain outside ongoing enforcement."
+  ]
+}

@@ -1,0 +1,75 @@
+{
+  "verdict": "GO",
+  "baseline": {
+    "branch": "main",
+    "commit": "ba7292e9616a055ed5e25da8734c2b49a9f66ec9",
+    "package_version": "1.0.1",
+    "runtime_changes": false,
+    "phase_1_implementation_started": false
+  },
+  "bootstrap": {
+    "contract_path": ".config-reference-reconciliation.yaml",
+    "machine_absolute_paths_persisted": false
+  },
+  "stable_paths": {
+    "declared": true,
+    "roles_declared": 18,
+    "all_resolve": true,
+    "directory_roles": ["phase_reports", "release_archive"]
+  },
+  "skills": {
+    "repository_skills_migrated": 6,
+    "repository_skills_validated": 6,
+    "global_manager_validated": true,
+    "global_manager_temp_root_validated": true,
+    "frontmatter_failures": 0,
+    "bare_required_paths": 0,
+    "unresolved_required_paths": 0,
+    "moved_legacy_paths": 0
+  },
+  "governance": {
+    "required_operational_refs_marked": true,
+    "marked_references_added": 22,
+    "mutable_indexes_checked": 13,
+    "protected_sidecar_sections_checked": 9,
+    "reverse_indexes_reconciled": true,
+    "protected_bodies_modified_for_reconciliation": false
+  },
+  "repository_validation": {
+    "config_references": "PASS",
+    "skill_contracts": "PASS",
+    "temporary_commit_range_config_references": "PASS",
+    "temporary_commit_range_skill_contracts": "PASS",
+    "relocated_worktree_config_references": "PASS",
+    "relocated_worktree_skill_contracts": "PASS",
+    "focused_vitest": "PASS",
+    "npm_validate": "PASS",
+    "npm_pack_dry_run": "PASS",
+    "git_diff_cached_check": "PASS",
+    "git_diff_check": "PASS_WITH_PREEXISTING_LINE_ENDING_WARNING"
+  },
+  "global_skill_validation": {
+    "installed_path_quick_validate": "PASS",
+    "temporary_skill_root_quick_validate": "PASS",
+    "repository_checks_depend_on_user_home": false
+  },
+  "optional_external_harness": {
+    "path_supplied": true,
+    "path": "C:\\Users\\USER\\Desktop\\Frameworks\\Expflow-Skill-Test",
+    "status": "TIMEOUT",
+    "attempts": [
+      {
+        "timeout_seconds": 180,
+        "result": "TIMEOUT"
+      },
+      {
+        "timeout_seconds": 360,
+        "result": "TIMEOUT"
+      }
+    ],
+    "repository_dependency": false
+  },
+  "remaining_literal_operational_paths": [],
+  "remaining_inference": [],
+  "remaining_blockers": []
+}

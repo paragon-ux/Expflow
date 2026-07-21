@@ -1,0 +1,4 @@
+interface:
+  display_name: "Expflow Material Storage and Sync"
+  short_description: "Govern material stores, identity, and sync"
+  default_prompt: "Use $expflow-material-storage-sync to assess this Expflow storage or sync implementation."

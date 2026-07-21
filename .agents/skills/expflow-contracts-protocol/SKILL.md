@@ -1,3 +1,8 @@
+---
+name: expflow-contracts-protocol
+description: Govern Expflow schemas, registries, canonicalization, project revisions, cursors, operation stages, envelopes, error codes, generated types, and compatibility contracts. Use when proposing Expflow schema changes, creating machine contracts, regenerating types, evaluating contract compatibility, or working with contract fixtures during Gates A and B, phases 1–8.
+---
+
 # Expflow Contracts and Protocol
 
 ## Purpose
@@ -5,15 +10,22 @@
 - Defines: the governance responsibility for schemas, registries, canonicalization, project revisions, cursors, operation stages, envelopes, error codes, generated types, and compatibility contracts
 - Phase boundary: Gates A and B (Phases 1–8); this skill may guide work related to machine contracts, fixtures, and generated types
 
-## Activation Criteria
+## Required Reading Roles
 
-- Activate when: schema changes are proposed, new machine contracts are needed, generated types must be regenerated, or contract compatibility must be evaluated
-- Route elsewhere when: work involves material storage or sync implementation (route to expflow-material-storage-sync), authority or semantic records (route to expflow-authority-semantics-workflows), projection or reproduction contracts (route to expflow-projections-reproduction), or testing/security/migration concerns (route to expflow-testing-security-migration)
+1. `repository_governance`
+2. `active_workflow`
+3. `active_status`
+4. `glossary`
+5. `historical_workflow`
+6. `implementation_spec`
+7. `protocol_spec`
+8. `project_snapshot`
+9. `architecture_note`
+10. `architecture_delta`
 
-## Required Reading
+## Supporting References
 
-- Read in order: AGENTS.md, EXPFLOW_WORKFLOW_CURRENT.md, EXPFLOW_IMPLEMENTATION_SPEC_V2_3.md, EXPFLOW_PROTOCOL_SPEC_V2_3.md, EXPFLOW_PROJECT_SNAPSHOT_V2_3.md, Note-On-Architecture.md, V2_3_ARCHITECTURE_DELTA.md
-- Supporting references: docs/architecture/schemas/schema-index.json, docs/architecture/SOURCE_MANIFEST.json, docs/architecture/EXAMPLE_INDEX.md, docs/ARCHITECTURE_DECISIONS.md
+- docs/architecture/schemas/schema-index.json, docs/architecture/SOURCE_MANIFEST.json, docs/architecture/EXAMPLE_INDEX.md, docs/releases/v1.0.1/files/docs/ARCHITECTURE_DECISIONS.md
 
 ## Invariants
 
