@@ -3,7 +3,7 @@
 **Status:** Current internal status control
 **Last updated:** 2026-07-21
 **Implementation baseline:** Expflow `v1.0.1`
-**Post-baseline changes:** Phase 1 ordinary CLI UX accepted and merged at `67d77f99fc048c6a25d677eada3a64b56a2635ea`
+**Post-baseline changes:** Phase 1 ordinary CLI UX accepted, merged, repaired, and post-merge validated at `4a4603435d4a61ff0776ec814dd36a1a12633a6d`
 **Historical workflow:** Gates A–D complete and closed
 **Current workflow:** `BUILD_WEEK_WORKFLOW_CURRENT.md`
 **Current phase:** Phase 2 — Expflow GUI Foundation
@@ -177,7 +177,7 @@ Phase 2 is authorized after Phase 1 acceptance, merge, and post-merge validation
 Phase 2 may begin when:
 
 - Phase 1 completion and finding reports record accepted review evidence;
-- Phase 1 is merged into the rolling integration branch at `67d77f99fc048c6a25d677eada3a64b56a2635ea`;
+- Phase 1 is merged into the rolling integration branch and post-merge repaired at `4a4603435d4a61ff0776ec814dd36a1a12633a6d`;
 - post-merge validation is recorded in `docs/internal/phase_reports/PHASE_01_POST_MERGE_VALIDATION.md`;
 - the integration branch is clean;
 - Phase 2 prompt and relevant documented application surfaces are read before implementation.
