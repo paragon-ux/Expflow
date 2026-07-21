@@ -1,19 +1,19 @@
 # Current Status Matrix
 
 **Status:** Current internal status control
-**Last updated:** 2026-07-20
+**Last updated:** 2026-07-21
 **Implementation baseline:** Expflow `v1.0.1`
-**Post-baseline changes:** None claimed
+**Post-baseline changes:** Phase 1 ordinary CLI UX completion candidate at `c6ad308700f66eab784fddebda1a823846f6855f`
 **Historical workflow:** Gates A–D complete and closed
 **Current workflow:** `BUILD_WEEK_WORKFLOW_CURRENT.md`
 **Current phase:** Phase 1 — Ordinary UX/UI Corrections
-**Phase state:** READY; evidence review complete; implementation not started
+**Phase state:** Phase 1 GO recorded; report acceptance required before Phase 2 authorization
 
 ---
 
 ## 1. Practical Status Statement
 
-> Expflow `v1.0.1` is the current implementation baseline. The v1 architecture and internal runtime gates are complete. The post-v1 evidence and disposition pass is complete, but no Phase 1 runtime change has been implemented. The ordinary CLI exposes the material core; the differentiating authority, semantic, workflow, projection, and reproduction state remains primarily library-facing. There is no Expflow GUI, portable workflow package, real external pilot, empirical evaluation, Guerilla profile, or Guerilla causal event-view GUI.
+> Expflow `v1.0.1` is the current implementation baseline. The v1 architecture and internal runtime gates are complete. The post-v1 evidence and disposition pass is complete. Phase 1 ordinary CLI UX has a GO report: status, sync preview, restore preview, restore drift refusal, per-command help, strict parsing, remediation-first errors, and provisional-identity labeling are implemented and covered by focused and full validation. The differentiating authority, semantic, workflow, projection, and reproduction state remains primarily library-facing. There is no Expflow GUI, portable workflow package, real external pilot, empirical evaluation, Guerilla profile, or Guerilla causal event-view GUI.
 
 This matrix deliberately separates implementation from exposure, validation, adoption, and product proof.
 
@@ -34,12 +34,12 @@ The historical `EXPFLOW_WORKFLOW_CURRENT.md` must be retained or renamed as v1 b
 
 ### Current Build Week workflow
 
-| Gate                                      | Phases | State   | Blocking condition                                             |
-| ----------------------------------------- | -----: | ------- | -------------------------------------------------------------- |
-| BW-A — UX Control Surface Ready           |    1–2 | READY   | Phase 1 has not started.                                       |
-| BW-B — Workflow Portability Surface Ready |    3–5 | BLOCKED | Requires BW-A exit.                                            |
-| BW-C — Pilot Proven                       |    6–7 | BLOCKED | Requires BW-B exit.                                            |
-| BW-D — Causal Integration Ready           |    8–9 | BLOCKED | Requires empirical pilot evidence and stable Expflow surfaces. |
+| Gate                                      | Phases | State   | Blocking condition                                                  |
+| ----------------------------------------- | -----: | ------- | ------------------------------------------------------------------- |
+| BW-A — UX Control Surface Ready           |    1–2 | ACTIVE  | Phase 1 GO report exists; Phase 2 requires accepted Phase 1 report. |
+| BW-B — Workflow Portability Surface Ready |    3–5 | BLOCKED | Requires BW-A exit.                                                 |
+| BW-C — Pilot Proven                       |    6–7 | BLOCKED | Requires BW-B exit.                                                 |
+| BW-D — Causal Integration Ready           |    8–9 | BLOCKED | Requires empirical pilot evidence and stable Expflow surfaces.      |
 
 The former plan to correlate Expflow completion with a Guerilla external-compatible adapter gate is superseded. Guerilla is now profile-driven and its GUI is a causal event view implemented at the end of this workflow.
 
@@ -56,34 +56,34 @@ Status vocabulary:
 - **Empirically evaluated:** measured with users or comparative evidence.
 - **Production-supported:** explicit support claim backed by operating evidence.
 
-| Capability                                                                       | Implemented                 | Internally verified                    | Ordinary surface                                 | Pilot verified              | Empirically evaluated | Current determination                                                                                            |
-| -------------------------------------------------------------------------------- | --------------------------- | -------------------------------------- | ------------------------------------------------ | --------------------------- | --------------------- | ---------------------------------------------------------------------------------------------------------------- |
-| Material object, node revision, tree revision, and head stores                   | Yes                         | Yes                                    | CLI + library                                    | No                          | No                    | Stable v1 substrate.                                                                                             |
-| `init`, `sync`, `status`, `restore`                                              | Yes                         | Yes                                    | CLI                                              | Limited internal round trip | No                    | Functional, but UX defects remain.                                                                               |
-| Material transaction, receipt, staging, and recovery                             | Yes                         | Yes                                    | Indirect through CLI                             | No external pilot           | No                    | Strong internal evidence; failure UX needs exposure.                                                             |
-| Authority-source revision and registration decision stores                       | Yes                         | Yes                                    | Library only                                     | No                          | No                    | Differentiating state is not yet productized.                                                                    |
-| Assertions, decisions, conflicts, review requests, and source correspondence     | Yes                         | Yes                                    | Library only                                     | No                          | No                    | Implemented record families; no coherent external review surface.                                                |
-| Workflow occurrences, virtual artifacts, materialization events, and transitions | Yes                         | Yes                                    | Library only                                     | No                          | No                    | Implemented; no ordinary workflow view.                                                                          |
-| Projection manifest proposals, decisions, heads, and staleness                   | Yes                         | Yes                                    | Library only                                     | No                          | No                    | Implemented; no application-facing inspection model.                                                             |
-| Regeneration attempts and equivalence evaluations                                | Yes                         | Yes                                    | Library only                                     | No                          | No                    | Implemented; no real workflow evidence.                                                                          |
-| Reuse-result records and policy gates                                            | Yes                         | Yes                                    | Library only                                     | No                          | No                    | Implemented; no pilot proof.                                                                                     |
-| Security and migration runtimes                                                  | Yes                         | Yes                                    | Library/package workflows                        | No                          | No                    | Internally tested, not externally exercised.                                                                     |
-| Extension host                                                                   | Yes                         | Yes                                    | Documented library surface                       | No                          | No                    | Available; not a Guerilla adapter boundary.                                                                      |
-| `sync` identity and concurrency directives                                       | Yes                         | Verified on public `v1.0.1`            | CLI flags, absent from ordinary help             | No                          | No                    | `--move`, `--new-node`, `--replace-node`, and `--expected-head` require Phase 1 discoverability work.            |
-| Provisional preview identity                                                     | Yes                         | Confirmed on public `v1.0.1`           | JSON/dry-run without explicit provisional status | No                          | No                    | Intentional provisional behavior requires human- and machine-visible labeling or equivalent safe representation. |
-| Human-readable status and dry-run decision support                               | Partial                     | Grade-A multi-report reproduction      | CLI                                              | No                          | No                    | Phase 1 work.                                                                                                    |
-| Revision discovery through ordinary commands                                     | No adequate surface         | Grade-A multi-report reproduction      | No                                               | No                          | No                    | Blocks usable restore.                                                                                           |
-| Restore preview and drift guard                                                  | No                          | Grade-A destructive-drift reproduction | No                                               | No                          | No                    | Phase 1 work; exact restore semantics remain valid.                                                              |
-| Expflow local GUI                                                                | No                          | No                                     | No                                               | No                          | No                    | Phase 2.                                                                                                         |
-| Stable read models for advanced record families                                  | Partial/internal            | Unit evidence only                     | No                                               | No                          | No                    | Phase 3.                                                                                                         |
-| Evidence intake from partial sources                                             | No coherent product surface | No                                     | No                                               | No                          | No                    | Phase 4.                                                                                                         |
-| Artifact correspondence review workflow                                          | Internal primitives only    | Unit evidence only                     | No                                               | No                          | No                    | Phase 4.                                                                                                         |
-| Portable workflow package export/import                                          | No                          | No                                     | No                                               | No                          | No                    | Phase 5.                                                                                                         |
-| Real end-to-end Expflow pilot                                                    | No                          | No                                     | No                                               | No                          | No                    | Phase 7.                                                                                                         |
-| Comparative or usability evaluation                                              | No                          | No                                     | No                                               | No                          | No                    | Phase 7.                                                                                                         |
-| Expflow Guerilla profile                                                         | No                          | No                                     | No                                               | No                          | No                    | Phase 8.                                                                                                         |
-| Guerilla event nodes and causal edges for Expflow operations                     | No                          | No                                     | No                                               | No                          | No                    | Phase 8.                                                                                                         |
-| Guerilla causal event-view GUI                                                   | No                          | No                                     | No                                               | No                          | No                    | Phase 9 and final workflow phase.                                                                                |
+| Capability                                                                       | Implemented                 | Internally verified   | Ordinary surface               | Pilot verified              | Empirically evaluated | Current determination                                                                                      |
+| -------------------------------------------------------------------------------- | --------------------------- | --------------------- | ------------------------------ | --------------------------- | --------------------- | ---------------------------------------------------------------------------------------------------------- |
+| Material object, node revision, tree revision, and head stores                   | Yes                         | Yes                   | CLI + library                  | No                          | No                    | Stable v1 substrate.                                                                                       |
+| `init`, `sync`, `status`, `restore`                                              | Yes                         | Yes                   | CLI                            | Limited internal round trip | No                    | Phase 1 CLI UX completion candidate implemented; external pilot still absent.                              |
+| Material transaction, receipt, staging, and recovery                             | Yes                         | Yes                   | Indirect through CLI           | No external pilot           | No                    | Strong internal evidence; failure UX needs exposure.                                                       |
+| Authority-source revision and registration decision stores                       | Yes                         | Yes                   | Library only                   | No                          | No                    | Differentiating state is not yet productized.                                                              |
+| Assertions, decisions, conflicts, review requests, and source correspondence     | Yes                         | Yes                   | Library only                   | No                          | No                    | Implemented record families; no coherent external review surface.                                          |
+| Workflow occurrences, virtual artifacts, materialization events, and transitions | Yes                         | Yes                   | Library only                   | No                          | No                    | Implemented; no ordinary workflow view.                                                                    |
+| Projection manifest proposals, decisions, heads, and staleness                   | Yes                         | Yes                   | Library only                   | No                          | No                    | Implemented; no application-facing inspection model.                                                       |
+| Regeneration attempts and equivalence evaluations                                | Yes                         | Yes                   | Library only                   | No                          | No                    | Implemented; no real workflow evidence.                                                                    |
+| Reuse-result records and policy gates                                            | Yes                         | Yes                   | Library only                   | No                          | No                    | Implemented; no pilot proof.                                                                               |
+| Security and migration runtimes                                                  | Yes                         | Yes                   | Library/package workflows      | No                          | No                    | Internally tested, not externally exercised.                                                               |
+| Extension host                                                                   | Yes                         | Yes                   | Documented library surface     | No                          | No                    | Available; not a Guerilla adapter boundary.                                                                |
+| `sync` identity and concurrency directives                                       | Yes                         | Focused Phase 1 tests | CLI flags and per-command help | No                          | No                    | `--move`, `--new-node`, `--replace-node`, and `--expected-head` are discoverable in `expflow sync --help`. |
+| Provisional preview identity                                                     | Yes                         | Focused Phase 1 tests | CLI and JSON/dry-run           | No                          | No                    | Provisional status is explicit in human preview/status output and additive machine fields.                 |
+| Human-readable status and dry-run decision support                               | Yes                         | Focused Phase 1 tests | CLI                            | No                          | No                    | Completion candidate; full validation recorded in Phase 1 report.                                          |
+| Revision discovery through ordinary commands                                     | Yes                         | Focused Phase 1 tests | CLI                            | No                          | No                    | `status --history` and `status --node-history <path>` expose restore references.                           |
+| Restore preview and drift guard                                                  | Yes                         | Focused Phase 1 tests | CLI                            | No                          | No                    | `restore --dry-run` previews; default restore refuses conflicting drift; `--force` is explicit override.   |
+| Expflow local GUI                                                                | No                          | No                    | No                             | No                          | No                    | Phase 2.                                                                                                   |
+| Stable read models for advanced record families                                  | Partial/internal            | Unit evidence only    | No                             | No                          | No                    | Phase 3.                                                                                                   |
+| Evidence intake from partial sources                                             | No coherent product surface | No                    | No                             | No                          | No                    | Phase 4.                                                                                                   |
+| Artifact correspondence review workflow                                          | Internal primitives only    | Unit evidence only    | No                             | No                          | No                    | Phase 4.                                                                                                   |
+| Portable workflow package export/import                                          | No                          | No                    | No                             | No                          | No                    | Phase 5.                                                                                                   |
+| Real end-to-end Expflow pilot                                                    | No                          | No                    | No                             | No                          | No                    | Phase 7.                                                                                                   |
+| Comparative or usability evaluation                                              | No                          | No                    | No                             | No                          | No                    | Phase 7.                                                                                                   |
+| Expflow Guerilla profile                                                         | No                          | No                    | No                             | No                          | No                    | Phase 8.                                                                                                   |
+| Guerilla event nodes and causal edges for Expflow operations                     | No                          | No                    | No                             | No                          | No                    | Phase 8.                                                                                                   |
+| Guerilla causal event-view GUI                                                   | No                          | No                    | No                             | No                          | No                    | Phase 9 and final workflow phase.                                                                          |
 
 ---
 
@@ -101,14 +101,14 @@ The following decisions are controlling inputs to Phase 1. They describe current
 
 ## 5. Known Product and UX Gaps
 
-### Critical ordinary-flow gaps
+### Phase 1 ordinary-flow closure candidate
 
-1. **Revision discovery:** `restore` requires tree or node revision references, but the ordinary surface does not provide a usable revision history.
-2. **Restore safety:** restore lacks an ordinary dry-run and explicit drift guard for unrecorded working-tree changes.
-3. **Human-readable status:** default output is too terse to explain drift, pending changes, recovery state, or next actions.
-4. **Dry-run detail:** `sync --dry-run` reports a count rather than the planned path-level changes.
-5. **Identifier comprehension:** project, tree revision, node revision, and provisional identities are not consistently labeled for users.
-6. **Recovery remediation:** strong internal recovery classes are not matched by equally strong user-facing diagnosis and next steps.
+1. **Revision discovery:** `status --history` and `status --node-history <path>` expose tree and node restore references.
+2. **Restore safety:** `restore --dry-run` previews affected paths; default restore refuses conflicting unrecorded drift; `--force` is explicit.
+3. **Human-readable status:** default output explains project state, current project version, pending changes, and next actions.
+4. **Dry-run detail:** `sync --dry-run` reports path-level changes and provisional identities.
+5. **Identifier comprehension:** project, tree revision, node revision, operation, and provisional identifiers are labeled in ordinary output.
+6. **Recovery remediation:** CLI errors include the code, mutation result, recommended action, and `status` inspection guidance.
 
 ### Product-surface gaps
 
@@ -172,16 +172,16 @@ No phase after Phase 1 is authorized until the Phase 1 completion report passes.
 
 ---
 
-## 8. Current Phase Entry Conditions
+## 8. Current Phase Exit Conditions
 
-Phase 1 may begin when:
+Phase 1 may exit when:
 
-- this matrix, the current workflow, the directory structure, and the glossary are accepted;
-- the v1.0.1 baseline commit is recorded in the phase report;
-- `REVIEWS_INDEX.md`, `REVIEW_DISPOSITION_MATRIX.md`, and `IMPLEMENTATION_FINDINGS.md` are available locally as evidence inputs;
-- the accepted D1/D2 decisions and R1/R2 dispositions are preserved;
-- compatibility and validation commands are known;
-- the implementation agent agrees not to enter GUI, evidence-intake, portability, or Guerilla scope.
+- the Phase 1 completion report records the evaluated Git state;
+- focused CLI UX, restore-safety, status-discovery, machine-compatibility, and protected-surface tests pass;
+- repository-required config-reference, skill-contract, protected-surface, full validation, and package checks pass;
+- before and after CLI transcripts are present under `docs/internal/phase_reports/`;
+- D1/D2 decisions and R1/R2 dispositions remain preserved;
+- no GUI, evidence-intake, portability, Guerilla, immutable architecture, frozen release-body, or Phase 2+ scope entered.
 
 ---
 

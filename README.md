@@ -64,20 +64,29 @@ pip install expflow-hooks
 
 1. Run `expflow init` to create local Expflow state.
 2. Change files in the project tree.
-3. Run `expflow sync` to record a complete material tree revision.
-4. Run `expflow status` to inspect drift and recorded state.
-5. Run `expflow restore` when a recorded tree or node revision should be restored.
+3. Run `expflow status` or `expflow sync --dry-run` to preview pending changes.
+4. Run `expflow sync` to record a complete material tree revision.
+5. Run `expflow status --history` or `expflow status --node-history <path>` to find restore references.
+6. Run `expflow restore <reference> --dry-run` before restoring a recorded tree or node revision.
 
 Gate C ownership/reproduction behavior and Gate D security/migration behavior are available through library runtimes rather than additional ordinary commands.
 
 ## Commands
 
-| Command           | Purpose                                                             |
-| ----------------- | ------------------------------------------------------------------- |
-| `expflow init`    | Initialize local Expflow project state.                             |
-| `expflow sync`    | Scan the working tree and commit a complete material tree revision. |
-| `expflow status`  | Report local drift and material project state.                      |
-| `expflow restore` | Restore a recorded material tree or node revision.                  |
+| Command           | Purpose                                                                 |
+| ----------------- | ----------------------------------------------------------------------- |
+| `expflow init`    | Initialize local Expflow project state.                                 |
+| `expflow sync`    | Preview or commit a complete material tree revision.                    |
+| `expflow status`  | Report drift, current project version, history, and restore references. |
+| `expflow restore` | Preview or restore a recorded material tree or node revision.           |
+
+Useful Phase 1 options:
+
+- `expflow sync --dry-run` previews path-level changes without committing.
+- `expflow status --history` lists recent tree restore references.
+- `expflow status --node-history <path>` lists node restore references for a tracked path.
+- `expflow restore <reference> --dry-run` previews affected paths and conflicting drift.
+- `expflow restore <reference> --force` explicitly overwrites conflicting unrecorded drift.
 
 ## What Expflow Delegates
 

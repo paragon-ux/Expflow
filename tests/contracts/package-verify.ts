@@ -100,9 +100,35 @@ try {
     'sync',
     'status',
     'restore',
+    'Run "expflow <command> --help"',
     'Gate B implements local material-core',
+    'EXIT CODES',
+    '0  Success, including uninitialized status queries',
+    '1  Operational mutation or runtime failure',
+    '2  Usage failure, unknown command, or unsupported option',
   ]) {
     assertContains(helpOutput, expected);
+  }
+  const statusHelp = run(cliPath, ['status', '--help'], installDir);
+  for (const expected of [
+    '--history',
+    '--node-history <path>',
+    '--history-limit <n>',
+    '0  Status query completed, including uninitialized roots',
+    '1  Operational runtime failure',
+    '2  Usage failure or unsupported option',
+  ]) {
+    assertContains(statusHelp, expected);
+  }
+  const restoreHelp = run(cliPath, ['restore', '--help'], installDir);
+  for (const expected of [
+    '--dry-run',
+    '--force',
+    '--target-path <path>',
+    '1  Operational failure, including restore conflict',
+    '2  Usage failure or unsupported option',
+  ]) {
+    assertContains(restoreHelp, expected);
   }
 
   const projectDir = resolve(tempRoot, 'project');
@@ -111,6 +137,8 @@ try {
   assertContains(initOutput, '"status": "committed"');
   const statusOutput = run(cliPath, ['status', '--root', projectDir, '--json'], installDir);
   assertContains(statusOutput, '"working_tree_state": "clean"');
+  const statusHumanOutput = run(cliPath, ['status', '--root', projectDir], installDir);
+  assertContains(statusHumanOutput, 'Current project version');
 
   const importOutput = run(
     nodeCommand,

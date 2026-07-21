@@ -1,0 +1,145 @@
+# Phase 1 after CLI transcript
+
+$ expflow status
+exit: 0
+stdout:
+No Expflow project exists at this root.
+Next action: run `expflow init` to initialize a project.
+
+$ expflow init
+exit: 0
+stdout:
+Initialized Expflow project.
+Project id: efp_NNHA14TADYDMDZ9FHSDMC08SZS
+Current project version (tree revision): eft_TG8XMTVHARX4WNYGQG7ZR3BFB7
+Previous head: none
+Operation id: efo_DK5HPWX026KFYQ3DFZNN8DGB64
+Next action: run `expflow status` to inspect project state.
+
+$ expflow status
+exit: 0
+stdout:
+Project id: efp_NNHA14TADYDMDZ9FHSDMC08SZS
+Current project version (tree revision): eft_TG8XMTVHARX4WNYGQG7ZR3BFB7
+Working tree: drifted - 2 pending change(s): 1 added, 1 modified.
+Pending changes:
+  modified a.txt (provisional: efn_49SA0H511X151E6C589V0TA81B@2)
+  added    b.txt (provisional: efn_FF5107M6SSDR757C5W961H2ZHM@1)
+Next action: run `expflow sync` to commit these changes (preview: `expflow sync --dry-run`).
+
+$ expflow sync --dry-run
+exit: 0
+stdout:
+Sync preview - nothing committed.
+Project id: efp_NNHA14TADYDMDZ9FHSDMC08SZS
+Current head: eft_TG8XMTVHARX4WNYGQG7ZR3BFB7
+Candidate digest: sha256:ba20d93974c7d113c9236ea2a2d59f0ee87f7dc594b7361e5d2ae8f49e21fbfa
+Changes: 1 added, 1 modified.
+  modified a.txt (provisional: efn_49SA0H511X151E6C589V0TA81B@2)
+  added    b.txt (provisional: efn_JXMMHAP8SF85Q1T5K0BYDJ0RGY@1)
+Next action: run `expflow sync` to commit.
+
+$ expflow status --json
+exit: 0
+stdout:
+{
+  "schema_version": "2.3",
+  "automation_state": {
+    "failed_hooks": [],
+    "pending_hooks": []
+  },
+  "generated_at": "2026-07-21T17:55:06.862Z",
+  "head_tree_revision_id": "eft_TG8XMTVHARX4WNYGQG7ZR3BFB7",
+  "manifest_heads": {},
+  "pending_change_details": [
+    {
+      "continuity_basis": null,
+      "from_path": null,
+      "identity": "provisional",
+      "kind": "modified",
+      "node_revision_ref": "efn_49SA0H511X151E6C589V0TA81B@2",
+      "relative_path": "a.txt"
+    },
+    {
+      "continuity_basis": null,
+      "from_path": null,
+      "identity": "provisional",
+      "kind": "added",
+      "node_revision_ref": "efn_MSJYKJC0AWFJMFQQQXRCSARYKS@1",
+      "relative_path": "b.txt"
+    }
+  ],
+  "pending_changes": [
+    {
+      "kind": "node_revision",
+      "revision": "efn_49SA0H511X151E6C589V0TA81B@2"
+    },
+    {
+      "kind": "node_revision",
+      "revision": "efn_MSJYKJC0AWFJMFQQQXRCSARYKS@1"
+    }
+  ],
+  "project_id": "efp_NNHA14TADYDMDZ9FHSDMC08SZS",
+  "recommended_action": "Run expflow sync to commit drift.",
+  "unresolved_items": [],
+  "working_tree_state": "drifted"
+}
+
+$ expflow sync
+exit: 0
+stdout:
+Status: committed
+Project id: efp_NNHA14TADYDMDZ9FHSDMC08SZS
+Current project version (tree revision): eft_C307QN8SGS3M9DHCTQKMJ88QM1
+Previous head: eft_TG8XMTVHARX4WNYGQG7ZR3BFB7
+Operation id: efo_XJDVWWCMX6HMDXC6JAZPE84GDK
+
+$ expflow status --history
+exit: 0
+stdout:
+Project id: efp_NNHA14TADYDMDZ9FHSDMC08SZS
+Current project version (tree revision): eft_C307QN8SGS3M9DHCTQKMJ88QM1
+Working tree: clean - no pending changes.
+Hints: `expflow status --json` for machine-readable output;
+  `expflow status --history` to list project versions;
+  `expflow restore --dry-run tree:<tree_revision_id>` for a restore preview.
+Project version history (most recent first):
+  #2 2026-07-21T17:55:07.575Z source=sync status=committed tree:eft_C307QN8SGS3M9DHCTQKMJ88QM1 (current head)
+  #1 2026-07-21T17:55:04.407Z source=initialization status=committed tree:eft_TG8XMTVHARX4WNYGQG7ZR3BFB7
+Restore: `expflow restore tree:<tree_revision_id>`; preview: `expflow restore --dry-run tree:<tree_revision_id>`.
+
+$ expflow status --node-history a.txt
+exit: 0
+stdout:
+Project id: efp_NNHA14TADYDMDZ9FHSDMC08SZS
+Current project version (tree revision): eft_C307QN8SGS3M9DHCTQKMJ88QM1
+Working tree: clean - no pending changes.
+Hints: `expflow status --json` for machine-readable output;
+  `expflow status --history` to list project versions;
+  `expflow restore --dry-run tree:<tree_revision_id>` for a restore preview.
+Node revision history:
+  efn_49SA0H511X151E6C589V0TA81B@1 2026-07-21T17:55:04.407Z
+    restore reference: node:efn_49SA0H511X151E6C589V0TA81B@1:a.txt
+  efn_49SA0H511X151E6C589V0TA81B@2 2026-07-21T17:55:07.575Z (current)
+    restore reference: node:efn_49SA0H511X151E6C589V0TA81B@2:a.txt
+Restore one file: `expflow restore node:<node_id>@<revision>:<path>`; preview with `--dry-run`.
+
+$ expflow status --dry-run
+exit: 2
+stderr:
+expflow: status does not support --dry-run
+
+$ expflow sync --help
+exit: 0
+stdout:
+USAGE
+  expflow sync [options]
+
+OPTIONS
+  --dry-run              Preview changes without committing
+  --expected-head <id>   Refuse if the current project version differs
+  --move <from:to>       Preserve identity while moving a path
+  --new-node <path>      Force a new node identity for a changed path
+  --replace-node <path>  Replace a node identity for a changed path
+  --root <path>          Project root
+  --json                 Print machine-readable JSON
