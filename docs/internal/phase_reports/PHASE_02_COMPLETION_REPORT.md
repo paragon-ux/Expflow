@@ -6,7 +6,7 @@
 **Verdict:** pending independent phase review
 **Integration base:** `43db9b2dd55731282c967620406191fcebfba843`
 **Phase branch:** `feat/build-week-phase-02-gui-foundation`
-**Candidate head:** pending commit
+**Candidate head:** `f148ecee3646da889f69dde3eff35e8f9235c8a7`
 
 ## Runtime versions
 
@@ -91,9 +91,9 @@ Documentation:
 
 ## Full validation
 
-| Command            | Evaluated state                          | Exit | Result                                                                                                                                                                                                 |
-| ------------------ | ---------------------------------------- | ---: | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `npm run validate` | Phase 2 candidate worktree before commit |    0 | PASS - config references, skill contracts, protected surfaces, format, lint, typecheck, 19 test files / 151 tests, contracts, registries, schemas, examples, fixtures, build, and package verification |
+| Command            | Evaluated state                                                              | Exit | Result                                                                                                                                                                                                 |
+| ------------------ | ---------------------------------------------------------------------------- | ---: | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `npm run validate` | Phase 2 candidate worktree before `f148ecee3646da889f69dde3eff35e8f9235c8a7` |    0 | PASS - config references, skill contracts, protected surfaces, format, lint, typecheck, 19 test files / 151 tests, contracts, registries, schemas, examples, fixtures, build, and package verification |
 
 ## Compatibility audit
 
@@ -137,5 +137,5 @@ The external launcher was run with `--phase 2 --json` and returned `status: read
 Phase 2 implementation is in candidate preparation. Next required actions:
 
 1. Run full candidate validation.
-2. Commit the stable candidate head.
+2. Commit this administrative candidate-report alignment.
 3. Invoke one comprehensive independent Phase 2 review.
