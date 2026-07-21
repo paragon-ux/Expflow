@@ -12,6 +12,7 @@ const restoreForce = document.querySelector('#restore-force');
 const receiptId = document.querySelector('#receipt-id');
 
 let lastPayload = {};
+let lastSyncPlan = null;
 
 function rootPayload() {
   return { root: rootInput.value.trim() };
@@ -84,6 +85,7 @@ async function run(label, target, path, body, renderer) {
   try {
     const payload = await request(path, body);
     renderResult(target, payload, renderer);
+    return payload;
   } catch (error) {
     const payload = {
       data: null,
@@ -103,6 +105,7 @@ async function run(label, target, path, body, renderer) {
       },
     };
     renderResult(target, payload, () => '');
+    return payload;
   }
 }
 
@@ -206,14 +209,58 @@ document.querySelector('#verify-button').addEventListener('click', () => {
 });
 
 document.querySelector('#plan-sync-button').addEventListener('click', () => {
-  void run('Planning sync...', syncPanel, '/api/sync/plan', rootPayload(), renderSyncPlan);
+  void (async () => {
+    const payload = await run(
+      'Planning sync...',
+      syncPanel,
+      '/api/sync/plan',
+      rootPayload(),
+      renderSyncPlan,
+    );
+    lastSyncPlan = payload.error ? null : payload.data;
+  })();
 });
 
 document.querySelector('#sync-button').addEventListener('click', () => {
+  if (lastSyncPlan === null) {
+    renderResult(
+      syncPanel,
+      {
+        data: null,
+        error: {
+          code: 'sync_preview_required',
+          message: 'Sync execution requires a current preview.',
+          recoverable: true,
+          recommended_action: 'Run Preview, then commit the displayed plan.',
+        },
+        root: rootInput.value.trim(),
+        state: 'blocked',
+        technical_details: {
+          native_authority: 'Expflow',
+          operation: 'sync.execute',
+          raw_storage_access: false,
+          surface: 'Expflow GUI client',
+        },
+      },
+      () => '',
+    );
+    return;
+  }
   if (!window.confirm('Commit the current sync plan as a new Expflow project version?')) {
     return;
   }
-  void run('Committing sync...', syncPanel, '/api/sync', rootPayload(), renderReceipt);
+  void (async () => {
+    const payload = await run(
+      'Committing sync...',
+      syncPanel,
+      '/api/sync',
+      { ...rootPayload(), expectedHead: lastSyncPlan.previous_head },
+      renderReceipt,
+    );
+    if (!payload.error) {
+      lastSyncPlan = null;
+    }
+  })();
 });
 
 document.querySelector('#history-button').addEventListener('click', () => {

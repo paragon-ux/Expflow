@@ -1,9 +1,9 @@
 # Phase 2 Completion Report - Expflow GUI Foundation
 
-**Status:** candidate, review pending
+**Status:** remediation complete, closure review pending
 **Phase:** 2 - Expflow GUI Foundation
 **Gate:** BW-A - UX Control Surface Ready
-**Verdict:** pending independent phase review
+**Verdict:** phase review BLOCK; F1 fixed pending closure review
 **Integration base:** `43db9b2dd55731282c967620406191fcebfba843`
 **Phase branch:** `feat/build-week-phase-02-gui-foundation`
 **Candidate head:** `f148ecee3646da889f69dde3eff35e8f9235c8a7`
@@ -35,6 +35,12 @@ Phase 2 establishes the first local Expflow GUI client over documented applicati
 | P2-10 | Accessibility         | No GUI                                                | Medium | Codex | complete | Labels, keyboard-focus styles, semantic sections, reduced decorative motion                                 | GUI shell accessibility-control test                                     |
 | P2-11 | Security              | No GUI server                                         | High   | Codex | complete | Local Node server, fixed route table, JSON body limit, no shell construction, path-contained static serving | GUI shell server contract test; server smoke                             |
 | P2-12 | Packaging             | No GUI package boundary                               | Medium | Codex | complete | `apps/gui/` remains outside `package.json` `files`; bridge export is packaged                               | `npm run package:verify` checks exported bridge and excludes `apps/gui/` |
+
+## Phase review finding ledger
+
+| ID  | Status                       | Disposition                                                     | Evidence                                                                                                                                                                                                                                                                                                                  |
+| --- | ---------------------------- | --------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| F1  | fixed pending closure review | GUI sync execution was not bound to the previewed material head | Bridge sync execution now requires `expectedHead`; browser sync execution stores the last preview and sends `expectedHead: lastSyncPlan.previous_head`; focused regression covers missing-preview refusal and stale-head refusal after an intervening sync. Focused GUI tests and full validation pass after remediation. |
 
 ## Delivered surfaces
 
@@ -82,18 +88,23 @@ Documentation:
 | --------------------------------------------------------------------------- | ---------------------------- | ---: | --------------------------------------------------------------------------------------------- |
 | `npx vitest run tests/unit/gui-bridge.test.ts`                              | Phase 2 worktree             |    0 | PASS - 4 tests                                                                                |
 | `npx vitest run tests/unit/gui-bridge.test.ts tests/unit/gui-shell.test.ts` | Phase 2 worktree             |    0 | PASS - 7 tests                                                                                |
+| `npx vitest run tests/unit/gui-bridge.test.ts tests/unit/gui-shell.test.ts` | F1 remediation worktree      |    0 | PASS - 8 tests                                                                                |
 | `npm run typecheck`                                                         | Phase 2 worktree             |    0 | PASS                                                                                          |
 | `npm run lint`                                                              | Phase 2 worktree             |    0 | PASS                                                                                          |
 | `npm run format:check`                                                      | Phase 2 worktree             |    0 | PASS                                                                                          |
 | `npm run build`                                                             | Phase 2 worktree             |    0 | PASS                                                                                          |
 | Node GUI server smoke on `127.0.0.1:4183`                                   | Phase 2 worktree after build |    0 | PASS - `/api/status` returned HTTP 200 with `state: empty` and `raw_storage_access: false`    |
 | `npm run package:verify`                                                    | Phase 2 worktree             |    0 | PASS - package installs outside checkout, exports `createGuiBridge`, and excludes `apps/gui/` |
+| `npm run build`                                                             | F1 remediation worktree      |    0 | PASS                                                                                          |
+| Node GUI server smoke on `127.0.0.1:4183`                                   | F1 remediation worktree      |    0 | PASS - `/api/status` returned HTTP 200 with `state: empty` and `raw_storage_access: false`    |
+| `npm run package:verify`                                                    | F1 remediation worktree      |    0 | PASS - package installs outside checkout and reports `1.0.1`                                  |
 
 ## Full validation
 
 | Command            | Evaluated state                                                              | Exit | Result                                                                                                                                                                                                 |
 | ------------------ | ---------------------------------------------------------------------------- | ---: | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | `npm run validate` | Phase 2 candidate worktree before `f148ecee3646da889f69dde3eff35e8f9235c8a7` |    0 | PASS - config references, skill contracts, protected surfaces, format, lint, typecheck, 19 test files / 151 tests, contracts, registries, schemas, examples, fixtures, build, and package verification |
+| `npm run validate` | F1 remediation worktree                                                      |    0 | PASS - config references, skill contracts, protected surfaces, format, lint, typecheck, 19 test files / 152 tests, contracts, registries, schemas, examples, fixtures, build, and package verification |
 
 ## Compatibility audit
 
@@ -134,8 +145,7 @@ The external launcher was run with `--phase 2 --json` and returned `status: read
 
 ## Handoff state
 
-Phase 2 implementation is in candidate preparation. Next required actions:
+Phase 2 implementation and F1 remediation are complete pending closure review. Next required actions:
 
-1. Run full candidate validation.
-2. Commit this administrative candidate-report alignment.
-3. Invoke one comprehensive independent Phase 2 review.
+1. Commit the F1 remediation.
+2. Invoke bounded closure review for F1 and direct remediation regressions.

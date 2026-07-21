@@ -210,6 +210,16 @@ export function createGuiBridge(runtime: ExpflowRuntime = createRuntime()): GuiB
 
     executeSync(input: SyncInput = {}): Promise<GuiOperationResult<OperationReceiptRecord>> {
       return guarded('sync.execute', input.root, async (root) => {
+        if (input.expectedHead === undefined) {
+          throw new ExpflowError(
+            'sync_preview_required',
+            'Sync execution requires a previewed material head.',
+            {
+              recoverable: true,
+              recommendedAction: 'Run a sync preview again, then commit the displayed plan.',
+            },
+          );
+        }
         const receipt = await runtime.sync({ ...input, dryRun: false, root });
         return result({
           data: receipt,

@@ -13,10 +13,10 @@ function cleanup(root: string): void {
 }
 
 function requireValue(value: string | null | undefined): string {
-  expect(value).toMatch(/^ef/);
   if (value === null || value === undefined) {
     throw new Error('Expected value to be present.');
   }
+  expect(value).toMatch(/^ef/);
   return value;
 }
 
@@ -49,8 +49,9 @@ describe('Expflow GUI bridge', () => {
       const plan = await bridge.planSync({ root });
       expect(plan.state).toBe('success');
       expect(plan.data?.change_details.map((detail) => detail.relative_path)).toEqual(['note.txt']);
+      const planHead = plan.data?.previous_head;
 
-      const synced = await bridge.executeSync({ root });
+      const synced = await bridge.executeSync({ expectedHead: planHead, root });
       expect(synced.state).toBe('success');
       const syncedHead = requireValue(synced.data?.new_head);
 
@@ -71,10 +72,15 @@ describe('Expflow GUI bridge', () => {
       const bridge = createGuiBridge();
       await bridge.initializeProject({ root });
       writeFileSync(join(root, 'note.txt'), 'one\n');
-      const first = await bridge.executeSync({ root });
+      const firstPreview = await bridge.planSync({ root });
+      const first = await bridge.executeSync({
+        expectedHead: firstPreview.data?.previous_head,
+        root,
+      });
       const firstHead = requireValue(first.data?.new_head);
       writeFileSync(join(root, 'note.txt'), 'two\n');
-      await bridge.executeSync({ root });
+      const secondPreview = await bridge.planSync({ root });
+      await bridge.executeSync({ expectedHead: secondPreview.data?.previous_head, root });
       writeFileSync(join(root, 'note.txt'), 'local drift\n');
 
       const reference = `tree:${firstHead}`;
@@ -90,6 +96,30 @@ describe('Expflow GUI bridge', () => {
       const restored = await bridge.executeRestore({ overwrite: true, reference, root });
       expect(restored.state).toBe('success');
       expect(restored.data?.warnings).toContain('overwrote_unrecorded_changes');
+    } finally {
+      cleanup(root);
+    }
+  });
+
+  test('blocks sync execution when the previewed head is missing or stale', async () => {
+    const root = tempProject();
+    try {
+      const bridge = createGuiBridge();
+      await bridge.initializeProject({ root });
+      writeFileSync(join(root, 'a.txt'), 'one\n');
+      const preview = await bridge.planSync({ root });
+      const previewHead = preview.data?.previous_head;
+
+      const missingPreview = await bridge.executeSync({ root });
+      expect(missingPreview.state).toBe('blocked');
+      expect(missingPreview.error?.code).toBe('sync_preview_required');
+
+      await bridge.executeSync({ expectedHead: previewHead, root });
+      writeFileSync(join(root, 'a.txt'), 'two\n');
+
+      const staleExecution = await bridge.executeSync({ expectedHead: previewHead, root });
+      expect(staleExecution.state).toBe('blocked');
+      expect(staleExecution.error?.code).toBe('stale_head');
     } finally {
       cleanup(root);
     }

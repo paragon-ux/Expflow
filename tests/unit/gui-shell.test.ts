@@ -31,6 +31,8 @@ describe('Expflow GUI shell contract', () => {
     const app = read('apps/gui/src/app.js');
 
     expect(app).toContain('Commit the current sync plan');
+    expect(app).toContain('sync_preview_required');
+    expect(app).toContain('expectedHead: lastSyncPlan.previous_head');
     expect(app).toContain('Restore will create a forward commit');
     expect(app).toContain('/api/sync/plan');
     expect(app).toContain('/api/restore/plan');
