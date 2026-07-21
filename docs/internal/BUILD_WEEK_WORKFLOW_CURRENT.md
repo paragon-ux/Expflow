@@ -176,12 +176,12 @@ Every phase requires working behavior, tests, documentation, evidence, and an ac
 
 ## 6. Gates
 
-| Gate | Phases | Purpose | Exit state |
-| --- | ---: | --- | --- |
-| **BW-A — UX Control Surface Ready** | 1–2 | Repair the ordinary CLI and establish the local GUI foundation. | Existing material capability is understandable, inspectable, and safe through documented surfaces. |
-| **BW-B — Workflow Portability Surface Ready** | 3–5 | Expose stable read models, ingest attributed evidence, and package portable workflow state. | Differentiating Expflow records are usable through application surfaces and portable packages. |
-| **BW-C — Pilot Proven** | 6–7 | Close evidence-backed gaps and execute a real pilot. | Product claims are tied to observed workflows, failures, and measurements. |
-| **BW-D — Causal Integration Ready** | 8–9 | Add the Expflow Guerilla profile and causal event GUI. | Cross-system events are inspectable while retaining native authority. |
+| Gate                                          | Phases | Purpose                                                                                     | Exit state                                                                                         |
+| --------------------------------------------- | -----: | ------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
+| **BW-A — UX Control Surface Ready**           |    1–2 | Repair the ordinary CLI and establish the local GUI foundation.                             | Existing material capability is understandable, inspectable, and safe through documented surfaces. |
+| **BW-B — Workflow Portability Surface Ready** |    3–5 | Expose stable read models, ingest attributed evidence, and package portable workflow state. | Differentiating Expflow records are usable through application surfaces and portable packages.     |
+| **BW-C — Pilot Proven**                       |    6–7 | Close evidence-backed gaps and execute a real pilot.                                        | Product claims are tied to observed workflows, failures, and measurements.                         |
+| **BW-D — Causal Integration Ready**           |    8–9 | Add the Expflow Guerilla profile and causal event GUI.                                      | Cross-system events are inspectable while retaining native authority.                              |
 
 A later phase MUST NOT begin before the preceding phase exits.
 

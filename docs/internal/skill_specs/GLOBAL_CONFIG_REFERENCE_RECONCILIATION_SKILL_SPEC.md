@@ -290,14 +290,14 @@ CI MUST NOT:
 
 ## Authorization Matrix
 
-| Mode | Create contract/checker | Install hook manager |
-| --- | --- | --- |
-| Use existing enforcement | No | No |
-| Reconcile reference or role | No | No |
-| Diagnose failure | Only explicit repair authorization | No |
-| Bootstrap repository controls | Yes, explicitly requested | No |
-| Integrate hook manager | No new checker unless separately authorized | Yes, explicitly requested |
-| Full installation | Yes | Yes |
+| Mode                          | Create contract/checker                     | Install hook manager      |
+| ----------------------------- | ------------------------------------------- | ------------------------- |
+| Use existing enforcement      | No                                          | No                        |
+| Reconcile reference or role   | No                                          | No                        |
+| Diagnose failure              | Only explicit repair authorization          | No                        |
+| Bootstrap repository controls | Yes, explicitly requested                   | No                        |
+| Integrate hook manager        | No new checker unless separately authorized | Yes, explicitly requested |
+| Full installation             | Yes                                         | Yes                       |
 
 ## Prohibitions
 

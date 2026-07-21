@@ -64,14 +64,14 @@ git status --short
 
 The repository contract must declare:
 
-* the reference checker command;
-* the skill-contract checker command;
-* the protected-surface checker command;
-* the marker token;
-* semantic roles;
-* governed source surfaces;
-* protected target patterns;
-* the protected sidecar.
+- the reference checker command;
+- the skill-contract checker command;
+- the protected-surface checker command;
+- the marker token;
+- semantic roles;
+- governed source surfaces;
+- protected target patterns;
+- the protected sidecar.
 
 Use repository-relative paths only.
 
@@ -135,9 +135,9 @@ Declare:
 
 Each command must return:
 
-* exit `0` on success;
-* non-zero on failure;
-* actionable diagnostics.
+- exit `0` on success;
+- non-zero on failure;
+- actionable diagnostics.
 
 Unknown arguments must fail.
 
@@ -147,12 +147,12 @@ Unknown arguments must fail.
 
 Create valid initial state:
 
-* `AGENTS.md` contains marked references to `docs/doc-a.md` and the protected document.
-* `docs/doc-a.md` contains a mutable Config Reference Index listing `AGENTS.md`.
-* The protected sidecar lists the inbound reference from `AGENTS.md` to the protected document.
-* The protected document contains ordinary immutable content.
-* `test-skill/SKILL.md` has valid frontmatter and required-reading roles.
-* Every role resolves.
+- `AGENTS.md` contains marked references to `docs/doc-a.md` and the protected document.
+- `docs/doc-a.md` contains a mutable Config Reference Index listing `AGENTS.md`.
+- The protected sidecar lists the inbound reference from `AGENTS.md` to the protected document.
+- The protected document contains ordinary immutable content.
+- `test-skill/SKILL.md` has valid frontmatter and required-reading roles.
+- Every role resolves.
 
 Run:
 
@@ -396,8 +396,8 @@ An unchanged unrelated file must not hide an already staged protected edit.
 
 Create two temporary commits:
 
-* base commit: protected document unchanged;
-* head commit: protected document modified.
+- base commit: protected document unchanged;
+- head commit: protected document modified.
 
 Run:
 
@@ -475,11 +475,11 @@ The checker must reject unknown arguments.
 
 Create a skill with:
 
-* valid `name`;
-* valid `description`;
-* required-reading roles;
-* no duplicated concrete required-reading paths;
-* no machine-absolute paths.
+- valid `name`;
+- valid `description`;
+- required-reading roles;
+- no duplicated concrete required-reading paths;
+- no machine-absolute paths.
 
 Run:
 
@@ -545,9 +545,9 @@ FAIL
 
 Test separately:
 
-* missing `name`;
-* missing `description`;
-* malformed YAML.
+- missing `name`;
+- missing `description`;
+- malformed YAML.
 
 Each must fail.
 
@@ -662,10 +662,10 @@ Perform a normal reference reconciliation.
 
 Verify:
 
-* no hook manager was installed;
-* `.git/hooks` was not edited;
-* no CI file was created or changed;
-* no package manager was added.
+- no hook manager was installed;
+- `.git/hooks` was not edited;
+- no CI file was created or changed;
+- no package manager was added.
 
 Expected:
 
@@ -683,9 +683,9 @@ The global manager must stop and report the missing role.
 
 It must not:
 
-* search broadly and substitute a file;
-* create a new document;
-* invent a replacement path.
+- search broadly and substitute a file;
+- create a new document;
+- invent a replacement path.
 
 Expected:
 
@@ -747,17 +747,17 @@ The correct evaluation question is whether the repository-owned protected-surfac
 
 Return `GO` only when:
 
-* all valid reference transactions pass;
-* incomplete reference transactions fail;
-* protected references route through the sidecar;
-* direct protected-body edits fail;
-* protected deletion and rename fail;
-* staged and commit-range protected checks pass;
-* role errors fail deterministically;
-* full-snapshot skill validation catches unchanged stale dependencies;
-* relocation tests pass;
-* repository checks remain independent of the global skill;
-* no machine paths are persisted.
+- all valid reference transactions pass;
+- incomplete reference transactions fail;
+- protected references route through the sidecar;
+- direct protected-body edits fail;
+- protected deletion and rename fail;
+- staged and commit-range protected checks pass;
+- role errors fail deterministically;
+- full-snapshot skill validation catches unchanged stale dependencies;
+- relocation tests pass;
+- repository checks remain independent of the global skill;
+- no machine paths are persisted.
 
 ## CONDITIONAL GO
 
@@ -767,9 +767,9 @@ Return `CONDITIONAL GO` only when repository protection works and the remaining 
 
 Return `NO-GO` when:
 
-* protected-body mutation passes the protected-surface checker;
-* protected enforcement exists only as skill prose;
-* repository checks require the global skill installation;
-* missing roles trigger path guessing;
-* only changed files are checked and unchanged stale dependencies survive;
-* staged and commit-range modes disagree.
+- protected-body mutation passes the protected-surface checker;
+- protected enforcement exists only as skill prose;
+- repository checks require the global skill installation;
+- missing roles trigger path guessing;
+- only changed files are checked and unchanged stale dependencies survive;
+- staged and commit-range modes disagree.

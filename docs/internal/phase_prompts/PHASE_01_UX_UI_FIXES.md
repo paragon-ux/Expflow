@@ -114,8 +114,8 @@ No GUI implementation belongs in Phase 1.
 
 Create a Phase 1 finding table:
 
-| ID | Finding | Reproduction | Severity | Decision | Implementation evidence | Test evidence |
-| --- | --- | --- | --- | --- | --- | --- |
+| ID  | Finding | Reproduction | Severity | Decision | Implementation evidence | Test evidence |
+| --- | ------- | ------------ | -------- | -------- | ----------------------- | ------------- |
 
 At minimum, cover:
 
