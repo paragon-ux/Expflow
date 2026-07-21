@@ -100,9 +100,18 @@ try {
     'sync',
     'status',
     'restore',
+    'Run "expflow <command> --help"',
     'Gate B implements local material-core',
   ]) {
     assertContains(helpOutput, expected);
+  }
+  const statusHelp = run(cliPath, ['status', '--help'], installDir);
+  for (const expected of ['--history', '--node-history <path>', '--history-limit <n>']) {
+    assertContains(statusHelp, expected);
+  }
+  const restoreHelp = run(cliPath, ['restore', '--help'], installDir);
+  for (const expected of ['--dry-run', '--force', '--target-path <path>']) {
+    assertContains(restoreHelp, expected);
   }
 
   const projectDir = resolve(tempRoot, 'project');
@@ -111,6 +120,8 @@ try {
   assertContains(initOutput, '"status": "committed"');
   const statusOutput = run(cliPath, ['status', '--root', projectDir, '--json'], installDir);
   assertContains(statusOutput, '"working_tree_state": "clean"');
+  const statusHumanOutput = run(cliPath, ['status', '--root', projectDir], installDir);
+  assertContains(statusHumanOutput, 'Current project version');
 
   const importOutput = run(
     nodeCommand,

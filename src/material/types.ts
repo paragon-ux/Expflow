@@ -172,6 +172,9 @@ export interface StatusReportRecord {
   readonly working_tree_state: 'clean' | 'drifted' | 'invalid' | 'uninitialized';
   readonly generated_at: string;
   readonly pending_changes?: readonly object[];
+  readonly pending_change_details?: readonly object[];
+  readonly revision_history?: readonly object[];
+  readonly node_history?: readonly object[];
   readonly unresolved_items: readonly string[];
   readonly open_conflict_refs?: readonly string[];
   readonly review_request_refs?: readonly string[];

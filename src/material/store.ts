@@ -369,6 +369,17 @@ export function nextNodeRevisionNumber(projectRoot: string, nodeId: string): num
   return revisions.length === 0 ? 1 : Math.max(...revisions) + 1;
 }
 
+export function listNodeRevisions(projectRoot: string, nodeId: string): NodeRevisionRecord[] {
+  const dir = resolve(storePaths(projectRoot).nodeRevisions, nodeId);
+  if (!existsSync(dir)) {
+    return [];
+  }
+  return readdirSync(dir)
+    .filter((file) => /^([0-9]+)\.json$/.test(file))
+    .map((file) => readJsonFile(resolve(dir, file)) as NodeRevisionRecord)
+    .sort((left, right) => left.revision - right.revision);
+}
+
 export function writeTreeRevision(projectRoot: string, record: TreeRevisionRecord): void {
   verifyTreeContentDigest(record);
   writeImmutableJsonRecord(
