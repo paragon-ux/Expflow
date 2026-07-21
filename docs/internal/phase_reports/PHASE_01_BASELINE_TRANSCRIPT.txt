@@ -1,0 +1,124 @@
+# Phase 1 baseline ('before') CLI transcript
+# Baseline: Expflow v1.0.1 @ 99ad975a2b3e1f4b6c67020b219db7ff6d64acf7 (branch feat/build-week-governance)
+# Invocation: node dist/cli/index.js <args> from a clean temp directory
+# Date: 2026-07-21T11:13:49Z
+
+$ expflow status
+uninitialized
+[exit 0]
+
+$ expflow init
+initialized efp_AM2ECF7HX3448WPFHN0V8ZXK5K at eft_66Q4JXAAGXGWDTBY86QZP3P2X6
+[exit 0]
+
+$ expflow status
+drifted
+[exit 0]
+
+$ expflow sync --dry-run
+dry-run 2 node revision(s)
+[exit 0]
+
+$ expflow status --json
+{
+  "schema_version": "2.3",
+  "automation_state": {
+    "failed_hooks": [],
+    "pending_hooks": []
+  },
+  "generated_at": "2026-07-21T11:13:50.944Z",
+  "head_tree_revision_id": "eft_66Q4JXAAGXGWDTBY86QZP3P2X6",
+  "manifest_heads": {},
+  "pending_changes": [
+    {
+      "kind": "node_revision",
+      "revision": "efn_V6NN8N7CXC0TPM8J3YNHCDWPC8@1"
+    },
+    {
+      "kind": "node_revision",
+      "revision": "efn_JRQEDTG66X2JR46BF63S131QX4@1"
+    }
+  ],
+  "project_id": "efp_AM2ECF7HX3448WPFHN0V8ZXK5K",
+  "recommended_action": "Run expflow sync to commit drift.",
+  "unresolved_items": [],
+  "working_tree_state": "drifted"
+}
+[exit 0]
+
+$ expflow sync
+committed eft_P9ZMKVJYSAJGSWQFB9HCZ74Y2W
+[exit 0]
+
+$ expflow status
+clean
+[exit 0]
+
+$ expflow sync --dry-run
+dry-run 0 node revision(s)
+[exit 0]
+
+$ expflow status
+drifted
+[exit 0]
+
+$ expflow sync --dry-run
+dry-run 1 node revision(s)
+[exit 0]
+
+$ expflow restore --dry-run HEAD
+expflow: Unsupported restore reference: HEAD
+[exit 1]
+
+$ expflow restore
+expflow: restore requires a tree:<id> or node:<id>@<revision>:<path> reference
+[exit 1]
+
+$ expflow frobnicate
+expflow: unknown command 'frobnicate'. Use --help for usage.
+[exit 2]
+
+$ expflow sync --bogus-flag
+committed eft_AZHJFQE75J8P3A5KSFMRFME11T
+[exit 0]
+
+$ expflow --help
+Expflow - schema-governed workflow ownership and observability
+
+USAGE
+  expflow <command> [options]
+
+ORDINARY COMMANDS
+  init       Initialize a new Expflow project
+  sync       Observe and commit material changes
+  status     Report integrated project status
+  restore    Restore a prior revision
+
+OPTIONS
+  --root <path>     Project root (defaults to current directory)
+  --json            Print machine-readable JSON
+  --dry-run         For sync, print the candidate plan without committing
+  --help, -h        Print this help and exit
+  --version, -v     Print version and exit
+
+Gate B implements local material-core behavior only. Adapter inspection,
+change cursors, request idempotency, and reconciliation are not core commands.
+[exit 0]
+
+$ expflow init --help
+expflow: Expflow project already exists.
+[exit 1]
+
+$ expflow sync --help
+no_change eft_AZHJFQE75J8P3A5KSFMRFME11T
+[exit 0]
+
+$ expflow restore --help
+expflow: Unsupported restore reference: --help
+[exit 1]
+
+$ expflow status --help
+clean
+[exit 0]
+
+# sandbox was: /tmp/tmp.FpfvPY67Kg
