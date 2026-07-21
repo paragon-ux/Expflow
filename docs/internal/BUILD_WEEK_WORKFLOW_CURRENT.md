@@ -1,560 +1,846 @@
 # Expflow Build Week Workflow
 
-**Version:** 2.0  
+**Version:** 3.0  
 **Status:** active authoritative execution workflow  
-**Baseline:** Expflow `v1.0.1`  
-**Current gate:** BW-A  
-**Current phase:** Phase 1 — Ordinary UX/UI Corrections  
-**Primary execution agent:** Kimi until superseded  
-**Historical predecessor:** completed Expflow v1 Gates A–D  
-**Integration direction:** profile-driven Guerilla causal events; not a state-owning adapter
+**Baseline:** Expflow `v1.0.1` plus accepted post-release phase merges  
+**Program:** Build Week Phases 1–9  
+**Review model:** one comprehensive phase review, bounded closure, one gate review at gate exit  
+**Execution model:** repository-local parent orchestrator with one independent read-only reviewer  
+**Integration direction:** profile-driven Guerilla causal events without native-state ownership
 
-The key words **MUST**, **MUST NOT**, **REQUIRED**, **SHALL**, **SHALL NOT**, **SHOULD**, and **SHOULD NOT** are definitive requirements.
+The words **MUST**, **MUST NOT**, **REQUIRED**, **SHALL**, **SHALL NOT**, **SHOULD**, and **SHOULD NOT** are normative.
 
 ---
 
 ## 1. Authority and purpose
 
-This document is the active Build Week execution authority.
+This document owns:
 
-It owns:
-
-- the current baseline;
 - gate and phase order;
-- locked Build Week invariants;
-- phase authorization;
-- required deliverables;
-- evidence standards;
-- phase and gate entry and exit rules;
-- reporting;
-- state advancement;
+- authorization;
+- branch and merge progression;
+- phase and gate acceptance;
+- review cadence;
+- validation cadence;
+- evidence requirements;
+- status advancement;
 - recovery and handoff.
 
-`AGENTS.md` routes agents to this document and preserves cross-cutting repository invariants. It does not replace this workflow.
+`AGENTS.md` supplies routing and cross-cutting invariants.
 
-The historical Expflow v1 Gates A–D remain completed build evidence. They are not continued or renumbered by this workflow.
+Phase prompts supply detailed implementation contracts.
 
----
+The precision-review skill supplies reviewer procedure.
 
-## 2. Repository-only operating model
-
-The Build Week control surface is installed directly in the active Expflow repository.
-
-The workflow MUST NOT depend on:
-
-- `Expflow-Test/`;
-- `Expflow-Test-*`;
-- a nested Build Week package;
-- a package archive;
-- a user-home skill path;
-- an external harness path;
-- machine-local review sandboxes.
-
-Durable findings from retired external repositories MUST be represented by repository-owned tests, reports, fixtures, specifications, or evidence manifests before those repositories are removed.
-
-Historical reports MAY retain original execution locations as factual provenance. Active execution instructions MUST use current repository roles and paths.
+No external launcher, chat prompt, branch name, agent memory, or completion claim overrides this workflow.
 
 ---
 
-## 3. Required pass-start order
+## 2. Efficiency principles
 
-Every pass MUST read and execute:
+Build Week uses four control layers:
 
-1. orientation index;
-2. repository build guidance;
-3. Build Week execution orientation;
-4. root and applicable nested governance;
-5. immutable architecture and normative contracts relevant to the phase;
-6. this workflow;
-7. machine-readable active state and active phase manifest;
-8. role-resolved status and glossary;
-9. active phase prompt;
-10. required local skills;
-11. relevant source and tests;
-12. accepted reports as findings to reproduce.
+1. **workstream checks** — narrow, frequent, implementation-owned;
+2. **phase candidate validation** — broad, once per candidate;
+3. **phase precision review** — comprehensive, once per phase;
+4. **gate review** — aggregate, once at the gate boundary.
 
-Required operational paths MUST resolve through `.config-reference-reconciliation.yaml`.
+Do not collapse these layers.
 
-A missing or ambiguous required role is a hard stop.
+Do not repeat a broader layer when a narrower layer is sufficient.
 
----
+The Phase 1 execution history established these process corrections:
 
-## 4. Current determination
-
-At workflow entry:
-
-- Expflow `v1.0.1` is the exact implementation baseline.
-- Historical v1 Gates A–D are complete and closed.
-- No post-v1.0.1 behavior is claimed without evidence.
-- The ordinary CLI remains `init`, `sync`, `status`, and `restore`.
-- Advanced authority, semantic, workflow, projection, reproduction, security, and migration families remain primarily library-facing.
-- No completed Expflow GUI is claimed.
-- No portable workflow package is claimed.
-- No external pilot or empirical evaluation is claimed.
-- No completed Expflow Guerilla profile or causal event GUI is claimed.
-
-Phase 1 is the only authorized implementation phase until its report is accepted and Gate BW-A advances according to this workflow.
+- a reviewer loop must not become an unlimited rediscovery loop;
+- a remediation re-review must not reopen unrelated phase surfaces;
+- evidence-only corrections must not trigger production-level review and validation by default;
+- repository-local skills must be installed and contract-checked before a phase begins;
+- expensive validation must be tied to changed risk, not narration milestones;
+- the orchestrator’s own inspection is not a substitute for independent review;
+- independent review should not duplicate a prior self-review artifact;
+- a transient test-runner failure may be rerun once but must remain recorded;
+- exact full commit hashes must be used in durable reports;
+- no phase work begins while the prior phase acceptance is unresolved.
 
 ---
 
-## 5. Locked Build Week invariants
+## 3. Repository and branch model
 
-### 5.1 Native authority
+Keep `main` protected.
 
-Native systems remain authoritative for their native state.
-
-Guerilla observes, classifies, and links native operations. It MUST NOT repair or replace Expflow-native state.
-
-### 5.2 Four-command boundary
-
-The ordinary Expflow CLI remains:
+Use one rolling integration branch:
 
 ```text
-init
-sync
-status
-restore
+feat/build-week-integration
 ```
 
-No phase may add a fifth ordinary command without an explicit architecture and compatibility decision.
+An existing non-protected branch may serve as the integration branch when repository history already establishes it and rewriting would add risk.
 
-### 5.3 Query and error compatibility
-
-- uninitialized `status` exits `0`;
-- operational mutation failures exit `1`;
-- unknown commands exit `2`.
-
-### 5.4 Restore
-
-Restore remains:
-
-- byte-exact;
-- append-only;
-- forward-committing;
-- recoverable;
-- non-destructive to recorded history.
-
-Phase 1 adds preview, affected-path disclosure, conflicting-drift detection, refusal by default, and explicit override.
-
-### 5.5 Identity
-
-Provisional identity MUST be visible as provisional to machine consumers and to humans when shown.
-
-A provisional ID MUST NOT be described as committed or durable.
-
-### 5.6 GUI
-
-The approved name is **Expflow GUI**.
-
-The implementation root is:
+Create one branch per phase from the current integration tip:
 
 ```text
-apps/gui/
+feat/build-week-phase-02-gui-foundation
+feat/build-week-phase-03-stable-read-models
+feat/build-week-phase-04-evidence-authority
+feat/build-week-phase-05-portable-package
+fix/build-week-phase-06-gap-closure
+feat/build-week-phase-07-pilot-evaluation
+feat/build-week-phase-08-guerilla-contracts
+feat/build-week-phase-09-causal-event-gui
 ```
 
-The GUI MUST consume documented application surfaces and MUST NOT treat raw `.expflow` storage as an application contract.
+Do not stack a new phase on an unmerged phase branch.
 
-### 5.7 Protected surfaces
+Each phase record must include:
 
-Repository-declared architecture and frozen release bodies remain protected.
-
-Reference reconciliation uses the declared sidecar. Body immutability is enforced by a separate repository-owned check.
-
-### 5.8 Compatibility
-
-No phase may silently break v1 command automation, persisted records, machine-readable fields, package boundaries, or public extension behavior.
-
-Breaking changes require an explicit versioning and architecture decision.
-
-### 5.9 Completion evidence
-
-Mocks, prompts, schemas, placeholders, screenshots, and success-shaped responses do not prove implementation.
-
-Every phase requires working behavior, tests, documentation, evidence, and an accepted completion report.
+- integration base;
+- phase branch;
+- candidate review head;
+- accepted head;
+- merge commit;
+- post-merge validation result.
 
 ---
 
-## 6. Gates
+## 4. Current-state resolution
 
-| Gate                                          | Phases | Purpose                                                                                     | Exit state                                                                                         |
-| --------------------------------------------- | -----: | ------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
-| **BW-A — UX Control Surface Ready**           |    1–2 | Repair the ordinary CLI and establish the local GUI foundation.                             | Existing material capability is understandable, inspectable, and safe through documented surfaces. |
-| **BW-B — Workflow Portability Surface Ready** |    3–5 | Expose stable read models, ingest attributed evidence, and package portable workflow state. | Differentiating Expflow records are usable through application surfaces and portable packages.     |
-| **BW-C — Pilot Proven**                       |    6–7 | Close evidence-backed gaps and execute a real pilot.                                        | Product claims are tied to observed workflows, failures, and measurements.                         |
-| **BW-D — Causal Integration Ready**           |    8–9 | Add the Expflow Guerilla profile and causal event GUI.                                      | Cross-system events are inspectable while retaining native authority.                              |
+At the start of any pass:
 
-A later phase MUST NOT begin before the preceding phase exits.
+1. inspect Git state;
+2. read repository orientation and relevant ADRs;
+3. read `AGENTS.md`;
+4. read this workflow;
+5. read current status and active phase;
+6. read only the active phase prompt and relevant normative sources;
+7. read the review skill before invoking a reviewer;
+8. inspect relevant source, tests, and accepted evidence.
 
-A later gate MUST NOT begin before the preceding gate returns `GO`.
+Determine current phase from repository evidence.
 
-Preparation documents MAY exist early. Later-phase source implementation MUST remain locked.
+Phase 1 must be accepted, merged, and post-merge validated before Phase 2 begins.
+
+If Phase 1 is still in review or administrative closeout, finish that bounded work first.
 
 ---
 
-# Gate BW-A — UX Control Surface Ready
+## 5. Locked invariants
 
-## 7. Phase 1 — Ordinary UX/UI Corrections
+The following apply to all phases:
 
-**Authorization:** active  
-**Controlling prompt role:** Phase 1 UX/UI prompt  
-**Objective:** repair the ordinary CLI loop without changing core architecture.
+- native systems retain native authority;
+- the ordinary CLI remains `init`, `sync`, `status`, `restore`;
+- restore remains byte-exact, append-only, recoverable, previewable, and consent-safe;
+- provisional identity remains explicit;
+- machine and persisted compatibility remain deliberate;
+- Expflow GUI is rooted at `apps/gui/`;
+- GUI and integrations use documented surfaces, not raw storage;
+- uncertainty and partial states remain visible;
+- evidence does not become authority without an explicit decision;
+- Guerilla observes and reconciles but does not repair Expflow state;
+- protected architecture and frozen release bodies remain protected;
+- no phase claims proof that its evidence does not support.
 
-Required outcomes:
+---
 
-- actionable human `status`;
-- path-level `sync --dry-run`;
-- discoverable tree and node revision references through the existing command surface;
-- tree and node restore preview;
-- affected-path disclosure;
-- conflicting-drift refusal by default;
-- explicit override when permitted;
+## 6. Gate map
+
+| Gate                                      | Phases | Primary question                                                                                       | Review depth                                        |
+| ----------------------------------------- | -----: | ------------------------------------------------------------------------------------------------------ | --------------------------------------------------- |
+| BW-A — UX Control Surface Ready           |    1–2 | Can users safely understand and operate existing material capability through CLI and GUI?              | Detailed user-safety integration review             |
+| BW-B — Workflow Portability Surface Ready |    3–5 | Are advanced records exposed, reconciled, and portable without losing authority or provenance?         | Detailed contract and round-trip integration review |
+| BW-C — Pilot Proven                       |    6–7 | Are remaining changes evidence-backed, and do real workflows support the claims?                       | Evidence and empirical-claim review                 |
+| BW-D — Causal Integration Ready           |    8–9 | Can causal events be observed and presented without replacing native authority or inventing causation? | Cross-system causal-integrity review                |
+
+A gate review is not a second phase review. It examines aggregate behavior and claims that cannot be established by one phase in isolation.
+
+---
+
+# Part I — Standard phase lifecycle
+
+## 7. Phase entry
+
+A phase may enter only when:
+
+- the preceding phase is accepted and merged;
+- post-merge validation passed;
+- the integration branch is clean;
+- the phase branch is created from the recorded integration tip;
+- required governance and skills pass repository controls;
+- the phase prompt is present and unambiguous.
+
+At entry, record:
+
+- phase number and title;
+- integration base;
+- runtime and package versions;
+- relevant inherited limitations;
+- exit criteria;
+- gate criteria when applicable;
+- protected and compatibility boundaries.
+
+### Baseline validation
+
+Run full baseline validation when:
+
+- this is the first phase after an environment or dependency change;
+- the integration tip lacks accepted current validation;
+- toolchain versions materially changed;
+- inherited state is suspect.
+
+Otherwise, cite the accepted post-merge validation from the immediate prior phase and run only phase-relevant smoke checks.
+
+This prevents eight redundant full baseline runs over an unchanged integration state.
+
+---
+
+## 8. Phase implementation
+
+Divide the phase into bounded workstreams.
+
+For each workstream:
+
+1. identify the controlling requirement;
+2. inspect the current behavior;
+3. reproduce the gap when applicable;
+4. implement the smallest coherent change;
+5. add focused tests;
+6. run focused checks;
+7. inspect the diff;
+8. checkpoint coherent work.
+
+Do not create reviewer reports during implementation.
+
+The parent orchestrator may keep an implementation finding log, but it must not masquerade as independent review or force duplicate reviewer coverage.
+
+Subagents:
+
+- may handle an isolated workstream;
+- must receive explicit scope and ownership;
+- must not spawn further agents;
+- must not act as the phase reviewer;
+- must return a diff and verification evidence to the parent.
+
+---
+
+## 9. Phase candidate
+
+Before independent review:
+
+- complete implementation;
+- complete focused tests;
+- complete required docs and examples;
+- complete the candidate phase report;
+- run config-reference, skill-contract, and protected-surface checks as applicable;
+- run full phase validation once;
+- run package verification when package surface changes;
+- commit a stable candidate head;
+- ensure the worktree is clean.
+
+The candidate report may state `review pending`.
+
+Do not repeatedly update and recommit review status while the reviewer is running.
+
+Prepare a compact review packet:
+
+- phase and title;
+- exact base, head, merge base, and diff;
+- controlling prompt;
+- relevant normative contracts;
+- changed-file summary;
+- candidate report;
+- focused and full validation results;
+- known limitations;
+- pre-existing failures.
+
+Do not send full implementation transcripts or chain-of-thought logs.
+
+---
+
+## 10. Comprehensive phase review
+
+Each phase receives exactly one comprehensive review using the repository precision-review skill.
+
+The comprehensive review:
+
+- examines all changed lines;
+- follows affected behavior into direct callers and consumers;
+- checks phase exit criteria;
+- checks compatibility and protected surfaces;
+- attempts to falsify suspicions;
+- reports only verified defects;
+- creates the frozen phase finding ledger.
+
+The result is:
+
+- `PASS`;
+- `CAUTION`;
+- `BLOCK`.
+
+`CAUTION` and `BLOCK` keep the phase open.
+
+An empty ledger is valid.
+
+The reviewer remains read-only.
+
+The parent orchestrator must reject a review that lacks skill attestation, exact target, ledger, scope audit, and verification basis.
+
+---
+
+## 11. Frozen finding ledger
+
+After comprehensive review, the finding ledger is frozen.
+
+The parent orchestrator must disposition every `F` ID as:
+
+- fixed;
+- not reproducible;
+- duplicate;
+- intentional behavior;
+- out of scope.
+
+A non-fixed disposition requires stronger repository evidence than the finding.
+
+Confirmed in-scope findings must be fixed regardless of provisional severity.
+
+The frozen ledger prevents remediation review from becoming a fresh exploratory review.
+
+---
+
+## 12. Remediation
+
+For each confirmed finding:
+
+1. reproduce it;
+2. make the smallest root-cause fix;
+3. add focused regression coverage;
+4. run focused checks;
+5. update finding dispositions;
+6. commit coherent remediation.
+
+### Full validation after remediation
+
+Rerun full validation when remediation changed:
+
+- production code;
+- schemas, registries, or compatibility contracts;
+- package exports or package contents;
+- build or test infrastructure;
+- protected-surface enforcement.
+
+Use targeted checks when remediation changed only:
+
+- report commit references;
+- review-status wording;
+- Markdown table structure;
+- formatting;
+- a non-normative evidence index.
+
+Evidence-only changes that alter a material completion claim require targeted claim verification, not a new general code review.
+
+---
+
+## 13. Focused closure review
+
+Closure review is limited to:
+
+- original frozen finding IDs;
+- remediation diff;
+- regression tests;
+- relevant validation evidence;
+- direct regressions introduced by remediation.
+
+The closure reviewer must not restart the comprehensive phase review.
+
+A new finding may be added only when:
+
+1. remediation directly introduced it; or
+2. verification of an original finding deterministically exposed the same root cause on another supported path.
+
+The reviewer must state the relationship.
+
+Unrelated observations are routed to:
+
+- the current gate review when gate-relevant;
+- Phase 6 gap closure when evidence-backed;
+- a non-blocking issue ledger;
+- a future authorized phase.
+
+They do not keep the current phase open.
+
+### Administrative closeout
+
+After closure `PASS`, the parent may correct non-material report metadata without another reviewer loop.
+
+Administrative closeout includes:
+
+- replacing abbreviated hashes with full hashes;
+- recording the accepted reviewer verdict;
+- removing stale `pending` wording;
+- aligning tables and paths;
+- formatting.
+
+The parent runs deterministic documentation and reference checks and records the correction in the final report.
+
+A new independent review is required only when the closeout changes behavioral scope, finding disposition, compatibility status, gate claim, or acceptance rationale.
+
+---
+
+## 14. Phase acceptance
+
+A non-gate-closing phase is accepted when:
+
+- implementation exit criteria pass;
+- full candidate validation passed;
+- the comprehensive review completed;
+- the frozen ledger is closed;
+- focused closure review returned `PASS` when findings existed;
+- administrative closeout is complete;
+- the phase branch is clean;
+- the final accepted code head is recorded.
+
+The accepted code head may precede a documentation-only administrative closeout commit. Both must be recorded.
+
+---
+
+## 15. Phase merge
+
+After acceptance:
+
+1. verify the integration branch remains at the expected base;
+2. merge the phase branch with an explicit merge commit;
+3. do not squash unless repository policy requires it;
+4. run post-merge validation once;
+5. record merge commit and result;
+6. update active status;
+7. authorize the next phase.
+
+Suggested message:
+
+```text
+merge(phase-N): complete <phase title>
+```
+
+Do not merge directly into `main`.
+
+### Post-merge failure
+
+A post-merge failure keeps the phase open.
+
+Create a bounded repair branch from the merge commit, fix the integration defect, run focused and full checks as appropriate, obtain focused closure review, merge the repair, and rerun post-merge validation.
+
+---
+
+# Part II — Gate lifecycle
+
+## 16. Gate review timing
+
+A gate review occurs only after the closing phase has completed its phase review and frozen ledger closure:
+
+- Phase 2 closes BW-A;
+- Phase 5 closes BW-B;
+- Phase 7 closes BW-C;
+- Phase 9 closes BW-D.
+
+The gate review evaluates the proposed aggregate gate state before the closing phase is merged, or a deterministic merge preview when available.
+
+Only one comprehensive gate review is required.
+
+Gate remediation receives bounded closure review under the same frozen-ledger rules.
+
+---
+
+## 17. Gate review scope
+
+A gate reviewer reads:
+
+- gate criteria from this workflow;
+- accepted member-phase reports;
+- phase reviewer verdicts;
+- relevant integration tests and demonstrations;
+- known limitations;
+- the proposed aggregate state.
+
+A gate reviewer does not automatically reread every changed line from every member phase.
+
+Line-level inspection is triggered only by:
+
+- contradictory phase claims;
+- cross-phase integration failure;
+- compatibility mismatch;
+- security or authority-boundary concern;
+- insufficient phase-review evidence;
+- a reproduced gate-level defect.
+
+Gate findings use `G1`, `G2`, and so on, separate from phase finding IDs.
+
+Gate findings must satisfy the same precision threshold as phase findings.
+
+---
+
+## 18. Gate-specific review depth
+
+### BW-A — UX Control Surface Ready
+
+Review end-to-end ordinary material workflows across CLI and GUI:
+
+- initialization and project selection;
+- clean, drifted, invalid, loading, empty, and error states;
+- sync preview and execution agreement;
+- revision discovery;
+- restore preview, consent, execution, and recovery;
+- CLI/GUI compatibility;
+- canonical terminology in technical details;
+- accessibility of critical operations;
+- absence of raw-store coupling.
+
+Do not re-review Phase 1 source line by line unless GUI integration exposes a contradiction.
+
+### BW-B — Workflow Portability Surface Ready
+
+Review cross-phase contract integrity:
+
+- stable read-model versioning and determinism;
+- evidence provenance and uncertainty;
+- authority acceptance boundaries;
+- correspondence and conflict state;
+- package manifest and addressing;
+- export/import round trip;
+- relocation;
+- collision behavior;
+- archive security;
+- atomicity or recovery;
+- no raw-store application dependency.
+
+Use representative end-to-end fixtures and clean-environment package tests.
+
+### BW-C — Pilot Proven
+
+Review evidence quality, not code volume:
+
+- Phase 6 changes cite reproduced evidence;
+- pilot participants, environment, timing, and workflows are attributable;
+- successes, friction, failures, recovery, decisions, and unknowns are preserved;
+- metrics derive from evidence;
+- negative results remain visible;
+- fixtures are not presented as external pilots;
+- claims are reduced or qualified where evidence is weak;
+- privacy and consent are handled.
+
+Do not block because a pilot result is unfavorable. Block only for invalid evidence, unsupported claims, or unresolved product defects that invalidate the pilot outcome.
+
+### BW-D — Causal Integration Ready
+
+Review cross-system causal integrity:
+
+- profile version and native compatibility;
+- complete command classification;
+- before/after observation semantics;
+- typed pending, unknown, failed, conflicted, and completed outcomes;
+- native authority references;
+- idempotency or deduplication;
+- causal-edge evidence;
+- secret and credential boundaries;
+- GUI use of stable event contracts;
+- no raw-store coupling;
+- no correlation presented as causation;
+- no Guerilla repair of Expflow state.
+
+---
+
+## 19. Gate acceptance and merge
+
+A gate closes when:
+
+- all member phases are accepted;
+- the gate review returns `PASS`;
+- all gate findings are closed through focused closure;
+- the closing phase head is unchanged in material behavior;
+- the proposed merged state passes required integration validation;
+- the gate report states limitations honestly.
+
+After gate `PASS`, merge the closing phase and run post-merge validation.
+
+Update current status to the next gate.
+
+---
+
+# Part III — Phase definitions
+
+## 20. Phase 1 — Ordinary UX/UI Corrections
+
+**State:** inherited completion candidate or accepted state, according to current repository evidence.
+
+Required behavior includes:
+
+- actionable human status;
+- path-level sync preview;
+- revision discovery;
+- restore preview;
+- drift refusal and explicit override;
 - explicit provisional identity;
-- labeled IDs and receipts;
+- labeled identifiers;
 - remediation-first errors;
-- backward-compatible machine output;
-- help for existing identity and concurrency flags;
-- focused and full regression evidence.
+- per-command help including exit semantics;
+- backward-compatible machine output.
 
-**Exit state:** a user can execute and understand:
-
-```text
-init -> status -> sync preview -> sync -> status -> restore preview -> restore
-```
-
-without copied scrollback, raw storage access, or internal record expertise.
-
-The active prompt contains the exact implementation contract.
+Before Phase 2, Phase 1 must have an accepted precision-review record and merge state.
 
 ---
 
-## 8. Phase 2 — Expflow GUI Foundation
+## 21. Phase 2 — Expflow GUI Foundation
 
-**Authorization:** locked until Phase 1 exits  
-**Objective:** create a local GUI client over documented Expflow read and operation surfaces.
+**Objective:** establish a local GUI over documented material operations and read models.
 
 Required outcomes:
 
-- local application shell under `apps/gui/`;
+- application shell under `apps/gui/`;
 - project selection and initialization state;
-- material state and drift view;
-- tree and node revision history;
-- sync plan review and execution;
-- restore plan review and execution;
-- operation receipt and recovery inspection;
+- material state and drift;
+- tree and node history;
+- sync plan and execution;
+- restore plan and execution;
+- receipt and recovery inspection;
 - accessible loading, empty, error, and recovery states;
-- technical-detail panels preserving canonical internal terms.
+- technical detail panels;
+- no raw `.expflow` coupling;
+- preserved CLI and machine compatibility.
 
-The GUI MUST NOT read undocumented storage or create GUI-only authority.
+Phase review is detailed on the changed GUI and operation surfaces.
 
-**Gate BW-A exit:** the ordinary material workflow is usable and safe in both CLI and GUI.
-
----
-
-# Gate BW-B — Workflow Portability Surface Ready
-
-## 9. Phase 3 — Stable Read Models
-
-**Authorization:** locked  
-**Objective:** expose stable application read models for implemented advanced record families.
-
-Required outcomes:
-
-- documented, versioned, deterministic read models;
-- stable ordering, filtering, pagination, and change inspection where required;
-- explicit proposed, accepted, rejected, superseded, conflicted, stale, partial, and unknown states;
-- no application dependency on raw store classes or undocumented paths;
-- runnable examples and coherent fixtures;
-- performance evidence on representative state.
-
-**Exit state:** existing advanced records are usable through documented application surfaces.
+BW-A gate review is end-to-end across Phase 1 CLI and Phase 2 GUI.
 
 ---
 
-## 10. Phase 4 — Evidence Intake and Authority Reconciliation
+## 22. Phase 3 — Stable Read Models
 
-**Authorization:** locked  
-**Objective:** ingest attributed partial workflow evidence and reconcile scoped authority without inventing certainty.
+**Objective:** expose deterministic versioned application read models.
 
 Required outcomes:
 
-- evidence intake envelope;
-- provenance and capture method;
+- stable schemas and versions;
+- deterministic ordering and filtering;
+- pagination where required;
+- explicit lifecycle, uncertainty, and conflict states;
+- examples and representative fixtures;
+- performance evidence;
+- no mutation through projection;
+- no raw-store application dependency.
+
+Phase review focuses on API contracts, determinism, compatibility, and consumers.
+
+No separate gate review occurs after Phase 3.
+
+---
+
+## 23. Phase 4 — Evidence Intake and Authority Reconciliation
+
+**Objective:** ingest partial attributed evidence without inventing certainty or authority.
+
+Required outcomes:
+
 - original evidence preservation;
-- normalized records;
+- provenance, attribution, and capture method;
+- normalization with source identity;
+- uncertainty and confidence;
 - authority registration and scope decisions;
 - correspondence proposals;
-- artifact clustering;
-- conflict, duplicate, unresolved, and low-confidence states;
-- user-controlled accept, reject, split, merge, or defer decisions;
-- security handling for untrusted content and secrets.
+- duplicate, conflict, unresolved, and low-confidence states;
+- accept, reject, split, merge, and defer operations;
+- security handling for untrusted evidence and secrets.
 
-**Exit state:** virtual, exported, imported, and material artifacts can be associated without erasing provenance or uncertainty.
+Phase review focuses on provenance, authority boundaries, decision auditability, and security.
+
+No separate gate review occurs after Phase 4.
 
 ---
 
-## 11. Phase 5 — Portable Workflow Package
+## 24. Phase 5 — Portable Workflow Package
 
-**Authorization:** locked  
-**Objective:** export, validate, import, and resume a workflow occurrence across environments.
+**Objective:** export, validate, relocate, import, and recover portable workflow state.
 
 Required outcomes:
 
-- versioned package manifest;
-- semantic-role and repository-relative addressing;
-- selected material and workflow references;
-- included versus external evidence policy;
-- unresolved dependency and readiness report;
-- export and import;
+- deterministic versioned manifest;
+- repository-relative and semantic addressing;
+- included and external dependency distinction;
+- unresolved dependency and readiness state;
+- identity and provenance preservation;
 - collision policy;
-- safe archive handling;
-- deterministic integrity checks;
-- relocation and round-trip tests;
-- no model requirement at runtime.
+- archive safety and resource limits;
+- integrity verification;
+- atomic import or deterministic recovery;
+- clean-environment relocation;
+- round-trip equivalence evidence.
 
-**Gate BW-B exit:** a representative workflow occurrence round-trips through a clean environment without losing material, authority, semantic, or workflow identity.
+Phase review focuses on package implementation and security.
+
+BW-B gate review covers Phases 3–5 as an integrated portability surface.
 
 ---
 
-# Gate BW-C — Pilot Proven
+## 25. Phase 6 — Evidence-Backed Gap Closure
 
-## 12. Phase 6 — Engineering and Functional Gap Closure
+**Objective:** correct only demonstrated product, compatibility, performance, or pilot-blocking gaps.
 
-**Authorization:** locked  
-**Objective:** close only evidence-backed failures found during Phases 1–5.
-
-Every work item MUST cite:
+Every change must cite:
 
 - a reproduced defect;
-- a failed exit criterion;
-- a pilot-blocking limitation;
-- a compatibility or performance failure.
+- a failed prior exit criterion;
+- a pilot blocker;
+- a compatibility failure;
+- a demonstrated performance failure.
 
-No speculative feature may enter this phase.
+No speculative feature work.
 
-Every fix requires focused regression evidence.
+Phase review focuses on evidence traceability and root-cause correction.
+
+No separate gate review occurs after Phase 6.
 
 ---
 
-## 13. Phase 7 — Pilot and Empirical Evaluation
+## 26. Phase 7 — Pilot and Empirical Evaluation
 
-**Authorization:** locked  
-**Objective:** use Expflow in a real project and measure the workflow.
+**Objective:** execute real attributable workflows and evaluate outcomes.
 
 Required outcomes:
 
-- named pilot project and workflow;
 - real human or agent work;
-- timestamps and duration;
-- successes, friction, failures, recoveries, and unknowns;
-- user decisions;
-- measurable outcomes;
-- issue and change ledger;
-- claim updates based on observed evidence.
+- participants, environment, timestamps, and duration;
+- attributable inputs and outputs;
+- successes, friction, failures, recovery, and decisions;
+- evidence-derived metrics;
+- preserved negative results;
+- privacy and consent;
+- reproducibility and limitations;
+- claim updates.
 
-Internal fixtures alone cannot satisfy this phase.
+Phase review is evidence-centric and may contain little or no code review.
 
-**Gate BW-C exit:** product claims are grounded in real use and measured outcomes.
+BW-C gate review assesses whether Phase 6 changes and Phase 7 evidence support product claims.
 
 ---
 
-# Gate BW-D — Causal Integration Ready
+## 27. Phase 8 — Guerilla Profile and Event Contracts
 
-## 14. Phase 8 — Expflow Guerilla Profile and Event Contracts
-
-**Authorization:** locked  
-**Objective:** define and verify profile-driven Guerilla observation of Expflow.
+**Objective:** define and implement profile-driven observation and typed event reconciliation.
 
 Required outcomes:
 
-- versioned data-only profile;
+- data-driven profile;
 - native version compatibility;
-- command classification;
-- before and after observations;
-- native identifiers;
-- evidence extraction;
-- typed outcome reconciliation;
-- security boundaries;
-- event and causal-link contracts;
-- conformance tests;
-- proof that Expflow remains native authority.
+- complete command classification;
+- before and after observation;
+- native references;
+- typed invocation and outcome states;
+- causal-evidence requirements;
+- idempotency or deduplication;
+- secret and credential boundaries;
+- conformance tests.
+
+Guerilla remains an observer and event authority, not Expflow state authority.
+
+Phase review focuses on contracts, classification completeness, outcome semantics, and security.
+
+No separate gate review occurs after Phase 8.
 
 ---
 
-## 15. Phase 9 — Guerilla Causal Event View GUI
+## 28. Phase 9 — Guerilla Causal Event View GUI
 
-**Authorization:** locked  
-**Objective:** present causal events without conflating observation and native state.
+**Objective:** present evidence-backed causal event history over stable Phase 8 contracts.
 
 Required outcomes:
 
-- event timeline and graph;
-- native authority links;
-- invocation, observation, result, and reconciliation detail;
-- explicit pending, unknown, conflicted, and completed states;
-- evidence-backed causal edges;
-- integration with stable Phase 8 contracts;
-- no raw-store coupling.
+- event and causal-link views;
+- distinct invocation, observation, result, reconciliation, and evidence;
+- explicit pending, unknown, conflicted, failed, and completed states;
+- resolvable native authority links;
+- deterministic filtering, ordering, and selection;
+- accessible loading, empty, and error states;
+- no raw-store coupling;
+- no unsupported causal certainty.
 
-**Gate BW-D exit:** causal activity is understandable while native authority remains explicit.
+Phase review focuses on the GUI and Phase 8 contract consumption.
 
----
-
-## 16. Phase procedure
-
-Every phase SHALL follow:
-
-1. verify active state;
-2. read orientation, workflow, prompt, and required skills;
-3. record baseline and Git state;
-4. reproduce accepted findings;
-5. implement the smallest authorized change;
-6. add focused tests;
-7. update evidence and active documentation;
-8. reconcile references and roles;
-9. run focused checks;
-10. run full repository validation;
-11. write the phase completion report;
-12. perform independent phase review;
-13. verify phase exit;
-14. advance state only after `GO`.
-
-The implementing agent MUST NOT approve its own gate solely from implementation confidence.
+BW-D gate review covers cross-system causal integrity across Phases 8–9.
 
 ---
 
-## 17. Required repository validation
+# Part IV — Cost, context, and handoff
 
-The required order is:
+## 29. Context discipline
 
-1. skill-contract validation;
-2. config-reference reconciliation;
-3. protected-surface verification;
-4. focused tests;
-5. relevant typecheck and lint;
-6. full repository validation;
-7. package dry run;
-8. staged diff check;
-9. unstaged diff check;
-10. commit-range or CI-equivalent validation.
+Use one parent context and one reviewer subagent for the active phase.
 
-Commands that write shared outputs MUST run sequentially.
+Do not:
 
-Reports MUST record actual commands, evaluated Git state, exit codes, and results.
+- send full conversation transcripts to reviewers;
+- repeatedly load unchanged governance;
+- run external-chatbot reviews;
+- spawn reviewer-of-reviewer agents;
+- perform a second comprehensive phase review after remediation;
+- polish accepted evidence indefinitely.
 
----
+At approximately 80% of available context:
 
-## 18. Phase exit
-
-A phase exits only when:
-
-- all required outputs exist;
-- focused tests pass;
-- full required validation passes;
-- references and roles reconcile;
-- protected surfaces pass;
-- compatibility obligations pass;
-- the completion report is complete;
-- independent review returns `GO`;
-- the phase-exit verifier passes;
-- machine active state advances through repository tooling.
-
-`CONDITIONAL GO` is permitted only for bounded, non-semantic work that cannot create a false completion claim.
+1. stop beginning new workstreams;
+2. finish the current atomic change when safe;
+3. run focused checks;
+4. commit coherent work;
+5. record exact Git state;
+6. write a deterministic continuation handoff.
 
 ---
 
-## 19. Gate exit
+## 30. Validation matrix
 
-A gate exits only when:
-
-- every member phase exits;
-- aggregate gate criteria pass;
-- phase claims match evidence;
-- no later-gate implementation was used to conceal incomplete work;
-- protected and compatibility audits pass;
-- the gate review returns `GO`;
-- machine state advances through repository tooling.
-
----
-
-## 20. Reporting
-
-Every phase report MUST include:
-
-- verdict;
-- baseline and final commits;
-- active gate and phase;
-- artifacts changed;
-- focused checks;
-- full validation;
-- evaluated Git states;
-- finding dispositions;
-- compatibility audit;
-- protected-surface audit;
-- scope audit;
-- limitations;
-- staged, unstaged, and untracked state;
-- next authorized action.
-
-Every gate report MUST include:
-
-- member phase verdicts;
-- evidence reviewed;
-- gate criteria;
-- conditions or failures;
-- active-state decision.
+| Event                                   |        Focused checks |                  Full validation |                        Package dry run |         Independent review |
+| --------------------------------------- | --------------------: | -------------------------------: | -------------------------------------: | -------------------------: |
+| phase entry with accepted prior merge   |            smoke only |                      conditional |                                     no |                         no |
+| workstream checkpoint                   |                   yes |                               no |                                     no |                         no |
+| phase candidate                         |                   yes |                              yes | when package changes or phase requires | comprehensive phase review |
+| code/contract remediation               |                   yes |                              yes |                          when affected |            focused closure |
+| evidence-only administrative correction | docs/reference checks |                    no by default |     only when package contents changed |              no by default |
+| gate candidate                          |    integration checks | yes when aggregate state changed |                          when relevant |  comprehensive gate review |
+| gate remediation                        |                   yes |                       risk-based |                          when relevant |            focused closure |
+| phase merge                             |   smoke plus controls |                              yes |                          when relevant |                         no |
+| post-merge repair                       |                   yes |                              yes |                          when relevant |            focused closure |
 
 ---
 
-## 21. Evidence vocabulary
+## 31. Handoff record
 
-Use independently:
+Every stop or phase transition records:
 
-- implemented;
-- internally verified;
-- ordinary surface;
-- pilot verified;
-- empirically evaluated;
-- production-supported.
-
-Do not replace these dimensions with one maturity percentage.
-
-Internal validation MUST NOT be described as external pilot evidence.
-
----
-
-## 22. Recovery and deadline
-
-Stop when:
-
-- a required role is missing or ambiguous;
-- a protected body requires editing;
-- a checker fails;
-- staged ownership is unknown;
-- architecture and phase scope conflict;
-- later-phase authority is required;
-- machine output cannot remain compatible;
-- evidence cannot support the completion claim;
-- the deadline arrives.
-
-Before stopping, record:
-
-- active gate and phase;
-- exact failure;
-- last passing check;
-- Git state;
+- current gate and phase;
+- activity type;
+- integration base;
+- phase branch and head;
+- candidate and accepted heads;
+- frozen finding IDs and dispositions;
+- gate finding IDs when applicable;
 - changed files;
-- evidence location;
-- next deterministic action.
-
-Incomplete work MUST remain resumable without the original conversation.
+- exact Git status;
+- last passing checks;
+- known transient failures;
+- reviewer verdict;
+- blocker or next authorized action.
 
 ---
 
-## Config Reference Index
+## 32. Program completion
 
-<!-- config-reference-index:start -->
+Build Week completes when:
 
-- `AGENTS.md` - active workflow authority
-- `.config-reference-reconciliation.yaml` - active workflow role
+- Phases 1–9 are accepted;
+- each phase received one comprehensive precision review;
+- every frozen phase ledger is closed;
+- BW-A through BW-D gate reviews pass;
+- every phase is merged into the integration branch;
+- every post-merge validation passes;
+- the final branch is clean;
+- package and compatibility verification pass;
+- reports identify exact commits;
+- product and empirical claims match evidence.
 
-<!-- config-reference-index:end -->
+Merging the integration branch to `main` requires separate user authorization.

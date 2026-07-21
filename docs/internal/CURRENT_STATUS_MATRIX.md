@@ -3,17 +3,17 @@
 **Status:** Current internal status control
 **Last updated:** 2026-07-21
 **Implementation baseline:** Expflow `v1.0.1`
-**Post-baseline changes:** Phase 1 ordinary CLI UX completion candidate at `c6ad308700f66eab784fddebda1a823846f6855f`
+**Post-baseline changes:** Phase 1 ordinary CLI UX accepted and merged at `67d77f99fc048c6a25d677eada3a64b56a2635ea`
 **Historical workflow:** Gates A–D complete and closed
 **Current workflow:** `BUILD_WEEK_WORKFLOW_CURRENT.md`
-**Current phase:** Phase 1 — Ordinary UX/UI Corrections
-**Phase state:** Phase 1 GO recorded; report acceptance required before Phase 2 authorization
+**Current phase:** Phase 2 — Expflow GUI Foundation
+**Phase state:** Phase 1 accepted, merged, and post-merge validated; Phase 2 is the next authorized phase
 
 ---
 
 ## 1. Practical Status Statement
 
-> Expflow `v1.0.1` is the current implementation baseline. The v1 architecture and internal runtime gates are complete. The post-v1 evidence and disposition pass is complete. Phase 1 ordinary CLI UX has a GO report: status, sync preview, restore preview, restore drift refusal, per-command help, strict parsing, remediation-first errors, and provisional-identity labeling are implemented and covered by focused and full validation. The differentiating authority, semantic, workflow, projection, and reproduction state remains primarily library-facing. There is no Expflow GUI, portable workflow package, real external pilot, empirical evaluation, Guerilla profile, or Guerilla causal event-view GUI.
+> Expflow `v1.0.1` is the current implementation baseline. The v1 architecture and internal runtime gates are complete. The post-v1 evidence and disposition pass is complete. Phase 1 ordinary CLI UX is accepted, merged, and post-merge validated: status, sync preview, restore preview, restore drift refusal, per-command help, strict parsing, remediation-first errors, and provisional-identity labeling are implemented and covered by focused and full validation. The differentiating authority, semantic, workflow, projection, and reproduction state remains primarily library-facing. There is no Expflow GUI, portable workflow package, real external pilot, empirical evaluation, Guerilla profile, or Guerilla causal event-view GUI.
 
 This matrix deliberately separates implementation from exposure, validation, adoption, and product proof.
 
@@ -34,12 +34,12 @@ The historical `EXPFLOW_WORKFLOW_CURRENT.md` must be retained or renamed as v1 b
 
 ### Current Build Week workflow
 
-| Gate                                      | Phases | State   | Blocking condition                                                  |
-| ----------------------------------------- | -----: | ------- | ------------------------------------------------------------------- |
-| BW-A — UX Control Surface Ready           |    1–2 | ACTIVE  | Phase 1 GO report exists; Phase 2 requires accepted Phase 1 report. |
-| BW-B — Workflow Portability Surface Ready |    3–5 | BLOCKED | Requires BW-A exit.                                                 |
-| BW-C — Pilot Proven                       |    6–7 | BLOCKED | Requires BW-B exit.                                                 |
-| BW-D — Causal Integration Ready           |    8–9 | BLOCKED | Requires empirical pilot evidence and stable Expflow surfaces.      |
+| Gate                                      | Phases | State   | Blocking condition                                             |
+| ----------------------------------------- | -----: | ------- | -------------------------------------------------------------- |
+| BW-A — UX Control Surface Ready           |    1–2 | ACTIVE  | Phase 1 accepted and merged; Phase 2 authorized.               |
+| BW-B — Workflow Portability Surface Ready |    3–5 | BLOCKED | Requires BW-A exit.                                            |
+| BW-C — Pilot Proven                       |    6–7 | BLOCKED | Requires BW-B exit.                                            |
+| BW-D — Causal Integration Ready           |    8–9 | BLOCKED | Requires empirical pilot evidence and stable Expflow surfaces. |
 
 The former plan to correlate Expflow completion with a Guerilla external-compatible adapter gate is superseded. Guerilla is now profile-driven and its GUI is a causal event view implemented at the end of this workflow.
 
@@ -59,7 +59,7 @@ Status vocabulary:
 | Capability                                                                       | Implemented                 | Internally verified   | Ordinary surface               | Pilot verified              | Empirically evaluated | Current determination                                                                                      |
 | -------------------------------------------------------------------------------- | --------------------------- | --------------------- | ------------------------------ | --------------------------- | --------------------- | ---------------------------------------------------------------------------------------------------------- |
 | Material object, node revision, tree revision, and head stores                   | Yes                         | Yes                   | CLI + library                  | No                          | No                    | Stable v1 substrate.                                                                                       |
-| `init`, `sync`, `status`, `restore`                                              | Yes                         | Yes                   | CLI                            | Limited internal round trip | No                    | Phase 1 CLI UX completion candidate implemented; external pilot still absent.                              |
+| `init`, `sync`, `status`, `restore`                                              | Yes                         | Yes                   | CLI                            | Limited internal round trip | No                    | Phase 1 CLI UX accepted and merged; external pilot still absent.                                           |
 | Material transaction, receipt, staging, and recovery                             | Yes                         | Yes                   | Indirect through CLI           | No external pilot           | No                    | Strong internal evidence; failure UX needs exposure.                                                       |
 | Authority-source revision and registration decision stores                       | Yes                         | Yes                   | Library only                   | No                          | No                    | Differentiating state is not yet productized.                                                              |
 | Assertions, decisions, conflicts, review requests, and source correspondence     | Yes                         | Yes                   | Library only                   | No                          | No                    | Implemented record families; no coherent external review surface.                                          |
@@ -71,7 +71,7 @@ Status vocabulary:
 | Extension host                                                                   | Yes                         | Yes                   | Documented library surface     | No                          | No                    | Available; not a Guerilla adapter boundary.                                                                |
 | `sync` identity and concurrency directives                                       | Yes                         | Focused Phase 1 tests | CLI flags and per-command help | No                          | No                    | `--move`, `--new-node`, `--replace-node`, and `--expected-head` are discoverable in `expflow sync --help`. |
 | Provisional preview identity                                                     | Yes                         | Focused Phase 1 tests | CLI and JSON/dry-run           | No                          | No                    | Provisional status is explicit in human preview/status output and additive machine fields.                 |
-| Human-readable status and dry-run decision support                               | Yes                         | Focused Phase 1 tests | CLI                            | No                          | No                    | Completion candidate; full validation recorded in Phase 1 report.                                          |
+| Human-readable status and dry-run decision support                               | Yes                         | Focused Phase 1 tests | CLI                            | No                          | No                    | Accepted Phase 1 surface; full and post-merge validation recorded in Phase 1 reports.                      |
 | Revision discovery through ordinary commands                                     | Yes                         | Focused Phase 1 tests | CLI                            | No                          | No                    | `status --history` and `status --node-history <path>` expose restore references.                           |
 | Restore preview and drift guard                                                  | Yes                         | Focused Phase 1 tests | CLI                            | No                          | No                    | `restore --dry-run` previews; default restore refuses conflicting drift; `--force` is explicit override.   |
 | Expflow local GUI                                                                | No                          | No                    | No                             | No                          | No                    | Phase 2.                                                                                                   |
@@ -101,7 +101,7 @@ The following decisions are controlling inputs to Phase 1. They describe current
 
 ## 5. Known Product and UX Gaps
 
-### Phase 1 ordinary-flow closure candidate
+### Phase 1 ordinary-flow accepted surface
 
 1. **Revision discovery:** `status --history` and `status --node-history <path>` expose tree and node restore references.
 2. **Restore safety:** `restore --dry-run` previews affected paths; default restore refuses conflicting unrecorded drift; `--force` is explicit.
@@ -168,20 +168,19 @@ Phase 1 — Ordinary UX/UI Corrections
     -> Phase 9 — Guerilla Causal Event-View GUI
 ```
 
-No phase after Phase 1 is authorized until the Phase 1 completion report passes.
+Phase 2 is authorized after Phase 1 acceptance, merge, and post-merge validation.
 
 ---
 
-## 8. Current Phase Exit Conditions
+## 8. Current Phase Entry Conditions
 
-Phase 1 may exit when:
+Phase 2 may begin when:
 
-- the Phase 1 completion report records the evaluated Git state;
-- focused CLI UX, restore-safety, status-discovery, machine-compatibility, and protected-surface tests pass;
-- repository-required config-reference, skill-contract, protected-surface, full validation, and package checks pass;
-- before and after CLI transcripts are present under `docs/internal/phase_reports/`;
-- D1/D2 decisions and R1/R2 dispositions remain preserved;
-- no GUI, evidence-intake, portability, Guerilla, immutable architecture, frozen release-body, or Phase 2+ scope entered.
+- Phase 1 completion and finding reports record accepted review evidence;
+- Phase 1 is merged into the rolling integration branch at `67d77f99fc048c6a25d677eada3a64b56a2635ea`;
+- post-merge validation is recorded in `docs/internal/phase_reports/PHASE_01_POST_MERGE_VALIDATION.md`;
+- the integration branch is clean;
+- Phase 2 prompt and relevant documented application surfaces are read before implementation.
 
 ---
 
