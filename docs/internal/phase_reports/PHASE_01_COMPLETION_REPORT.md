@@ -11,8 +11,8 @@
 - Implementation checkpoint: `c6ad308700f66eab784fddebda1a823846f6855f` (`Complete Phase 1 CLI UX checkpoint`).
 - Evidence closeout: `5a84ef43fd2614303c030ce757d74bd22ea029b3` (`Close out Phase 1 evidence`).
 - Precision-review remediation: `a4796b830b4d755b179e9f0591592d7f925ec46b` (`Resolve Phase 1 precision review finding`).
-- Independent-review remediation: pending commit after `011de6b1c69e0fe0fecbb68395d799c0b8976101`.
-- Final documentation state: report, review evidence, and validation updated after remediation.
+- Independent-review remediation: `fa73c8155ed7729359be2edb90651bf09494dec1` (`Document Phase 1 CLI exit codes`).
+- Final documentation state: this report records F17 remediation and requires independent re-review before Phase 1 acceptance.
 
 ## Scope delivered
 
@@ -45,13 +45,14 @@ No GUI, Phase 2+ feature, fifth ordinary command, immutable architecture edit, o
 
 See `PHASE_01_FINDING_INVENTORY.md`.
 
-All active Phase 1 findings F1-F12 and F14-F16 are implemented and covered by focused tests or package verification. F13 remains historical and not reproduced on v1.0.1.
+All active Phase 1 findings F1-F12 and F14-F17 are implemented and covered by focused tests, package verification, or documentation-evidence review. F13 remains historical and not reproduced on v1.0.1.
 
 Precision review evidence:
 
 - Initial review: `PHASE_01_PRECISION_REVIEW_INITIAL.md` returned `BLOCK` with F15.
 - Re-review: `PHASE_01_PRECISION_REVIEW_REREVIEW.md` returned `PASS` with no verified findings.
 - Independent review at `011de6b1c69e0fe0fecbb68395d799c0b8976101` returned `BLOCK` with F16, missing exit-code help documentation.
+- Independent re-review at `fa73c8155ed7729359be2edb90651bf09494dec1` confirmed F16 resolved and returned `BLOCK` with F17, stale completion-report remediation state.
 
 ## Evidence
 
@@ -91,6 +92,8 @@ The after transcripts show:
 | `npx vitest run tests/unit/cli-ux.test.ts`                                                                                                         | F16 remediation worktree                                                           |         0 | PASS - 6 tests, including help exit-code assertions                                                     |
 | `npm run package:verify`                                                                                                                           | F16 remediation worktree                                                           |         0 | PASS - installed package help includes exit-code assertions                                             |
 | `npm run typecheck`                                                                                                                                | F16 remediation worktree                                                           |         0 | PASS                                                                                                    |
+| `npm run validate`                                                                                                                                 | `fa73c8155ed7729359be2edb90651bf09494dec1`                                         |         0 | PASS - independently run during F16 re-review                                                           |
+| `npm pack --dry-run`                                                                                                                               | `fa73c8155ed7729359be2edb90651bf09494dec1`                                         |         0 | PASS - independently run during F16 re-review                                                           |
 
 ## Scope audit
 
@@ -103,6 +106,6 @@ The after transcripts show:
 
 ## Handoff state
 
-At report completion, implementation checkpoint `c6ad308700f66eab784fddebda1a823846f6855f`, evidence closeout `5a84ef43fd2614303c030ce757d74bd22ea029b3`, and precision-review remediation `a4796b830b4d755b179e9f0591592d7f925ec46b` are committed. Independent review at `011de6b1c69e0fe0fecbb68395d799c0b8976101` found F16; this report records the in-progress remediation and requires independent re-review before Phase 1 acceptance.
+At report completion, implementation checkpoint `c6ad308700f66eab784fddebda1a823846f6855f`, evidence closeout `5a84ef43fd2614303c030ce757d74bd22ea029b3`, precision-review remediation `a4796b830b4d755b179e9f0591592d7f925ec46b`, and independent-review remediation `fa73c8155ed7729359be2edb90651bf09494dec1` are committed. Independent review at `011de6b1c69e0fe0fecbb68395d799c0b8976101` found F16; independent re-review at `fa73c8155ed7729359be2edb90651bf09494dec1` confirmed F16 resolved and found F17 in this report. This update resolves F17 and requires independent re-review before Phase 1 acceptance.
 
 Next authorized action after accepting this report: select Phase 2 according to `docs/internal/BUILD_WEEK_WORKFLOW_CURRENT.md`.
