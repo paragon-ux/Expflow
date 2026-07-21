@@ -4,12 +4,14 @@
 
 Current test areas:
 
-- `unit/` covers generated type inventory, repository discovery, prohibited-scope boundaries, extension-host boundaries, Gate B material runtime behavior, Phase 1 ordinary CLI UX, protected-surface immutability, Gate C authority behavior, Gate C ownership/reproduction behavior, and Gate D security/migration behavior.
+- `unit/` covers generated type inventory, repository discovery, prohibited-scope boundaries, extension-host boundaries, Gate B material runtime behavior, Phase 1 ordinary CLI UX, Phase 2 GUI bridge behavior, protected-surface immutability, Gate C authority behavior, Gate C ownership/reproduction behavior, and Gate D security/migration behavior.
 - `e2e/` covers the Gate D final core proof path.
 - `contracts/` verifies immutable architecture sources, registries, schema examples, fixtures, generated controls, and package installation boundaries, including exact release tarball and wheel checks when supplied.
 - `fixtures/` contains seed conformance fixtures used by the contract verifiers.
 
 Gate B/Gate D material-runtime coverage includes immutable stores, staged object and record promotion, object integrity, same-path identity, explicit identity overrides, digest-similarity proposals, stale-head rejection, partial post-commit material success, tree restore reconciliation, restore preview and conflicting-drift refusal, real interruption recovery for sync/init/restore, stale/live lock classification, receipt-based `HEAD` and project metadata repair, and scoped sync selector roots.
+
+Phase 2 GUI bridge coverage verifies uninitialized state, initialization, sync preview/execution, history, restore preview/refusal/override, receipt loading, explicit GUI states, and the no-raw-storage technical-detail boundary.
 
 Gate C coverage includes:
 

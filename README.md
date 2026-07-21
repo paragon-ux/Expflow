@@ -105,8 +105,9 @@ Expflow core intentionally does not implement every surrounding integration surf
 - `docs/internal/` contains current Build Week governance, status, prompts, and activation records.
 - `docs/external/` contains current product overviews and narratives.
 - `docs/releases/v1.0.1/` contains the frozen v1.0.1 release documentation record.
+- `apps/gui/` contains the local Expflow GUI client and server.
 - `schemas/` and `examples/` mirror the architecture schemas and examples for tooling.
-- `src/` contains the TypeScript package, CLI, material runtime, Gate C library runtimes, Gate D security/migration runtimes, and contract tooling.
+- `src/` contains the TypeScript package, CLI, GUI bridge, material runtime, Gate C library runtimes, Gate D security/migration runtimes, and contract tooling.
 - `python/expflow_hooks/` contains the Python hook-package scaffold and repository-only schema discovery.
 - `tests/` contains repository-contract, material-runtime, authority, Gate C ownership/reproduction, Gate D security/migration, package, and end-to-end proof tests.
 
