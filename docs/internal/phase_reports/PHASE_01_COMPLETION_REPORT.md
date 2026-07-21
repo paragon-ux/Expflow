@@ -12,7 +12,8 @@
 - Evidence closeout: `5a84ef43fd2614303c030ce757d74bd22ea029b3` (`Close out Phase 1 evidence`).
 - Precision-review remediation: `a4796b830b4d755b179e9f0591592d7f925ec46b` (`Resolve Phase 1 precision review finding`).
 - Independent-review remediation: `fa73c8155ed7729359be2edb90651bf09494dec1` (`Document Phase 1 CLI exit codes`).
-- Final documentation state: this report records F17 remediation and requires independent re-review before Phase 1 acceptance.
+- Independent final re-review: `27a53b95eea50f3e6732716f93cd41b325e6c71a` returned `PASS` with no verified findings.
+- Final documentation state: Phase 1 accepted for completion; Phase 2 remains unstarted in this pass.
 
 ## Scope delivered
 
@@ -53,6 +54,7 @@ Precision review evidence:
 - Re-review: `PHASE_01_PRECISION_REVIEW_REREVIEW.md` returned `PASS` with no verified findings.
 - Independent review at `011de6b1c69e0fe0fecbb68395d799c0b8976101` returned `BLOCK` with F16, missing exit-code help documentation.
 - Independent re-review at `fa73c8155ed7729359be2edb90651bf09494dec1` confirmed F16 resolved and returned `BLOCK` with F17, stale completion-report remediation state.
+- Independent final re-review at `27a53b95eea50f3e6732716f93cd41b325e6c71a` returned `PASS` with no verified findings.
 
 ## Evidence
 
@@ -94,6 +96,8 @@ The after transcripts show:
 | `npm run typecheck`                                                                                                                                | F16 remediation worktree                                                           |         0 | PASS                                                                                                    |
 | `npm run validate`                                                                                                                                 | `fa73c8155ed7729359be2edb90651bf09494dec1`                                         |         0 | PASS - independently run during F16 re-review                                                           |
 | `npm pack --dry-run`                                                                                                                               | `fa73c8155ed7729359be2edb90651bf09494dec1`                                         |         0 | PASS - independently run during F16 re-review                                                           |
+| `npm run validate`                                                                                                                                 | `27a53b95eea50f3e6732716f93cd41b325e6c71a`                                         |         0 | PASS - independently run during F17 re-review                                                           |
+| `npm pack --dry-run`                                                                                                                               | `27a53b95eea50f3e6732716f93cd41b325e6c71a`                                         |         0 | PASS - independently run during F17 re-review                                                           |
 
 ## Scope audit
 
@@ -106,6 +110,6 @@ The after transcripts show:
 
 ## Handoff state
 
-At report completion, implementation checkpoint `c6ad308700f66eab784fddebda1a823846f6855f`, evidence closeout `5a84ef43fd2614303c030ce757d74bd22ea029b3`, precision-review remediation `a4796b830b4d755b179e9f0591592d7f925ec46b`, and independent-review remediation `fa73c8155ed7729359be2edb90651bf09494dec1` are committed. Independent review at `011de6b1c69e0fe0fecbb68395d799c0b8976101` found F16; independent re-review at `fa73c8155ed7729359be2edb90651bf09494dec1` confirmed F16 resolved and found F17 in this report. This update resolves F17 and requires independent re-review before Phase 1 acceptance.
+At report completion, implementation checkpoint `c6ad308700f66eab784fddebda1a823846f6855f`, evidence closeout `5a84ef43fd2614303c030ce757d74bd22ea029b3`, precision-review remediation `a4796b830b4d755b179e9f0591592d7f925ec46b`, independent-review remediation `fa73c8155ed7729359be2edb90651bf09494dec1`, and F17 remediation `27a53b95eea50f3e6732716f93cd41b325e6c71a` are committed. Independent final re-review at `27a53b95eea50f3e6732716f93cd41b325e6c71a` returned `PASS` with no verified findings, recorded in `PHASE_01_PRECISION_REVIEW_F17_REREVIEW.md`.
 
-Next authorized action after accepting this report: select Phase 2 according to `docs/internal/BUILD_WEEK_WORKFLOW_CURRENT.md`.
+Next authorized action after this stop point: select Phase 2 according to `docs/internal/BUILD_WEEK_WORKFLOW_CURRENT.md`.
