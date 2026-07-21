@@ -1,0 +1,4 @@
+interface:
+  display_name: 'Expflow Build Week Precision Review'
+  short_description: 'Skill-gated precision review for Expflow Phases 1–9 with verified findings and parent-orchestrator remediation.'
+  default_prompt: 'Open and follow the Expflow Build Week precision review skill. Attest the exact skill version, independently inspect the assigned base/head diff, attempt to falsify every suspicion, report only verified findings, and hand remediation to the parent orchestrator.'

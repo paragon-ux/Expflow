@@ -169,8 +169,7 @@ function buildNodeRestorePlan(input: {
     effect = headDigest === node.content_digest ? 'unchanged' : 'update';
   }
   const drift = driftKind(path, headDigests, input.scanDigests);
-  const conflicting =
-    scanDigest !== undefined && scanDigest !== node.content_digest && scanDigest !== headDigest;
+  const conflicting = drift !== null && scanDigest !== node.content_digest;
 
   const pathEffects: RestorePathEffect[] =
     effect !== 'unchanged' || drift !== null

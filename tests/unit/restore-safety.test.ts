@@ -282,10 +282,15 @@ describe('restore planning and safety', () => {
       rmSync(resolve(root, 'a.txt'));
       const recreated = buildRestorePlan(root, reference);
       expect(recreated.path_effects[0]?.drift_kind).toBe('removed');
-      expect(recreated.requires_force).toBe(false);
-      const receipt = await runtime.restore({ reference, root });
+      expect(recreated.conflicting_paths).toEqual(['a.txt']);
+      expect(recreated.requires_force).toBe(true);
+      await expect(runtime.restore({ reference, root })).rejects.toMatchObject({
+        code: 'restore_conflict',
+      });
+      expect(existsSync(resolve(root, 'a.txt'))).toBe(false);
+      const receipt = await runtime.restore({ overwrite: true, reference, root });
       expect(receipt.status).toBe('committed');
-      expect(receipt.warnings).not.toContain('overwrote_unrecorded_changes');
+      expect(receipt.warnings).toContain('overwrote_unrecorded_changes');
       expect(readFileSync(resolve(root, 'a.txt'), 'utf-8')).toBe('one');
     } finally {
       cleanup(root);
