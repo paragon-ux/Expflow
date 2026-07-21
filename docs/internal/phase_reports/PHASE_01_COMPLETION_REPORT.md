@@ -9,7 +9,9 @@
 
 - Baseline: Expflow v1.0.1 at `99ad975a2b3e1f4b6c67020b219db7ff6d64acf7` on branch `feat/build-week-governance`.
 - Implementation checkpoint: `c6ad308700f66eab784fddebda1a823846f6855f` (`Complete Phase 1 CLI UX checkpoint`).
-- Final documentation state: report and evidence updated after validation.
+- Evidence closeout: `5a84ef43fd2614303c030ce757d74bd22ea029b3` (`Close out Phase 1 evidence`).
+- Precision-review remediation: `a4796b830b4d755b179e9f0591592d7f925ec46b` (`Resolve Phase 1 precision review finding`).
+- Final documentation state: report, review evidence, and validation updated after remediation.
 
 ## Scope delivered
 
@@ -18,7 +20,7 @@ Phase 1 preserved the four ordinary commands and improved only the ordinary CLI/
 - `status` now gives actionable human output, keeps uninitialized exit `0`, and exposes additive history and node-history views.
 - `sync --dry-run` now reports path-level changes, counts by kind, candidate digest, current head, and provisional identity labels.
 - `restore --dry-run` now previews path effects without mutation.
-- `restore` now refuses conflicting unrecorded drift by default and supports explicit `--force` override.
+- `restore` now refuses conflicting unrecorded drift by default, including node-restore target deletion, and supports explicit `--force` override.
 - Per-command help is non-mutating and documents Phase 1 options.
 - Unsupported options and malformed usage fail with exit `2`.
 - Runtime errors use remediation-first human output and JSON error objects under `--json`.
@@ -35,12 +37,18 @@ No GUI, Phase 2+ feature, fifth ordinary command, immutable architecture edit, o
 - `tests/unit/cli-ux.test.ts`: ordinary CLI process tests for exit codes, help, status, sync preview, restore preview/refusal, and JSON errors.
 - `tests/unit/restore-safety.test.ts`, `tests/unit/status-discovery.test.ts`, `tests/unit/machine-compat.test.ts`: runtime and compatibility regressions.
 - `tests/unit/protected-surface-checker.test.ts`, `tests/contracts/package-verify.ts`: validation and package-help coverage.
+- `.agents/skills/expflow-build-week-pr-review-precision/SKILL.md`: repository-local precision-review skill used for Phase 1 review and future Build Week reviewer loops.
 
 ## Finding dispositions
 
 See `PHASE_01_FINDING_INVENTORY.md`.
 
-All active Phase 1 findings F1-F12 and F14 are implemented and covered by focused tests or package verification. F13 remains historical and not reproduced on v1.0.1.
+All active Phase 1 findings F1-F12, F14, and F15 are implemented and covered by focused tests or package verification. F13 remains historical and not reproduced on v1.0.1.
+
+Precision review evidence:
+
+- Initial review: `PHASE_01_PRECISION_REVIEW_INITIAL.md` returned `BLOCK` with F15.
+- Re-review: `PHASE_01_PRECISION_REVIEW_REREVIEW.md` returned `PASS` with no verified findings.
 
 ## Evidence
 
@@ -61,18 +69,21 @@ The after transcripts show:
 
 ## Validation table
 
-| Command                                                                                                                                            | Evaluated Git state                                                                | Exit code | Result                                                                                           |
-| -------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- | --------: | ------------------------------------------------------------------------------------------------ |
-| `npx vitest run tests/unit/cli-ux.test.ts tests/unit/restore-safety.test.ts tests/unit/status-discovery.test.ts tests/unit/machine-compat.test.ts` | pre-checkpoint worktree                                                            |         0 | PASS - 22 tests                                                                                  |
-| `npx vitest run tests/unit/protected-surface-checker.test.ts`                                                                                      | pre-checkpoint worktree                                                            |         0 | PASS - 7 tests                                                                                   |
-| `npm run typecheck`                                                                                                                                | pre-checkpoint worktree                                                            |         0 | PASS                                                                                             |
-| `npm run lint`                                                                                                                                     | pre-checkpoint worktree                                                            |         0 | PASS                                                                                             |
-| `git diff --cached --check`                                                                                                                        | staged checkpoint                                                                  |         0 | PASS                                                                                             |
-| `npm run check:config-references`                                                                                                                  | docs/evidence worktree after checkpoint `c6ad308700f66eab784fddebda1a823846f6855f` |         0 | PASS                                                                                             |
-| `npm run check:skill-contracts`                                                                                                                    | docs/evidence worktree after checkpoint `c6ad308700f66eab784fddebda1a823846f6855f` |         0 | PASS                                                                                             |
-| `npm run check:protected-surfaces`                                                                                                                 | docs/evidence worktree after checkpoint `c6ad308700f66eab784fddebda1a823846f6855f` |         0 | PASS                                                                                             |
-| `npm run validate`                                                                                                                                 | docs/evidence worktree after checkpoint `c6ad308700f66eab784fddebda1a823846f6855f` |         0 | PASS - 17 test files, 143 tests, contracts, registries, schemas, fixtures, build, package verify |
-| `npm pack --dry-run`                                                                                                                               | docs/evidence worktree after checkpoint `c6ad308700f66eab784fddebda1a823846f6855f` |         0 | PASS - `expflow-1.0.1.tgz`, 260 files                                                            |
+| Command                                                                                                                                            | Evaluated Git state                                                                | Exit code | Result                                                                                                  |
+| -------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- | --------: | ------------------------------------------------------------------------------------------------------- |
+| `npx vitest run tests/unit/cli-ux.test.ts tests/unit/restore-safety.test.ts tests/unit/status-discovery.test.ts tests/unit/machine-compat.test.ts` | pre-checkpoint worktree                                                            |         0 | PASS - 22 tests                                                                                         |
+| `npx vitest run tests/unit/protected-surface-checker.test.ts`                                                                                      | pre-checkpoint worktree                                                            |         0 | PASS - 7 tests                                                                                          |
+| `npm run typecheck`                                                                                                                                | pre-checkpoint worktree                                                            |         0 | PASS                                                                                                    |
+| `npm run lint`                                                                                                                                     | pre-checkpoint worktree                                                            |         0 | PASS                                                                                                    |
+| `git diff --cached --check`                                                                                                                        | staged checkpoint                                                                  |         0 | PASS                                                                                                    |
+| `npm run check:config-references`                                                                                                                  | docs/evidence worktree after checkpoint `c6ad308700f66eab784fddebda1a823846f6855f` |         0 | PASS                                                                                                    |
+| `npm run check:skill-contracts`                                                                                                                    | docs/evidence worktree after checkpoint `c6ad308700f66eab784fddebda1a823846f6855f` |         0 | PASS                                                                                                    |
+| `npm run check:protected-surfaces`                                                                                                                 | docs/evidence worktree after checkpoint `c6ad308700f66eab784fddebda1a823846f6855f` |         0 | PASS                                                                                                    |
+| `npm run validate`                                                                                                                                 | docs/evidence worktree after checkpoint `c6ad308700f66eab784fddebda1a823846f6855f` |         0 | PASS - 17 test files, 143 tests, contracts, registries, schemas, fixtures, build, package verify        |
+| `npm pack --dry-run`                                                                                                                               | docs/evidence worktree after checkpoint `c6ad308700f66eab784fddebda1a823846f6855f` |         0 | PASS - `expflow-1.0.1.tgz`, 260 files                                                                   |
+| Inline `npx tsx` node-restore deletion reproduction                                                                                                | `a4796b830b4d755b179e9f0591592d7f925ec46b`                                         |         0 | PASS - plan requires force, default restore rejects with `restore_conflict`, explicit overwrite commits |
+| `npx vitest run tests/unit/restore-safety.test.ts`                                                                                                 | `a4796b830b4d755b179e9f0591592d7f925ec46b`                                         |         0 | PASS - 8 tests                                                                                          |
+| `npm run validate`                                                                                                                                 | staged remediation state before `a4796b830b4d755b179e9f0591592d7f925ec46b`         |         0 | PASS - 17 test files, 143 tests, contracts, registries, schemas, fixtures, build, package verify        |
 
 ## Scope audit
 
@@ -81,10 +92,10 @@ The after transcripts show:
 - v1.0.1 compatibility: receipts keep exact v1 keys; status additions are additive.
 - Protected surfaces: no edits to `docs/architecture/**` or `docs/releases/**`.
 - Retired evidence locations: not used as active dependencies.
-- Phase 2-9 launcher: untouched.
+- Phase 2-9 launcher: external package prepared separately for Codex execution; no active repository dependency added.
 
 ## Handoff state
 
-At report completion, implementation checkpoint `c6ad308700f66eab784fddebda1a823846f6855f` is committed. Documentation and evidence closeout files are ready for final staging after the final validation rerun.
+At report completion, implementation checkpoint `c6ad308700f66eab784fddebda1a823846f6855f`, evidence closeout `5a84ef43fd2614303c030ce757d74bd22ea029b3`, and precision-review remediation `a4796b830b4d755b179e9f0591592d7f925ec46b` are committed. The precision re-review returns `PASS`.
 
-Next authorized action after accepting this report: select Phase 2 according to `docs/internal/BUILD_WEEK_WORKFLOW_CURRENT.md`. Phase 2-9 work remains unauthorized until that acceptance step occurs.
+Next authorized action after accepting this report: select Phase 2 according to `docs/internal/BUILD_WEEK_WORKFLOW_CURRENT.md`.
