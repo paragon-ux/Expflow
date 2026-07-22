@@ -3,6 +3,7 @@ export { createRuntime } from './operations/runtime.js';
 export { createGuiBridge } from './gui/bridge.js';
 export { createReadModelRuntime } from './read-models/runtime.js';
 export { createEvidenceRuntime } from './evidence/runtime.js';
+export { createPortablePackageRuntime } from './portable-package/runtime.js';
 export { createExtensionHost } from './extensions/host.js';
 export {
   createAuthorityRuntime,
@@ -52,6 +53,7 @@ export type {
   ReadModelState,
 } from './read-models/types.js';
 export type { EvidenceRuntime } from './evidence/types.js';
+export type { PortablePackageRuntime } from './portable-package/types.js';
 export type { ExpflowExtensionHost } from './extensions/host.js';
 export type { AuthorityRuntime } from './authority/runtime.js';
 export type { SemanticRuntime } from './semantics/runtime.js';
@@ -132,6 +134,21 @@ export type {
   EvidenceMediaType,
   EvidenceRelation,
 } from './evidence/types.js';
+export type {
+  ExecutePortableImportInput,
+  ExportPortablePackageInput,
+  PlanPortableImportInput,
+  PortableEvidencePolicy,
+  PortableImportEffect,
+  PortableImportEffectRecord,
+  PortableImportPlan,
+  PortableImportResult,
+  PortablePackageExternalReference,
+  PortablePackageManifest,
+  PortablePackagePayload,
+  PortableResumeState,
+  ValidatePortablePackageInput,
+} from './portable-package/types.js';
 export type {
   LegacyInventoryEntry,
   LegacyMigrationInput,
