@@ -1,5 +1,0 @@
-
-[dev]
-jsonschema>=4.23.0
-pytest>=8.3.0
-build>=1.2.0
