@@ -280,7 +280,7 @@ function validateCandidate(candidate: CandidateTree): ValidationResultRecord['fi
 }
 
 function makeProject(
-  projectRoot: string,
+  _projectRoot: string,
   projectId: string,
   createdAt: string,
   input: InitInput,
@@ -296,7 +296,7 @@ function makeProject(
     policy_profile: input.policyProfile ?? 'default',
     project_id: projectId,
     projection_root: PROJECTION_ROOT,
-    root_path: projectRoot,
+    root_path: '.',
   };
 }
 

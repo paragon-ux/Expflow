@@ -82,6 +82,7 @@ describe('Gate B material runtime', () => {
       const initReceipt = await runtime.init({ root });
       expect(initReceipt.status).toBe('committed');
       expect(initReceipt.new_head).toBe(readHead(root));
+      expect(readProject(root).root_path).toBe('.');
 
       const tree = readTreeRevision(root, initReceipt.new_head ?? '');
       expect(tree.entries).toHaveLength(1);
