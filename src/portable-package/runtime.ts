@@ -9,8 +9,12 @@ import {
   assertEnum,
   assertExpflowId,
   assertNoAdditionalProperties,
+  assertNonEmptyString,
+  assertDateTime,
+  assertPathSelectorShape,
   assertRequestedBy,
   assertRequiredSha256Digest,
+  assertSourceRevisionRef,
   assertStringArray,
   schemaInvalid,
 } from '../core/record-validation.js';
@@ -302,6 +306,250 @@ function matchingExisting(path: string, value: unknown): boolean {
   return (
     existsSync(path) && canonicalJson(readJsonFile(path) as never) === canonicalJson(value as never)
   );
+}
+
+function refSetIncludesAny(refs: Iterable<string>, selectedRefs: ReadonlySet<string>): boolean {
+  for (const ref of refs) {
+    if (selectedRefs.has(ref)) {
+      return true;
+    }
+  }
+  return false;
+}
+
+function evidenceRefsFromRecords(records: readonly PackageRecord[]): Set<string> {
+  const refs = new Set<string>();
+  for (const record of records) {
+    if ('evidence_refs' in record) {
+      for (const ref of record.evidence_refs) {
+        if (ref.startsWith('efi_')) {
+          refs.add(ref);
+        }
+      }
+    }
+    if ('input_refs' in record) {
+      for (const ref of record.input_refs ?? []) {
+        if (ref.startsWith('efi_')) {
+          refs.add(ref);
+        }
+      }
+    }
+    if ('audit' in record) {
+      for (const ref of record.audit.evidence_refs) {
+        if (ref.startsWith('efi_')) {
+          refs.add(ref);
+        }
+      }
+    }
+  }
+  return refs;
+}
+
+function assertRecordObject(
+  value: unknown,
+  field: string,
+): asserts value is Record<string, unknown> {
+  if (typeof value !== 'object' || value === null || Array.isArray(value)) {
+    throw schemaInvalid(`${field} must be an object.`);
+  }
+}
+
+function assertVersion(value: Record<string, unknown>, expected: string, field: string): void {
+  if (value.schema_version !== expected) {
+    throw schemaInvalid(`${field}.schema_version must be ${expected}.`);
+  }
+}
+
+function assertOptionalExpflowId(
+  value: unknown,
+  prefix: Parameters<typeof assertExpflowId>[1],
+  field: string,
+): void {
+  if (value !== null && value !== undefined) {
+    assertExpflowId(value as string, prefix, field);
+  }
+}
+
+function assertNonNegativeInteger(value: unknown, field: string): void {
+  if (!Number.isInteger(value) || Number(value) < 0) {
+    throw schemaInvalid(`${field} must be a non-negative integer.`);
+  }
+}
+
+function assertProjectRecordFields(record: Record<string, unknown>, field: string): void {
+  assertExpflowId(record.project_id as string, 'efp', `${field}.project_id`);
+}
+
+function assertPayloadRecord(payload: PortablePackagePayload, record: unknown): PackageRecord {
+  assertRecordObject(record, payload.kind);
+  switch (payload.kind) {
+    case 'tree_revision':
+      assertVersion(record, '2.3', payload.kind);
+      assertExpflowId(record.tree_revision_id as string, 'eft', 'tree_revision_id');
+      assertProjectRecordFields(record, payload.kind);
+      assertExpflowId(record.created_by_operation as string, 'efo', 'created_by_operation');
+      assertDateTime(record.created_at as string, 'created_at');
+      assertRequiredSha256Digest(record.content_digest, 'content_digest');
+      if (!Array.isArray(record.entries)) {
+        throw schemaInvalid('entries must be an array.');
+      }
+      break;
+    case 'node_revision':
+      assertVersion(record, '2.3', payload.kind);
+      assertExpflowId(record.node_id as string, 'efn', 'node_id');
+      assertNonNegativeInteger(record.revision, 'revision');
+      assertRequiredSha256Digest(record.content_digest, 'content_digest');
+      assertNonNegativeInteger(record.byte_size, 'byte_size');
+      assertDateTime(record.created_at as string, 'created_at');
+      break;
+    case 'operation_receipt':
+      assertVersion(record, '2.3', payload.kind);
+      assertExpflowId(record.operation_id as string, 'efo', 'operation_id');
+      assertProjectRecordFields(record, payload.kind);
+      assertDateTime(record.started_at as string, 'started_at');
+      assertDateTime(record.finished_at as string, 'finished_at');
+      break;
+    case 'authority_source':
+      assertVersion(record, '2.3', payload.kind);
+      assertExpflowId(record.source_id as string, 'efs', 'source_id');
+      assertNonNegativeInteger(record.source_revision, 'source_revision');
+      assertRequestedBy(record.issuer, 'issuer');
+      assertPathSelectorShape(record.subject_scope, 'subject_scope');
+      assertStringArray(record.fact_scope, 'fact_scope');
+      assertStringArray(record.limitations, 'limitations');
+      assertDateTime(record.created_at as string, 'created_at');
+      break;
+    case 'authority_decision':
+      assertVersion(record, '2.3', payload.kind);
+      assertExpflowId(record.decision_id as string, 'efrd', 'decision_id');
+      assertSourceRevisionRef(record.source_revision_ref as string, 'source_revision_ref');
+      assertRequestedBy(record.made_by, 'made_by');
+      assertStringArray(record.evidence_refs, 'evidence_refs');
+      assertStringArray(record.consequences, 'consequences');
+      assertDateTime(record.created_at as string, 'created_at');
+      break;
+    case 'authority_document':
+      assertVersion(record, '2.3', payload.kind);
+      assertExpflowId(record.document_id as string, 'efad', 'document_id');
+      assertProjectRecordFields(record, payload.kind);
+      assertRequiredSha256Digest(record.content_digest, 'content_digest');
+      assertDateTime(record.created_at as string, 'created_at');
+      break;
+    case 'semantic_assertion':
+      assertVersion(record, '2.3', payload.kind);
+      assertExpflowId(record.assertion_id as string, 'efa', 'assertion_id');
+      assertProjectRecordFields(record, payload.kind);
+      assertOptionalExpflowId(record.tree_revision_id, 'eft', 'tree_revision_id');
+      assertOptionalExpflowId(record.workflow_occurrence_id, 'efw', 'workflow_occurrence_id');
+      assertRequestedBy(record.issuer, 'issuer');
+      assertStringArray(record.subject_refs, 'subject_refs');
+      assertStringArray(record.input_refs ?? [], 'input_refs');
+      assertStringArray(record.limitations, 'limitations');
+      assertDateTime(record.created_at as string, 'created_at');
+      break;
+    case 'semantic_decision':
+      assertVersion(record, '2.3', payload.kind);
+      assertExpflowId(record.decision_id as string, 'efsd', 'decision_id');
+      assertStringArray(record.subject_refs, 'subject_refs');
+      assertStringArray(record.proposal_refs, 'proposal_refs');
+      assertRequestedBy(record.made_by, 'made_by');
+      assertStringArray(record.evidence_refs, 'evidence_refs');
+      assertStringArray(record.consequences, 'consequences');
+      assertDateTime(record.created_at as string, 'created_at');
+      break;
+    case 'semantic_conflict':
+      assertVersion(record, '2.3', payload.kind);
+      assertExpflowId(record.conflict_id as string, 'efc', 'conflict_id');
+      assertProjectRecordFields(record, payload.kind);
+      assertStringArray(record.subject_refs, 'subject_refs');
+      assertStringArray(record.competing_claim_refs, 'competing_claim_refs');
+      assertDateTime(record.declared_at as string, 'declared_at');
+      break;
+    case 'semantic_review_request':
+      assertVersion(record, '2.3', payload.kind);
+      assertExpflowId(record.review_request_id as string, 'efrr', 'review_request_id');
+      assertProjectRecordFields(record, payload.kind);
+      assertStringArray(record.subject_refs, 'subject_refs');
+      assertDateTime(record.requested_at as string, 'requested_at');
+      break;
+    case 'source_correspondence':
+      assertVersion(record, '2.3', payload.kind);
+      assertExpflowId(record.correspondence_id as string, 'efsc', 'correspondence_id');
+      assertProjectRecordFields(record, payload.kind);
+      assertStringArray(record.evidence_refs, 'evidence_refs');
+      assertDateTime(record.created_at as string, 'created_at');
+      break;
+    case 'artifact_cluster':
+      assertVersion(record, '2.3', payload.kind);
+      assertExpflowId(record.cluster_id as string, 'efcl', 'cluster_id');
+      assertProjectRecordFields(record, payload.kind);
+      assertStringArray(record.proposal_refs, 'proposal_refs');
+      assertStringArray(record.member_refs, 'member_refs');
+      assertStringArray(record.evidence_refs, 'evidence_refs');
+      assertStringArray(record.decision_refs, 'decision_refs');
+      assertDateTime(record.computed_at as string, 'computed_at');
+      break;
+    case 'workflow_occurrence':
+      assertVersion(record, '2.3', payload.kind);
+      assertExpflowId(record.workflow_occurrence_id as string, 'efw', 'workflow_occurrence_id');
+      assertProjectRecordFields(record, payload.kind);
+      assertExpflowId(record.input_tree_revision_id as string, 'eft', 'input_tree_revision_id');
+      assertPathSelectorShape(record.input_path_selector, 'input_path_selector');
+      assertOptionalExpflowId(record.output_tree_revision_id, 'eft', 'output_tree_revision_id');
+      if (record.output_path_selector !== null && record.output_path_selector !== undefined) {
+        assertPathSelectorShape(record.output_path_selector, 'output_path_selector');
+      }
+      assertExpflowId(record.start_operation_id as string, 'efo', 'start_operation_id');
+      assertOptionalExpflowId(record.completion_operation_id, 'efo', 'completion_operation_id');
+      assertStringArray(record.authority_source_revision_refs, 'authority_source_revision_refs');
+      assertStringArray(record.authority_document_refs ?? [], 'authority_document_refs');
+      assertStringArray(record.virtual_artifact_refs ?? [], 'virtual_artifact_refs');
+      assertDateTime(record.created_at as string, 'created_at');
+      break;
+    case 'virtual_artifact':
+      assertVersion(record, '2.3', payload.kind);
+      assertExpflowId(record.virtual_artifact_id as string, 'efva', 'virtual_artifact_id');
+      assertProjectRecordFields(record, payload.kind);
+      assertExpflowId(record.workflow_occurrence_id as string, 'efw', 'workflow_occurrence_id');
+      assertStringArray(record.parent_refs ?? [], 'parent_refs');
+      assertStringArray(record.materialization_event_refs ?? [], 'materialization_event_refs');
+      assertDateTime(record.created_at as string, 'created_at');
+      break;
+    case 'materialization_event':
+      assertVersion(record, '2.3', payload.kind);
+      assertExpflowId(
+        record.materialization_event_id as string,
+        'efme',
+        'materialization_event_id',
+      );
+      assertProjectRecordFields(record, payload.kind);
+      assertExpflowId(record.virtual_artifact_id as string, 'efva', 'virtual_artifact_id');
+      assertRequestedBy(record.asserted_by, 'asserted_by');
+      assertStringArray(record.authority_source_refs ?? [], 'authority_source_refs');
+      assertDateTime(record.occurred_at as string, 'occurred_at');
+      break;
+    case 'evidence_intake':
+      assertVersion(record, '2.4', payload.kind);
+      assertExpflowId(record.intake_id as string, 'efi', 'intake_id');
+      assertProjectRecordFields(record, payload.kind);
+      assertRequestedBy(record.actor, 'actor');
+      assertRequiredSha256Digest(record.digest, 'digest');
+      assertNonNegativeInteger(record.byte_length, 'byte_length');
+      assertRecordObject(record.audit, 'audit');
+      assertStringArray(record.audit.evidence_refs, 'audit.evidence_refs');
+      assertDateTime(record.captured_at as string, 'captured_at');
+      assertDateTime(record.created_at as string, 'created_at');
+      break;
+    case 'object':
+      throw schemaInvalid('object payloads do not contain JSON records.');
+  }
+  const typedRecord = record as unknown as PackageRecord;
+  const actualRef = payloadRecordRef(payload.kind, typedRecord);
+  if (actualRef !== payload.ref) {
+    throw schemaInvalid(`${payload.kind} payload ref does not match record identity.`);
+  }
+  assertNonEmptyString(payload.ref, `${payload.kind}.ref`);
+  return typedRecord;
 }
 
 function payloadTargetPath(
@@ -635,26 +883,144 @@ export function createPortablePackageRuntime(root?: string): PortablePackageRunt
             ),
           );
         }
+        const selectedRefs = new Set<string>([
+          workflow.workflow_occurrence_id,
+          ...selectedTreeIds,
+          workflow.start_operation_id,
+          ...(workflow.completion_operation_id === null ||
+          workflow.completion_operation_id === undefined
+            ? []
+            : [workflow.completion_operation_id]),
+          ...workflow.authority_source_revision_refs,
+          ...(workflow.authority_document_refs ?? []),
+          ...(workflow.virtual_artifact_refs ?? []),
+        ]);
+        const authoritySourceRefs = new Set(workflow.authority_source_revision_refs);
+        const authorityDocumentRefs = new Set(workflow.authority_document_refs ?? []);
+        const selectedAssertions = listSemanticAssertions(projectRoot).filter(
+          (record) =>
+            record.workflow_occurrence_id === workflow.workflow_occurrence_id ||
+            refSetIncludesAny(record.subject_refs, selectedRefs) ||
+            refSetIncludesAny(record.input_refs ?? [], selectedRefs),
+        );
+        for (const assertion of selectedAssertions) {
+          selectedRefs.add(assertion.assertion_id);
+        }
+        const selectedDecisions = listSemanticDecisions(projectRoot).filter(
+          (record) =>
+            refSetIncludesAny(record.subject_refs, selectedRefs) ||
+            refSetIncludesAny(record.proposal_refs, selectedRefs),
+        );
+        for (const decision of selectedDecisions) {
+          selectedRefs.add(decision.decision_id);
+        }
+        const selectedConflicts = listConflicts(projectRoot).filter(
+          (record) =>
+            refSetIncludesAny(record.subject_refs, selectedRefs) ||
+            refSetIncludesAny(record.competing_claim_refs, selectedRefs),
+        );
+        for (const conflict of selectedConflicts) {
+          selectedRefs.add(conflict.conflict_id);
+        }
+        const selectedReviewRequests = listReviewRequests(projectRoot).filter(
+          (record) =>
+            refSetIncludesAny(record.subject_refs, selectedRefs) ||
+            selectedRefs.has(record.resolved_by_decision_ref ?? ''),
+        );
+        for (const request of selectedReviewRequests) {
+          selectedRefs.add(request.review_request_id);
+        }
+        const selectedCorrespondence = listSourceCorrespondence(projectRoot).filter(
+          (record) =>
+            selectedRefs.has(record.source_record_ref) ||
+            selectedRefs.has(record.decision_ref ?? '') ||
+            refSetIncludesAny(record.evidence_refs, selectedRefs),
+        );
+        for (const correspondence of selectedCorrespondence) {
+          selectedRefs.add(correspondence.correspondence_id);
+        }
+        const selectedClusters = listArtifactClusters(projectRoot).filter(
+          (record) =>
+            refSetIncludesAny(record.proposal_refs, selectedRefs) ||
+            refSetIncludesAny(record.member_refs, selectedRefs) ||
+            refSetIncludesAny(record.decision_refs, selectedRefs),
+        );
+        for (const cluster of selectedClusters) {
+          selectedRefs.add(cluster.cluster_id);
+        }
+        const selectedVirtualArtifacts = listVirtualArtifacts(projectRoot).filter(
+          (record) =>
+            record.workflow_occurrence_id === workflow.workflow_occurrence_id ||
+            selectedRefs.has(record.virtual_artifact_id),
+        );
+        for (const artifact of selectedVirtualArtifacts) {
+          selectedRefs.add(artifact.virtual_artifact_id);
+        }
+        const selectedMaterializationEvents = listMaterializationEvents(projectRoot).filter(
+          (record) => selectedRefs.has(record.virtual_artifact_id),
+        );
+        for (const event of selectedMaterializationEvents) {
+          selectedRefs.add(event.materialization_event_id);
+        }
+        const evidenceRefs = evidenceRefsFromRecords([
+          ...selectedAssertions,
+          ...selectedDecisions,
+          ...selectedCorrespondence,
+          ...selectedClusters,
+        ]);
+        const allEvidence = listEvidenceIntake(projectRoot);
+        const selectedEvidence: EvidenceIntakeRecord[] = [];
+        const pendingEvidenceRefs = [...evidenceRefs];
+        while (pendingEvidenceRefs.length > 0) {
+          const ref = pendingEvidenceRefs.shift() ?? '';
+          if (selectedRefs.has(ref)) {
+            continue;
+          }
+          const evidence = allEvidence.find((record) => record.intake_id === ref);
+          if (evidence === undefined) {
+            continue;
+          }
+          selectedRefs.add(ref);
+          selectedEvidence.push(evidence);
+          for (const nestedRef of evidence.audit.evidence_refs) {
+            if (nestedRef.startsWith('efi_')) {
+              pendingEvidenceRefs.push(nestedRef);
+            }
+          }
+        }
+        const selectedAuthorityDecisions = listSourceRegistrationDecisions(projectRoot).filter(
+          (record) =>
+            authoritySourceRefs.has(record.source_revision_ref) ||
+            refSetIncludesAny(record.evidence_refs, selectedRefs),
+        );
+        for (const decision of selectedAuthorityDecisions) {
+          selectedRefs.add(decision.decision_id);
+        }
         const recordGroups: readonly [PortablePackagePayload['kind'], readonly PackageRecord[]][] =
           [
-            ['authority_source', listAuthoritySources(projectRoot)],
-            ['authority_decision', listSourceRegistrationDecisions(projectRoot)],
-            ['authority_document', listAuthorityDocuments(projectRoot)],
-            ['semantic_assertion', listSemanticAssertions(projectRoot)],
-            ['semantic_decision', listSemanticDecisions(projectRoot)],
-            ['semantic_conflict', listConflicts(projectRoot)],
-            ['semantic_review_request', listReviewRequests(projectRoot)],
-            ['source_correspondence', listSourceCorrespondence(projectRoot)],
-            ['artifact_cluster', listArtifactClusters(projectRoot)],
-            ['workflow_occurrence', [workflow]],
             [
-              'virtual_artifact',
-              listVirtualArtifacts(projectRoot).filter(
-                (record) => record.workflow_occurrence_id === workflow.workflow_occurrence_id,
+              'authority_source',
+              listAuthoritySources(projectRoot).filter((record) =>
+                authoritySourceRefs.has(sourceRevisionRef(record)),
               ),
             ],
-            ['materialization_event', listMaterializationEvents(projectRoot)],
-            ['evidence_intake', listEvidenceIntake(projectRoot)],
+            ['authority_decision', selectedAuthorityDecisions],
+            [
+              'authority_document',
+              listAuthorityDocuments(projectRoot).filter((record) =>
+                authorityDocumentRefs.has(record.document_id),
+              ),
+            ],
+            ['semantic_assertion', selectedAssertions],
+            ['semantic_decision', selectedDecisions],
+            ['semantic_conflict', selectedConflicts],
+            ['semantic_review_request', selectedReviewRequests],
+            ['source_correspondence', selectedCorrespondence],
+            ['artifact_cluster', selectedClusters],
+            ['workflow_occurrence', [workflow]],
+            ['virtual_artifact', selectedVirtualArtifacts],
+            ['materialization_event', selectedMaterializationEvents],
+            ['evidence_intake', selectedEvidence],
           ];
         for (const [kind, records] of recordGroups) {
           for (const record of records) {
@@ -662,7 +1028,7 @@ export function createPortablePackageRuntime(root?: string): PortablePackageRunt
             payloads.push(writePayload(outputDirectory, kind, ref, recordPath(kind, ref), record));
           }
         }
-        for (const record of listEvidenceIntake(projectRoot)) {
+        for (const record of selectedEvidence) {
           if (record.external_reference !== null && record.external_reference !== undefined) {
             externalReferences.push({
               locator: record.external_reference,
@@ -728,7 +1094,12 @@ export function createPortablePackageRuntime(root?: string): PortablePackageRunt
             );
           }
           seenPaths.add(payload.path);
-          readPayload(input.packageDirectory, payload);
+          const record = readPayload(input.packageDirectory, payload);
+          if (payload.kind !== 'object') {
+            assertPayloadRecord(payload, record);
+          } else {
+            assertRequiredSha256Digest(payload.ref, 'object.ref');
+          }
         }
         return cloneJson(manifest);
       } catch (error) {

@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import { createHash } from 'node:crypto';
 import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
@@ -8,6 +9,7 @@ import { createEvidenceRuntime } from '../../src/evidence/runtime.js';
 import { createPortablePackageRuntime } from '../../src/portable-package/runtime.js';
 import { createReadModelRuntime } from '../../src/read-models/runtime.js';
 import { ExpflowError } from '../../src/core/errors.js';
+import { createSemanticRuntime } from '../../src/semantics/runtime.js';
 
 function tempProject(): string {
   return mkdtempSync(join(tmpdir(), 'expflow-portable-'));
@@ -47,7 +49,7 @@ async function workflowProject(): Promise<{
     outputTreeRevisionId: sync.new_head ?? '',
     workflowOccurrenceId: workflowOccurrenceRef(workflow),
   });
-  await createEvidenceRuntime(root).intake({
+  const evidence = await createEvidenceRuntime(root).intake({
     actor: { kind: 'user', name: 'analyst' },
     captureMethod: 'transcript',
     content: 'Workflow evidence.',
@@ -55,6 +57,15 @@ async function workflowProject(): Promise<{
     mediaType: 'text/plain',
     origin: 'transcript:portable-test',
     sourceType: 'workflow-evidence',
+  });
+  await createSemanticRuntime(root).recordAssertion({
+    assertionType: 'workflow_boundary',
+    claims: [{ predicate: 'evidence_for_workflow', value: true }],
+    inputRefs: [evidence.intake_id],
+    issuer: { kind: 'user', name: 'analyst' },
+    limitations: ['Test evidence link only.'],
+    subjectRefs: [workflowOccurrenceRef(completedWorkflow)],
+    workflowOccurrenceId: workflowOccurrenceRef(completedWorkflow),
   });
   return {
     inputTree: init.new_head ?? '',
@@ -148,12 +159,52 @@ describe('Phase 5 portable workflow packages', () => {
     }
   });
 
+  it('rejects digest-valid packages when payload records fail schema or identity validation', async () => {
+    const { root, workflowId } = await workflowProject();
+    const packageDir = resolve(tempProject(), 'package');
+    try {
+      await createPortablePackageRuntime(root).exportPackage({
+        outputDirectory: packageDir,
+        requestedBy: { kind: 'user', name: 'exporter' },
+        workflowOccurrenceId: workflowId,
+      });
+      const manifestPath = resolve(packageDir, 'manifest.json');
+      const manifest = JSON.parse(readFileSync(manifestPath, 'utf-8')) as {
+        payloads: { byte_size: number; digest: string; kind: string; path: string; ref: string }[];
+      };
+      const workflowPayload = manifest.payloads.find(
+        (payload) => payload.kind === 'workflow_occurrence',
+      );
+      if (workflowPayload === undefined) {
+        throw new Error('Expected workflow occurrence payload.');
+      }
+      const payloadPath = resolve(packageDir, workflowPayload.path);
+      const record = JSON.parse(readFileSync(payloadPath, 'utf-8')) as {
+        workflow_occurrence_id: string;
+      };
+      record.workflow_occurrence_id = 'not-an-expflow-id';
+      const bytes = JSON.stringify(record, null, 2);
+      writeFileSync(payloadPath, `${bytes}\n`, 'utf-8');
+      const tamperedBytes = readFileSync(payloadPath);
+      workflowPayload.byte_size = tamperedBytes.byteLength;
+      workflowPayload.digest = `sha256:${createHash('sha256').update(tamperedBytes).digest('hex')}`;
+      writeFileSync(manifestPath, JSON.stringify(manifest, null, 2), 'utf-8');
+
+      await expect(
+        createPortablePackageRuntime(root).validatePackage({ packageDirectory: packageDir }),
+      ).rejects.toMatchObject<Partial<ExpflowError>>({ code: 'schema_invalid' });
+    } finally {
+      cleanup(root);
+      cleanup(resolve(packageDir, '..'));
+    }
+  });
+
   it('refuses path traversal, collision imports, and unresolved external evidence', async () => {
     const { root, workflowId } = await workflowProject();
     const target = tempProject();
     const packageDir = resolve(tempProject(), 'package');
     try {
-      await createEvidenceRuntime(root).intake({
+      const externalEvidence = await createEvidenceRuntime(root).intake({
         actor: { kind: 'user', name: 'analyst' },
         captureMethod: 'external_reference',
         encoding: 'external',
@@ -161,6 +212,15 @@ describe('Phase 5 portable workflow packages', () => {
         mediaType: 'external/reference',
         origin: 'external:https://example.invalid/evidence',
         sourceType: 'workflow-evidence',
+      });
+      await createSemanticRuntime(root).recordAssertion({
+        assertionType: 'workflow_boundary',
+        claims: [{ predicate: 'external_evidence_for_workflow', value: true }],
+        inputRefs: [externalEvidence.intake_id],
+        issuer: { kind: 'user', name: 'analyst' },
+        limitations: ['Test external evidence link only.'],
+        subjectRefs: [workflowId],
+        workflowOccurrenceId: workflowId,
       });
       await createPortablePackageRuntime(root).exportPackage({
         outputDirectory: packageDir,
@@ -192,6 +252,41 @@ describe('Phase 5 portable workflow packages', () => {
       await expect(
         createPortablePackageRuntime(target).importPackage({ packageDirectory: packageDir }),
       ).rejects.toMatchObject<Partial<ExpflowError>>({ code: 'portable_import_blocked' });
+    } finally {
+      cleanup(root);
+      cleanup(target);
+      cleanup(resolve(packageDir, '..'));
+    }
+  });
+
+  it('does not let unrelated external evidence block selected workflow relocation', async () => {
+    const { root, workflowId } = await workflowProject();
+    const target = tempProject();
+    const packageDir = resolve(tempProject(), 'package');
+    try {
+      await createEvidenceRuntime(root).intake({
+        actor: { kind: 'user', name: 'analyst' },
+        captureMethod: 'external_reference',
+        encoding: 'external',
+        externalReference: 'https://example.invalid/unrelated',
+        mediaType: 'external/reference',
+        origin: 'external:https://example.invalid/unrelated',
+        sourceType: 'unrelated-evidence',
+      });
+      const manifest = await createPortablePackageRuntime(root).exportPackage({
+        outputDirectory: packageDir,
+        requestedBy: { kind: 'user', name: 'exporter' },
+        workflowOccurrenceId: workflowId,
+      });
+      writeProjectFile(target, 'README.md', 'target');
+      await createRuntime().init({ root: target });
+      const plan = await createPortablePackageRuntime(target).planImport({
+        packageDirectory: packageDir,
+      });
+
+      expect(manifest.external_references).toHaveLength(0);
+      expect(plan.blocking).toBe(false);
+      expect(plan.effects.some((effect) => effect.effect === 'missing_external')).toBe(false);
     } finally {
       cleanup(root);
       cleanup(target);

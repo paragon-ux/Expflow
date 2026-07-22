@@ -1,13 +1,13 @@
 # Phase 5 Completion Report - Portable Workflow Package
 
-**Status:** candidate implementation complete; focused checks PASS; full validation PASS
+**Status:** remediation candidate complete; focused checks PASS; full validation PASS
 **Phase:** 5 - Portable Workflow Package
 **Gate:** BW-B - Workflow Portability Surface Ready
-**Verdict:** implementation candidate ready for independent phase review
+**Verdict:** initial phase review BLOCK; F1 and F2 remediated pending closure review
 **Integration base:** `f13ef5e3a112c19152a7354e25f51a9b3dfea66f`
 **Phase branch:** `feat/build-week-phase-05-portable-package`
 **Candidate head:** `e95d1eb6087810f4a5d6c44c4b9db5e8a19c0df7`
-**Review report:** pending
+**Review report:** independent Phase 5 review BLOCK; durable report file pending
 
 ## Objective
 
@@ -17,15 +17,15 @@ The phase does not add a fifth ordinary CLI command, accept authority from impor
 
 ## Workstream Disposition
 
-| ID    | Workstream            | Status   | Implementation evidence                                                                                                          | Test evidence                                                                                     |
-| ----- | --------------------- | -------- | -------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------- |
-| P5-01 | Deterministic export  | complete | `createPortablePackageRuntime().exportPackage` writes sorted manifest and payload paths with stable package id and timestamp     | Unit test verifies repeated exports produce identical manifests                                   |
-| P5-02 | Material closure      | complete | Package includes selected input/output tree revisions, node revisions, object bytes, and workflow-linked receipts                | Round-trip test imports selected workflow into a relocated initialized project                    |
-| P5-03 | Advanced records      | complete | Package includes workflow occurrence, virtual artifact/materialization families, authority, semantic, and evidence records       | Round-trip test verifies imported workflow and evidence read-model exposure                       |
-| P5-04 | Offline validation    | complete | `validatePackage` verifies manifest shape, duplicate paths, safe payload paths, payload byte sizes, and sha256 digests offline   | Unit test validates a package and refuses missing/corrupt package paths                           |
-| P5-05 | Import planning       | complete | `planImport` reports create, exists-same, collision, and missing-external effects with repository-relative target paths          | Unit tests verify create effects, blocking unresolved external evidence, and collision-safe guard |
-| P5-06 | Collision-safe import | complete | `importPackage` refuses blocking plans and writes package records append-only only when no collision or missing external remains | Unit tests verify blocked imports and successful relocated import                                 |
-| P5-07 | Package publication   | complete | Package root exports `createPortablePackageRuntime` and portable package types                                                   | Package verifier import probe updated                                                             |
+| ID    | Workstream            | Status   | Implementation evidence                                                                                                                                                                             | Test evidence                                                                                              |
+| ----- | --------------------- | -------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
+| P5-01 | Deterministic export  | complete | `createPortablePackageRuntime().exportPackage` writes sorted manifest and payload paths with stable package id and timestamp                                                                        | Unit test verifies repeated exports produce identical manifests                                            |
+| P5-02 | Material closure      | complete | Package includes selected input/output tree revisions, node revisions, object bytes, and workflow-linked receipts                                                                                   | Round-trip test imports selected workflow into a relocated initialized project                             |
+| P5-03 | Advanced records      | complete | Package includes workflow occurrence, virtual artifact/materialization families, authority, semantic, and evidence records                                                                          | Round-trip test verifies imported workflow and evidence read-model exposure                                |
+| P5-04 | Offline validation    | complete | `validatePackage` verifies manifest shape, duplicate paths, safe payload paths, payload byte sizes, sha256 digests, decoded payload record schemas, and payload ref/record identity matches offline | Unit test validates a package and refuses missing/corrupt package paths plus digest-valid tampered records |
+| P5-05 | Import planning       | complete | `planImport` reports create, exists-same, collision, and missing-external effects with repository-relative target paths                                                                             | Unit tests verify create effects, blocking unresolved external evidence, and collision-safe guard          |
+| P5-06 | Collision-safe import | complete | `importPackage` refuses blocking plans and writes package records append-only only when no collision or missing external remains                                                                    | Unit tests verify blocked imports and successful relocated import                                          |
+| P5-07 | Package publication   | complete | Package root exports `createPortablePackageRuntime` and portable package types                                                                                                                      | Package verifier import probe updated                                                                      |
 
 ## Delivered Surfaces
 
@@ -39,16 +39,23 @@ The phase does not add a fifth ordinary CLI command, accept authority from impor
 
 | Command                                                      | Evaluated state  | Exit | Result         |
 | ------------------------------------------------------------ | ---------------- | ---: | -------------- |
-| `npx vitest run tests/unit/portable-package-runtime.test.ts` | Phase 5 worktree |    0 | PASS - 3 tests |
+| `npx vitest run tests/unit/portable-package-runtime.test.ts` | Phase 5 worktree |    0 | PASS - 5 tests |
 | `npm run typecheck`                                          | Phase 5 worktree |    0 | PASS           |
 | `npm run lint`                                               | Phase 5 worktree |    0 | PASS           |
 | `npm run package:verify`                                     | Phase 5 worktree |    0 | PASS           |
+
+## Review Finding Disposition
+
+| Finding | Disposition | Remediation evidence                                                                                                                 | Regression evidence                                                                                                                                  |
+| ------- | ----------- | ------------------------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| F1      | fixed       | `validatePackage` now validates decoded JSON payload records by kind before planning/import and rejects payload ref/record mismatch. | `rejects digest-valid packages when payload records fail schema or identity validation` verifies a checksum-consistent tampered workflow is refused. |
+| F2      | fixed       | Export now builds a selected-workflow dependency closure and includes only linked evidence/external references.                      | `does not let unrelated external evidence block selected workflow relocation` verifies unrelated external evidence is excluded from blockers.        |
 
 ## Full Validation
 
 | Command            | Evaluated state  | Exit | Result                                                                                                                                                                                                 |
 | ------------------ | ---------------- | ---: | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `npm run validate` | Phase 5 worktree |    0 | PASS - config references, skill contracts, protected surfaces, format, lint, typecheck, 22 test files / 174 tests, contracts, registries, schemas, examples, fixtures, build, and package verification |
+| `npm run validate` | Phase 5 worktree |    0 | PASS - config references, skill contracts, protected surfaces, format, lint, typecheck, 22 test files / 176 tests, contracts, registries, schemas, examples, fixtures, build, and package verification |
 
 ## Compatibility Audit
 
