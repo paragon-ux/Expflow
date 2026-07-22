@@ -419,8 +419,8 @@ function hasDisallowedLegacyPath(content: string, legacyPath: string): boolean {
     if (index === -1) {
       return false;
     }
-    const prefix = content.slice(Math.max(0, index - 'docs/releases/v1.1.0/files/'.length), index);
-    if (prefix !== 'docs/releases/v1.1.0/files/') {
+    const prefix = content.slice(Math.max(0, index - 'docs/releases/v1.0.1/files/'.length), index);
+    if (prefix !== 'docs/releases/v1.0.1/files/') {
       return true;
     }
     offset = index + legacyPath.length;
