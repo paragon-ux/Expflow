@@ -1,14 +1,15 @@
 # Phase 6 Completion Report - Evidence-Backed Gap Closure
 
-**Status:** candidate complete; focused checks PASS; full validation PASS; review pending
+**Status:** accepted; focused checks PASS; full validation PASS; review PASS; merge pending
 **Phase:** 6 - Evidence-Backed Gap Closure
 **Gate:** BW-C - Pilot Proven
 **Verdict:** no eligible unresolved reproduced defects or severity-one pilot blockers found; no code changes authorized
 **Integration base:** `bf3a94105d355105f37ae5a2201f55a771765142`
 **Phase branch:** `fix/build-week-phase-06-gap-closure`
 **Reviewed candidate head:** `b65085e056d816b842c8c64c8f2be18de817b2f4`
-**Administrative closeout head:** pending commit
-**Review report:** `docs/internal/phase_reports/PHASE_06_PRECISION_REVIEW.md`; closure review pending
+**Administrative closeout head:** `aba75a92fff7d9f893fca56ef00710d967edbcd7`
+**Review report:** `docs/internal/phase_reports/PHASE_06_PRECISION_REVIEW.md`
+**Closure review report:** `docs/internal/phase_reports/PHASE_06_PRECISION_REVIEW_F1_F2_CLOSURE.md`
 
 ## Runtime Versions
 
@@ -69,6 +70,7 @@ Documentation and evidence:
 - `docs/internal/phase_prompts/PHASE_06_ENGINEERING_FUNCTIONAL_GAP_CLOSURE.md`
 - `docs/internal/phase_reports/PHASE_06_COMPLETION_REPORT.md`
 - `docs/internal/phase_reports/PHASE_06_PRECISION_REVIEW.md`
+- `docs/internal/phase_reports/PHASE_06_PRECISION_REVIEW_F1_F2_CLOSURE.md`
 
 No source, tests, schemas, contracts, GUI, packaging, or migration files were changed.
 
@@ -86,17 +88,18 @@ No source, tests, schemas, contracts, GUI, packaging, or migration files were ch
 
 ## Full Validation
 
-| Command            | Evaluated state             | Exit | Result                                                                               |
-| ------------------ | --------------------------- | ---: | ------------------------------------------------------------------------------------ |
-| `npm run validate` | Phase 6 worktree, attempt 1 |  124 | timed out before result at the command limit                                         |
-| `npm run validate` | Phase 6 worktree, attempt 2 |    0 | PASS - 22 test files / 176 tests; contract, schema, build, and package checks passed |
+| Command            | Evaluated state                                             | Exit | Result                                                                               |
+| ------------------ | ----------------------------------------------------------- | ---: | ------------------------------------------------------------------------------------ |
+| `npm run validate` | Phase 6 worktree, attempt 1                                 |  124 | timed out before result at the command limit                                         |
+| `npm run validate` | Phase 6 worktree, attempt 2                                 |    0 | PASS - 22 test files / 176 tests; contract, schema, build, and package checks passed |
+| `npm run validate` | Remediation head `aba75a92fff7d9f893fca56ef00710d967edbcd7` |    0 | PASS - 22 test files / 176 tests; contract, schema, build, and package checks passed |
 
 ## Review Disposition
 
 | Review                           | Evaluated range                                                                       | Verdict | Disposition                                                                                 |
 | -------------------------------- | ------------------------------------------------------------------------------------- | ------- | ------------------------------------------------------------------------------------------- |
 | Initial Phase 6 precision review | `bf3a94105d355105f37ae5a2201f55a771765142...b65085e056d816b842c8c64c8f2be18de817b2f4` | BLOCK   | F1 missing repository-owned Phase 6 prompt; F2 report did not identify exact candidate head |
-| Closure review                   | pending                                                                               | pending | pending                                                                                     |
+| Closure review                   | `b65085e056d816b842c8c64c8f2be18de817b2f4..aba75a92fff7d9f893fca56ef00710d967edbcd7`  | PASS    | F1 and F2 resolved; no verified findings                                                    |
 
 ## Pilot Entry Checklist
 
@@ -146,4 +149,4 @@ No immutable architecture or frozen release body was edited.
 
 ## Handoff State
 
-Phase 6 candidate evidence is complete pending bounded closure review for initial review findings F1 and F2. If closure review passes, Phase 6 can merge to `feat/build-week-integration`, run post-merge validation, and authorize Phase 7 assignment.
+Phase 6 evidence is accepted pending merge to `feat/build-week-integration` and post-merge validation. If post-merge validation passes, Phase 7 is the next authorized phase.
