@@ -6,7 +6,7 @@
 **Verdict:** implementation candidate ready for independent phase review
 **Integration base:** `f13ef5e3a112c19152a7354e25f51a9b3dfea66f`
 **Phase branch:** `feat/build-week-phase-05-portable-package`
-**Candidate head:** `bf11d5c67a7f70e6e24a0d3889028238d68e5d6c`
+**Candidate head:** `e95d1eb6087810f4a5d6c44c4b9db5e8a19c0df7`
 **Review report:** pending
 
 ## Objective
