@@ -6,7 +6,7 @@
 **Verdict:** implementation complete; focused checks PASS; full validation PASS; review pending
 **Integration base:** `060b07596e9d70e5742202df1a00b5be0456017e`
 **Phase branch:** `feat/build-week-phase-04-evidence-intake-authority-reconciliation`
-**Candidate head:** pending commit
+**Candidate head:** `cac05cb615cf13beb6ad57ff09a7e99286501c6c`
 **Review report:** pending
 
 ## Runtime Versions
@@ -157,4 +157,4 @@ No immutable architecture or frozen release body was edited.
 
 ## Handoff State
 
-Phase 4 implementation, focused validation, full validation, and package dry-run are complete pending candidate commit and independent phase review.
+Phase 4 implementation, focused validation, full validation, and package dry-run are complete pending independent phase review.
