@@ -121,6 +121,25 @@ type PackageRecord =
 
 const EVIDENCE_POLICIES = ['include_normalized', 'external_reference_only'] as const;
 const CROCKFORD_NO_ILOU = '0123456789ABCDEFGHJKMNPQRSTVWXYZ';
+const MATERIAL_STATUSES = ['inputs_pinned', 'outputs_present', 'outputs_incomplete'] as const;
+const COMPLETION_STATUSES = ['none', 'asserted', 'accepted', 'rejected', 'conflicted'] as const;
+const VERIFICATION_STATUSES = ['not_evaluated', 'passed', 'failed', 'partial'] as const;
+const REUSE_STATUSES = ['not_evaluated', 'eligible', 'approved', 'rejected'] as const;
+const VIRTUAL_AVAILABILITY = [
+  'virtual',
+  'externally_referenced',
+  'unavailable',
+  'materialized',
+  'regenerated',
+] as const;
+const MATERIALIZATION_KINDS = [
+  'download',
+  'copy',
+  'convert',
+  'external_save',
+  'regenerate',
+  'import',
+] as const;
 
 function digestBytes(bytes: Buffer | string): string {
   return `sha256:${createHash('sha256').update(bytes).digest('hex')}`;
@@ -504,6 +523,20 @@ function assertPayloadRecord(payload: PortablePackagePayload, record: unknown): 
       assertStringArray(record.authority_source_revision_refs, 'authority_source_revision_refs');
       assertStringArray(record.authority_document_refs ?? [], 'authority_document_refs');
       assertStringArray(record.virtual_artifact_refs ?? [], 'virtual_artifact_refs');
+      assertEnum(record.material_status as string, MATERIAL_STATUSES, 'material_status');
+      assertEnum(record.completion_status as string, COMPLETION_STATUSES, 'completion_status');
+      if (
+        record.completion_status === 'accepted' &&
+        (record.completion_decision_ref === null || record.completion_decision_ref === undefined)
+      ) {
+        throw schemaInvalid('Accepted workflow completion requires a completion decision ref.');
+      }
+      assertEnum(
+        record.verification_status as string,
+        VERIFICATION_STATUSES,
+        'verification_status',
+      );
+      assertEnum(record.reuse_status as string, REUSE_STATUSES, 'reuse_status');
       assertDateTime(record.created_at as string, 'created_at');
       break;
     case 'virtual_artifact':
@@ -513,6 +546,7 @@ function assertPayloadRecord(payload: PortablePackagePayload, record: unknown): 
       assertExpflowId(record.workflow_occurrence_id as string, 'efw', 'workflow_occurrence_id');
       assertStringArray(record.parent_refs ?? [], 'parent_refs');
       assertStringArray(record.materialization_event_refs ?? [], 'materialization_event_refs');
+      assertEnum(record.availability as string, VIRTUAL_AVAILABILITY, 'availability');
       assertDateTime(record.created_at as string, 'created_at');
       break;
     case 'materialization_event':
@@ -526,6 +560,7 @@ function assertPayloadRecord(payload: PortablePackagePayload, record: unknown): 
       assertExpflowId(record.virtual_artifact_id as string, 'efva', 'virtual_artifact_id');
       assertRequestedBy(record.asserted_by, 'asserted_by');
       assertStringArray(record.authority_source_refs ?? [], 'authority_source_refs');
+      assertEnum(record.event_kind as string, MATERIALIZATION_KINDS, 'event_kind');
       assertDateTime(record.occurred_at as string, 'occurred_at');
       break;
     case 'evidence_intake':

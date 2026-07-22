@@ -25,6 +25,31 @@ function writeProjectFile(root: string, relativePath: string, content: string): 
   writeFileSync(target, content, 'utf-8');
 }
 
+function tamperWorkflowPayload(
+  packageDir: string,
+  mutate: (record: Record<string, unknown>) => void,
+): void {
+  const manifestPath = resolve(packageDir, 'manifest.json');
+  const manifest = JSON.parse(readFileSync(manifestPath, 'utf-8')) as {
+    payloads: { byte_size: number; digest: string; kind: string; path: string; ref: string }[];
+  };
+  const workflowPayload = manifest.payloads.find(
+    (payload) => payload.kind === 'workflow_occurrence',
+  );
+  if (workflowPayload === undefined) {
+    throw new Error('Expected workflow occurrence payload.');
+  }
+  const payloadPath = resolve(packageDir, workflowPayload.path);
+  const record = JSON.parse(readFileSync(payloadPath, 'utf-8')) as Record<string, unknown>;
+  mutate(record);
+  const bytes = JSON.stringify(record, null, 2);
+  writeFileSync(payloadPath, `${bytes}\n`, 'utf-8');
+  const tamperedBytes = readFileSync(payloadPath);
+  workflowPayload.byte_size = tamperedBytes.byteLength;
+  workflowPayload.digest = `sha256:${createHash('sha256').update(tamperedBytes).digest('hex')}`;
+  writeFileSync(manifestPath, JSON.stringify(manifest, null, 2), 'utf-8');
+}
+
 async function workflowProject(): Promise<{
   readonly root: string;
   readonly inputTree: string;
@@ -168,27 +193,22 @@ describe('Phase 5 portable workflow packages', () => {
         requestedBy: { kind: 'user', name: 'exporter' },
         workflowOccurrenceId: workflowId,
       });
-      const manifestPath = resolve(packageDir, 'manifest.json');
-      const manifest = JSON.parse(readFileSync(manifestPath, 'utf-8')) as {
-        payloads: { byte_size: number; digest: string; kind: string; path: string; ref: string }[];
-      };
-      const workflowPayload = manifest.payloads.find(
-        (payload) => payload.kind === 'workflow_occurrence',
-      );
-      if (workflowPayload === undefined) {
-        throw new Error('Expected workflow occurrence payload.');
-      }
-      const payloadPath = resolve(packageDir, workflowPayload.path);
-      const record = JSON.parse(readFileSync(payloadPath, 'utf-8')) as {
-        workflow_occurrence_id: string;
-      };
-      record.workflow_occurrence_id = 'not-an-expflow-id';
-      const bytes = JSON.stringify(record, null, 2);
-      writeFileSync(payloadPath, `${bytes}\n`, 'utf-8');
-      const tamperedBytes = readFileSync(payloadPath);
-      workflowPayload.byte_size = tamperedBytes.byteLength;
-      workflowPayload.digest = `sha256:${createHash('sha256').update(tamperedBytes).digest('hex')}`;
-      writeFileSync(manifestPath, JSON.stringify(manifest, null, 2), 'utf-8');
+      tamperWorkflowPayload(packageDir, (record) => {
+        record.workflow_occurrence_id = 'not-an-expflow-id';
+      });
+
+      await expect(
+        createPortablePackageRuntime(root).validatePackage({ packageDirectory: packageDir }),
+      ).rejects.toMatchObject<Partial<ExpflowError>>({ code: 'schema_invalid' });
+
+      await createPortablePackageRuntime(root).exportPackage({
+        outputDirectory: packageDir,
+        requestedBy: { kind: 'user', name: 'exporter' },
+        workflowOccurrenceId: workflowId,
+      });
+      tamperWorkflowPayload(packageDir, (record) => {
+        record.material_status = 'not_a_material_status';
+      });
 
       await expect(
         createPortablePackageRuntime(root).validatePackage({ packageDirectory: packageDir }),

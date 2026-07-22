@@ -3,7 +3,7 @@
 **Status:** remediation candidate complete; focused checks PASS; full validation PASS
 **Phase:** 5 - Portable Workflow Package
 **Gate:** BW-B - Workflow Portability Surface Ready
-**Verdict:** initial phase review BLOCK; F1 and F2 remediated pending closure review
+**Verdict:** initial phase review BLOCK; first closure review kept F1 open and closed F2; F1 enum-path remediation pending second closure review
 **Integration base:** `f13ef5e3a112c19152a7354e25f51a9b3dfea66f`
 **Phase branch:** `feat/build-week-phase-05-portable-package`
 **Candidate head:** `e95d1eb6087810f4a5d6c44c4b9db5e8a19c0df7`
@@ -46,10 +46,10 @@ The phase does not add a fifth ordinary CLI command, accept authority from impor
 
 ## Review Finding Disposition
 
-| Finding | Disposition | Remediation evidence                                                                                                                 | Regression evidence                                                                                                                                  |
-| ------- | ----------- | ------------------------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
-| F1      | fixed       | `validatePackage` now validates decoded JSON payload records by kind before planning/import and rejects payload ref/record mismatch. | `rejects digest-valid packages when payload records fail schema or identity validation` verifies a checksum-consistent tampered workflow is refused. |
-| F2      | fixed       | Export now builds a selected-workflow dependency closure and includes only linked evidence/external references.                      | `does not let unrelated external evidence block selected workflow relocation` verifies unrelated external evidence is excluded from blockers.        |
+| Finding | Disposition | Remediation evidence                                                                                                                                                         | Regression evidence                                                                                                                                                                         |
+| ------- | ----------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| F1      | fixed       | `validatePackage` now validates decoded JSON payload records by kind before planning/import, rejects payload ref/record mismatch, and rejects workflow lifecycle enum drift. | `rejects digest-valid packages when payload records fail schema or identity validation` verifies checksum-consistent tampered workflow identity and `material_status` payloads are refused. |
+| F2      | fixed       | Export now builds a selected-workflow dependency closure and includes only linked evidence/external references.                                                              | `does not let unrelated external evidence block selected workflow relocation` verifies unrelated external evidence is excluded from blockers.                                               |
 
 ## Full Validation
 
