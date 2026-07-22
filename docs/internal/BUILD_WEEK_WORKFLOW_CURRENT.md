@@ -848,5 +848,7 @@ Merging the integration branch to `main` requires separate user authorization.
 <!-- config-reference-index:start -->
 
 - `.config-reference-reconciliation.yaml` - active workflow role
+- `AGENTS.md` - source-of-truth order
+- `docs/internal/phase_prompts/PHASE_01_UX_UI_FIXES.md` - active phase 1 authority
 
 <!-- config-reference-index:end -->
