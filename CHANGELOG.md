@@ -1,6 +1,29 @@
 # Changelog
 
-## v1.1.0 - 2026-07-18
+## v1.1.0 - 2026-07-21
+
+### Added
+
+- Phase 1: ordinary CLI UX corrections — actionable human `status`, path-level `sync --dry-run`, discoverable tree and node revision references, restore preview with affected-path disclosure, conflicting-drift refusal by default with explicit `--force` override, provisional identity labeling, remediation-first errors, backward-compatible machine output.
+- Phase 2: local Expflow GUI foundation under `apps/gui/` — project selection, initialization state, material state and drift view, tree and node revision history, sync/restore plan review and execution, operation receipt and recovery inspection, accessible loading/empty/error/recovery states.
+- Phase 3: stable read models for advanced record families — documented, versioned, deterministic read models with stable ordering, filtering, pagination, and distinct state representation.
+- Phase 4: evidence intake and authority reconciliation — intake envelope, provenance and capture method, normalized records, authority registration, correspondence proposals, artifact clustering, conflict/duplicate/unresolved states.
+- Phase 5: portable workflow package export/import — versioned manifest, relocatable addressing, collision policy, safe archive handling, deterministic integrity checks, round-trip tests.
+- Phase 6: evidence-backed gap closure — systematic inventory and triage of all open Phase 1–5 findings; no unresolved defects or pilot blockers remained.
+- Phase 7: pilot and empirical evaluation — one repository-owned documentation workflow completed with the ordinary CLI (17 commands); portability defect discovered and fixed (machine-absolute `root_path` → `"."`); restore-safety refusal exercised; BW-C gate review PASS.
+- Added Build Week governance controls: skill-contract validation, config-reference reconciliation, protected-surface verification, precision review skill, phase prompts, and workflow documentation.
+
+### Fixed
+
+- P7-F1: new project metadata no longer persists a machine-absolute `root_path`; stores `"."` for newly initialized project records.
+- Updated skill-contract checker to reference the correct frozen-release document location.
+
+### Changed
+
+- Bumped package version from `1.0.1` to `1.1.0` across npm, Python, runtime constants, and documentation.
+- Consolidated PR #24 (BW-A) into the Phase 1–7 integration branch; BW-A, BW-B, and BW-C gate reviews all returned PASS with no verified gate findings.
+
+## v1.0.1 - 2026-07-18
 
 ### Fixed
 
@@ -8,7 +31,7 @@
 
 ### Release
 
-- Updated npm, Python, release workflow, and release-note metadata for the v1.1.0 hotfix.
+- Updated npm, Python, release workflow, and release-note metadata for the v1.0.1 hotfix.
 
 ## v1.0.0 - 2026-07-17
 

@@ -3,7 +3,7 @@
 **Workflow authority:** `docs/internal/BUILD_WEEK_WORKFLOW_CURRENT.md` <!-- config-docref -->  
 **Phase:** 1  
 **Gate:** BW-A — UX Control Surface Ready  
-**Baseline:** Expflow `v1.1.0`  
+**Baseline:** Expflow `v1.0.1`  
 **Status:** authorized to start  
 **Primary execution agent:** Kimi until superseded  
 **Primary skills:** `expflow-material-storage-sync`, `expflow-testing-security-migration`  

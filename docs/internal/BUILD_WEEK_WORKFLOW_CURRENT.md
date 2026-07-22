@@ -2,7 +2,7 @@
 
 **Version:** 3.0  
 **Status:** active authoritative execution workflow  
-**Baseline:** Expflow `v1.1.0` plus accepted post-release phase merges  
+**Baseline:** Expflow `v1.0.1` plus accepted post-release phase merges  
 **Program:** Build Week Phases 1–9  
 **Review model:** one comprehensive phase review, bounded closure, one gate review at gate exit  
 **Execution model:** repository-local parent orchestrator with one independent read-only reviewer  
