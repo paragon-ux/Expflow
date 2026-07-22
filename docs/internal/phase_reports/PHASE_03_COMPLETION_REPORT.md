@@ -1,6 +1,6 @@
 # Phase 3 Completion Report - Stable Read Models
 
-**Status:** accepted; merge pending
+**Status:** accepted, merged, and post-merge validated
 **Phase:** 3 - Stable Read Models
 **Gate:** BW-B - Workflow Portability Surface Ready
 **Verdict:** implementation complete; full validation PASS; phase review BLOCK on F1; F1 remediation closure PASS
@@ -10,6 +10,7 @@
 **Review report:** `docs/internal/phase_reports/PHASE_03_PRECISION_REVIEW.md`
 **Closure report:** `docs/internal/phase_reports/PHASE_03_PRECISION_REVIEW_F1_CLOSURE.md`
 **Accepted head:** `dba44091d7c003190fb2f6bb19c0c2c97055e419`
+**Phase merge commit:** `6b807a3ad5c05b5c510ec64f2d5296c55a98ebaa`
 
 ## Runtime versions
 
@@ -110,6 +111,7 @@ Post-remediation focused validation:
 | ------------------ | ----------------------- | ---: | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | `npm run validate` | Phase 3 worktree        |    0 | PASS - config references, skill contracts, protected surfaces, format, lint, typecheck, 20 test files / 161 tests, contracts, registries, schemas, examples, fixtures, build, and package verification |
 | `npm run validate` | F1 remediation worktree |    0 | PASS - config references, skill contracts, protected surfaces, format, lint, typecheck, 20 test files / 161 tests, contracts, registries, schemas, examples, fixtures, build, and package verification |
+| `npm run validate` | Phase 3 merge commit    |    0 | PASS - config references, skill contracts, protected surfaces, format, lint, typecheck, 20 test files / 161 tests, contracts, registries, schemas, examples, fixtures, build, and package verification |
 
 ## Contract examples
 
@@ -160,4 +162,4 @@ No immutable architecture or frozen release body was edited.
 
 ## Handoff state
 
-Phase 3 implementation, phase review, F1 remediation, bounded closure review, and post-remediation full validation are complete. Phase 3 is accepted pending merge into the Build Week integration branch.
+Phase 3 implementation, phase review, F1 remediation, bounded closure review, merge, and post-merge validation are complete. Phase 4 is authorized from the current Build Week integration branch tip.
