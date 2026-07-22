@@ -1,6 +1,6 @@
 # Phase 5 Completion Report - Portable Workflow Package
 
-**Status:** accepted; focused checks PASS; full validation PASS; merge pending
+**Status:** accepted, merged, and post-merge validated
 **Phase:** 5 - Portable Workflow Package
 **Gate:** BW-B - Workflow Portability Surface Ready
 **Verdict:** implementation complete; initial phase review BLOCK; closure review PASS after F1/F2 remediation
@@ -8,6 +8,7 @@
 **Phase branch:** `feat/build-week-phase-05-portable-package`
 **Candidate head:** `e95d1eb6087810f4a5d6c44c4b9db5e8a19c0df7`
 **Accepted head:** `249bb963265e5eb4dd1ef3384cacb59b0271328d`
+**Phase merge commit:** `2adcabf5e3f62061f70682f5ace8422a261f8fc1`
 **Review report:** `docs/internal/phase_reports/PHASE_05_PRECISION_REVIEW.md`
 **Closure reports:** `docs/internal/phase_reports/PHASE_05_PRECISION_REVIEW_F1_F2_CLOSURE.md`; `docs/internal/phase_reports/PHASE_05_PRECISION_REVIEW_F1_CLOSURE.md`
 
@@ -55,9 +56,10 @@ The phase does not add a fifth ordinary CLI command, accept authority from impor
 
 ## Full Validation
 
-| Command            | Evaluated state  | Exit | Result                                                                                                                                                                                                 |
-| ------------------ | ---------------- | ---: | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `npm run validate` | Phase 5 worktree |    0 | PASS - config references, skill contracts, protected surfaces, format, lint, typecheck, 22 test files / 176 tests, contracts, registries, schemas, examples, fixtures, build, and package verification |
+| Command            | Evaluated state      | Exit | Result                                                                                                                                                                                                 |
+| ------------------ | -------------------- | ---: | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `npm run validate` | Phase 5 worktree     |    0 | PASS - config references, skill contracts, protected surfaces, format, lint, typecheck, 22 test files / 176 tests, contracts, registries, schemas, examples, fixtures, build, and package verification |
+| `npm run validate` | Phase 5 merge commit |    0 | PASS - config references, skill contracts, protected surfaces, format, lint, typecheck, 22 test files / 176 tests, contracts, registries, schemas, examples, fixtures, build, and package verification |
 
 ## Compatibility Audit
 
