@@ -43,7 +43,8 @@ export type ReadModelCollection =
   | 'equivalence_evaluations'
   | 'reuse_results'
   | 'material_tree_entries'
-  | 'material_operation_receipts';
+  | 'material_operation_receipts'
+  | 'evidence_intake';
 
 export interface ReadModelWarning {
   readonly code: string;
