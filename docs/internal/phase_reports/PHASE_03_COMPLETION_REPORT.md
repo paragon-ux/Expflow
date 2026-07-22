@@ -1,13 +1,15 @@
 # Phase 3 Completion Report - Stable Read Models
 
-**Status:** candidate remediated; closure review pending
+**Status:** accepted; merge pending
 **Phase:** 3 - Stable Read Models
 **Gate:** BW-B - Workflow Portability Surface Ready
-**Verdict:** implementation complete; full validation PASS; phase review BLOCK on F1; remediation complete; closure review pending
+**Verdict:** implementation complete; full validation PASS; phase review BLOCK on F1; F1 remediation closure PASS
 **Integration base:** `2f9cc656f1554139a6cd64ed13456cb821408951`
 **Phase branch:** `feat/build-week-phase-03-stable-read-models`
 **Candidate head:** `680a1586d29633bd03fdadb6be6b3728969f2113`
 **Review report:** `docs/internal/phase_reports/PHASE_03_PRECISION_REVIEW.md`
+**Closure report:** `docs/internal/phase_reports/PHASE_03_PRECISION_REVIEW_F1_CLOSURE.md`
+**Accepted head:** `dba44091d7c003190fb2f6bb19c0c2c97055e419`
 
 ## Runtime versions
 
@@ -87,9 +89,9 @@ Documentation:
 
 ## Phase Review and Remediation
 
-| Finding | Review verdict | Disposition | Remediation evidence                                                                                                                                                                        |
-| ------- | -------------- | ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| F1      | BLOCK          | fixed       | Invalid `state` filters now fail with recoverable `read_model_unknown_state`; focused reproduction returned `{"stateAccepted":false,"code":"read_model_unknown_state","recoverable":true}`. |
+| Finding | Review verdict | Disposition         | Remediation evidence                                                                                                                                                                        |
+| ------- | -------------- | ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| F1      | BLOCK          | fixed; closure PASS | Invalid `state` filters now fail with recoverable `read_model_unknown_state`; focused reproduction returned `{"stateAccepted":false,"code":"read_model_unknown_state","recoverable":true}`. |
 
 Post-remediation focused validation:
 
@@ -158,4 +160,4 @@ No immutable architecture or frozen release body was edited.
 
 ## Handoff state
 
-Phase 3 implementation, phase review, F1 remediation, and post-remediation full validation are complete pending bounded closure review.
+Phase 3 implementation, phase review, F1 remediation, bounded closure review, and post-remediation full validation are complete. Phase 3 is accepted pending merge into the Build Week integration branch.
