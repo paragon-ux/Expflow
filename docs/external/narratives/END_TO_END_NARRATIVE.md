@@ -269,7 +269,7 @@ If no authoritative evidence can yet distinguish committed from not committed, t
 
 ## 9. Step seven: Expflow preserves the workflow beyond the repository
 
-**Proof status:** Mixed. Material revision, drift, receipts, and exact forward-commit restore exist in `v1.0.1`; advanced workflow and artifact record families are library-available; multi-source evidence intake and portable workflow export/import are Phase 4–5 planned surfaces.
+**Proof status:** Mixed. Material revision, drift, receipts, and exact forward-commit restore exist in `v1.1.0`; advanced workflow and artifact record families are library-available; multi-source evidence intake and portable workflow export/import are Phase 4–5 planned surfaces.
 
 The material Git commit is important but incomplete. In the intended integrated flow, Expflow records the broader workflow:
 

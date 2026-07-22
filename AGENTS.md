@@ -42,7 +42,7 @@ A lower source may clarify a higher source. It must not override it.
 
 When controlling sources conflict materially, stop the affected work and record the contradiction. Do not select whichever interpretation is easiest to implement.
 
-`docs/releases/v1.0.1/` is frozen release provenance. It is not active implementation authority.
+`docs/releases/v1.1.0/` is frozen release provenance. It is not active implementation authority.
 
 ---
 

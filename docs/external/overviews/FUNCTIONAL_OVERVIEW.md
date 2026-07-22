@@ -131,7 +131,7 @@ observe material and source state
 | Portable workflow package                  | Exporting only files or transcripts.                                                                | Move the workflow with artifacts, decisions, evidence, dependencies, and unresolved references.              | Planned surface                                                   |
 | Optional local GUI                         | Requiring users to understand raw record families and opaque identifiers.                           | Inspect lineage, decisions, restore points, and portability through an approachable workspace.               | Planned surface                                                   |
 
-### Current `v1.0.1` command contracts
+### Current `v1.1.0` command contracts
 
 The current ordinary command surface is intentionally four commands. The following behaviors are verified current contracts, not Phase 1 proposals:
 
@@ -143,7 +143,7 @@ The current ordinary command surface is intentionally four commands. The followi
 | Restore history       | A successful restore creates a new forward tree revision; it does not rewind or rewrite recorded history.                  | Add preview, path effects, conflicting-drift detection, refusal by default, and an explicit override while preserving exact recorded bytes.                                 |
 | Preview identity      | A new file can receive different node IDs in `status --json`, `sync --dry-run`, and the eventual commit.                   | Mark preview identity as provisional in both human and machine output, omit it until commit, or make allocation deterministic without silently changing identity semantics. |
 
-The installed `v1.0.1` `sync` command also accepts identity and concurrency directives that current help does not expose:
+The installed `v1.1.0` `sync` command also accepts identity and concurrency directives that current help does not expose:
 
 | Flag                              | Verified role                                                                   | Failure behavior                                                                                                                     |
 | --------------------------------- | ------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |

@@ -3,7 +3,7 @@
 **Workflow authority:** `docs/internal/BUILD_WEEK_WORKFLOW_CURRENT.md` <!-- config-docref -->  
 **Phase:** 1  
 **Gate:** BW-A — UX Control Surface Ready  
-**Baseline:** Expflow `v1.0.1`  
+**Baseline:** Expflow `v1.1.0`  
 **Status:** authorized to start  
 **Primary execution agent:** Kimi until superseded  
 **Primary skills:** `expflow-material-storage-sync`, `expflow-testing-security-migration`  
@@ -88,7 +88,7 @@ Phase 1 MUST add:
 
 ### R1 — Provisional identity
 
-Public v1.0.1 behavior confirms that identity shown before commitment may be provisional.
+Public v1.1.0 behavior confirms that identity shown before commitment may be provisional.
 
 Machine output MUST expose a stable provisional/committed distinction, omit identity until commitment, or make allocation deterministic without changing identity semantics silently.
 
@@ -96,7 +96,7 @@ Human output MUST label provisional identity whenever it is shown.
 
 ### R2 — Historical collision
 
-The v1.0.0 post-restore node-revision collision was not reproduced on v1.0.1.
+The v1.0.0 post-restore node-revision collision was not reproduced on v1.1.0.
 
 It MUST NOT enter the active error taxonomy or Phase 1 acceptance suite unless newly reproduced.
 
@@ -511,7 +511,7 @@ Stop and report `NO-GO` or bounded partial completion when:
 - a fifth command appears necessary;
 - tests must be deleted or weakened;
 - a later-phase feature is used to hide a Phase 1 gap;
-- the v1.0.1 baseline cannot be reproduced;
+- the v1.1.0 baseline cannot be reproduced;
 - required repository checks fail;
 - protected bodies require editing;
 - staged ownership is ambiguous;

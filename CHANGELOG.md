@@ -1,6 +1,6 @@
 # Changelog
 
-## v1.0.1 - 2026-07-18
+## v1.1.0 - 2026-07-18
 
 ### Fixed
 
@@ -8,7 +8,7 @@
 
 ### Release
 
-- Updated npm, Python, release workflow, and release-note metadata for the v1.0.1 hotfix.
+- Updated npm, Python, release workflow, and release-note metadata for the v1.1.0 hotfix.
 
 ## v1.0.0 - 2026-07-17
 

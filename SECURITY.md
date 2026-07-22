@@ -23,6 +23,6 @@ Redact tokens, credentials, private keys, and private source content before shar
 
 ## Security Posture
 
-Expflow v1.0.1 is local-first. Core defaults block network processing, keep generated-code execution disabled, separate source data from control instructions, quarantine archive manifests before extraction, and reject structural reuse from blocked or non-allowlisted license expressions.
+Expflow v1.1.0 is local-first. Core defaults block network processing, keep generated-code execution disabled, separate source data from control instructions, quarantine archive manifests before extraction, and reject structural reuse from blocked or non-allowlisted license expressions.
 
 The core repository does not implement adapter protocols, Guerilla hook dispatch, network services, databases, brokers, archive extraction, or generated-code execution. Integrations that need those capabilities must live in separately versioned packages with their own security review.

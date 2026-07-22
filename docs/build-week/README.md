@@ -3,7 +3,7 @@
 **Document role:** Package index for the canonical documentation set and paired `Expflow-Test/` evidence  
 **Primary project focus:** Expflow  
 **Project set:** Expflow, Guerilla, FIMP, and Reqtrace  
-**Current implementation baseline:** Expflow `v1.0.1`  
+**Current implementation baseline:** Expflow `v1.1.0`  
 **Current post-baseline state:** Evidence review complete; no Build Week implementation changes claimed  
 **Canonical format:** Markdown
 
@@ -96,7 +96,7 @@ The integrated narrative is not a mandatory deployment topology. Each project mu
 
 **Archive:** `AGENTIC_CODE_INTERNAL_CONTROLS_MD.zip`
 
-**Purpose:** Govern the post-`v1.0.1` Expflow Build Week implementation cycle.
+**Purpose:** Govern the post-`v1.1.0` Expflow Build Week implementation cycle.
 
 | Document                                | Internal role                                                                                                                                 |
 | --------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -123,7 +123,7 @@ Expflow-Test/
 │   ├── README.md
 │   └── # Seven independent review and test reports
 ├── sandboxes/
-│   ├── kimi-v1.0.1-reverification/
+│   ├── kimi-v1.1.0-reverification/
 │   └── # Codex, DeepSeek Max, and Kimi evidence trees
 ├── fixtures/
 │   └── README.md
@@ -282,11 +282,11 @@ A GUI concept may summarize several internal records. It must not alter their se
 
 ## 7. Current implementation and workflow snapshot
 
-The current implementation baseline is Expflow `v1.0.1`.
+The current implementation baseline is Expflow `v1.1.0`.
 
 The historical Expflow Gates A–D are complete and retained as v1 build evidence. They are not active Build Week phases.
 
-The active workflow begins from the unchanged `v1.0.1` state:
+The active workflow begins from the unchanged `v1.1.0` state:
 
 ```text
 Phase 1: ordinary CLI UX/UI corrections
@@ -305,7 +305,7 @@ Only Phase 1 is currently authorized. The evidence pass is complete, but no Phas
 - keep uninitialized `status` at exit `0` and clarify the state/action contract;
 - preserve exact forward-commit restore while adding preview and conflicting-drift consent;
 - make provisional preview identity explicit to machine and human consumers;
-- treat the historical restore collision as not reproduced on `v1.0.1`;
+- treat the historical restore collision as not reproduced on `v1.1.0`;
 - use **Expflow GUI** and `apps/gui/`; `Expflow Studio` is not approved.
 
 The old plan to correlate Expflow completion with a Guerilla external-compatible adapter gate is superseded. Guerilla is now profile-driven and records native invocation evidence, observations, event nodes, causal edges, and typed outcome reconciliation. Its GUI appears at the end of the current workflow because it depends on stable native product surfaces and pilot evidence.

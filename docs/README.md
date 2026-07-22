@@ -20,10 +20,10 @@ Build Week package provenance lives in:
 - `docs/build-week/README.md`
 - `docs/build-week/DOCUMENTATION_UPDATE_REPORT.md`
 
-Frozen Expflow v1.0.1 documentation lives in:
+Frozen Expflow v1.1.0 documentation lives in:
 
-- `docs/releases/v1.0.1/`
+- `docs/releases/v1.1.0/`
 
 `docs/architecture/` remains the immutable v1 architecture-source package. In particular, `docs/architecture/EXPFLOW_WORKFLOW_CURRENT.md` is retained as historical v1 architecture evidence and is not current Build Week execution authority.
 
-Legacy v1.0.1 documentation files were moved out of the active documentation tree and are available only through the frozen release archive. Do not maintain duplicate editable current status, glossary, workflow, or directory-policy documents.
+Legacy v1.1.0 documentation files were moved out of the active documentation tree and are available only through the frozen release archive. Do not maintain duplicate editable current status, glossary, workflow, or directory-policy documents.

@@ -1,6 +1,6 @@
 # Expflow Developer Guide
 
-**v1.0.1 release.** Local material-core runtime behavior is implemented for the four ordinary commands. Gate C ownership and reproduction behavior is implemented through library runtimes for authority, semantics, workflows, projections, regeneration/equivalence, and reuse. Gate D adds local security controls, migration evidence, package hardening, end-to-end proof, and native durability hardening for material transactions.
+**v1.1.0 release.** Local material-core runtime behavior is implemented for the four ordinary commands. Gate C ownership and reproduction behavior is implemented through library runtimes for authority, semantics, workflows, projections, regeneration/equivalence, and reuse. Gate D adds local security controls, migration evidence, package hardening, end-to-end proof, and native durability hardening for material transactions.
 
 Adapter inspection/reconciliation, Guerilla hook dispatch, network services, databases, brokers, and generated-code execution remain out of scope.
 
@@ -93,7 +93,7 @@ git diff --check -- ':!docs/architecture/**'
 
 The TypeScript package implements:
 
-- Package version reporting (`1.0.1`)
+- Package version reporting (`1.1.0`)
 - CLI handlers for `expflow init`, `expflow sync`, `expflow status`, and `expflow restore`
 - Local `.expflow/` material storage with immutable objects, node revisions, tree revisions, operation receipts, validations, changes, and material head state
 - Working-tree scanning with `.expflow/**` exclusion and scoped path selectors

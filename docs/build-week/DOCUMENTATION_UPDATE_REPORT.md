@@ -1,7 +1,7 @@
 # Documentation Update Report
 
 **Date:** 2026-07-20  
-**Baseline:** Expflow `v1.0.1`  
+**Baseline:** Expflow `v1.1.0`  
 **Result:** PASS — canonical Markdown documentation updated from reviewed evidence
 
 ## Evidence consumed
@@ -31,7 +31,7 @@
 - The Product Overview now discloses the ordinary CLI boundary without weakening Expflow's category-level utility.
 - Restore remains available and verified, but ordinary discovery, preview, and drift consent are explicitly incomplete.
 - The end-to-end narrative labels each major step as current, library-available, or specified/planned.
-- The `v1.0.0` restore collision is retained as historical and not represented as a `v1.0.1` defect.
+- The `v1.0.0` restore collision is retained as historical and not represented as a `v1.1.0` defect.
 
 ## Accepted decisions
 
@@ -43,7 +43,7 @@
 ## Unchanged facts
 
 - No runtime source or behavior was changed.
-- Expflow remains at `v1.0.1`.
+- Expflow remains at `v1.1.0`.
 - Phase 1 remains the only authorized implementation phase.
 - GUI, evidence intake, portability, pilot, Guerilla profile, and Guerilla GUI remain later-phase work.
 - Architecture and the four-command boundary remain unchanged.
