@@ -7,7 +7,7 @@ Expflow is a schema-governed, local-first workflow ownership and observability p
 Expflow records what changed, which evidence was trusted, which decisions remain durable, and which outputs can be inspected, regenerated, restored, or reused.
 
 Current release:
-[`v1.1.0`](docs/releases/v1.1.0/files/docs/release_notes/GITHUB_RELEASE_NOTE_V1_0_1.md).
+[`v1.1.0`](docs/releases/v1.1.0/files/docs/release_notes/GITHUB_RELEASE_NOTE_V1_1_0.md).
 
 ## What Expflow Tracks
 
@@ -131,7 +131,7 @@ python tests/contracts/verify_python_wheel.py
 
 ## Documentation
 
-- [v1.1.0 GitHub release note](docs/releases/v1.1.0/files/docs/release_notes/GITHUB_RELEASE_NOTE_V1_0_1.md)
+- [v1.1.0 GitHub release note](docs/releases/v1.1.0/files/docs/release_notes/GITHUB_RELEASE_NOTE_V1_1_0.md)
 - [v1 compatibility promise](docs/releases/v1.1.0/files/docs/V1_COMPATIBILITY.md)
 - [Release publishing checklist](docs/releases/v1.1.0/files/docs/RELEASE_PUBLISHING.md)
 - [Current status matrix](docs/internal/CURRENT_STATUS_MATRIX.md)

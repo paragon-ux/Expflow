@@ -22,7 +22,6 @@
     "lint": "eslint src/ tests/",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
-    "gui:serve": "npm run build && node apps/gui/server.mjs",
     "contracts:verify": "tsx tests/contracts/verify.ts",
     "check:config-references": "tsx tools/check-config-references.ts",
     "check:skill-contracts": "tsx tools/check-skill-contracts.ts",
