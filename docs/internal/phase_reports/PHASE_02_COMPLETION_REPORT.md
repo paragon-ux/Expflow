@@ -1,9 +1,9 @@
 # Phase 2 Completion Report - Expflow GUI Foundation
 
-**Status:** phase review closure passed; BW-A gate review pending
+**Status:** BW-A gate review passed; phase merge pending
 **Phase:** 2 - Expflow GUI Foundation
 **Gate:** BW-A - UX Control Surface Ready
-**Verdict:** phase review BLOCK; F1 fixed and closure review PASS
+**Verdict:** phase review BLOCK; F1 fixed and closure review PASS; BW-A gate review PASS
 **Integration base:** `43db9b2dd55731282c967620406191fcebfba843`
 **Phase branch:** `feat/build-week-phase-02-gui-foundation`
 **Candidate head:** `f148ecee3646da889f69dde3eff35e8f9235c8a7`
@@ -11,6 +11,7 @@
 **Administrative closeout head:** `ef5857787519aa2756b5778af04d6b3769329be8`
 **Review report:** `docs/internal/phase_reports/PHASE_02_PRECISION_REVIEW.md`
 **Closure report:** `docs/internal/phase_reports/PHASE_02_PRECISION_REVIEW_F1_CLOSURE.md`
+**Gate review report:** `docs/internal/phase_reports/BW_A_GATE_REVIEW.md`
 
 ## Runtime versions
 
@@ -139,7 +140,7 @@ No immutable architecture or frozen release body was edited.
 
 ## Known limitations
 
-- The GUI is a local foundation and has received phase review plus F1 closure review; aggregate BW-A gate review remains pending.
+- The GUI is a local foundation and has received phase review, F1 closure review, and aggregate BW-A gate review.
 - Browser-level accessibility is covered by structural tests and keyboard/focusable controls; no browser automation or screen-reader run has been recorded yet.
 - The local server imports the built package from `dist/`, so `npm run gui:serve` builds before launch.
 
@@ -149,7 +150,7 @@ The external launcher was run with `--phase 2 --json` and returned `status: read
 
 ## Handoff state
 
-Phase 2 implementation and F1 remediation are complete, and bounded F1 closure review returned `PASS`. Next required actions:
+Phase 2 implementation, F1 remediation, bounded closure review, and BW-A gate review are complete. Next required actions:
 
-1. Complete administrative closeout checks and commit the review evidence.
-2. Invoke the BW-A aggregate gate review.
+1. Merge the Phase 2 branch into `feat/build-week-integration`.
+2. Run and record post-merge validation.
