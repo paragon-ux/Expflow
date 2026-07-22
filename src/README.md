@@ -16,6 +16,7 @@ Gate C ownership/reproduction behavior and Gate D security/migration plus native
 - `material/` owns record types, digesting, selector handling, planning, material stores, staged immutable promotion, project locks, and recovery intents.
 - `scan/` owns working-tree scanning with managed exclusions and selector roots.
 - `operations/` owns shared runtime handlers used by the CLI and extension host.
+- `gui/` owns the documented application bridge used by the local Expflow GUI.
 - `transactions/` owns local structural recovery checks and restore working-tree installation helpers.
 - `extensions/` owns the narrow documented extension host.
 - `cli/` owns the ordinary command surface.

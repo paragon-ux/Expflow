@@ -69,10 +69,19 @@ try {
   mkdirSync(packDir);
   mkdirSync(installDir);
 
+  let packedFiles: readonly { readonly path: string }[] = [];
   if (!providedTarball) {
     run(npmCommand, ['run', 'clean'], REPO_ROOT);
     run(npmCommand, ['run', 'build'], REPO_ROOT);
-    run(npmCommand, ['pack', '--pack-destination', packDir], REPO_ROOT);
+    const packOutput = run(
+      npmCommand,
+      ['pack', '--pack-destination', packDir, '--json'],
+      REPO_ROOT,
+    );
+    const packReport = JSON.parse(packOutput) as readonly {
+      readonly files?: readonly { readonly path: string }[];
+    }[];
+    packedFiles = packReport[0]?.files ?? [];
   }
 
   const tarball = providedTarball ?? resolve(packDir, `expflow-${VERSION}.tgz`);
@@ -81,6 +90,11 @@ try {
   }
   if (basename(tarball) !== `expflow-${VERSION}.tgz`) {
     throw new Error(`Expected npm tarball expflow-${VERSION}.tgz, got ${basename(tarball)}`);
+  }
+  for (const file of packedFiles) {
+    if (file.path.startsWith('apps/gui/')) {
+      throw new Error(`GUI app files must remain outside the npm package: ${file.path}`);
+    }
   }
 
   run(npmCommand, ['init', '-y'], installDir);
@@ -145,13 +159,13 @@ try {
     [
       '--input-type=module',
       '--eval',
-      "const { VERSION, createRuntime } = await import('expflow'); console.log(`${VERSION}:${typeof createRuntime}`);",
+      "const { VERSION, createRuntime, createGuiBridge } = await import('expflow'); console.log(`${VERSION}:${typeof createRuntime}:${typeof createGuiBridge}`);",
     ],
     installDir,
   );
-  if (importOutput !== `${VERSION}:function`) {
+  if (importOutput !== `${VERSION}:function:function`) {
     throw new Error(
-      `Expected package export version/runtime ${VERSION}:function, got ${importOutput}`,
+      `Expected package export version/runtime/gui bridge ${VERSION}:function:function, got ${importOutput}`,
     );
   }
 

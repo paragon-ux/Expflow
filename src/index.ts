@@ -1,5 +1,6 @@
 export { VERSION } from './core/version.js';
 export { createRuntime } from './operations/runtime.js';
+export { createGuiBridge } from './gui/bridge.js';
 export { createExtensionHost } from './extensions/host.js';
 export {
   createAuthorityRuntime,
@@ -29,6 +30,13 @@ export type {
   SyncInput,
   SyncPlan,
 } from './operations/runtime.js';
+export type {
+  GuiBridge,
+  GuiErrorDetails,
+  GuiOperationResult,
+  GuiProjectSnapshot,
+  GuiStateKind,
+} from './gui/bridge.js';
 export type { ExpflowExtensionHost } from './extensions/host.js';
 export type { AuthorityRuntime } from './authority/runtime.js';
 export type { SemanticRuntime } from './semantics/runtime.js';
