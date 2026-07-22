@@ -30,6 +30,7 @@ Expflow v1.0.1 covers the local core surfaces implemented in this repository:
 - complete-tree sync, drift status, tree/node restore, scoped path selection, explicit identity directives, and digest-similarity proposals without silent identity preservation;
 - project locks, operation-scoped staging, recoverable init/restore intents, stale-lock classification, causal tree/receipt head repair, restore recovery, and restored-tree digest verification;
 - library runtimes for authority sources, semantic decisions, workflow boundaries, projections, regeneration/equivalence, structural reuse, security controls, migration evidence, and the native extension host;
+- stable, bounded, versioned read models over advanced authority, semantic, workflow, projection, reproduction, and material linkage records;
 - repository-contract checks for immutable architecture sources, schemas, examples, fixtures, registries, package boundaries, and end-to-end proof.
 
 ## Quickstart
@@ -107,7 +108,7 @@ Expflow core intentionally does not implement every surrounding integration surf
 - `docs/releases/v1.0.1/` contains the frozen v1.0.1 release documentation record.
 - `apps/gui/` contains the local Expflow GUI client and server.
 - `schemas/` and `examples/` mirror the architecture schemas and examples for tooling.
-- `src/` contains the TypeScript package, CLI, GUI bridge, material runtime, Gate C library runtimes, Gate D security/migration runtimes, and contract tooling.
+- `src/` contains the TypeScript package, CLI, GUI bridge, read-model runtime, material runtime, Gate C library runtimes, Gate D security/migration runtimes, and contract tooling.
 - `python/expflow_hooks/` contains the Python hook-package scaffold and repository-only schema discovery.
 - `tests/` contains repository-contract, material-runtime, authority, Gate C ownership/reproduction, Gate D security/migration, package, and end-to-end proof tests.
 

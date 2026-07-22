@@ -58,6 +58,7 @@ describe('Expflow GUI shell contract', () => {
       '/api/recover',
       '/api/verify',
       '/api/receipt',
+      '/api/read-models/list',
     ]) {
       expect(server).toContain(route);
     }
