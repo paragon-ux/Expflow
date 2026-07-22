@@ -4,7 +4,7 @@
 
 Current test areas:
 
-- `unit/` covers generated type inventory, repository discovery, prohibited-scope boundaries, extension-host boundaries, Gate B material runtime behavior, Phase 1 ordinary CLI UX, Phase 2 GUI bridge behavior, Phase 3 stable read-model behavior, protected-surface immutability, Gate C authority behavior, Gate C ownership/reproduction behavior, and Gate D security/migration behavior.
+- `unit/` covers generated type inventory, repository discovery, prohibited-scope boundaries, extension-host boundaries, Gate B material runtime behavior, Phase 1 ordinary CLI UX, Phase 2 GUI bridge behavior, Phase 3 stable read-model behavior, Phase 4 evidence intake/reconciliation behavior, protected-surface immutability, Gate C authority behavior, Gate C ownership/reproduction behavior, and Gate D security/migration behavior.
 - `e2e/` covers the Gate D final core proof path.
 - `contracts/` verifies immutable architecture sources, registries, schema examples, fixtures, generated controls, and package installation boundaries, including exact release tarball and wheel checks when supplied.
 - `fixtures/` contains seed conformance fixtures used by the contract verifiers.
@@ -14,6 +14,8 @@ Gate B/Gate D material-runtime coverage includes immutable stores, staged object
 Phase 2 GUI bridge coverage verifies uninitialized state, initialization, sync preview/execution, history, restore preview/refusal/override, receipt loading, explicit GUI states, and the no-raw-storage technical-detail boundary.
 
 Phase 3 read-model coverage verifies versioned envelopes, deterministic rereads, authority state separation, bounded pagination, invalid cursor and limit refusal, workflow/projection/reproduction state separation, material linkage, and read-only behavior on empty initialized projects.
+
+Phase 4 evidence coverage verifies provenance envelopes, unsupported-boundary refusal, unsafe archive quarantine, duplicate/idempotent intake including concurrent retries, authority-source proposals without acceptance, correspondence proposals, conflict preservation, artifact candidates, human decisions, package export, and read-model exposure.
 
 Gate C coverage includes:
 

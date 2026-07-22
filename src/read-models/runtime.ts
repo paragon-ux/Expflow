@@ -33,6 +33,7 @@ import {
   readProject,
   readTreeRevision,
 } from '../material/store.js';
+import { listEvidenceIntake } from '../evidence/store.js';
 import {
   READ_MODEL_VERSION,
   type ListReadModelInput,
@@ -72,6 +73,7 @@ import type {
   ReuseResultRecord,
 } from '../reproduction/types.js';
 import type { OperationReceiptRecord, TreeEntryRecord } from '../material/types.js';
+import type { EvidenceIntakeRecord } from '../evidence/types.js';
 
 const DEFAULT_LIMIT = 50;
 const MAX_LIMIT = 100;
@@ -96,6 +98,7 @@ const COLLECTIONS = [
   'reuse_results',
   'material_tree_entries',
   'material_operation_receipts',
+  'evidence_intake',
 ] as const satisfies readonly ReadModelCollection[];
 
 const READ_MODEL_STATES = [
@@ -674,6 +677,20 @@ function receiptItem(record: OperationReceiptRecord): ReadModelItem {
   );
 }
 
+function evidenceIntakeItem(record: EvidenceIntakeRecord): ReadModelItem {
+  return collectionItem(
+    'evidence_intake',
+    record.intake_id,
+    record.state === 'quarantined'
+      ? 'blocked'
+      : record.duplicate_of === null || record.duplicate_of === undefined
+        ? 'proposed'
+        : 'stale',
+    record.created_at,
+    record,
+  );
+}
+
 function collectionItems(
   ctx: ProjectContext,
   collection: ReadModelCollection,
@@ -731,6 +748,8 @@ function collectionItems(
     }
     case 'material_operation_receipts':
       return listOperationReceipts(ctx.projectRoot).map(receiptItem);
+    case 'evidence_intake':
+      return listEvidenceIntake(ctx.projectRoot).map(evidenceIntakeItem);
   }
 }
 
