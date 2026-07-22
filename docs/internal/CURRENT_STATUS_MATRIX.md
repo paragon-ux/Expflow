@@ -3,17 +3,17 @@
 **Status:** Current internal status control
 **Last updated:** 2026-07-21
 **Implementation baseline:** Expflow `v1.0.1`
-**Post-baseline changes:** Phase 1 ordinary CLI UX accepted, merged, repaired, and post-merge validated at `4a4603435d4a61ff0776ec814dd36a1a12633a6d`; Phase 2 GUI foundation accepted, merged, and post-merge validated at `10a79e95bb034dc263ffa935eb4d4fc27eda942f`; Phase 3 stable read models accepted, merged, and post-merge validated at `6b807a3ad5c05b5c510ec64f2d5296c55a98ebaa`
+**Post-baseline changes:** Phase 1 ordinary CLI UX accepted, merged, repaired, and post-merge validated at `4a4603435d4a61ff0776ec814dd36a1a12633a6d`; Phase 2 GUI foundation accepted, merged, and post-merge validated at `10a79e95bb034dc263ffa935eb4d4fc27eda942f`; Phase 3 stable read models accepted, merged, and post-merge validated at `6b807a3ad5c05b5c510ec64f2d5296c55a98ebaa`; Phase 4 evidence intake and authority reconciliation accepted, merged, and post-merge validated at `9f4cf99ba62b3eee38c200e3bff198c814b6530e`
 **Historical workflow:** Gates A–D complete and closed
 **Current workflow:** `BUILD_WEEK_WORKFLOW_CURRENT.md`
-**Current phase:** Phase 4 - Evidence Intake and Authority Reconciliation
-**Phase state:** Phase 4 accepted after precision review PASS; merge into `feat/build-week-integration` pending
+**Current phase:** Phase 5 - Portable Workflow Package
+**Phase state:** Phase 5 authorized from `feat/build-week-integration` after Phase 4 merge and post-merge validation
 
 ---
 
 ## 1. Practical Status Statement
 
-> Expflow `v1.0.1` is the current implementation baseline. The v1 architecture and internal runtime gates are complete. The post-v1 evidence and disposition pass is complete. Phase 1 ordinary CLI UX is accepted, merged, and post-merge validated: status, sync preview, restore preview, restore drift refusal, per-command help, strict parsing, remediation-first errors, and provisional-identity labeling are implemented and covered by focused and full validation. Phase 2 local Expflow GUI foundation is accepted, merged, and post-merge validated. BW-A review passed with no verified gate findings, and draft gate PR #24 is open. Phase 3 stable advanced read models are accepted, merged, and post-merge validated. Phase 4 evidence intake and authority reconciliation is accepted after precision review PASS; merge into the Build Week integration branch is pending. There is no portable workflow package, real external pilot, empirical evaluation, Guerilla profile, or Guerilla causal event-view GUI.
+> Expflow `v1.0.1` is the current implementation baseline. The v1 architecture and internal runtime gates are complete. The post-v1 evidence and disposition pass is complete. Phase 1 ordinary CLI UX is accepted, merged, and post-merge validated: status, sync preview, restore preview, restore drift refusal, per-command help, strict parsing, remediation-first errors, and provisional-identity labeling are implemented and covered by focused and full validation. Phase 2 local Expflow GUI foundation is accepted, merged, and post-merge validated. BW-A review passed with no verified gate findings, and draft gate PR #24 is open. Phase 3 stable advanced read models are accepted, merged, and post-merge validated. Phase 4 evidence intake and authority reconciliation is accepted, merged, and post-merge validated. Phase 5 is authorized. There is no portable workflow package, real external pilot, empirical evaluation, Guerilla profile, or Guerilla causal event-view GUI.
 
 This matrix deliberately separates implementation from exposure, validation, adoption, and product proof.
 
@@ -37,7 +37,7 @@ The historical `EXPFLOW_WORKFLOW_CURRENT.md` must be retained or renamed as v1 b
 | Gate                                      | Phases | State   | Blocking condition                                                                                               |
 | ----------------------------------------- | -----: | ------- | ---------------------------------------------------------------------------------------------------------------- |
 | BW-A — UX Control Surface Ready           |    1–2 | CLOSED  | Phase 1 and Phase 2 accepted, merged, gate-reviewed, post-merge validated, and represented by draft gate PR #24. |
-| BW-B — Workflow Portability Surface Ready |    3–5 | ACTIVE  | Phase 4 accepted; integration merge and post-merge validation pending.                                           |
+| BW-B — Workflow Portability Surface Ready |    3–5 | ACTIVE  | Phase 4 accepted, merged, and post-merge validated; Phase 5 authorized.                                          |
 | BW-C — Pilot Proven                       |    6–7 | BLOCKED | Requires BW-B exit.                                                                                              |
 | BW-D — Causal Integration Ready           |    8–9 | BLOCKED | Requires empirical pilot evidence and stable Expflow surfaces.                                                   |
 
@@ -76,8 +76,8 @@ Status vocabulary:
 | Restore preview and drift guard                                                  | Yes         | Focused Phase 1 tests     | CLI                            | No                          | No                    | `restore --dry-run` previews; default restore refuses conflicting drift; `--force` is explicit override.                              |
 | Expflow local GUI                                                                | Yes         | Yes                       | Local GUI                      | No                          | No                    | Phase 2 accepted, merged, and post-merge validated at `10a79e95bb034dc263ffa935eb4d4fc27eda942f`; no pilot or empirical evidence yet. |
 | Stable read models for advanced record families                                  | Yes         | Focused + full validation | Library + GUI bridge           | No                          | No                    | Phase 3 accepted, merged, and post-merge validated at `6b807a3ad5c05b5c510ec64f2d5296c55a98ebaa`.                                     |
-| Evidence intake from partial sources                                             | Yes         | Focused + full validation | Library + read model           | No                          | No                    | Phase 4 accepted after precision review PASS; integration merge pending.                                                              |
-| Artifact correspondence review workflow                                          | Yes         | Focused + full validation | Library + read model           | No                          | No                    | Phase 4 accepted after precision review PASS; integration merge pending.                                                              |
+| Evidence intake from partial sources                                             | Yes         | Focused + full validation | Library + read model           | No                          | No                    | Phase 4 accepted, merged, and post-merge validated at `9f4cf99ba62b3eee38c200e3bff198c814b6530e`.                                     |
+| Artifact correspondence review workflow                                          | Yes         | Focused + full validation | Library + read model           | No                          | No                    | Phase 4 accepted, merged, and post-merge validated at `9f4cf99ba62b3eee38c200e3bff198c814b6530e`.                                     |
 | Portable workflow package export/import                                          | No          | No                        | No                             | No                          | No                    | Phase 5.                                                                                                                              |
 | Real end-to-end Expflow pilot                                                    | No          | No                        | No                             | No                          | No                    | Phase 7.                                                                                                                              |
 | Comparative or usability evaluation                                              | No          | No                        | No                             | No                          | No                    | Phase 7.                                                                                                                              |
@@ -168,13 +168,13 @@ Phase 1 — Ordinary UX/UI Corrections
     -> Phase 9 — Guerilla Causal Event-View GUI
 ```
 
-Phase 2 implementation, phase closure review, BW-A aggregate gate review, merge, and post-merge validation are complete. Phase 3 implementation, phase review, closure review, merge, and post-merge validation are complete. Phase 4 is authorized.
+Phase 2 implementation, phase closure review, BW-A aggregate gate review, merge, and post-merge validation are complete. Phase 3 implementation, phase review, closure review, merge, and post-merge validation are complete. Phase 4 implementation, phase review, merge, and post-merge validation are complete. Phase 5 is authorized.
 
 ---
 
 ## 8. Current Phase Entry Conditions
 
-Phase 4 may begin when:
+Phase 5 may begin when:
 
 - Phase 1 completion and finding reports record accepted review evidence;
 - Phase 1 is merged into the rolling integration branch and post-merge repaired at `4a4603435d4a61ff0776ec814dd36a1a12633a6d`;
@@ -183,9 +183,10 @@ Phase 4 may begin when:
 - BW-A gate review passes with no remaining verified findings;
 - Phase 2 post-merge validation passes;
 - BW-A draft gate PR #24 is open at `https://github.com/paragon-ux/Expflow/pull/24`;
-- Phase 3 post-merge validation passes at `6b807a3ad5c05b5c510ec64f2d5296c55a98ebaa`.
+- Phase 3 post-merge validation passes at `6b807a3ad5c05b5c510ec64f2d5296c55a98ebaa`;
+- Phase 4 post-merge validation passes at `9f4cf99ba62b3eee38c200e3bff198c814b6530e`.
 
-Phase 4 branch creation is authorized from the current `feat/build-week-integration` tip.
+Phase 5 branch creation is authorized from the current `feat/build-week-integration` tip.
 
 ---
 

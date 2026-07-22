@@ -1,6 +1,6 @@
 # Phase 4 Completion Report - Evidence Intake and Authority Reconciliation
 
-**Status:** accepted; merge pending
+**Status:** accepted, merged, and post-merge validated
 **Phase:** 4 - Evidence Intake and Authority Reconciliation
 **Gate:** BW-B - Workflow Portability Surface Ready
 **Verdict:** implementation complete; focused checks PASS; full validation PASS; phase review PASS
@@ -9,6 +9,7 @@
 **Candidate head:** `cac05cb615cf13beb6ad57ff09a7e99286501c6c`
 **Review report:** `docs/internal/phase_reports/PHASE_04_PRECISION_REVIEW.md`
 **Accepted head:** `81c07e34a1c1dae339250e9f2d91217eb0bfa03b`
+**Phase merge commit:** `9f4cf99ba62b3eee38c200e3bff198c814b6530e`
 
 ## Runtime Versions
 
@@ -92,9 +93,10 @@ Documentation:
 
 ## Full Validation
 
-| Command            | Evaluated state  | Exit | Result                                                                                                                                                                                                 |
-| ------------------ | ---------------- | ---: | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `npm run validate` | Phase 4 worktree |    0 | PASS - config references, skill contracts, protected surfaces, format, lint, typecheck, 21 test files / 169 tests, contracts, registries, schemas, examples, fixtures, build, and package verification |
+| Command            | Evaluated state      | Exit | Result                                                                                                                                                                                                 |
+| ------------------ | -------------------- | ---: | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `npm run validate` | Phase 4 worktree     |    0 | PASS - config references, skill contracts, protected surfaces, format, lint, typecheck, 21 test files / 169 tests, contracts, registries, schemas, examples, fixtures, build, and package verification |
+| `npm run validate` | Phase 4 merge commit |    0 | PASS - config references, skill contracts, protected surfaces, format, lint, typecheck, 21 test files / 169 tests, contracts, registries, schemas, examples, fixtures, build, and package verification |
 
 ## Contract Examples
 
@@ -158,4 +160,4 @@ No immutable architecture or frozen release body was edited.
 
 ## Handoff State
 
-Phase 4 implementation, focused validation, full validation, package dry-run, and independent phase review are complete. Phase 4 is accepted pending merge into the Build Week integration branch.
+Phase 4 implementation, focused validation, full validation, package dry-run, independent phase review, merge, and post-merge validation are complete. Phase 5 is authorized from the current Build Week integration branch tip.
