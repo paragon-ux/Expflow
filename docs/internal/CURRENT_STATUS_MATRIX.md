@@ -3,17 +3,17 @@
 **Status:** Current internal status control
 **Last updated:** 2026-07-21
 **Implementation baseline:** Expflow `v1.0.1`
-**Post-baseline changes:** Phase 1 ordinary CLI UX accepted, merged, repaired, and post-merge validated at `4a4603435d4a61ff0776ec814dd36a1a12633a6d`; Phase 2 GUI foundation accepted, merged, and post-merge validated at `10a79e95bb034dc263ffa935eb4d4fc27eda942f`; Phase 3 stable read models accepted, merged, and post-merge validated at `6b807a3ad5c05b5c510ec64f2d5296c55a98ebaa`; Phase 4 evidence intake and authority reconciliation accepted, merged, and post-merge validated at `9f4cf99ba62b3eee38c200e3bff198c814b6530e`; Phase 5 portable workflow package accepted, merged, and post-merge validated at `2adcabf5e3f62061f70682f5ace8422a261f8fc1`
+**Post-baseline changes:** Phase 1 ordinary CLI UX accepted, merged, repaired, and post-merge validated at `4a4603435d4a61ff0776ec814dd36a1a12633a6d`; Phase 2 GUI foundation accepted, merged, and post-merge validated at `10a79e95bb034dc263ffa935eb4d4fc27eda942f`; Phase 3 stable read models accepted, merged, and post-merge validated at `6b807a3ad5c05b5c510ec64f2d5296c55a98ebaa`; Phase 4 evidence intake and authority reconciliation accepted, merged, and post-merge validated at `9f4cf99ba62b3eee38c200e3bff198c814b6530e`; Phase 5 portable workflow package accepted, merged, and post-merge validated at `2adcabf5e3f62061f70682f5ace8422a261f8fc1`; Phase 6 evidence-backed gap closure accepted, merged, and post-merge validated at `a721722b802825005c459580d400929cb169bde8`
 **Historical workflow:** Gates A–D complete and closed
 **Current workflow:** `BUILD_WEEK_WORKFLOW_CURRENT.md`
-**Current phase:** Phase 6 - Evidence-Backed Gap Closure
-**Phase state:** BW-B aggregate gate review passed; Phase 6 authorized from `feat/build-week-integration`
+**Current phase:** Phase 7 - Pilot and Empirical Evaluation
+**Phase state:** Phase 6 accepted, merged, and post-merge validated; Phase 7 authorized from `feat/build-week-integration`
 
 ---
 
 ## 1. Practical Status Statement
 
-> Expflow `v1.0.1` is the current implementation baseline. The v1 architecture and internal runtime gates are complete. The post-v1 evidence and disposition pass is complete. Phase 1 ordinary CLI UX is accepted, merged, and post-merge validated: status, sync preview, restore preview, restore drift refusal, per-command help, strict parsing, remediation-first errors, and provisional-identity labeling are implemented and covered by focused and full validation. Phase 2 local Expflow GUI foundation is accepted, merged, and post-merge validated. BW-A review passed with no verified gate findings, and draft gate PR #24 is open. Phase 3 stable advanced read models, Phase 4 evidence intake and authority reconciliation, and Phase 5 portable workflow packages are accepted, merged, and post-merge validated. BW-B aggregate gate review passed. Phase 6 is authorized. There is no real external pilot, empirical evaluation, Guerilla profile, or Guerilla causal event-view GUI.
+> Expflow `v1.0.1` is the current implementation baseline. The v1 architecture and internal runtime gates are complete. The post-v1 evidence and disposition pass is complete. Phase 1 ordinary CLI UX is accepted, merged, and post-merge validated: status, sync preview, restore preview, restore drift refusal, per-command help, strict parsing, remediation-first errors, and provisional-identity labeling are implemented and covered by focused and full validation. Phase 2 local Expflow GUI foundation is accepted, merged, and post-merge validated. BW-A review passed with no verified gate findings, and draft gate PR #24 is open. Phase 3 stable advanced read models, Phase 4 evidence intake and authority reconciliation, Phase 5 portable workflow packages, and Phase 6 evidence-backed gap closure are accepted, merged, and post-merge validated. BW-B aggregate gate review passed. Phase 7 is authorized. There is no real external pilot, empirical evaluation, Guerilla profile, or Guerilla causal event-view GUI.
 
 This matrix deliberately separates implementation from exposure, validation, adoption, and product proof.
 
@@ -38,7 +38,7 @@ The historical `EXPFLOW_WORKFLOW_CURRENT.md` must be retained or renamed as v1 b
 | ----------------------------------------- | -----: | ------- | ---------------------------------------------------------------------------------------------------------------- |
 | BW-A — UX Control Surface Ready           |    1–2 | CLOSED  | Phase 1 and Phase 2 accepted, merged, gate-reviewed, post-merge validated, and represented by draft gate PR #24. |
 | BW-B — Workflow Portability Surface Ready |    3–5 | CLOSED  | Phases 3, 4, and 5 accepted, merged, post-merge validated, and gate-reviewed with no verified findings.          |
-| BW-C — Pilot Proven                       |    6–7 | ACTIVE  | BW-B closed; Phase 6 authorized.                                                                                 |
+| BW-C — Pilot Proven                       |    6–7 | ACTIVE  | Phase 6 closed; Phase 7 authorized.                                                                              |
 | BW-D — Causal Integration Ready           |    8–9 | BLOCKED | Requires empirical pilot evidence and stable Expflow surfaces.                                                   |
 
 The former plan to correlate Expflow completion with a Guerilla external-compatible adapter gate is superseded. Guerilla is now profile-driven and its GUI is a causal event view implemented at the end of this workflow.
@@ -168,13 +168,13 @@ Phase 1 — Ordinary UX/UI Corrections
     -> Phase 9 — Guerilla Causal Event-View GUI
 ```
 
-Phase 2 implementation, phase closure review, BW-A aggregate gate review, merge, and post-merge validation are complete. Phase 3 implementation, phase review, closure review, merge, and post-merge validation are complete. Phase 4 implementation, phase review, merge, and post-merge validation are complete. Phase 5 implementation, phase review, closure review, merge, post-merge validation, and BW-B aggregate gate review are complete. Phase 6 is authorized.
+Phase 2 implementation, phase closure review, BW-A aggregate gate review, merge, and post-merge validation are complete. Phase 3 implementation, phase review, closure review, merge, and post-merge validation are complete. Phase 4 implementation, phase review, merge, and post-merge validation are complete. Phase 5 implementation, phase review, closure review, merge, post-merge validation, and BW-B aggregate gate review are complete. Phase 6 implementation, phase review, closure review, merge, and post-merge validation are complete. Phase 7 is authorized.
 
 ---
 
 ## 8. Current Phase Entry Conditions
 
-Phase 6 may begin when:
+Phase 7 may begin when:
 
 - Phase 1 completion and finding reports record accepted review evidence;
 - Phase 1 is merged into the rolling integration branch and post-merge repaired at `4a4603435d4a61ff0776ec814dd36a1a12633a6d`;
@@ -186,9 +186,12 @@ Phase 6 may begin when:
 - Phase 3 post-merge validation passes at `6b807a3ad5c05b5c510ec64f2d5296c55a98ebaa`;
 - Phase 4 post-merge validation passes at `9f4cf99ba62b3eee38c200e3bff198c814b6530e`;
 - Phase 5 post-merge validation passes at `2adcabf5e3f62061f70682f5ace8422a261f8fc1`;
-- BW-B aggregate gate review passes at `872264b3853ed4cd36f66955a120bb10e984c1d0`.
+- BW-B aggregate gate review passes at `872264b3853ed4cd36f66955a120bb10e984c1d0`;
+- Phase 6 completion and review reports record accepted review evidence;
+- Phase 6 is merged into the rolling integration branch at `a721722b802825005c459580d400929cb169bde8`;
+- Phase 6 post-merge validation passes.
 
-Phase 6 branch creation is authorized from the current `feat/build-week-integration` tip.
+Phase 7 branch creation is authorized from the current `feat/build-week-integration` tip once the Phase 7 prompt is present and unambiguous.
 
 ---
 

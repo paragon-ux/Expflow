@@ -1,6 +1,6 @@
 # Phase 6 Completion Report - Evidence-Backed Gap Closure
 
-**Status:** accepted; focused checks PASS; full validation PASS; review PASS; merge pending
+**Status:** accepted, merged, and post-merge validated
 **Phase:** 6 - Evidence-Backed Gap Closure
 **Gate:** BW-C - Pilot Proven
 **Verdict:** no eligible unresolved reproduced defects or severity-one pilot blockers found; no code changes authorized
@@ -8,6 +8,7 @@
 **Phase branch:** `fix/build-week-phase-06-gap-closure`
 **Reviewed candidate head:** `b65085e056d816b842c8c64c8f2be18de817b2f4`
 **Administrative closeout head:** `aba75a92fff7d9f893fca56ef00710d967edbcd7`
+**Phase merge commit:** `a721722b802825005c459580d400929cb169bde8`
 **Review report:** `docs/internal/phase_reports/PHASE_06_PRECISION_REVIEW.md`
 **Closure review report:** `docs/internal/phase_reports/PHASE_06_PRECISION_REVIEW_F1_F2_CLOSURE.md`
 
@@ -88,11 +89,12 @@ No source, tests, schemas, contracts, GUI, packaging, or migration files were ch
 
 ## Full Validation
 
-| Command            | Evaluated state                                             | Exit | Result                                                                               |
-| ------------------ | ----------------------------------------------------------- | ---: | ------------------------------------------------------------------------------------ |
-| `npm run validate` | Phase 6 worktree, attempt 1                                 |  124 | timed out before result at the command limit                                         |
-| `npm run validate` | Phase 6 worktree, attempt 2                                 |    0 | PASS - 22 test files / 176 tests; contract, schema, build, and package checks passed |
-| `npm run validate` | Remediation head `aba75a92fff7d9f893fca56ef00710d967edbcd7` |    0 | PASS - 22 test files / 176 tests; contract, schema, build, and package checks passed |
+| Command            | Evaluated state                                               | Exit | Result                                                                               |
+| ------------------ | ------------------------------------------------------------- | ---: | ------------------------------------------------------------------------------------ |
+| `npm run validate` | Phase 6 worktree, attempt 1                                   |  124 | timed out before result at the command limit                                         |
+| `npm run validate` | Phase 6 worktree, attempt 2                                   |    0 | PASS - 22 test files / 176 tests; contract, schema, build, and package checks passed |
+| `npm run validate` | Remediation head `aba75a92fff7d9f893fca56ef00710d967edbcd7`   |    0 | PASS - 22 test files / 176 tests; contract, schema, build, and package checks passed |
+| `npm run validate` | Phase merge commit `a721722b802825005c459580d400929cb169bde8` |    0 | PASS - 22 test files / 176 tests; contract, schema, build, and package checks passed |
 
 ## Review Disposition
 
@@ -149,4 +151,4 @@ No immutable architecture or frozen release body was edited.
 
 ## Handoff State
 
-Phase 6 evidence is accepted pending merge to `feat/build-week-integration` and post-merge validation. If post-merge validation passes, Phase 7 is the next authorized phase.
+Phase 6 is accepted, merged to `feat/build-week-integration`, and post-merge validated. Phase 7 is the next authorized phase.
