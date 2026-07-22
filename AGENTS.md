@@ -416,3 +416,9 @@ Focused closure should prove those defects resolved.
 One gate review should assess cross-phase readiness.
 
 Do not turn every correction into a new full review, every report edit into a full validation cycle, or every execution inconvenience into an ADR.
+
+<!-- config-reference-index:start -->
+
+- `.config-reference-reconciliation.yaml` - repository governance role
+
+<!-- config-reference-index:end -->

@@ -75,6 +75,15 @@ Each protected target section must use this form:
 
 <!-- config-reference-index:end -->
 
+## `docs/releases/v1.1.0/files/docs/release_notes/GITHUB_RELEASE_NOTE_V1_1_0.md`
+
+<!-- config-reference-index:start -->
+
+- `.config-reference-reconciliation.yaml` - release notes v1.1.0 role
+- `.github/workflows/release.yml` - GitHub release notes input
+
+<!-- config-reference-index:end -->
+
 ## `docs/releases/v1.0.1/files/docs/release_notes/GITHUB_RELEASE_NOTE_V1_0_1.md`
 
 <!-- config-reference-index:start -->

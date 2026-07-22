@@ -570,8 +570,8 @@ The next agent MUST be able to continue without retired repositories or the orig
 
 <!-- config-reference-index:start -->
 
-- `AGENTS.md` - active Phase 1 governance
 - `.config-reference-reconciliation.yaml` - active Phase 1 prompt role
+- `AGENTS.md` - active Phase 1 governance
 - `docs/internal/BUILD_WEEK_WORKFLOW_CURRENT.md` - active Phase 1 authority
 
 <!-- config-reference-index:end -->

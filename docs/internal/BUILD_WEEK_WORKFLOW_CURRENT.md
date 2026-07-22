@@ -844,3 +844,9 @@ Build Week completes when:
 - product and empirical claims match evidence.
 
 Merging the integration branch to `main` requires separate user authorization.
+
+<!-- config-reference-index:start -->
+
+- `.config-reference-reconciliation.yaml` - active workflow role
+
+<!-- config-reference-index:end -->

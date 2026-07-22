@@ -87,6 +87,10 @@ roles:
     path: docs/releases/v1.0.1/files/docs/release_notes/GITHUB_RELEASE_NOTE_V1_0_1.md # config-docref
     class: frozen-evidence
 
+  release_notes_v1_1_0:
+    path: docs/releases/v1.1.0/files/docs/release_notes/GITHUB_RELEASE_NOTE_V1_1_0.md # config-docref
+    class: frozen-evidence
+
   release_archive:
     path: docs/releases/v1.0.1/files/
     class: frozen-evidence
