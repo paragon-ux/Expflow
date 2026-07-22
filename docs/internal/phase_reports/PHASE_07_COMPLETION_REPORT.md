@@ -6,7 +6,8 @@
 **Verdict:** one real repository-owned workflow completed; one pilot-found portability/evidence defect fixed; claims limited to observed evidence
 **Integration base:** `bbdb28375d42c1317ddd1b3e3c6b4ca113e3d0c5`
 **Phase branch:** `feat/build-week-phase-07-pilot-evaluation`
-**Candidate head:** pending commit
+**Reviewed candidate head:** `116825127f0abc2cce647cd13b1e956e2dcb56cc`
+**Administrative evidence head:** pending commit
 **Review report:** pending
 
 ## Runtime Versions
