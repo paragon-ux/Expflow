@@ -14,6 +14,7 @@
 **Review report:** `docs/internal/phase_reports/PHASE_02_PRECISION_REVIEW.md`
 **Closure report:** `docs/internal/phase_reports/PHASE_02_PRECISION_REVIEW_F1_CLOSURE.md`
 **Gate review report:** `docs/internal/phase_reports/BW_A_GATE_REVIEW.md`
+**Gate PR:** `https://github.com/paragon-ux/Expflow/pull/24`
 
 ## Runtime versions
 
@@ -156,5 +157,4 @@ The external launcher was run with `--phase 2 --json` and returned `status: read
 Phase 2 implementation, F1 remediation, bounded closure review, BW-A gate review, merge, and post-merge validation are complete. Next required actions:
 
 1. Commit this post-merge validation record.
-2. Create the BW-A gate PR.
-3. Start Phase 3 from `feat/build-week-integration` after PR creation.
+2. Start Phase 3 from `feat/build-week-integration`.

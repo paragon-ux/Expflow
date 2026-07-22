@@ -8,6 +8,7 @@
 **Reviewed head:** `d457a25526235bc48893c6a39c0e1cb97af96bbf`
 **Gate closeout head:** `cf7ca050216f3295aace29810e0163b0e310667c`
 **Merge commit:** `10a79e95bb034dc263ffa935eb4d4fc27eda942f`
+**Gate PR:** `https://github.com/paragon-ux/Expflow/pull/24`
 **Diff:** `43db9b2dd55731282c967620406191fcebfba843...d457a25526235bc48893c6a39c0e1cb97af96bbf`
 **Verdict:** `PASS`
 
@@ -49,4 +50,4 @@ No verified findings.
 
 ## Gate result
 
-BW-A has no verified gate findings. Phase 2 was merged into `feat/build-week-integration` at `10a79e95bb034dc263ffa935eb4d4fc27eda942f`, and post-merge validation passed. BW-A is closed subject to recording this post-merge validation update.
+BW-A has no verified gate findings. Phase 2 was merged into `feat/build-week-integration` at `10a79e95bb034dc263ffa935eb4d4fc27eda942f`, post-merge validation passed, and draft gate PR #24 was opened. BW-A is closed; do not merge the gate PR or integration branch into `main` without explicit authorization.

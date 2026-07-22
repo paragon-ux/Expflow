@@ -7,13 +7,13 @@
 **Historical workflow:** Gates A–D complete and closed
 **Current workflow:** `BUILD_WEEK_WORKFLOW_CURRENT.md`
 **Current phase:** Phase 3 - Stable Read Models
-**Phase state:** BW-A closed after Phase 2 merge and post-merge validation; Phase 3 is the next authorized phase
+**Phase state:** BW-A closed after Phase 2 merge, post-merge validation, and draft gate PR #24; Phase 3 is the next authorized phase
 
 ---
 
 ## 1. Practical Status Statement
 
-> Expflow `v1.0.1` is the current implementation baseline. The v1 architecture and internal runtime gates are complete. The post-v1 evidence and disposition pass is complete. Phase 1 ordinary CLI UX is accepted, merged, and post-merge validated: status, sync preview, restore preview, restore drift refusal, per-command help, strict parsing, remediation-first errors, and provisional-identity labeling are implemented and covered by focused and full validation. Phase 2 local Expflow GUI foundation is accepted, merged, and post-merge validated. BW-A review passed with no verified gate findings. The differentiating authority, semantic, workflow, projection, and reproduction state remains primarily library-facing. There is no portable workflow package, real external pilot, empirical evaluation, Guerilla profile, or Guerilla causal event-view GUI.
+> Expflow `v1.0.1` is the current implementation baseline. The v1 architecture and internal runtime gates are complete. The post-v1 evidence and disposition pass is complete. Phase 1 ordinary CLI UX is accepted, merged, and post-merge validated: status, sync preview, restore preview, restore drift refusal, per-command help, strict parsing, remediation-first errors, and provisional-identity labeling are implemented and covered by focused and full validation. Phase 2 local Expflow GUI foundation is accepted, merged, and post-merge validated. BW-A review passed with no verified gate findings, and draft gate PR #24 is open. The differentiating authority, semantic, workflow, projection, and reproduction state remains primarily library-facing. There is no portable workflow package, real external pilot, empirical evaluation, Guerilla profile, or Guerilla causal event-view GUI.
 
 This matrix deliberately separates implementation from exposure, validation, adoption, and product proof.
 
@@ -34,12 +34,12 @@ The historical `EXPFLOW_WORKFLOW_CURRENT.md` must be retained or renamed as v1 b
 
 ### Current Build Week workflow
 
-| Gate                                      | Phases | State   | Blocking condition                                                             |
-| ----------------------------------------- | -----: | ------- | ------------------------------------------------------------------------------ |
-| BW-A — UX Control Surface Ready           |    1–2 | CLOSED  | Phase 1 and Phase 2 accepted, merged, gate-reviewed, and post-merge validated. |
-| BW-B — Workflow Portability Surface Ready |    3–5 | ACTIVE  | Phase 3 authorized.                                                            |
-| BW-C — Pilot Proven                       |    6–7 | BLOCKED | Requires BW-B exit.                                                            |
-| BW-D — Causal Integration Ready           |    8–9 | BLOCKED | Requires empirical pilot evidence and stable Expflow surfaces.                 |
+| Gate                                      | Phases | State   | Blocking condition                                                                                               |
+| ----------------------------------------- | -----: | ------- | ---------------------------------------------------------------------------------------------------------------- |
+| BW-A — UX Control Surface Ready           |    1–2 | CLOSED  | Phase 1 and Phase 2 accepted, merged, gate-reviewed, post-merge validated, and represented by draft gate PR #24. |
+| BW-B — Workflow Portability Surface Ready |    3–5 | ACTIVE  | Phase 3 authorized.                                                                                              |
+| BW-C — Pilot Proven                       |    6–7 | BLOCKED | Requires BW-B exit.                                                                                              |
+| BW-D — Causal Integration Ready           |    8–9 | BLOCKED | Requires empirical pilot evidence and stable Expflow surfaces.                                                   |
 
 The former plan to correlate Expflow completion with a Guerilla external-compatible adapter gate is superseded. Guerilla is now profile-driven and its GUI is a causal event view implemented at the end of this workflow.
 
@@ -181,9 +181,10 @@ Phase 3 may begin when:
 - Phase 2 is merged into the rolling integration branch at `10a79e95bb034dc263ffa935eb4d4fc27eda942f`;
 - the integration branch is clean;
 - BW-A gate review passes with no remaining verified findings;
-- Phase 2 post-merge validation passes.
+- Phase 2 post-merge validation passes;
+- BW-A draft gate PR #24 is open at `https://github.com/paragon-ux/Expflow/pull/24`.
 
-Phase 3 branch creation is authorized from the current `feat/build-week-integration` tip after the BW-A gate PR is created.
+Phase 3 branch creation is authorized from the current `feat/build-week-integration` tip.
 
 ---
 
