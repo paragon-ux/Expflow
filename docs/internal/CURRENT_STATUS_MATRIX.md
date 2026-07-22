@@ -7,13 +7,13 @@
 **Historical workflow:** Gates A–D complete and closed
 **Current workflow:** `BUILD_WEEK_WORKFLOW_CURRENT.md`
 **Current phase:** Phase 3 - Stable Read Models
-**Phase state:** Phase 3 implementation candidate has passed full validation on `feat/build-week-phase-03-stable-read-models`; independent phase review pending
+**Phase state:** Phase 3 implementation candidate passed full validation; phase review found F1; F1 is remediated and closure review is pending
 
 ---
 
 ## 1. Practical Status Statement
 
-> Expflow `v1.0.1` is the current implementation baseline. The v1 architecture and internal runtime gates are complete. The post-v1 evidence and disposition pass is complete. Phase 1 ordinary CLI UX is accepted, merged, and post-merge validated: status, sync preview, restore preview, restore drift refusal, per-command help, strict parsing, remediation-first errors, and provisional-identity labeling are implemented and covered by focused and full validation. Phase 2 local Expflow GUI foundation is accepted, merged, and post-merge validated. BW-A review passed with no verified gate findings, and draft gate PR #24 is open. Phase 3 has a full-validation-passing implementation candidate for stable advanced read models pending independent review. There is no portable workflow package, real external pilot, empirical evaluation, Guerilla profile, or Guerilla causal event-view GUI.
+> Expflow `v1.0.1` is the current implementation baseline. The v1 architecture and internal runtime gates are complete. The post-v1 evidence and disposition pass is complete. Phase 1 ordinary CLI UX is accepted, merged, and post-merge validated: status, sync preview, restore preview, restore drift refusal, per-command help, strict parsing, remediation-first errors, and provisional-identity labeling are implemented and covered by focused and full validation. Phase 2 local Expflow GUI foundation is accepted, merged, and post-merge validated. BW-A review passed with no verified gate findings, and draft gate PR #24 is open. Phase 3 has a full-validation-passing implementation candidate for stable advanced read models; independent phase review found F1 and F1 is remediated pending bounded closure review. There is no portable workflow package, real external pilot, empirical evaluation, Guerilla profile, or Guerilla causal event-view GUI.
 
 This matrix deliberately separates implementation from exposure, validation, adoption, and product proof.
 
@@ -37,7 +37,7 @@ The historical `EXPFLOW_WORKFLOW_CURRENT.md` must be retained or renamed as v1 b
 | Gate                                      | Phases | State   | Blocking condition                                                                                               |
 | ----------------------------------------- | -----: | ------- | ---------------------------------------------------------------------------------------------------------------- |
 | BW-A — UX Control Surface Ready           |    1–2 | CLOSED  | Phase 1 and Phase 2 accepted, merged, gate-reviewed, post-merge validated, and represented by draft gate PR #24. |
-| BW-B — Workflow Portability Surface Ready |    3–5 | ACTIVE  | Phase 3 candidate passed full validation; independent review pending.                                            |
+| BW-B — Workflow Portability Surface Ready |    3–5 | ACTIVE  | Phase 3 F1 remediation passed full validation; closure review pending.                                           |
 | BW-C — Pilot Proven                       |    6–7 | BLOCKED | Requires BW-B exit.                                                                                              |
 | BW-D — Causal Integration Ready           |    8–9 | BLOCKED | Requires empirical pilot evidence and stable Expflow surfaces.                                                   |
 
@@ -75,7 +75,7 @@ Status vocabulary:
 | Revision discovery through ordinary commands                                     | Yes                         | Focused Phase 1 tests     | CLI                            | No                          | No                    | `status --history` and `status --node-history <path>` expose restore references.                                                      |
 | Restore preview and drift guard                                                  | Yes                         | Focused Phase 1 tests     | CLI                            | No                          | No                    | `restore --dry-run` previews; default restore refuses conflicting drift; `--force` is explicit override.                              |
 | Expflow local GUI                                                                | Yes                         | Yes                       | Local GUI                      | No                          | No                    | Phase 2 accepted, merged, and post-merge validated at `10a79e95bb034dc263ffa935eb4d4fc27eda942f`; no pilot or empirical evidence yet. |
-| Stable read models for advanced record families                                  | Yes                         | Focused + full validation | Library + GUI bridge           | No                          | No                    | Phase 3 candidate exposes bounded versioned read models; independent review pending.                                                  |
+| Stable read models for advanced record families                                  | Yes                         | Focused + full validation | Library + GUI bridge           | No                          | No                    | Phase 3 candidate exposes bounded versioned read models; F1 is remediated pending closure review.                                     |
 | Evidence intake from partial sources                                             | No coherent product surface | No                        | No                             | No                          | No                    | Phase 4.                                                                                                                              |
 | Artifact correspondence review workflow                                          | Internal primitives only    | Unit evidence only        | No                             | No                          | No                    | Phase 4.                                                                                                                              |
 | Portable workflow package export/import                                          | No                          | No                        | No                             | No                          | No                    | Phase 5.                                                                                                                              |
@@ -112,7 +112,7 @@ The following decisions are controlling inputs to Phase 1. They describe current
 
 ### Product-surface gaps
 
-1. Advanced record families have a Phase 3 stable read-model candidate, but it is not accepted or merged yet.
+1. Advanced record families have a Phase 3 stable read-model candidate with F1 remediated, but it is not accepted or merged yet.
 2. There is no attributed multi-source evidence intake workflow.
 3. There is no portable workflow package with validation and round-trip import.
 4. There is no external proof that users understand the distinction between materialization, completion, verification, equivalence, and reuse.

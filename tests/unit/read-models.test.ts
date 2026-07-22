@@ -219,6 +219,12 @@ describe('Phase 3 stable read models', () => {
       await expect(
         readModels.list({ collection: 'semantic_assertions', limit: 101 }),
       ).rejects.toMatchObject<Partial<ExpflowError>>({ code: 'read_model_invalid_limit' });
+      await expect(
+        readModels.list({
+          collection: 'semantic_assertions',
+          state: 'definitely_not_a_state' as never,
+        }),
+      ).rejects.toMatchObject<Partial<ExpflowError>>({ code: 'read_model_unknown_state' });
     } finally {
       cleanup(root);
     }

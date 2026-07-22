@@ -98,6 +98,27 @@ const COLLECTIONS = [
   'material_operation_receipts',
 ] as const satisfies readonly ReadModelCollection[];
 
+const READ_MODEL_STATES = [
+  'accepted',
+  'proposed',
+  'rejected',
+  'modified',
+  'revoked',
+  'superseded',
+  'deferred',
+  'generated',
+  'conflicted',
+  'partial',
+  'stale',
+  'blocked',
+  'pending',
+  'unknown',
+  'complete',
+  'failed',
+  'current',
+  'not_evaluated',
+] as const satisfies readonly ReadModelState[];
+
 interface CursorPayload {
   readonly collection: ReadModelCollection;
   readonly sort_key: string;
@@ -749,6 +770,14 @@ function validateCollection(collection: ReadModelCollection): void {
   }
 }
 
+function validateState(state: ReadModelState | undefined): void {
+  if (state !== undefined && !READ_MODEL_STATES.includes(state)) {
+    throw new ExpflowError('read_model_unknown_state', `Unknown read model state: ${state}`, {
+      recoverable: true,
+    });
+  }
+}
+
 function withReadModelError(error: unknown): never {
   throw toExpflowError(error);
 }
@@ -779,6 +808,7 @@ export function createReadModelRuntime(root?: string): ReadModelRuntime {
       await Promise.resolve();
       try {
         validateCollection(input.collection);
+        validateState(input.state);
         const limit = normalizeLimit(input.limit);
         const ctx = context(normalizeProjectRoot(input.root ?? defaultRoot));
         const items = collectionItems(ctx, input.collection);

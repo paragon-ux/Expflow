@@ -1,13 +1,13 @@
 # Phase 3 Completion Report - Stable Read Models
 
-**Status:** candidate validated; independent phase review pending
+**Status:** candidate remediated; closure review pending
 **Phase:** 3 - Stable Read Models
 **Gate:** BW-B - Workflow Portability Surface Ready
-**Verdict:** implementation complete; full validation PASS; review pending
+**Verdict:** implementation complete; full validation PASS; phase review BLOCK on F1; remediation complete; closure review pending
 **Integration base:** `2f9cc656f1554139a6cd64ed13456cb821408951`
 **Phase branch:** `feat/build-week-phase-03-stable-read-models`
 **Candidate head:** `680a1586d29633bd03fdadb6be6b3728969f2113`
-**Review report:** pending
+**Review report:** `docs/internal/phase_reports/PHASE_03_PRECISION_REVIEW.md`
 
 ## Runtime versions
 
@@ -32,7 +32,7 @@ Phase 3 exposes stable, bounded, versioned application read models over already 
 | P3-06 | Reproduction view   | Reproduction runtime listed regeneration, equivalence, and reuse records                                   | High   | Codex | complete | Reproduction collections preserve unknown regeneration, equivalence classification, and reuse completion states                                       | Reproduction unknown and reuse-complete tests                                                 |
 | P3-07 | Material linkage    | Advanced records stored material refs but lacked a common read view                                        | Medium | Codex | complete | Read-model items expose tree, node, node-revision, path, and operation references; material tree and receipt collections are included                 | Material linkage assertion in read-model tests                                                |
 | P3-08 | Ordering            | Family stores sorted differently by local created/id fields                                                | High   | Codex | complete | Every collection page is sorted by `created_at` then `record_ref` with explicit order metadata                                                        | Deterministic reread and pagination tests                                                     |
-| P3-09 | Filtering           | No common application filter boundary existed                                                              | Medium | Codex | complete | `state` filter uses canonical read-model states and returns bounded pages                                                                             | Workflow `state: complete` test                                                               |
+| P3-09 | Filtering           | No common application filter boundary existed                                                              | Medium | Codex | complete | `state` filter uses canonical read-model states, validates unsupported states, and returns bounded pages                                              | Workflow `state: complete` test plus F1 invalid-state regression                              |
 | P3-10 | Pagination          | Existing list calls were unbounded                                                                         | High   | Codex | complete | Limit is bounded to 1-100; stable base64url cursors carry collection and sort key; invalid cursors and limits are refused                             | Cursor, next-page, invalid-cursor, and invalid-limit tests                                    |
 | P3-11 | Change inspection   | Existing state change evidence lived in family records and receipts                                        | Medium | Codex | complete | Material operation receipts and cursor-based collection reads expose committed change inspection without a new mutation or raw-store client contract  | Material operation receipt export and GUI bridge read-model tests                             |
 | P3-12 | Performance         | No representative read-model budget existed                                                                | Medium | Codex | complete | Read models cap pages at 100 records and avoid creating record-family directories during reads                                                        | 120-record semantic assertion fixture returns first 100 records under a 2,000 ms local budget |
@@ -85,11 +85,29 @@ Documentation:
 | `npm run format:check`                                                                                     | Phase 3 worktree |    0 | PASS                                                                                 |
 | `npm run package:verify`                                                                                   | Phase 3 worktree |    0 | PASS - package installs outside checkout and exports `createReadModelRuntime`        |
 
+## Phase Review and Remediation
+
+| Finding | Review verdict | Disposition | Remediation evidence                                                                                                                                                                        |
+| ------- | -------------- | ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| F1      | BLOCK          | fixed       | Invalid `state` filters now fail with recoverable `read_model_unknown_state`; focused reproduction returned `{"stateAccepted":false,"code":"read_model_unknown_state","recoverable":true}`. |
+
+Post-remediation focused validation:
+
+| Command                                                                                                    | Evaluated state         | Exit | Result                           |
+| ---------------------------------------------------------------------------------------------------------- | ----------------------- | ---: | -------------------------------- |
+| `npx vitest run tests/unit/read-models.test.ts`                                                            | F1 remediation worktree |    0 | PASS - 6 tests                   |
+| `npx vitest run tests/unit/read-models.test.ts tests/unit/gui-bridge.test.ts tests/unit/gui-shell.test.ts` | F1 remediation worktree |    0 | PASS - 3 files / 15 tests        |
+| `npm run lint`                                                                                             | F1 remediation worktree |    0 | PASS                             |
+| `npm run typecheck`                                                                                        | F1 remediation worktree |    0 | PASS                             |
+| `npm run package:verify`                                                                                   | F1 remediation worktree |    0 | PASS - package installs cleanly  |
+| invalid-state reproduction                                                                                 | F1 remediation worktree |    0 | PASS - invalid state is rejected |
+
 ## Full validation
 
-| Command            | Evaluated state  | Exit | Result                                                                                                                                                                                                 |
-| ------------------ | ---------------- | ---: | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `npm run validate` | Phase 3 worktree |    0 | PASS - config references, skill contracts, protected surfaces, format, lint, typecheck, 20 test files / 161 tests, contracts, registries, schemas, examples, fixtures, build, and package verification |
+| Command            | Evaluated state         | Exit | Result                                                                                                                                                                                                 |
+| ------------------ | ----------------------- | ---: | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `npm run validate` | Phase 3 worktree        |    0 | PASS - config references, skill contracts, protected surfaces, format, lint, typecheck, 20 test files / 161 tests, contracts, registries, schemas, examples, fixtures, build, and package verification |
+| `npm run validate` | F1 remediation worktree |    0 | PASS - config references, skill contracts, protected surfaces, format, lint, typecheck, 20 test files / 161 tests, contracts, registries, schemas, examples, fixtures, build, and package verification |
 
 ## Contract examples
 
@@ -118,7 +136,7 @@ Read-model page responses include:
 - Read models are read-only and do not create, update, or delete Expflow records.
 - The read service does not execute imported or generated code.
 - The GUI server route remains in the fixed endpoint table and does not construct shell commands.
-- Invalid cursors and out-of-range limits fail with actionable `ExpflowError` codes.
+- Invalid cursors, invalid states, and out-of-range limits fail with actionable `ExpflowError` codes.
 - Unknown, partial, stale, conflicted, proposed, accepted, rejected, and completed states remain distinct where applicable.
 
 ## Protected-surface audit
@@ -140,4 +158,4 @@ No immutable architecture or frozen release body was edited.
 
 ## Handoff state
 
-Phase 3 implementation and full validation are complete pending independent phase review.
+Phase 3 implementation, phase review, F1 remediation, and post-remediation full validation are complete pending bounded closure review.
