@@ -1,6 +1,6 @@
 # Phase 2 Completion Report - Expflow GUI Foundation
 
-**Status:** BW-A gate review passed; phase merge pending
+**Status:** accepted, merged, and post-merge validated
 **Phase:** 2 - Expflow GUI Foundation
 **Gate:** BW-A - UX Control Surface Ready
 **Verdict:** phase review BLOCK; F1 fixed and closure review PASS; BW-A gate review PASS
@@ -9,6 +9,8 @@
 **Candidate head:** `f148ecee3646da889f69dde3eff35e8f9235c8a7`
 **Remediation head:** `895e681f71630c39b14e6dd378c74c5667ae5bb6`
 **Administrative closeout head:** `ef5857787519aa2756b5778af04d6b3769329be8`
+**Gate closeout head:** `cf7ca050216f3295aace29810e0163b0e310667c`
+**Merge commit:** `10a79e95bb034dc263ffa935eb4d4fc27eda942f`
 **Review report:** `docs/internal/phase_reports/PHASE_02_PRECISION_REVIEW.md`
 **Closure report:** `docs/internal/phase_reports/PHASE_02_PRECISION_REVIEW_F1_CLOSURE.md`
 **Gate review report:** `docs/internal/phase_reports/BW_A_GATE_REVIEW.md`
@@ -110,6 +112,7 @@ Documentation:
 | ------------------ | ---------------------------------------------------------------------------- | ---: | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | `npm run validate` | Phase 2 candidate worktree before `f148ecee3646da889f69dde3eff35e8f9235c8a7` |    0 | PASS - config references, skill contracts, protected surfaces, format, lint, typecheck, 19 test files / 151 tests, contracts, registries, schemas, examples, fixtures, build, and package verification |
 | `npm run validate` | F1 remediation worktree                                                      |    0 | PASS - config references, skill contracts, protected surfaces, format, lint, typecheck, 19 test files / 152 tests, contracts, registries, schemas, examples, fixtures, build, and package verification |
+| `npm run validate` | Integration branch after merge at `10a79e95bb034dc263ffa935eb4d4fc27eda942f` |    0 | PASS - config references, skill contracts, protected surfaces, format, lint, typecheck, 19 test files / 152 tests, contracts, registries, schemas, examples, fixtures, build, and package verification |
 
 ## Compatibility audit
 
@@ -150,7 +153,8 @@ The external launcher was run with `--phase 2 --json` and returned `status: read
 
 ## Handoff state
 
-Phase 2 implementation, F1 remediation, bounded closure review, and BW-A gate review are complete. Next required actions:
+Phase 2 implementation, F1 remediation, bounded closure review, BW-A gate review, merge, and post-merge validation are complete. Next required actions:
 
-1. Merge the Phase 2 branch into `feat/build-week-integration`.
-2. Run and record post-merge validation.
+1. Commit this post-merge validation record.
+2. Create the BW-A gate PR.
+3. Start Phase 3 from `feat/build-week-integration` after PR creation.

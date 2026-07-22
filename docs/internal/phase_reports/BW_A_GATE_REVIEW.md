@@ -6,6 +6,8 @@
 **Reviewer mode:** read-only
 **Integration base:** `43db9b2dd55731282c967620406191fcebfba843`
 **Reviewed head:** `d457a25526235bc48893c6a39c0e1cb97af96bbf`
+**Gate closeout head:** `cf7ca050216f3295aace29810e0163b0e310667c`
+**Merge commit:** `10a79e95bb034dc263ffa935eb4d4fc27eda942f`
 **Diff:** `43db9b2dd55731282c967620406191fcebfba843...d457a25526235bc48893c6a39c0e1cb97af96bbf`
 **Verdict:** `PASS`
 
@@ -43,7 +45,8 @@ No verified findings.
 | `npx vitest run tests/unit/gui-bridge.test.ts tests/unit/gui-shell.test.ts` | `d457a25526235bc48893c6a39c0e1cb97af96bbf` |    0 | PASS - 2 files, 8 tests.                                                                                                           |
 | `npm run validate`                                                          | `d457a25526235bc48893c6a39c0e1cb97af96bbf` |    0 | PASS - 19 test files, 152 tests, contracts, schemas, build, and package verification.                                              |
 | Source and report inspection                                                | `43db9b2...d457a25`                        |    0 | Phase 1 acceptance evidence, Phase 2 F1 closure, GUI expected-head binding, no raw-store coupling, and package boundary inspected. |
+| `npm run validate`                                                          | `10a79e95bb034dc263ffa935eb4d4fc27eda942f` |    0 | PASS - post-merge validation on `feat/build-week-integration` after Phase 2 merge.                                                 |
 
 ## Gate result
 
-BW-A has no verified gate findings. The next bounded action is to merge the exact reviewed Phase 2 material head, with administrative gate-report closeout, into `feat/build-week-integration`, then run required post-merge validation and record the result.
+BW-A has no verified gate findings. Phase 2 was merged into `feat/build-week-integration` at `10a79e95bb034dc263ffa935eb4d4fc27eda942f`, and post-merge validation passed. BW-A is closed subject to recording this post-merge validation update.
