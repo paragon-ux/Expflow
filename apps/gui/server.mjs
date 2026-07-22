@@ -71,6 +71,7 @@ async function handleApi(request, response) {
     '/api/node-history': () => bridge.getNodeHistory(body),
     '/api/receipt': () => bridge.readReceipt(body),
     '/api/recover': () => bridge.recover(body),
+    '/api/read-models/list': () => bridge.listReadModelRecords(body),
     '/api/restore': () => bridge.executeRestore(body),
     '/api/restore/plan': () => bridge.planRestore(body),
     '/api/status': () => bridge.inspectProject(body),

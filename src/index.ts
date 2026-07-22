@@ -1,6 +1,7 @@
 export { VERSION } from './core/version.js';
 export { createRuntime } from './operations/runtime.js';
 export { createGuiBridge } from './gui/bridge.js';
+export { createReadModelRuntime } from './read-models/runtime.js';
 export { createExtensionHost } from './extensions/host.js';
 export {
   createAuthorityRuntime,
@@ -37,6 +38,18 @@ export type {
   GuiProjectSnapshot,
   GuiStateKind,
 } from './gui/bridge.js';
+export type {
+  ListReadModelInput,
+  ReadModelCollection,
+  ReadModelCollectionSummary,
+  ReadModelEnvelope,
+  ReadModelItem,
+  ReadModelMaterialRef,
+  ReadModelOverview,
+  ReadModelPage,
+  ReadModelRuntime,
+  ReadModelState,
+} from './read-models/types.js';
 export type { ExpflowExtensionHost } from './extensions/host.js';
 export type { AuthorityRuntime } from './authority/runtime.js';
 export type { SemanticRuntime } from './semantics/runtime.js';

@@ -17,6 +17,7 @@ Gate C ownership/reproduction behavior and Gate D security/migration plus native
 - `scan/` owns working-tree scanning with managed exclusions and selector roots.
 - `operations/` owns shared runtime handlers used by the CLI and extension host.
 - `gui/` owns the documented application bridge used by the local Expflow GUI.
+- `read-models/` owns stable, bounded, versioned application views over advanced records.
 - `transactions/` owns local structural recovery checks and restore working-tree installation helpers.
 - `extensions/` owns the narrow documented extension host.
 - `cli/` owns the ordinary command surface.

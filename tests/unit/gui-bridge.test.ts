@@ -142,4 +142,24 @@ describe('Expflow GUI bridge', () => {
       cleanup(root);
     }
   });
+
+  test('exposes stable read models through the GUI bridge without raw storage access', async () => {
+    const root = tempProject();
+    try {
+      const bridge = createGuiBridge();
+      await bridge.initializeProject({ root });
+
+      const page = await bridge.listReadModelRecords({
+        collection: 'material_operation_receipts',
+        root,
+      });
+
+      expect(page.state).toBe('success');
+      expect(page.data?.envelope.read_model_version).toBe('1.0.0');
+      expect(page.data?.items[0]?.collection).toBe('material_operation_receipts');
+      expect(page.technical_details.raw_storage_access).toBe(false);
+    } finally {
+      cleanup(root);
+    }
+  });
 });

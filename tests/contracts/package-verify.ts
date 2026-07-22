@@ -159,13 +159,13 @@ try {
     [
       '--input-type=module',
       '--eval',
-      "const { VERSION, createRuntime, createGuiBridge } = await import('expflow'); console.log(`${VERSION}:${typeof createRuntime}:${typeof createGuiBridge}`);",
+      "const { VERSION, createRuntime, createGuiBridge, createReadModelRuntime } = await import('expflow'); console.log(`${VERSION}:${typeof createRuntime}:${typeof createGuiBridge}:${typeof createReadModelRuntime}`);",
     ],
     installDir,
   );
-  if (importOutput !== `${VERSION}:function:function`) {
+  if (importOutput !== `${VERSION}:function:function:function`) {
     throw new Error(
-      `Expected package export version/runtime/gui bridge ${VERSION}:function:function, got ${importOutput}`,
+      `Expected package export version/runtime/gui bridge/read models ${VERSION}:function:function:function, got ${importOutput}`,
     );
   }
 

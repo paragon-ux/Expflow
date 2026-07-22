@@ -17,4 +17,4 @@ Primary surfaces:
 - revision and node history;
 - sync preview and execution;
 - restore preview, refusal, override, and execution;
-- receipts, recovery, verification, and technical details.
+- receipts, recovery, verification, advanced read-model records, and technical details.

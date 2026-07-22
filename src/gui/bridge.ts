@@ -14,6 +14,8 @@ import type {
   ValidationResultRecord,
 } from '../material/types.js';
 import type { RestorePlan } from '../operations/restore-plan.js';
+import { createReadModelRuntime } from '../read-models/runtime.js';
+import type { ListReadModelInput, ReadModelPage } from '../read-models/types.js';
 
 export type GuiStateKind =
   'loading' | 'empty' | 'success' | 'partial' | 'blocked' | 'unknown' | 'error';
@@ -61,6 +63,7 @@ export interface GuiBridge {
     input?: StatusInput,
   ): Promise<GuiOperationResult<Awaited<ReturnType<ExpflowRuntime['recover']>>>>;
   verify(input?: StatusInput): Promise<GuiOperationResult<ValidationResultRecord>>;
+  listReadModelRecords(input: ListReadModelInput): Promise<GuiOperationResult<ReadModelPage>>;
   readReceipt(input: {
     readonly root?: string;
     readonly operationId: string;
@@ -300,6 +303,18 @@ export function createGuiBridge(runtime: ExpflowRuntime = createRuntime()): GuiB
           operation: 'verify',
           root,
           state: verification.blocking ? 'blocked' : 'success',
+        });
+      });
+    },
+
+    listReadModelRecords(input: ListReadModelInput): Promise<GuiOperationResult<ReadModelPage>> {
+      return guarded('read-models.list', input.root, async (root) => {
+        const page = await createReadModelRuntime(root).list({ ...input, root });
+        return result({
+          data: page,
+          operation: 'read-models.list',
+          root,
+          state: page.items.length === 0 ? 'empty' : 'success',
         });
       });
     },
