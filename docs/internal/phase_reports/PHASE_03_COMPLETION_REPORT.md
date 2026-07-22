@@ -6,7 +6,7 @@
 **Verdict:** implementation complete; full validation PASS; review pending
 **Integration base:** `2f9cc656f1554139a6cd64ed13456cb821408951`
 **Phase branch:** `feat/build-week-phase-03-stable-read-models`
-**Candidate head:** pending commit
+**Candidate head:** `680a1586d29633bd03fdadb6be6b3728969f2113`
 **Review report:** pending
 
 ## Runtime versions
@@ -140,4 +140,4 @@ No immutable architecture or frozen release body was edited.
 
 ## Handoff state
 
-Phase 3 implementation and full validation are complete pending candidate commit and independent phase review.
+Phase 3 implementation and full validation are complete pending independent phase review.
