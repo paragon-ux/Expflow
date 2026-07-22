@@ -32,6 +32,7 @@ Expflow v1.0.1 covers the local core surfaces implemented in this repository:
 - library runtimes for authority sources, semantic decisions, workflow boundaries, projections, regeneration/equivalence, structural reuse, security controls, migration evidence, and the native extension host;
 - stable, bounded, versioned read models over advanced authority, semantic, workflow, projection, reproduction, and material linkage records;
 - attributed evidence intake, quarantine, duplicate detection, source proposals, correspondence, conflict, artifact-candidate, and decision helpers through the TypeScript library;
+- deterministic portable workflow package export, offline validation, import planning, collision-safe import, and resume-state reporting through the TypeScript library;
 - repository-contract checks for immutable architecture sources, schemas, examples, fixtures, registries, package boundaries, and end-to-end proof.
 
 ## Quickstart
@@ -71,7 +72,7 @@ pip install expflow-hooks
 5. Run `expflow status --history` or `expflow status --node-history <path>` to find restore references.
 6. Run `expflow restore <reference> --dry-run` before restoring a recorded tree or node revision.
 
-Gate C ownership/reproduction behavior, Phase 4 evidence intake/reconciliation behavior, and Gate D security/migration behavior are available through library runtimes rather than additional ordinary commands.
+Gate C ownership/reproduction behavior, Phase 4 evidence intake/reconciliation behavior, Phase 5 portable workflow package behavior, and Gate D security/migration behavior are available through library runtimes rather than additional ordinary commands.
 
 ## Commands
 
@@ -109,7 +110,7 @@ Expflow core intentionally does not implement every surrounding integration surf
 - `docs/releases/v1.0.1/` contains the frozen v1.0.1 release documentation record.
 - `apps/gui/` contains the local Expflow GUI client and server.
 - `schemas/` and `examples/` mirror the architecture schemas and examples for tooling.
-- `src/` contains the TypeScript package, CLI, GUI bridge, read-model runtime, evidence runtime, material runtime, Gate C library runtimes, Gate D security/migration runtimes, and contract tooling.
+- `src/` contains the TypeScript package, CLI, GUI bridge, read-model runtime, evidence runtime, portable package runtime, material runtime, Gate C library runtimes, Gate D security/migration runtimes, and contract tooling.
 - `python/expflow_hooks/` contains the Python hook-package scaffold and repository-only schema discovery.
 - `tests/` contains repository-contract, material-runtime, evidence-intake, authority, Gate C ownership/reproduction, Gate D security/migration, package, and end-to-end proof tests.
 
