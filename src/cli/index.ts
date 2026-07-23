@@ -28,12 +28,14 @@ ORDINARY COMMANDS
 
 1.2.1 COMMANDS
   capabilities   Print capability descriptor and exit
-  workflow       Workflow operations (list, inspect, state, history)
-  evidence       Evidence intake and inspection
-  authority      Source and artifact proposals and decisions
-  conflicts      List conflicts and needs-attention state
-  decisions      Completion, verification, equivalence, reuse
-  package        Export, validate, import workflow packages
+  inspect        Inspect project state (alias for status with summary)
+  history        List project version history with restore references
+  workflow       Workflow operations (list, show, start, output, state)
+  evidence       Evidence intake and inspection (list, add-file, add-transcript, add-manifest, add-reference, show)
+  authority      Source and authority decisions (list, show, propose, accept, reject, supersede)
+  conflicts      List conflicts and declare new ones (list, show, declare)
+  decisions      Decisions and reviews (list, show, record, supersede)
+  package        Export, validate, import workflow packages (list, export, import, validate, plan-import, inspect)
 
 GLOBAL OPTIONS
   --root <path>     Project root (defaults to current directory)
@@ -69,6 +71,26 @@ Initializes a new Expflow project and commits the first project version.
 EXIT CODES
   0  Project initialized
   1  Operational failure, including an already initialized project
+  2  Usage failure or unsupported option
+`,
+  inspect: `USAGE
+  expflow inspect [--root <path>] [--json]
+
+Inspects current project state — project id, head revision, working-tree state.
+
+EXIT CODES
+  0  Inspection completed
+  1  Operational failure
+  2  Usage failure or unsupported option
+`,
+  history: `USAGE
+  expflow history [--root <path>] [--json] [--limit <n>]
+
+Lists project version history with restore references.
+
+EXIT CODES
+  0  History listed
+  1  Operational failure
   2  Usage failure or unsupported option
 `,
   restore: `USAGE
@@ -134,6 +156,8 @@ interface ParsedArgs {
     | 'sync'
     | 'status'
     | 'restore'
+    | 'inspect'
+    | 'history'
     | 'capabilities'
     | 'workflow'
     | 'evidence'
@@ -150,7 +174,7 @@ interface ParsedArgs {
   readonly reference: string | undefined;
   readonly targetPath: string | undefined;
   readonly overwrite: boolean;
-  readonly history: boolean;
+  readonly historyFlag: boolean;
   readonly historyLimit: number | undefined;
   readonly nodeHistoryPath: string | undefined;
   readonly changes: readonly ChangeOption[];
@@ -195,23 +219,37 @@ function parseMove(value: string): ChangeOption {
   };
 }
 
+const CORE_COMMANDS = [
+  'init',
+  'sync',
+  'status',
+  'restore',
+  'inspect',
+  'history',
+  'capabilities',
+  'workflow',
+  'evidence',
+  'authority',
+  'conflicts',
+  'decisions',
+  'package',
+];
+
+const FAMILY_WITH_SUBCOMMANDS = [
+  'workflow',
+  'evidence',
+  'authority',
+  'conflicts',
+  'decisions',
+  'package',
+];
+
 function parseArgs(rawArgs: string[]): ParsedArgs {
   const args = [...rawArgs];
-  const command = args.shift();
-  if (
-    command !== 'init' &&
-    command !== 'sync' &&
-    command !== 'status' &&
-    command !== 'restore' &&
-    command !== 'capabilities' &&
-    command !== 'workflow' &&
-    command !== 'evidence' &&
-    command !== 'authority' &&
-    command !== 'conflicts' &&
-    command !== 'decisions' &&
-    command !== 'package'
-  ) {
-    usage(`unknown command '${command ?? ''}'. Use --help for usage.`);
+  const rawCmd = args.shift() ?? '';
+  const command = rawCmd;
+  if (!CORE_COMMANDS.includes(command)) {
+    usage(`unknown command '${command}'. Use --help for usage.`);
   }
 
   let root: string | undefined;
@@ -222,7 +260,7 @@ function parseArgs(rawArgs: string[]): ParsedArgs {
   let expectedHead: string | null | undefined;
   let targetPath: string | undefined;
   let overwrite = false;
-  let history = false;
+  let historyFlag = false;
   let historyLimit: number | undefined;
   let nodeHistoryPath: string | undefined;
   const changes: ChangeOption[] = [];
@@ -297,21 +335,18 @@ function parseArgs(rawArgs: string[]): ParsedArgs {
       continue;
     }
     if (arg === '--history') {
-      if (command !== 'status') {
+      if (command !== 'status' && command !== 'history') {
         usage(`${command} does not support --history`);
       }
-      history = true;
+      historyFlag = true;
       args.splice(index, 1);
       continue;
     }
-    if (arg === '--history-limit') {
-      if (command !== 'status') {
-        usage(`${command} does not support --history-limit`);
+    if (arg === '--history-limit' || arg === '--limit') {
+      if (command !== 'status' && command !== 'history') {
+        usage(`${command} does not support ${arg}`);
       }
-      historyLimit = parsePositiveInteger(
-        takeValue(args, index, '--history-limit'),
-        '--history-limit',
-      );
+      historyLimit = parsePositiveInteger(takeValue(args, index, arg), arg);
       continue;
     }
     if (arg === '--node-history') {
@@ -343,36 +378,30 @@ function parseArgs(rawArgs: string[]): ParsedArgs {
     args.splice(index, 1);
   }
 
-  if (command !== 'restore' && positionals.length > 0) {
-    // 1.2.1: new families accept a subcommand as first positional
-    const newFamilies = ['workflow', 'evidence', 'authority', 'conflicts', 'decisions', 'package'];
-    if (!newFamilies.includes(command)) {
-      usage(`${command} does not accept positional arguments: ${positionals.join(', ')}`);
-    }
+  if (
+    command !== 'restore' &&
+    positionals.length > 0 &&
+    !FAMILY_WITH_SUBCOMMANDS.includes(command)
+  ) {
+    usage(`${command} does not accept positional arguments: ${positionals.join(', ')}`);
   }
   if (command === 'restore' && positionals.length !== 1) {
     usage('restore requires exactly one tree:<id> or node:<id>@<revision>:<path> reference');
   }
 
-  const subcommand = [
-    'workflow',
-    'evidence',
-    'authority',
-    'conflicts',
-    'decisions',
-    'package',
-  ].includes(command)
-    ? (positionals[0] ?? 'list')
-    : undefined;
-  const familyArgs = positionals.slice(subcommand && positionals[0] === subcommand ? 1 : 0);
+  const hasSubcommands = FAMILY_WITH_SUBCOMMANDS.includes(command);
+  const subcommand: string | undefined = hasSubcommands ? (positionals[0] ?? 'list') : undefined;
+  const familyArgs = hasSubcommands
+    ? positionals.slice(positionals[0] === subcommand ? 1 : 0)
+    : positionals;
 
   return {
     changes,
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
+
     command: command as ParsedArgs['command'],
     dryRun,
     expectedHead,
-    history,
+    historyFlag,
     historyLimit,
     json,
     nodeHistoryPath,
@@ -449,8 +478,6 @@ async function main(): Promise<void> {
   const runtime = createRuntime();
 
   if (parsed.nonInteractive) {
-    // Phase 5: --non-interactive guarantees no TTY requirement
-    // Operations that would prompt fail with exit 1
     if (parsed.command === 'restore' && !parsed.overwrite && !parsed.yes) {
       process.stderr.write('error: --non-interactive requires --force or --yes for restore\n');
       process.exit(1);
@@ -458,6 +485,7 @@ async function main(): Promise<void> {
   }
 
   try {
+    // ── Capabilities ─────────────────────────────────────────
     if (parsed.command === 'capabilities') {
       const { ApplicationService } = await import('../application/service.js');
       const svc = new ApplicationService(parsed.root ?? process.cwd());
@@ -472,23 +500,49 @@ async function main(): Promise<void> {
       return;
     }
 
-    // ── New 1.2.1 command families ──────────────────────────
+    // ── Inspect (project state summary) ─────────────────────
+    if (parsed.command === 'inspect') {
+      const result = await runtime.status({
+        root: parsed.root,
+        history: false,
+      });
+      if (parsed.json) {
+        printJson(result);
+      } else {
+        process.stdout.write(
+          `Project: ${result.project_id}\nHead: ${result.head_tree_revision_id ?? 'none'}\nWorking tree: ${result.working_tree_state}\n`,
+        );
+      }
+      return;
+    }
 
-    if (
-      parsed.command === 'workflow' ||
-      parsed.command === 'evidence' ||
-      parsed.command === 'authority' ||
-      parsed.command === 'conflicts' ||
-      parsed.command === 'decisions' ||
-      parsed.command === 'package'
-    ) {
+    // ── History (standalone version history) ─────────────────
+    if (parsed.command === 'history') {
+      const result = await runtime.status({
+        root: parsed.root,
+        history: true,
+        historyLimit: parsed.historyLimit ?? 10,
+      });
+      if (parsed.json) {
+        printJson(result);
+      } else {
+        process.stdout.write(formatStatusReport(result));
+        process.stdout.write(
+          formatRevisionHistory(result.revision_history as RevisionHistoryEntry[]),
+        );
+      }
+      return;
+    }
+
+    // ── New 1.2.1 command families ──────────────────────────
+    if (FAMILY_WITH_SUBCOMMANDS.includes(parsed.command)) {
       const validSubcommands: Record<string, string[]> = {
         workflow: ['list', 'show', 'start', 'output', 'state'],
         evidence: ['list', 'add-file', 'add-transcript', 'add-manifest', 'add-reference', 'show'],
         authority: ['list', 'show', 'propose', 'accept', 'reject', 'supersede'],
         conflicts: ['list', 'show', 'declare'],
         decisions: ['list', 'show', 'record', 'supersede'],
-        package: ['export', 'import', 'validate', 'plan-import', 'inspect'],
+        package: ['export', 'import', 'validate', 'plan-import', 'inspect', 'list'],
       };
 
       const sub = parsed.subcommand ?? 'list';
@@ -509,32 +563,50 @@ async function main(): Promise<void> {
         timestamp: new Date().toISOString(),
       };
 
-      // Maps (family, subcommand) → service method + human label
+      const mk = (r: { result?: unknown }): Record<string, unknown> =>
+        (r.result ?? {}) as Record<string, unknown>;
+
       const dispatch: Record<string, () => Promise<Record<string, unknown>>> = {
-        'workflow:list': async () => {
-          const r = await svc.workflowList(actor);
-          return (r.result ?? {}) as Record<string, unknown>;
-        },
-        'evidence:list': async () => {
-          const r = await svc.evidenceList(actor);
-          return (r.result ?? {}) as Record<string, unknown>;
-        },
-        'authority:list': async () => {
-          const r = await svc.authorityList(actor);
-          return (r.result ?? {}) as Record<string, unknown>;
-        },
-        'conflicts:list': async () => {
-          const r = await svc.conflicts(actor);
-          return (r.result ?? {}) as Record<string, unknown>;
-        },
-        'decisions:list': async () => {
-          const r = await svc.decisions(actor);
-          return (r.result ?? {}) as Record<string, unknown>;
-        },
+        // ── Workflow ────────────────────────
+        'workflow:list': async () => mk(await svc.workflowList(actor)),
+        'workflow:start': async () => mk(await svc.startWorkflow(actor, {})),
+        'workflow:output': async () => mk(await svc.attachWorkflowOutput(actor, {})),
+        'workflow:state': async () => mk(await svc.transitionWorkflowState(actor, {})),
+        // ── Evidence ─────────────────────────
+        'evidence:list': async () => mk(await svc.evidenceList(actor)),
+        'evidence:add-file': async () =>
+          mk(await svc.evidenceIntake(actor, { sourceType: 'file' })),
+        'evidence:add-transcript': async () =>
+          mk(await svc.evidenceIntake(actor, { sourceType: 'transcript' })),
+        'evidence:add-manifest': async () =>
+          mk(await svc.evidenceIntake(actor, { sourceType: 'manifest' })),
+        'evidence:add-reference': async () =>
+          mk(await svc.evidenceIntake(actor, { sourceType: 'reference' })),
+        // ── Authority ───────────────────────
+        'authority:list': async () => mk(await svc.authorityList(actor)),
+        'authority:propose': async () => mk(await svc.registerAuthoritySource(actor, {})),
+        'authority:accept': async () =>
+          mk(await svc.recordSourceDecision(actor, { decision: 'accepted' })),
+        'authority:reject': async () =>
+          mk(await svc.recordSourceDecision(actor, { decision: 'rejected' })),
+        'authority:supersede': async () =>
+          mk(await svc.recordSourceDecision(actor, { decision: 'superseded' })),
+        // ── Conflicts ────────────────────────
+        'conflicts:list': async () => mk(await svc.conflicts(actor)),
+        'conflicts:declare': async () => mk(await svc.declareConflict(actor, {})),
+        // ── Decisions ────────────────────────
+        'decisions:list': async () => mk(await svc.decisions(actor)),
+        'decisions:record': async () => mk(await svc.recordDecision(actor, {})),
+        'decisions:supersede': async () => mk(await svc.recordDecision(actor, { supersede: true })),
+        // ── Package ──────────────────────────
         // eslint-disable-next-line @typescript-eslint/require-await
         'package:list': async () => ({
           operations: ['export', 'import', 'validate', 'plan-import', 'inspect'],
         }),
+        'package:export': async () => mk(await svc.exportPackage(actor, {})),
+        'package:import': async () => mk(await svc.importPackage(actor, {})),
+        'package:validate': async () => mk(await svc.validatePackage(actor, {})),
+        'package:plan-import': async () => mk(await svc.planImport(actor, {})),
       };
 
       const key = `${parsed.command}:${sub}`;
@@ -544,7 +616,6 @@ async function main(): Promise<void> {
       if (handler) {
         result = await handler();
       } else {
-        // Scaffold: not yet wired but valid subcommand
         result = {
           family: parsed.command,
           subcommand: sub,
@@ -571,6 +642,8 @@ async function main(): Promise<void> {
           process.stdout.write(`${label}: ${(r.operations as string[]).join(', ')}\n`);
         } else if (r.status !== undefined) {
           process.stdout.write(`${label}: ${String(r.status)}\n`);
+        } else if (r.projectId !== undefined || r.receiptId !== undefined) {
+          process.stdout.write(`${label}: ok\n`);
         } else {
           process.stdout.write(`${label}: ok\n`);
         }
@@ -618,7 +691,7 @@ async function main(): Promise<void> {
 
     if (parsed.command === 'status') {
       const result = await runtime.status({
-        history: parsed.history,
+        history: parsed.historyFlag,
         historyLimit: parsed.historyLimit,
         nodeHistoryPath: parsed.nodeHistoryPath,
         root: parsed.root,
@@ -628,7 +701,7 @@ async function main(): Promise<void> {
         return;
       }
       process.stdout.write(formatStatusReport(result));
-      if (parsed.history) {
+      if (parsed.historyFlag) {
         process.stdout.write(
           formatRevisionHistory(result.revision_history as RevisionHistoryEntry[]),
         );
