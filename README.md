@@ -53,7 +53,6 @@ git clone https://github.com/paragon-ux/Expflow.git
 cd Expflow
 npm install
 npm run build
-npm link                     # makes commands globally available (once)
 expflow init
 expflow status
 expflow --version            # → 1.1.1
