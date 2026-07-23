@@ -33,6 +33,7 @@ const readRoutes = new Set([
   '/api/verify',
   '/api/read-models/list',
   '/api/receipt',
+  '/api/capabilities',
 ]);
 
 const validHosts = new Set(['127.0.0.1', 'localhost']);
@@ -235,6 +236,17 @@ async function handleApi(request, response) {
     '/api/sync': () => bridge.executeSync(body),
     '/api/sync/plan': () => bridge.planSync(body),
     '/api/verify': () => bridge.verify(body),
+    '/api/capabilities': () => {
+      // Phase 6: capabilities endpoint — returns the capability descriptor
+      // without requiring a project root (read-only, no token needed for this route)
+      return {
+        version: '1.1.1',
+        commandFamilies: ['project','material','workflow','evidence','authority','conflicts','decisions','package','reporting'],
+        features: { jsonOutput: true, nonInteractive: true, planApply: true, actorAttribution: true, capabilityDiscovery: true },
+        supportedOs: ['windows','macos','linux'],
+        nodeVersions: ['20','22'],
+      };
+    },
   };
 
   const route = routes[pathname];
