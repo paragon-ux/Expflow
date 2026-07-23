@@ -107,7 +107,7 @@ Gate C ownership/reproduction behavior, Phase 4 evidence intake/reconciliation b
 | `expflow capabilities` | Report supported command families, features, and platform metadata.     |
 | `expflow workflow`     | List, inspect, and manage workflow occurrences.                         |
 | `expflow evidence`     | List and intake evidence records.                                       |
-| `expflow authorities`  | List and manage authority sources.                                      |
+| `expflow authority`   | List and manage authority sources.                                      |
 | `expflow conflicts`    | List conflicts and needs-attention state.                               |
 | `expflow decisions`    | List and record decisions.                                              |
 | `expflow package`      | Export, validate, and import portable workflow packages.                |
