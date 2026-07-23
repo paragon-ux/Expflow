@@ -100,7 +100,7 @@ Useful Phase 1 options:
 
 ## GUI
 
-A local browser-based GUI is available in the repository (not in the npm package).
+A local browser-based GUI is available (`expflow-gui`) and included in the npm package starting from `v1.1.1`.
 
 ```bash
 git clone https://github.com/paragon-ux/Expflow.git

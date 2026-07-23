@@ -9,7 +9,7 @@ npm install -g expflow
 expflow-gui
 ```
 
-Open `http://127.0.0.1:4173`. The server prints the URL and a one-time request token at startup.
+Open `http://127.0.0.1:4173`. The server prints the URL and injects a one-time request token into the served page.
 
 ## Quickstart (repository checkout)
 

@@ -1,7 +1,7 @@
-# Expflow GUI Smoke-Flow Document
+# Expflow GUI Smoke-Flow Test Plan
 
 **Version:** 1.1.1
-**Status:** Verification evidence for v1.1.1 GUI distribution gate (G7)
+**Status:** Test plan for v1.1.1 GUI distribution gate (G7). Automated tests are referenced by file path; manual flows are labeled as owner-tested.
 **Owner test:** Owner-performed manual GUI smoke test passed on the tested repository-local flows.
 
 ---
@@ -196,9 +196,9 @@ Server working directory is never substituted for a blank root.
 
 ## 18. Automated test references
 
-- API negative tests: `tests/gui-api-security.test.ts`
-- Root validation tests: covered by bridge unit tests
-- Sync binding tests: covered by bridge unit tests
-- Restore binding tests: covered by bridge unit tests
+- API/boundary tests: `tests/unit/gui-bridge.test.ts` (bridge-level binding tests)
+- Installed launch test: `tests/contracts/package-verify.ts` (launches `expflow-gui`, makes authenticated API request)
+- Sync binding tests: `tests/unit/gui-bridge.test.ts`
+- Restore binding tests: `tests/unit/gui-bridge.test.ts`
 
 Owner-performed manual GUI smoke test passed on the tested repository-local flows. This is not independent usability evidence, external pilot evidence, empirical evaluation, production support evidence, or installed-package verification.

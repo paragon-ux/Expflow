@@ -1,7 +1,8 @@
+import { createServer } from 'node:http';
 import { existsSync, mkdirSync, mkdtempSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { basename, isAbsolute, join, resolve } from 'node:path';
-import { spawnSync } from 'node:child_process';
+import { spawn, spawnSync } from 'node:child_process';
 import { REPO_ROOT } from '../../src/schemas/discovery.js';
 import { VERSION } from '../../src/core/version.js';
 
@@ -120,7 +121,96 @@ try {
   if (!existsSync(guiPath)) {
     throw new Error(`expflow-gui binary not found at ${guiPath}`);
   }
-  console.log('PASS - expflow-gui binary exists');
+
+  // Launch installed expflow-gui, make authenticated request, then terminate
+  const guiPort = await (async () => {
+    // Find a free port
+    const srv = createServer().listen(0, '127.0.0.1');
+    await new Promise<void>((resolve) => srv.on('listening', resolve));
+    const p = (srv.address() as { port: number }).port;
+    srv.close();
+    return p;
+  })();
+
+  const isWin = process.platform === 'win32';
+  const guiLauncher = isWin ? guiPath : process.execPath;
+  const guiArgs = isWin ? [] : [guiPath];
+  const gui = spawn(guiLauncher, guiArgs, {
+    cwd: installDir,
+    env: { ...process.env, EXPFLOW_GUI_PORT: String(guiPort) },
+    shell: isWin,
+    stdio: ['ignore', 'pipe', 'pipe'],
+  });
+
+  let guiStdout = '';
+  gui.stdout.on('data', (chunk: Buffer) => {
+    guiStdout += chunk.toString();
+  });
+  let guiStderr = '';
+  gui.stderr.on('data', (chunk: Buffer) => {
+    guiStderr += chunk.toString();
+  });
+
+  // Wait for server to be ready (retry up to 10 seconds)
+  let guiPortStr = '';
+  let ready = false;
+  for (let i = 0; i < 50 && !ready; i++) {
+    await new Promise((r) => setTimeout(r, 200));
+    const url = `http://127.0.0.1:${String(guiPort)}/`;
+    try {
+      const res = await fetch(url);
+      ready = res.ok;
+    } catch {
+      // not ready yet
+    }
+  }
+  if (!ready) {
+    gui.kill();
+    throw new Error(
+      `expflow-gui did not start within 10 seconds.\nSTDOUT:\n${guiStdout}\nSTDERR:\n${guiStderr}`,
+    );
+  }
+  guiPortStr = String(guiPort);
+  console.log(`PASS - expflow-gui binary starts and serves on port ${guiPortStr}`);
+
+  // Fetch page, extract token, make authenticated API request
+  const htmlRes = await fetch(`http://127.0.0.1:${guiPortStr}/`);
+  const html = await htmlRes.text();
+  const tokenMatch = html.match(/content="([a-f0-9]{64})"/);
+  if (tokenMatch === null) {
+    gui.kill();
+    throw new Error('Request token not found in served HTML');
+  }
+  const token = tokenMatch[1];
+
+  const apiRes = await fetch(`http://127.0.0.1:${guiPortStr}/api/status`, {
+    method: 'POST',
+    headers: {
+      'content-type': 'application/json',
+      'x-request-token': token,
+    },
+    body: JSON.stringify({ root: tempRoot }),
+  });
+  if (!apiRes.ok) {
+    gui.kill();
+    throw new Error(`Authenticated API request failed: ${String(apiRes.status)}`);
+  }
+  const apiBody = (await apiRes.json()) as Record<string, unknown>;
+  if (typeof apiBody.root !== 'string' || apiBody.root.length === 0) {
+    gui.kill();
+    throw new Error('API response missing root');
+  }
+  console.log('PASS - expflow-gui authenticated API request successful');
+
+  // Verify token not in stdout
+  if (guiStdout.includes(token)) {
+    console.warn('WARNING: Request token appears in server stdout');
+  }
+
+  gui.kill();
+  // Wait for the server process to release its directory handle
+  await new Promise((r) => setTimeout(r, 500));
+  console.log('PASS - expflow-gui installed launch verified');
 
   const helpOutput = run(cliPath, ['--help'], installDir);
   for (const expected of [
@@ -185,5 +275,9 @@ try {
 
   console.log(`PASS - npm package installs outside checkout and reports ${VERSION}`);
 } finally {
-  rmSync(tempRoot, { recursive: true, force: true });
+  try {
+    rmSync(tempRoot, { recursive: true, force: true });
+  } catch {
+    console.warn('WARNING: Could not clean up temp directory');
+  }
 }

@@ -12,12 +12,14 @@ const restoreForce = document.querySelector('#restore-force');
 const receiptId = document.querySelector('#receipt-id');
 const syncButton = document.querySelector('#sync-button');
 const restoreButton = document.querySelector('#restore-button');
+const initButton = document.querySelector('#init-button');
 
 let lastPayload = {};
 let lastSyncPlan = null;
 let lastSyncPlanToken = null;
 let lastRestorePlan = null;
 let lastRestorePlanToken = null;
+let inspectedRoot = null;
 
 // Request token from the server page (injected by server.mjs)
 const pageToken = document.querySelector('meta[name="request-token"]')?.content ?? '';
@@ -200,11 +202,67 @@ function renderRestorePlan(plan) {
 }
 
 document.querySelector('#inspect-button').addEventListener('click', () => {
-  void run('Inspecting project...', statePanel, '/api/status', rootPayload(), renderStatus);
+  void (async () => {
+    const payload = await run(
+      'Inspecting project...',
+      statePanel,
+      '/api/status',
+      rootPayload(),
+      renderStatus,
+    );
+    if (payload.error) {
+      inspectedRoot = null;
+    } else {
+      inspectedRoot = payload.root;
+    }
+    initButton.disabled = inspectedRoot === null;
+  })();
 });
 
+initButton.disabled = true;
+
 document.querySelector('#init-button').addEventListener('click', () => {
-  void run('Initializing project...', statePanel, '/api/init', rootPayload(), renderReceipt);
+  if (inspectedRoot === null) {
+    renderResult(
+      statePanel,
+      {
+        data: null,
+        error: {
+          code: 'inspect_required',
+          message: 'Inspect the project root before initializing.',
+          recoverable: true,
+          recommended_action:
+            'Click Inspect to resolve and review the project directory.',
+        },
+        root: rootInput.value.trim(),
+        state: 'blocked',
+        technical_details: {
+          native_authority: 'Expflow',
+          operation: 'init',
+          raw_storage_access: false,
+          surface: 'Expflow GUI client',
+        },
+      },
+      () => '',
+    );
+    return;
+  }
+  if (
+    !window.confirm(
+      `Initialize a new Expflow project at ${inspectedRoot}?`,
+    )
+  ) {
+    return;
+  }
+  void (async () => {
+    const payload = await run(
+      'Initializing project...',
+      statePanel,
+      '/api/init',
+      { root: inspectedRoot },
+      renderReceipt,
+    );
+  })();
 });
 
 document.querySelector('#recover-button').addEventListener('click', () => {
@@ -393,6 +451,12 @@ document.querySelector('#clear-button').addEventListener('click', () => {
 
 // Initialize restore button state
 updateRestoreButton();
+
+// Clear inspected root when input changes
+rootInput.addEventListener('input', () => {
+  inspectedRoot = null;
+  initButton.disabled = true;
+});
 
 // Inject request token from meta tag (set by server at page serve time)
 if (pageToken.length === 0) {

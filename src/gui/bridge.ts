@@ -335,25 +335,14 @@ export function createGuiBridge(runtime: ExpflowRuntime = createRuntime()): GuiB
           );
         }
 
-        // Recompute and compare stable file digest to detect working-tree changes
-        const currentPlan = await runtime.planSync({ root, dryRun: true });
-        const currentDigest = createHash('sha256')
-          .update(currentPlan.entries.map(entryDigestEntry).sort().join('\x00'))
-          .digest('hex');
-        if (currentDigest !== stored.binding.changeDigest) {
-          syncPlans.delete(input.planToken);
-          throw new ExpflowError(
-            'sync_candidate_changed',
-            'The working tree has changed since the preview. Run Preview again.',
-            {
-              recoverable: true,
-              recommendedAction: 'Run Preview to review the updated changes.',
-            },
-          );
-        }
-
         syncPlans.delete(input.planToken);
-        const receipt = await runtime.sync({ ...input, dryRun: false, root });
+        // Pass changeDigest to runtime — comparison happens under the mutation lock
+        const receipt = await runtime.sync({
+          ...input,
+          dryRun: false,
+          expectedChangeDigest: stored.binding.changeDigest,
+          root,
+        });
         return result({
           data: receipt,
           operation: 'sync.execute',
@@ -458,70 +447,16 @@ export function createGuiBridge(runtime: ExpflowRuntime = createRuntime()): GuiB
           );
         }
 
-        // Recompute the restore plan and compare
-        const currentPlan = await runtime.planRestore({ ...input, root });
-
-        if (currentPlan.reference !== stored.binding.reference) {
-          restorePlans.delete(input.planToken);
-          throw new ExpflowError(
-            'restore_reference_changed',
-            'The restore reference has changed since the preview. Run Preview again.',
-            {
-              recoverable: true,
-              recommendedAction: 'Run Preview to see the updated path effects.',
-            },
-          );
-        }
-        if (currentPlan.source_ref !== stored.binding.sourceRef) {
-          restorePlans.delete(input.planToken);
-          throw new ExpflowError(
-            'restore_source_changed',
-            'The resolved source has changed since the preview. Run Preview again.',
-            {
-              recoverable: true,
-              recommendedAction: 'Run Preview to review the updated source.',
-            },
-          );
-        }
-        if (currentPlan.current_head !== stored.binding.currentHead) {
-          restorePlans.delete(input.planToken);
-          throw new ExpflowError(
-            'restore_head_changed',
-            'The Expflow head has changed since the preview. Run Preview again.',
-            {
-              recoverable: true,
-              recommendedAction: 'Run Preview to see the updated effects.',
-            },
-          );
-        }
-        if (currentPlan.requires_force !== stored.binding.requiresForce) {
-          restorePlans.delete(input.planToken);
-          throw new ExpflowError(
-            'restore_force_changed',
-            'The force requirement has changed since the preview. Run Preview again.',
-            {
-              recoverable: true,
-              recommendedAction: 'Run Preview to determine the current force status.',
-            },
-          );
-        }
-        // Compare path effects, conflicts, and preserved drift
-        const currentConflicts = JSON.stringify([...currentPlan.conflicting_paths].sort());
-        const storedConflicts = JSON.stringify([...stored.binding.conflicts].sort());
-        if (currentConflicts !== storedConflicts) {
-          restorePlans.delete(input.planToken);
-          throw new ExpflowError(
-            'restore_conflicts_changed',
-            'The conflicting paths have changed since the preview. Run Preview again.',
-            {
-              recoverable: true,
-              recommendedAction: 'Run Preview to review the updated conflicts.',
-            },
-          );
-        }
-
         restorePlans.delete(input.planToken);
-        const receipt = await runtime.restore({ ...input, root });
+        // Pass expected bindings to runtime — comparison happens under the mutation lock
+        const receipt = await runtime.restore({
+          ...input,
+          expectedSourceRef: stored.binding.sourceRef,
+          expectedCurrentHead: stored.binding.currentHead,
+          expectedConflictingPaths: stored.binding.conflicts,
+          expectedRequiresForce: stored.binding.requiresForce,
+          root,
+        });
         return result({
           data: receipt,
           operation: 'restore.execute',

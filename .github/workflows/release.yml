@@ -163,6 +163,7 @@ jobs:
         run: |
           set -euo pipefail
           PYTHON_VERSION="${{ steps.versions.outputs.python_version }}"
+          mkdir -p release-artifacts/python
           python - <<'PY'
           import json
           import os
@@ -229,9 +230,9 @@ jobs:
       - name: Generate release checksums and manifest
         run: |
           set -euo pipefail
-          NPM_VERSION="${{ steps.versions.outputs.npm_version }}"
-          PYTHON_VERSION="${{ steps.versions.outputs.python_version }}"
-          SKIP_PYTHON="${{ steps.versions.outputs.skip_python }}"
+          export NPM_VERSION="${{ steps.versions.outputs.npm_version }}"
+          export PYTHON_VERSION="${{ steps.versions.outputs.python_version }}"
+          export SKIP_PYTHON="${{ steps.versions.outputs.skip_python }}"
           node --input-type=module <<'NODE'
           import { createHash } from 'node:crypto';
           import { execSync } from 'node:child_process';
@@ -374,7 +375,7 @@ jobs:
       - name: Publish or verify npm package
         run: |
           set -euo pipefail
-          NPM_VERSION="${{ needs.build-release.outputs.npm-version }}"
+          export NPM_VERSION="${{ needs.build-release.outputs.npm-version }}"
           TARBALL="release-artifacts/npm/expflow-${NPM_VERSION}.tgz"
           if [[ ! -f "${TARBALL}" ]]; then
             echo "Missing ${TARBALL}" >&2

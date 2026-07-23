@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 import { randomBytes } from 'node:crypto';
 import { createServer } from 'node:http';
 import { readFile } from 'node:fs/promises';
@@ -155,14 +156,14 @@ async function handleApi(request, response) {
     return;
   }
 
-  // Read routes accept POST
-  if (isRead && request.method !== 'POST' && request.method !== 'GET') {
-    response.writeHead(405, { Allow: 'POST, GET' });
+  // Read routes: POST only (all API operations use JSON bodies)
+  if (isRead && request.method !== 'POST') {
+    response.writeHead(405, { Allow: 'POST' });
     response.end(
       JSON.stringify({
         error: {
           code: 'method_not_allowed',
-          message: 'Only POST and GET are allowed for this endpoint.',
+          message: 'Only POST is allowed for this endpoint.',
         },
       }),
     );

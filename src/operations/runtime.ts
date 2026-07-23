@@ -1,4 +1,5 @@
 import { basename, dirname } from 'node:path';
+import { createHash } from 'node:crypto';
 import { ExpflowError, toExpflowError } from '../core/errors.js';
 import { createExpflowId } from '../core/ids.js';
 import { cloneJson } from '../core/json.js';
@@ -86,6 +87,7 @@ export interface InitInput extends RuntimeOptions {
 export interface SyncInput extends RuntimeOptions {
   readonly root?: string;
   readonly expectedHead?: string | null;
+  readonly expectedChangeDigest?: string;
   readonly scope?: PathSelectorRecord;
   readonly changedPathHints?: readonly string[];
   readonly changes?: readonly OperationChange[];
@@ -104,6 +106,10 @@ export interface RestoreInput extends RuntimeOptions {
   readonly reference: string;
   readonly targetPath?: string;
   readonly overwrite?: boolean;
+  readonly expectedSourceRef?: string;
+  readonly expectedCurrentHead?: string | null;
+  readonly expectedConflictingPaths?: readonly string[];
+  readonly expectedRequiresForce?: boolean;
 }
 
 export interface SyncPlan {
@@ -552,6 +558,30 @@ export function createRuntime(): ExpflowRuntime {
         const scope = input.scope ?? defaultPathSelector();
         const currentTree =
           previousHead === null ? null : readTreeRevision(projectRoot, previousHead);
+        const scannedFiles = scanWorkingTree(projectRoot, scope);
+
+        // Compare working-tree stable digest against preview binding (under lock)
+        if (input.expectedChangeDigest !== undefined) {
+          const actualDigest = createHash('sha256')
+            .update(
+              scannedFiles
+                .map((f) => `${f.relative_path}\x00${f.content_digest}`)
+                .sort()
+                .join('\x00'),
+            )
+            .digest('hex');
+          if (actualDigest !== input.expectedChangeDigest) {
+            throw new ExpflowError(
+              'sync_candidate_changed',
+              'The working tree has changed since the preview. Run Preview again.',
+              {
+                recoverable: true,
+                recommendedAction: 'Run Preview to review the updated changes.',
+              },
+            );
+          }
+        }
+
         const candidate = planCandidateTree({
           changes: input.changes ?? [],
           createdAt: startedAt,
@@ -559,7 +589,7 @@ export function createRuntime(): ExpflowRuntime {
           operationId,
           projectId: project.project_id,
           nextRevisionForNode: (nodeId) => nextNodeRevisionNumber(projectRoot, nodeId),
-          scannedFiles: scanWorkingTree(projectRoot, scope),
+          scannedFiles,
           scope,
           source: 'sync',
         });
@@ -730,25 +760,73 @@ export function createRuntime(): ExpflowRuntime {
       await Promise.resolve();
       const projectRoot = normalizeProjectRoot(input.root);
       const project = readProject(projectRoot);
-      const plan = buildRestorePlan(projectRoot, input.reference, input.targetPath);
-      if (plan.requires_force && input.overwrite !== true) {
-        const named = plan.conflicting_paths.slice(0, 20);
-        const remaining = plan.conflicting_paths.length - named.length;
-        throw new ExpflowError(
-          'restore_conflict',
-          `Restore would overwrite unrecorded working-tree changes at: ${named.join(', ')}${
-            remaining > 0 ? ` +${String(remaining)} more` : ''
-          }`,
-          {
-            recoverable: true,
-            recommendedAction:
-              'Run `expflow sync` to record your working-tree changes first, or re-run with --force to overwrite them.',
-          },
-        );
-      }
       const release = createLock(projectRoot);
       try {
         const previousHead = readHead(projectRoot);
+
+        // Build restore plan under the lock and compare with preview binding
+        const plan = buildRestorePlan(projectRoot, input.reference, input.targetPath);
+        if (input.expectedSourceRef !== undefined && plan.source_ref !== input.expectedSourceRef) {
+          throw new ExpflowError(
+            'restore_source_changed',
+            'The resolved source has changed since the preview. Run Preview again.',
+            { recoverable: true, recommendedAction: 'Run Preview to review the updated source.' },
+          );
+        }
+        if (
+          input.expectedCurrentHead !== undefined &&
+          plan.current_head !== input.expectedCurrentHead
+        ) {
+          throw new ExpflowError(
+            'restore_head_changed',
+            'The Expflow head has changed since the preview. Run Preview again.',
+            { recoverable: true, recommendedAction: 'Run Preview to see the updated effects.' },
+          );
+        }
+        if (
+          input.expectedConflictingPaths !== undefined &&
+          JSON.stringify([...plan.conflicting_paths].sort()) !==
+            JSON.stringify([...input.expectedConflictingPaths].sort())
+        ) {
+          throw new ExpflowError(
+            'restore_conflicts_changed',
+            'The conflicting paths have changed since the preview. Run Preview again.',
+            {
+              recoverable: true,
+              recommendedAction: 'Run Preview to review the updated conflicts.',
+            },
+          );
+        }
+        if (
+          input.expectedRequiresForce !== undefined &&
+          plan.requires_force !== input.expectedRequiresForce
+        ) {
+          throw new ExpflowError(
+            'restore_force_changed',
+            'The force requirement has changed since the preview. Run Preview again.',
+            {
+              recoverable: true,
+              recommendedAction: 'Run Preview to determine the current force status.',
+            },
+          );
+        }
+
+        if (plan.requires_force && input.overwrite !== true) {
+          const named = plan.conflicting_paths.slice(0, 20);
+          const remaining = plan.conflicting_paths.length - named.length;
+          throw new ExpflowError(
+            'restore_conflict',
+            `Restore would overwrite unrecorded working-tree changes at: ${named.join(', ')}${
+              remaining > 0 ? ` +${String(remaining)} more` : ''
+            }`,
+            {
+              recoverable: true,
+              recommendedAction:
+                'Run `expflow sync` to record your working-tree changes first, or re-run with --force to overwrite them.',
+            },
+          );
+        }
+
         const startedAt = new Date().toISOString();
         const operationId = createExpflowId('efo');
         prepareOperationStaging(projectRoot, operationId);
