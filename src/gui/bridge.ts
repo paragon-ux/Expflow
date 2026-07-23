@@ -649,18 +649,15 @@ export function createGuiBridgeFromService(appService?: ApplicationService): Gui
             },
           });
         }
-        const receipt: OperationReceiptRecord = {
+        const receipt = {
           project_id: (r.result as { projectId?: string })?.projectId ?? '',
-          status: 'committed',
+          status: 'committed' as const,
           operation_id: r.receiptId ?? '',
-          actor: { class: 'human', identifier: 'gui' },
-          result: {},
-          schema_version: '2.3',
-          operation: '',
-          root: '',
-          created_at: '',
-          warnings: [],
-        };
+          schema_version: '2.3' as const,
+          started_at: new Date().toISOString(),
+          finished_at: new Date().toISOString(),
+          validation_refs: [],
+        } as OperationReceiptRecord;
         return result({ data: receipt, operation: 'init', root, state: 'success' });
       });
     },
