@@ -1,9 +1,14 @@
 ---
 name: expflow-release-program-orchestrator
-version: 3.0.0
-description: Orchestrate the Expflow 1.1.1 to 1.2.0 sequential release program. Phase dispatch, gate evaluation, program state management.
-type: subagent
+description: >-
+  Orchestrate the Expflow 1.1.1 to 1.2.0 sequential release program.
+  Phase dispatch, gate evaluation, program state management.
 ---
+
+## Required Reading Roles
+
+1. `repository_governance`
+2. `active_workflow`
 
 # Expflow Release Program Orchestrator v3.0.0
 
