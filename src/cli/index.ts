@@ -26,9 +26,20 @@ ORDINARY COMMANDS
   status     Report project state and restorable references
   restore    Preview or restore a prior project version
 
+1.2.0 COMMANDS
+  capabilities   Print capability descriptor and exit
+  workflow       Workflow operations (list, inspect, state, history)
+  evidence       Evidence intake and inspection
+  authority      Source and artifact proposals and decisions
+  conflicts      List conflicts and needs-attention state
+  decisions      Completion, verification, equivalence, reuse
+  package        Export, validate, import workflow packages
+
 GLOBAL OPTIONS
   --root <path>     Project root (defaults to current directory)
   --json            Print machine-readable JSON
+  --yes, -y         Auto-confirm all prompts
+  --non-interactive  Fail if interactive input is required
   --help, -h        Print this help and exit
   --version, -v     Print version and exit
 
@@ -43,6 +54,15 @@ EXIT CODES
 `;
 
 const COMMAND_HELP: Record<string, string> = {
+  capabilities: `USAGE
+  expflow capabilities [--json]
+
+Prints the capability descriptor for this Expflow installation.
+
+EXIT CODES
+  0  Capabilities printed
+  2  Usage failure or unsupported option
+`,
   init: `USAGE
   expflow init [--root <path>] [--json]
 
@@ -111,7 +131,9 @@ interface ChangeOption {
 }
 
 interface ParsedArgs {
-  readonly command: 'init' | 'sync' | 'status' | 'restore';
+  readonly command: 'init' | 'sync' | 'status' | 'restore' | 'capabilities';
+  readonly yes: boolean;
+  readonly nonInteractive: boolean;
   readonly root: string | undefined;
   readonly json: boolean;
   readonly dryRun: boolean;
@@ -165,12 +187,17 @@ function parseMove(value: string): ChangeOption {
 function parseArgs(rawArgs: string[]): ParsedArgs {
   const args = [...rawArgs];
   const command = args.shift();
-  if (command !== 'init' && command !== 'sync' && command !== 'status' && command !== 'restore') {
+  if (command !== 'init' && command !== 'sync' && command !== 'status' && command !== 'restore'
+      && command !== 'capabilities' && command !== 'workflow' && command !== 'evidence'
+      && command !== 'authority' && command !== 'conflicts' && command !== 'decisions'
+      && command !== 'package') {
     usage(`unknown command '${command ?? ''}'. Use --help for usage.`);
   }
 
   let root: string | undefined;
   let json = false;
+  let yes = false;
+  let nonInteractive = false;
   let dryRun = false;
   let expectedHead: string | null | undefined;
   let targetPath: string | undefined;
@@ -192,6 +219,16 @@ function parseArgs(rawArgs: string[]): ParsedArgs {
     }
     if (arg === '--json') {
       json = true;
+      args.splice(index, 1);
+      continue;
+    }
+    if (arg === '--yes' || arg === '-y') {
+      yes = true;
+      args.splice(index, 1);
+      continue;
+    }
+    if (arg === '--non-interactive') {
+      nonInteractive = true;
       args.splice(index, 1);
       continue;
     }
@@ -295,17 +332,19 @@ function parseArgs(rawArgs: string[]): ParsedArgs {
 
   return {
     changes,
-    command,
+    command: command as ParsedArgs['command'],
     dryRun,
     expectedHead,
     history,
     historyLimit,
     json,
     nodeHistoryPath,
+    nonInteractive,
     overwrite,
     reference: positionals[0],
     root,
     targetPath,
+    yes,
   };
 }
 
@@ -371,6 +410,18 @@ async function main(): Promise<void> {
   const runtime = createRuntime();
 
   try {
+    if (parsed.command === 'capabilities') {
+      const { ApplicationService } = await import('../application/service.js');
+      const svc = new ApplicationService(parsed.root ?? process.cwd());
+      const caps = svc.capabilities();
+      if (parsed.json) {
+        printJson(caps);
+      } else {
+        process.stdout.write(`Expflow ${caps.version}\nCommand families: ${caps.commandFamilies.join(', ')}\n`);
+      }
+      return;
+    }
+
     if (parsed.command === 'init') {
       const result = await runtime.init({ root: parsed.root });
       if (parsed.json) {
