@@ -93,11 +93,12 @@ try {
   }
   for (const file of packedFiles) {
     if (file.path.startsWith('apps/gui/')) {
-      const allowedGui = [
-        'apps/gui/index.html',
-        'apps/gui/server.mjs',
-      ];
-      if (!allowedGui.some((p) => file.path.startsWith(p)) && !file.path.startsWith('apps/gui/src/') && !file.path.startsWith('apps/gui/styles/')) {
+      const allowedGui = ['apps/gui/index.html', 'apps/gui/server.mjs'];
+      if (
+        !allowedGui.some((p) => file.path.startsWith(p)) &&
+        !file.path.startsWith('apps/gui/src/') &&
+        !file.path.startsWith('apps/gui/styles/')
+      ) {
         throw new Error(`Unexpected GUI file in npm package: ${file.path}`);
       }
     }
