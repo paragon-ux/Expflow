@@ -657,14 +657,16 @@ export function createGuiBridgeFromService(appService?: ApplicationService): Gui
           started_at: new Date().toISOString(),
           finished_at: new Date().toISOString(),
           validation_refs: [],
-        } as OperationReceiptRecord;
+        } as unknown as OperationReceiptRecord;
         return result({ data: receipt, operation: 'init', root, state: 'success' });
       });
     },
 
-    planSync(input = {}) {
+    planSync(input: SyncInput = {}) {
       return guarded('sync.preview', input.root, async (root) => {
-        const r = await svc(root).planSync(guiActor, { expectedHead: input.expectedHead });
+        const r = await svc(root).planSync(guiActor, {
+          expectedHead: input.expectedHead ?? undefined,
+        });
         if (!r.ok) {
           return result({
             data: null,
@@ -697,7 +699,7 @@ export function createGuiBridgeFromService(appService?: ApplicationService): Gui
       });
     },
 
-    executeSync(input = {}) {
+    executeSync(input: SyncInput & { planToken?: string } = {}) {
       return guarded('sync.execute', input.root, async (root) => {
         if (!input.expectedHead || !input.planToken) {
           throw new ExpflowError('sync_preview_required', 'Run Preview first.', {
@@ -721,7 +723,7 @@ export function createGuiBridgeFromService(appService?: ApplicationService): Gui
       });
     },
 
-    getHistory(input) {
+    getHistory(input: StatusInput) {
       return guarded('history', input.root, async (root) => {
         const r = await svc(root).status(guiActor, { history: true });
         if (!r.ok) {
@@ -748,7 +750,7 @@ export function createGuiBridgeFromService(appService?: ApplicationService): Gui
       });
     },
 
-    getNodeHistory(input) {
+    getNodeHistory(input: StatusInput) {
       return guarded('node-history', input.root, async (root) => {
         const r = await svc(root).status(guiActor);
         if (!r.ok) {
@@ -775,7 +777,7 @@ export function createGuiBridgeFromService(appService?: ApplicationService): Gui
       });
     },
 
-    planRestore(input) {
+    planRestore(input: RestoreInput) {
       return guarded('restore.preview', input.root, async (root) => {
         const r = await svc(root).planRestore(guiActor, input.reference);
         if (!r.ok) {
@@ -803,7 +805,7 @@ export function createGuiBridgeFromService(appService?: ApplicationService): Gui
       });
     },
 
-    executeRestore(input) {
+    executeRestore(input: RestoreInput & { planToken?: string }) {
       return guarded('restore.execute', input.root, async (root) => {
         if (!input.planToken)
           throw new ExpflowError('restore_preview_required', 'Run Preview first.', {
@@ -821,7 +823,7 @@ export function createGuiBridgeFromService(appService?: ApplicationService): Gui
       });
     },
 
-    recover(input = {}) {
+    recover(input: StatusInput = {}) {
       return guarded('recover', input.root, async (root) => {
         const r = await svc(root).status(guiActor);
         return appToGui(r, root, 'recover', () => 'success') as GuiOperationResult<
@@ -830,7 +832,7 @@ export function createGuiBridgeFromService(appService?: ApplicationService): Gui
       });
     },
 
-    verify(input = {}) {
+    verify(input: StatusInput = {}) {
       return guarded('verify', input.root, async (root) => {
         const r = await svc(root).status(guiActor);
         if (!r.ok) {
