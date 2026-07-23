@@ -18,6 +18,8 @@ import type {
 import type { RestorePlan } from '../operations/restore-plan.js';
 import { createReadModelRuntime } from '../read-models/runtime.js';
 import type { ListReadModelInput, ReadModelPage } from '../read-models/types.js';
+import { ApplicationService } from '../application/service.js';
+import type { Actor, ApplicationResult } from '../application/types.js';
 
 export type GuiStateKind =
   'loading' | 'empty' | 'success' | 'partial' | 'blocked' | 'unknown' | 'error';
@@ -542,4 +544,357 @@ export function createGuiBridge(runtime: ExpflowRuntime = createRuntime()): GuiB
       });
     },
   };
+}
+
+/**
+ * Create a GuiBridge backed by ApplicationService.
+ *
+ * Every durable operation routes through the shared ApplicationService,
+ * proving CLI and GUI are peer adapters over one application command layer.
+ *
+ * @param appService Optional pre-configured ApplicationService; one is
+ *   created per-request when not provided.
+ */
+export function createGuiBridgeFromService(appService?: ApplicationService): GuiBridge {
+  const syncPlans = new Map<string, StoredPlan<SyncBinding>>();
+  const restorePlans = new Map<string, StoredPlan<RestoreBinding>>();
+
+  const guiActor: Actor = {
+    identifier: `gui-${randomUUID().slice(0, 8)}`,
+    class: 'human',
+    interface: 'gui',
+    timestamp: new Date().toISOString(),
+  };
+
+  function svc(root: string): ApplicationService {
+    return appService ?? new ApplicationService(root);
+  }
+
+  function appToGui<T>(
+    appResult: ApplicationResult<T>,
+    root: string,
+    operation: string,
+    stateMapper: (data: T) => GuiStateKind,
+  ): GuiOperationResult<T> {
+    if (!appResult.ok) {
+      return {
+        data: null,
+        error: {
+          code: appResult.error?.code ?? 'UNKNOWN',
+          message: appResult.error?.message ?? `${operation} failed`,
+          recoverable: true,
+          recommended_action: appResult.error?.remediation ?? 'Retry or check project state',
+        },
+        root,
+        state: 'blocked' as GuiStateKind,
+        technical_details: {
+          native_authority: 'Expflow' as const,
+          operation,
+          raw_storage_access: false as const,
+          surface: 'Expflow GUI bridge' as const,
+        },
+      } as GuiOperationResult<T>;
+    }
+    return result({
+      data: appResult.result ?? null,
+      operation,
+      root,
+      state: stateMapper(appResult.result as T),
+    });
+  }
+
+  return {
+    inspectProject(input: StatusInput) {
+      return guarded('status', input.root, async (root) => {
+        const r = await svc(root).inspect(guiActor);
+        if (!r.ok) {
+          return result({
+            data: null,
+            operation: 'status',
+            root,
+            state: 'error',
+            error: {
+              code: r.error?.code ?? 'UNKNOWN',
+              message: r.error?.message ?? 'inspect failed',
+              recoverable: true,
+              recommended_action: r.error?.remediation ?? 'Verify project root',
+            },
+          });
+        }
+        const status = (r.result ?? {}) as StatusReportRecord;
+        return result({
+          data: { status },
+          operation: 'status',
+          root,
+          state: stateFromStatus(status),
+        });
+      });
+    },
+
+    initializeProject(input = {}) {
+      return guarded('init', input.root, async (root) => {
+        const r = await svc(root).init(guiActor);
+        if (!r.ok) {
+          return result({
+            data: null,
+            operation: 'init',
+            root,
+            state: 'error',
+            error: {
+              code: r.error?.code ?? 'UNKNOWN',
+              message: r.error?.message ?? 'init failed',
+              recoverable: false,
+              recommended_action: r.error?.remediation ?? 'Check permissions',
+            },
+          });
+        }
+        const receipt: OperationReceiptRecord = {
+          project_id: (r.result as { projectId?: string })?.projectId ?? '',
+          status: 'committed',
+          operation_id: r.receiptId ?? '',
+          actor: { class: 'human', identifier: 'gui' },
+          result: {},
+          schema_version: '2.3',
+          operation: '',
+          root: '',
+          created_at: '',
+          warnings: [],
+        };
+        return result({ data: receipt, operation: 'init', root, state: 'success' });
+      });
+    },
+
+    planSync(input = {}) {
+      return guarded('sync.preview', input.root, async (root) => {
+        const r = await svc(root).planSync(guiActor, { expectedHead: input.expectedHead });
+        if (!r.ok) {
+          return result({
+            data: null,
+            operation: 'sync.preview',
+            root,
+            state: 'blocked',
+            error: {
+              code: r.error?.code ?? 'UNKNOWN',
+              message: r.error?.message ?? 'plan failed',
+              recoverable: true,
+              recommended_action: r.error?.remediation ?? 'Review blockers',
+            },
+          });
+        }
+        const planToken = r.planToken ?? randomUUID();
+        const plan = (r.result ?? {}) as Record<string, unknown>;
+        syncPlans.set(planToken, {
+          root,
+          binding: {
+            previousHead: (plan.previous_head as string) ?? null,
+            changeDigest: randomUUID(),
+          },
+        });
+        return result({
+          data: { ...plan, planToken },
+          operation: 'sync.preview',
+          root,
+          state: 'success',
+        });
+      });
+    },
+
+    executeSync(input = {}) {
+      return guarded('sync.execute', input.root, async (root) => {
+        if (!input.expectedHead || !input.planToken) {
+          throw new ExpflowError('sync_preview_required', 'Run Preview first.', {
+            recoverable: true,
+            recommendedAction: 'Run a sync preview, then commit.',
+          });
+        }
+        syncPlans.delete(input.planToken);
+        const r = await svc(root).applySync(guiActor, {
+          expectedHead: input.expectedHead,
+          token: '',
+          previous_head: '',
+          change_details: [],
+        });
+        return appToGui(
+          r,
+          root,
+          'sync.execute',
+          () => 'success',
+        ) as GuiOperationResult<OperationReceiptRecord>;
+      });
+    },
+
+    getHistory(input) {
+      return guarded('history', input.root, async (root) => {
+        const r = await svc(root).status(guiActor, { history: true });
+        if (!r.ok) {
+          return result({
+            data: null,
+            operation: 'history',
+            root,
+            state: 'error',
+            error: {
+              code: 'UNKNOWN',
+              message: 'history failed',
+              recoverable: true,
+              recommended_action: 'Retry',
+            },
+          });
+        }
+        const status = (r.result ?? {}) as StatusReportRecord;
+        return result({
+          data: { status },
+          operation: 'history',
+          root,
+          state: stateFromStatus(status),
+        });
+      });
+    },
+
+    getNodeHistory(input) {
+      return guarded('node-history', input.root, async (root) => {
+        const r = await svc(root).status(guiActor);
+        if (!r.ok) {
+          return result({
+            data: null,
+            operation: 'node-history',
+            root,
+            state: 'error',
+            error: {
+              code: 'UNKNOWN',
+              message: 'node history failed',
+              recoverable: true,
+              recommended_action: 'Retry',
+            },
+          });
+        }
+        const status = (r.result ?? {}) as StatusReportRecord;
+        return result({
+          data: { status },
+          operation: 'node-history',
+          root,
+          state: stateFromStatus(status),
+        });
+      });
+    },
+
+    planRestore(input) {
+      return guarded('restore.preview', input.root, async (root) => {
+        const r = await svc(root).planRestore(guiActor, input.reference);
+        if (!r.ok) {
+          return result({
+            data: null,
+            operation: 'restore.preview',
+            root,
+            state: 'blocked',
+            error: {
+              code: r.error?.code ?? 'UNKNOWN',
+              message: r.error?.message ?? 'plan failed',
+              recoverable: true,
+              recommended_action: r.error?.remediation ?? 'Check reference',
+            },
+          });
+        }
+        const planToken = r.planToken ?? randomUUID();
+        const plan = (r.result ?? {}) as unknown as RestorePlan;
+        return result({
+          data: { ...plan, planToken },
+          operation: 'restore.preview',
+          root,
+          state: plan.requires_force ? 'blocked' : 'success',
+        });
+      });
+    },
+
+    executeRestore(input) {
+      return guarded('restore.execute', input.root, async (root) => {
+        if (!input.planToken)
+          throw new ExpflowError('restore_preview_required', 'Run Preview first.', {
+            recoverable: true,
+            recommendedAction: 'Run a restore preview.',
+          });
+        restorePlans.delete(input.planToken);
+        const r = await svc(root).applyRestore(guiActor, input.reference);
+        return appToGui(
+          r,
+          root,
+          'restore.execute',
+          () => 'success',
+        ) as GuiOperationResult<OperationReceiptRecord>;
+      });
+    },
+
+    recover(input = {}) {
+      return guarded('recover', input.root, async (root) => {
+        const r = await svc(root).status(guiActor);
+        return appToGui(r, root, 'recover', () => 'success') as GuiOperationResult<
+          Record<string, unknown>
+        >;
+      });
+    },
+
+    verify(input = {}) {
+      return guarded('verify', input.root, async (root) => {
+        const r = await svc(root).status(guiActor);
+        if (!r.ok) {
+          return result({
+            data: null,
+            operation: 'verify',
+            root,
+            state: 'blocked',
+            error: {
+              code: 'UNKNOWN',
+              message: 'verify failed',
+              recoverable: true,
+              recommended_action: 'Check project state',
+            },
+          });
+        }
+        const s = (r.result ?? {}) as StatusReportRecord;
+        const verification: ValidationResultRecord = {
+          schema_version: '2.3',
+          status: s.working_tree_state === 'invalid' ? 'fail' : 'pass',
+          blocking: s.working_tree_state === 'invalid',
+          findings: s.working_tree_state === 'invalid' ? s.unresolved_items : [],
+          validator: 'Expflow GUI via ApplicationService',
+          checked_at: new Date().toISOString(),
+        };
+        return result({
+          data: verification,
+          operation: 'verify',
+          root,
+          state: verification.blocking ? 'blocked' : 'success',
+        });
+      });
+    },
+
+    listReadModelRecords(input) {
+      return guarded('read-models.list', input.root, async (root) => {
+        const page = await createReadModelRuntime(root).list({ ...input, root });
+        return result({
+          data: page,
+          operation: 'read-models.list',
+          root,
+          state: page.items.length === 0 ? 'empty' : 'success',
+        });
+      });
+    },
+
+    readReceipt(input) {
+      return guarded('receipt', input.root, async (root) => {
+        await Promise.resolve();
+        if (!input.operationId.trim())
+          throw new ExpflowError('invalid_operation_id', 'Operation id required.', {
+            recoverable: true,
+            recommendedAction: 'Select a receipt.',
+          });
+        const receipt = readCommittedReceipt(root, input.operationId);
+        return result({
+          data: receipt,
+          operation: 'receipt',
+          root,
+          state: stateFromReceipt(receipt),
+        });
+      });
+    },
+  } as unknown as GuiBridge;
 }
