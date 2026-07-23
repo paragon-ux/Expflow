@@ -7,11 +7,9 @@ Expflow is a schema-governed, local-first workflow ownership and observability p
 Expflow records what changed, which evidence was trusted, which decisions remain durable, and which outputs can be inspected, regenerated, restored, or reused.
 
 Current release:
-[`v1.1.0`](https://github.com/paragon-ux/Expflow/releases/tag/v1.1.0).
+[`v1.1.1`](https://github.com/paragon-ux/Expflow/releases/tag/v1.1.1).
 
-The next release (`v1.1.1`) will include the Expflow GUI in the npm package.
-
-Once published to the npm registry, install globally and launch the GUI:
+Install globally from the npm registry and launch the GUI:
 
 ```bash
 npm install -g expflow@1.1.1
@@ -117,15 +115,14 @@ Useful Phase 1 options:
 
 ## GUI
 
-A local browser-based GUI is available (`expflow-gui`) and included in the npm package starting from `v1.1.1`.
+A local browser-based GUI is available (`expflow-gui`) and included in the npm package.
 
 ```bash
 git clone https://github.com/paragon-ux/Expflow.git
 cd Expflow
-npm install
+npm ci
 npm run build
-npm link                     # makes expflow-gui globally available (once)
-expflow-gui                  # → http://127.0.0.1:4173
+node apps/gui/server.mjs     # → http://127.0.0.1:4173
 ```
 
 Enter a project path, click **Inspect** or **Initialize**, then use the Sync, History, Restore, and Receipts panels. See `apps/gui/README.md` for the full quickstart.

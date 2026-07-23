@@ -8,8 +8,9 @@
 
 ### Release
 
-- Release metadata and documentation frozen for the v1.1.1 release candidate.
+- Published `expflow@1.1.1` to npm registry.
 - `expflow-hooks` intentionally stays at `v1.1.0`; no Python-package changes in this release.
+- Updated checkout instructions to use direct node invocations instead of `npm link`.
 
 ## v1.1.0 - 2026-07-21
 
