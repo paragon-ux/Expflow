@@ -1,14 +1,14 @@
 # Current Status Matrix
 
 **Status:** Current internal status control
-**Last updated:** 2026-07-21
-**Implementation baseline:** Expflow `v1.0.1`
-**Release candidate:** `v1.1.0` (contents: accepted Build Week Phases 1–7)
-**Post-baseline changes:** Phase 1 ordinary CLI UX accepted, merged, repaired, and post-merge validated at `4a4603435d4a61ff0776ec814dd36a1a12633a6d`; Phase 2 GUI foundation accepted, merged, and post-merge validated at `10a79e95bb034dc263ffa935eb4d4fc27eda942f`; Phase 3 stable read models accepted, merged, and post-merge validated at `6b807a3ad5c05b5c510ec64f2d5296c55a98ebaa`; Phase 4 evidence intake and authority reconciliation accepted, merged, and post-merge validated at `9f4cf99ba62b3eee38c200e3bff198c814b6530e`; Phase 5 portable workflow package accepted, merged, and post-merge validated at `2adcabf5e3f62061f70682f5ace8422a261f8fc1`; Phase 6 evidence-backed gap closure accepted, merged, and post-merge validated at `a721722b802825005c459580d400929cb169bde8`; Phase 7 pilot and empirical evaluation accepted, precision review PASS, BW-C gate review PASS, consolidated integration at `68a2408a6c5091c70e1d5ac8ee3f8d0f1ac3129a`
+**Last updated:** 2026-07-23
+**Published baseline:** Expflow `v1.1.0`
+**Merge commit:** `a1eaaad4c226eb3722f13804ece561b8cf275378`
+**Post-baseline changes:** Phase 1 ordinary CLI UX accepted, merged, repaired, and post-merge validated at `4a4603435d4a61ff0776ec814dd36a1a12633a6d`; Phase 2 GUI foundation accepted, merged, and post-merge validated at `10a79e95bb034dc263ffa935eb4d4fc27eda942f`; Phase 3 stable read models accepted, merged, and post-merge validated at `6b807a3ad5c05b5c510ec64f2d5296c55a98ebaa`; Phase 4 evidence intake and authority reconciliation accepted, merged, and post-merge validated at `9f4cf99ba62b3eee38c200e3bff198c814b6530e`; Phase 5 portable workflow package accepted, merged, and post-merge validated at `2adcabf5e3f62061f70682f5ace8422a261f8fc1`; Phase 6 evidence-backed gap closure accepted, merged, and post-merge validated at `a721722b802825005c459580d400929cb169bde8`; Phase 7 pilot and empirical evaluation accepted, precision review PASS, BW-C gate review PASS, merged into `main` at `a1eaaad4c226eb3722f13804ece561b8cf275378`
 **Historical workflow:** Gates A–D complete and closed
 **Current workflow:** `BUILD_WEEK_WORKFLOW_CURRENT.md`
-**Current phase:** v1.1.0 release closeout
-**Phase state:** Phases 1–7 accepted and consolidated into `feat/build-week-integration`; BW-A, BW-B, and BW-C gate reviews all PASS with no verified findings; PR #24 superseded by consolidated Phase 1–7 integration; Phase 8 is deferred pending post-BW-C product assessment.
+**Current phase:** post-release assessment
+**Phase state:** Phases 1–7 accepted, merged into `main` at `a1eaaad`, and released as `v1.1.0`. BW-A, BW-B, and BW-C gate reviews all PASS. Phase 8 deferred pending post-BW-C product assessment. Current activity: v1.1.1 GUI distribution planning.
 
 ---
 

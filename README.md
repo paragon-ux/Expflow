@@ -6,7 +6,7 @@ Expflow is a schema-governed, local-first workflow ownership and observability p
 
 Expflow records what changed, which evidence was trusted, which decisions remain durable, and which outputs can be inspected, regenerated, restored, or reused.
 
-Current release candidate:
+Current release:
 [`v1.1.0`](docs/releases/v1.1.0/files/docs/release_notes/GITHUB_RELEASE_NOTE_V1_1_0.md).
 
 ## What Expflow Tracks
