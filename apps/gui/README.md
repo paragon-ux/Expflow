@@ -18,6 +18,12 @@ git clone https://github.com/paragon-ux/Expflow.git
 cd Expflow
 npm install
 npm run build
+npx expflow-gui
+```
+
+If `npx` is unavailable, launch the server directly:
+
+```bash
 node apps/gui/server.mjs
 ```
 

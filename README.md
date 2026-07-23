@@ -11,7 +11,7 @@ Current release:
 
 The next release (`v1.1.1`) will include the Expflow GUI in the npm package.
 
-The Expflow GUI is now included in the npm package. Install and launch:
+Once published to the npm registry, install globally and launch the GUI:
 
 ```bash
 npm install -g expflow
@@ -46,7 +46,19 @@ Expflow v1.1.0 covers the local core surfaces implemented in this repository:
 
 ## Quickstart
 
-With the npm package available from the public registry:
+From a repository checkout (development):
+
+```bash
+git clone https://github.com/paragon-ux/Expflow.git
+cd Expflow
+npm install
+npm run build
+npx expflow init
+npx expflow status
+npx expflow --version
+```
+
+Once published to the npm registry, install globally:
 
 ```bash
 npm install -g expflow
@@ -109,7 +121,13 @@ git clone https://github.com/paragon-ux/Expflow.git
 cd Expflow
 npm install
 npm run build
-node apps/gui/server.mjs        # → http://127.0.0.1:4173
+npx expflow-gui              # → http://127.0.0.1:4173
+```
+
+If `npx` is unavailable, launch the server directly:
+
+```bash
+node apps/gui/server.mjs     # → http://127.0.0.1:4173
 ```
 
 Enter a project path, click **Inspect** or **Initialize**, then use the Sync, History, Restore, and Receipts panels. See `apps/gui/README.md` for the full quickstart.
