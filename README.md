@@ -105,6 +105,12 @@ Gate C ownership/reproduction behavior, Phase 4 evidence intake/reconciliation b
 | `expflow status`       | Report drift, current project version, history, and restore references. |
 | `expflow restore`      | Preview or restore a recorded material tree or node revision.           |
 | `expflow capabilities` | Report supported command families, features, and platform metadata.     |
+| `expflow workflow`     | List, inspect, and manage workflow occurrences.                         |
+| `expflow evidence`     | List and intake evidence records.                                       |
+| `expflow authorities`  | List and manage authority sources.                                      |
+| `expflow conflicts`    | List conflicts and needs-attention state.                               |
+| `expflow decisions`    | List and record decisions.                                              |
+| `expflow package`      | Export, validate, and import portable workflow packages.                |
 
 Options:
 

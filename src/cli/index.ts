@@ -44,8 +44,6 @@ GLOBAL OPTIONS
   --version, -v     Print version and exit
 
 Run "expflow <command> --help" for command-specific options.
-Gate B implements local material-core behavior only. Adapter inspection,
-change cursors, request idempotency, and reconciliation are not core commands.
 
 EXIT CODES
   0  Success, including uninitialized status queries
@@ -558,7 +556,25 @@ async function main(): Promise<void> {
       if (parsed.json) {
         printJson(result);
       } else {
-        process.stdout.write(JSON.stringify(result, null, 2) + '\n');
+        /* eslint-disable @typescript-eslint/no-base-to-string */
+        const label = `${parsed.command} ${sub}`;
+        const r: Record<string, unknown> = result;
+        const listKey = ['workflows', 'items', 'conflicts', 'decisions'].find(
+          (k) => r[k] !== undefined,
+        );
+        if (listKey) {
+          const arr = Array.isArray(r[listKey]) ? r[listKey] : [];
+          process.stdout.write(`${label}: ${String(arr.length)} ${listKey}\n`);
+        } else if (r.needsAttention !== undefined) {
+          process.stdout.write(`${label}: needs attention = ${String(r.needsAttention)}\n`);
+        } else if (Array.isArray(r.operations)) {
+          process.stdout.write(`${label}: ${(r.operations as string[]).join(', ')}\n`);
+        } else if (r.status !== undefined) {
+          process.stdout.write(`${label}: ${String(r.status)}\n`);
+        } else {
+          process.stdout.write(`${label}: ok\n`);
+        }
+        /* eslint-enable @typescript-eslint/no-base-to-string */
       }
       return;
     }
