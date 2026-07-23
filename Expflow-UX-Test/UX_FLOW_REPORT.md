@@ -238,14 +238,14 @@ Unknown commands and unsupported options exit 2. Message directs to `--help`.
 
 ## 7. Summary
 
-| Dimension | Rating | Notes |
-|---|---|---|
-| Discoverability | Good | `--help` is thorough. Status output guides next actions well. |
-| Error handling | Excellent | Consistent three-tier exit codes. Every error names the problem, states nothing was committed, and gives a next action. |
-| Safety | Excellent | Dry-run before every mutation. Restore refuses conflicts by default. No destructive commands without preview. |
-| Consistency | Good | All four commands follow the same output format. Exit codes are predictable. |
-| Learnability | Good | Four commands is learnable. Flow `status → dry-run → commit → verify` is natural. |
-| Power-user support | Adequate | `--json`, `--expected-head`, identity directives. Opaque IDs are a friction point. |
-| Overall | **Good** | Production-ready for a v1.1 CLI. Pain points are real but none block ordinary use. |
+| Dimension          | Rating    | Notes                                                                                                                   |
+| ------------------ | --------- | ----------------------------------------------------------------------------------------------------------------------- |
+| Discoverability    | Good      | `--help` is thorough. Status output guides next actions well.                                                           |
+| Error handling     | Excellent | Consistent three-tier exit codes. Every error names the problem, states nothing was committed, and gives a next action. |
+| Safety             | Excellent | Dry-run before every mutation. Restore refuses conflicts by default. No destructive commands without preview.           |
+| Consistency        | Good      | All four commands follow the same output format. Exit codes are predictable.                                            |
+| Learnability       | Good      | Four commands is learnable. Flow `status → dry-run → commit → verify` is natural.                                       |
+| Power-user support | Adequate  | `--json`, `--expected-head`, identity directives. Opaque IDs are a friction point.                                      |
+| Overall            | **Good**  | Production-ready for a v1.1 CLI. Pain points are real but none block ordinary use.                                      |
 
 The restore-safety refusal UX is the standout feature — clear conflict identification, two repair options, no data loss path in the default flow.
