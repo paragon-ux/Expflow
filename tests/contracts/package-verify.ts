@@ -240,7 +240,6 @@ try {
     'status',
     'restore',
     'Run "expflow <command> --help"',
-    'Gate B implements local material-core',
     'EXIT CODES',
     '0  Success, including uninitialized status queries',
     '1  Operational mutation or runtime failure',
