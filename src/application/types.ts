@@ -116,4 +116,6 @@ export interface CommandOptions {
   expectedHead?: string;
   planToken?: string;
   force?: boolean;
+  history?: boolean;
+  historyLimit?: number;
 }

@@ -1,5 +1,5 @@
 /**
- * Expflow 1.2.0 Application Command Service
+ * Expflow 1.2.1 Application Command Service
  *
  * Actor-ambivalent command layer wrapping existing runtimes
  * with the result envelope and actor attribution.
@@ -17,6 +17,8 @@ import { createAuthorityRuntime } from '../authority/runtime.js';
 import type { AuthorityRuntime } from '../authority/runtime.js';
 import { createWorkflowRuntime } from '../workflows/runtime.js';
 import type { WorkflowRuntime } from '../workflows/runtime.js';
+import { createSemanticRuntime } from '../semantics/runtime.js';
+import type { SemanticRuntime } from '../semantics/runtime.js';
 import { createPortablePackageRuntime } from '../portable-package/runtime.js';
 import type {
   Actor,
@@ -83,6 +85,7 @@ export class ApplicationService {
   private evidence: EvidenceRuntime;
   private authority: AuthorityRuntime;
   private workflow: WorkflowRuntime;
+  private semantics: SemanticRuntime;
   readonly projectRoot: string;
 
   constructor(projectRoot: string) {
@@ -91,6 +94,7 @@ export class ApplicationService {
     this.evidence = createEvidenceRuntime(projectRoot);
     this.authority = createAuthorityRuntime(projectRoot);
     this.workflow = createWorkflowRuntime(projectRoot);
+    this.semantics = createSemanticRuntime(projectRoot);
   }
 
   private root() {
@@ -434,7 +438,7 @@ export class ApplicationService {
 
   async conflicts(actor: Actor): Promise<ApplicationResult> {
     try {
-      const items = await this.evidence.listIntake({ root: this.root() });
+      const items = await this.semantics.listConflicts();
       const needsAttention = items.length > 0;
       return ok('conflicts', actor, { conflicts: items, needsAttention });
     } catch (e: unknown) {
@@ -460,7 +464,7 @@ export class ApplicationService {
 
   async decisions(actor: Actor): Promise<ApplicationResult> {
     try {
-      const items = await this.evidence.listIntake({ root: this.root() });
+      const items = await this.semantics.listDecisions();
       return ok('decisions', actor, { decisions: items });
     } catch (e: unknown) {
       const m = e instanceof Error ? e.message : 'Decisions list failed';

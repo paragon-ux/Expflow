@@ -14,6 +14,7 @@ import {
   type NodeHistoryEntry,
   type RevisionHistoryEntry,
 } from './format.js';
+import type { StatusReportRecord } from '../material/types.js';
 
 const HELP_TEXT = `Expflow - schema-governed workflow ownership and observability
 
@@ -477,18 +478,25 @@ async function main(): Promise<void> {
 
   const runtime = createRuntime();
 
-  if (parsed.nonInteractive) {
-    if (parsed.command === 'restore' && !parsed.overwrite && !parsed.yes) {
-      process.stderr.write('error: --non-interactive requires --force or --yes for restore\n');
-      process.exit(1);
-    }
-  }
-
   try {
+    // Lazy-load ApplicationService for 1.2.1 families
+    const { ApplicationService } = await import('../application/service.js');
+    const svc = new ApplicationService(parsed.root ?? process.cwd());
+    const actor = {
+      identifier: `cli-${process.env.USER ?? process.env.USERNAME ?? 'unknown'}`,
+      class: 'human' as const,
+      interface: 'cli' as const,
+      timestamp: new Date().toISOString(),
+    };
+
+    if (parsed.nonInteractive) {
+      if (parsed.command === 'restore' && !parsed.overwrite && !parsed.yes) {
+        process.stderr.write('error: --non-interactive requires --force or --yes for restore\n');
+        process.exit(1);
+      }
+    }
     // ── Capabilities ─────────────────────────────────────────
     if (parsed.command === 'capabilities') {
-      const { ApplicationService } = await import('../application/service.js');
-      const svc = new ApplicationService(parsed.root ?? process.cwd());
       const caps = svc.capabilities();
       if (parsed.json) {
         printJson(caps);
@@ -502,15 +510,17 @@ async function main(): Promise<void> {
 
     // ── Inspect (project state summary) ─────────────────────
     if (parsed.command === 'inspect') {
-      const result = await runtime.status({
-        root: parsed.root,
-        history: false,
-      });
+      const r = await svc.inspect(actor);
       if (parsed.json) {
-        printJson(result);
+        printJson(r);
       } else {
+        if (!r.ok) {
+          process.stderr.write(`error: ${r.error?.message ?? 'inspect failed'}\n`);
+          process.exit(1);
+        }
+        const s = r.result as Record<string, unknown>;
         process.stdout.write(
-          `Project: ${result.project_id}\nHead: ${result.head_tree_revision_id ?? 'none'}\nWorking tree: ${result.working_tree_state}\n`,
+          `Project: ${s.project_id}\nHead: ${s.head_tree_revision_id ?? 'none'}\nWorking tree: ${s.working_tree_state}\n`,
         );
       }
       return;
@@ -518,18 +528,17 @@ async function main(): Promise<void> {
 
     // ── History (standalone version history) ─────────────────
     if (parsed.command === 'history') {
-      const result = await runtime.status({
-        root: parsed.root,
-        history: true,
-        historyLimit: parsed.historyLimit ?? 10,
-      });
+      const r = await svc.status(actor, { history: true });
       if (parsed.json) {
-        printJson(result);
+        printJson(r);
       } else {
-        process.stdout.write(formatStatusReport(result));
-        process.stdout.write(
-          formatRevisionHistory(result.revision_history as RevisionHistoryEntry[]),
-        );
+        if (!r.ok || !r.result) {
+          process.stderr.write('history failed\n');
+          process.exit(parsed.json ? 0 : 1);
+        }
+        const s = r.result as unknown as StatusReportRecord;
+        process.stdout.write(formatStatusReport(s));
+        process.stdout.write(formatRevisionHistory(s.revision_history as RevisionHistoryEntry[]));
       }
       return;
     }
