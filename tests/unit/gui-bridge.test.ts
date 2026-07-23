@@ -2,6 +2,7 @@ import { existsSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'no
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 import { describe, expect, test } from 'vitest';
+import { restorePathEffectsDigest } from '../../src/material/digest.js';
 import { createGuiBridge } from '../../src/gui/bridge.js';
 
 function tempProject(): string {
@@ -545,8 +546,7 @@ describe('Expflow GUI bridge', () => {
     }
   });
 
-  test('restorePathEffectsDigest distinguishes drift_kind values', async () => {
-    const { restorePathEffectsDigest } = await import('../../src/material/digest.js');
+  test('restorePathEffectsDigest distinguishes drift_kind values', () => {
     const modified = restorePathEffectsDigest([
       { conflicting: true, drift_kind: 'modified', effect: 'update', relative_path: 'note.txt' },
     ]);
