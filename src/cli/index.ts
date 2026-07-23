@@ -533,6 +533,7 @@ async function main(): Promise<void> {
       if (parsed.json) {
         printJson(r);
       } else {
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
         if (!r.ok) {
           process.stderr.write('history failed\n');
           process.exit(parsed.json ? 0 : 1);
