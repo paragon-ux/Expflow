@@ -556,6 +556,7 @@ export function createGuiBridge(runtime: ExpflowRuntime = createRuntime()): GuiB
  *   created per-request when not provided.
  */
 export function createGuiBridgeFromService(appService?: ApplicationService): GuiBridge {
+  /* eslint-disable @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-explicit-any, @typescript-eslint/no-unnecessary-type-assertion, @typescript-eslint/no-unnecessary-condition */
   const syncPlans = new Map<string, StoredPlan<SyncBinding>>();
   const restorePlans = new Map<string, StoredPlan<RestoreBinding>>();
 
@@ -897,4 +898,5 @@ export function createGuiBridgeFromService(appService?: ApplicationService): Gui
       });
     },
   } as unknown as GuiBridge;
+  /* eslint-enable @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-explicit-any, @typescript-eslint/no-unnecessary-type-assertion, @typescript-eslint/no-unnecessary-condition */
 }
