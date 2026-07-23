@@ -101,9 +101,9 @@ describe('ordinary CLI UX', () => {
   });
 
   it('returns exit 2 for unknown commands and unsupported command options', () => {
-    const unknown = runCli(['inspect']);
+    const unknown = runCli(['frobnicate']);
     expectExit(unknown, 2);
-    expect(unknown.stderr).toContain("unknown command 'inspect'");
+    expect(unknown.stderr).toContain("unknown command 'frobnicate'");
 
     const unsupported = runCli(['status', '--dry-run']);
     expectExit(unsupported, 2);
