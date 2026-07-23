@@ -632,7 +632,7 @@ export function createGuiBridgeFromService(appService?: ApplicationService): Gui
       });
     },
 
-    initializeProject(input = {}) {
+    initializeProject(input: { readonly root?: string } = {}) {
       return guarded('init', input.root, async (root) => {
         const r = await svc(root).init(guiActor);
         if (!r.ok) {
@@ -880,7 +880,7 @@ export function createGuiBridgeFromService(appService?: ApplicationService): Gui
       });
     },
 
-    readReceipt(input) {
+    readReceipt(input: { readonly root?: string; readonly operationId: string }) {
       return guarded('receipt', input.root, async (root) => {
         await Promise.resolve();
         if (!input.operationId.trim())
