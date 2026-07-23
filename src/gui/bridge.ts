@@ -865,7 +865,7 @@ export function createGuiBridgeFromService(appService?: ApplicationService): Gui
       });
     },
 
-    listReadModelRecords(input) {
+    listReadModelRecords(input: ListReadModelInput) {
       return guarded('read-models.list', input.root, async (root) => {
         const page = await createReadModelRuntime(root).list({ ...input, root });
         return result({
