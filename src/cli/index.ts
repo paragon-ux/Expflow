@@ -131,7 +131,18 @@ interface ChangeOption {
 }
 
 interface ParsedArgs {
-  readonly command: 'init' | 'sync' | 'status' | 'restore' | 'capabilities';
+  readonly command:
+    | 'init'
+    | 'sync'
+    | 'status'
+    | 'restore'
+    | 'capabilities'
+    | 'workflow'
+    | 'evidence'
+    | 'authority'
+    | 'conflicts'
+    | 'decisions'
+    | 'package';
   readonly yes: boolean;
   readonly nonInteractive: boolean;
   readonly root: string | undefined;
@@ -341,6 +352,7 @@ function parseArgs(rawArgs: string[]): ParsedArgs {
 
   return {
     changes,
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
     command: command as ParsedArgs['command'],
     dryRun,
     expectedHead,
@@ -438,6 +450,54 @@ async function main(): Promise<void> {
         process.stdout.write(
           `Expflow ${caps.version}\nCommand families: ${caps.commandFamilies.join(', ')}\n`,
         );
+      }
+      return;
+    }
+
+    // ── New 1.2.1 command families ──────────────────────────
+
+    if (
+      parsed.command === 'workflow' ||
+      parsed.command === 'evidence' ||
+      parsed.command === 'authority' ||
+      parsed.command === 'conflicts' ||
+      parsed.command === 'decisions' ||
+      parsed.command === 'package'
+    ) {
+      const { ApplicationService } = await import('../application/service.js');
+      const svc = new ApplicationService(parsed.root ?? process.cwd());
+      const actor = {
+        identifier: 'cli',
+        class: 'human' as const,
+        interface: 'cli' as const,
+        timestamp: new Date().toISOString(),
+      };
+
+      let result: Record<string, unknown>;
+
+      if (parsed.command === 'workflow') {
+        const r = await svc.workflowList(actor);
+        result = (r.result ?? {}) as Record<string, unknown>;
+      } else if (parsed.command === 'evidence') {
+        const r = await svc.evidenceList(actor);
+        result = (r.result ?? {}) as Record<string, unknown>;
+      } else if (parsed.command === 'authority') {
+        const r = await svc.authorityList(actor);
+        result = (r.result ?? {}) as Record<string, unknown>;
+      } else if (parsed.command === 'conflicts') {
+        const r = await svc.conflicts(actor);
+        result = (r.result ?? {}) as Record<string, unknown>;
+      } else if (parsed.command === 'decisions') {
+        const r = await svc.decisions(actor);
+        result = (r.result ?? {}) as Record<string, unknown>;
+      } else {
+        result = { message: 'Use expflow package export|validate|import for package operations.' };
+      }
+
+      if (parsed.json) {
+        printJson(result);
+      } else {
+        process.stdout.write(JSON.stringify(result, null, 2) + '\n');
       }
       return;
     }
