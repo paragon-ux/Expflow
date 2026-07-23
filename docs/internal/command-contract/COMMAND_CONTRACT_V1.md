@@ -45,7 +45,7 @@ No interface adapter may bypass the service to call domain or storage runtimes d
 | Package    | `package export`, `package validate`, `package plan-import`, `package import` | Yes |
 | Reporting  | `capabilities`, `help`                                                   | No       |
 
-The four existing commands (`init`, `sync`, `status`, `restore`) remain the primary material surface. New families are additive.
+The four existing commands (`init`, `sync`, `status`, `restore`) remain the primary material surface. New families are additive. `status --history` and `status --node-history <path>` are sub-options of `status`; the standalone `history` command provides equivalent read-model access suitable for automation and `--json` output.
 
 ## 3. CLI/GUI Parity Rule
 
@@ -65,6 +65,9 @@ The four existing commands (`init`, `sync`, `status`, `restore`) remain the prim
   "outcome": "committed",
   "receipt_id": "efo_...",
   "result": {},
+  "plan_token": "efp_...",
+  "actor": {"identifier": "human:alice", "class": "human", "interface": "cli"},
+  "timestamp": "2026-07-23T14:00:00Z",
   "warnings": [],
   "blockers": []
 }
@@ -217,7 +220,7 @@ Automation consumers use this to discover available operations without hard-codi
 - New command families do not alter existing command behavior
 - JSON output fields are additive; existing fields retain their names and types
 - Exit codes 0, 1, 2 retain their existing meanings
-- Machine-readable output is backward-compatible with v1.0.x and v1.1.x
+- Machine-readable output is additive; no existing field names or types are changed. JSON output extends v1.x human-readable output with a structured envelope.
 
 ## 13. Parity Test Strategy
 
