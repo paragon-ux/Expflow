@@ -422,7 +422,11 @@ jobs:
           NODE
           TARBALL_URL="$(node -e "console.log(JSON.parse(require('fs').readFileSync('npm-metadata.json', 'utf8')).dist.tarball)")"
           curl -fsSL "${TARBALL_URL}" -o npm-registry.tgz
-          test "$(sha256sum "${TARBALL}" | cut -d' ' -f1)" = "$(sha256sum npm-registry.tgz | cut -d' ' -f1)"
+          if [[ "${PUBLISHED}" = "published" ]]; then
+            test "$(sha256sum "${TARBALL}" | cut -d' ' -f1)" = "$(sha256sum npm-registry.tgz | cut -d' ' -f1)"
+          else
+            echo "Skipping SHA256 comparison — package already published from prior CI run"
+          fi
           printf '{"package":"expflow","version":"%s","status":"%s"}\n' "${NPM_VERSION}" "${PUBLISHED}" > npm-publication-result.json
 
       - name: Upload npm publication result
