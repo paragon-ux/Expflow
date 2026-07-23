@@ -482,6 +482,20 @@ export function createGuiBridge(runtime: ExpflowRuntime = createRuntime()): GuiB
             },
           );
         }
+        // Compare path effects, conflicts, and preserved drift
+        const currentConflicts = JSON.stringify([...(currentPlan.conflicting_paths ?? [])].sort());
+        const storedConflicts = JSON.stringify([...stored.binding.conflicts].sort());
+        if (currentConflicts !== storedConflicts) {
+          restorePlans.delete(input.planToken);
+          throw new ExpflowError(
+            'restore_conflicts_changed',
+            'The conflicting paths have changed since the preview. Run Preview again.',
+            {
+              recoverable: true,
+              recommendedAction: 'Run Preview to review the updated conflicts.',
+            },
+          );
+        }
 
         restorePlans.delete(input.planToken);
         const receipt = await runtime.restore({ ...input, root });

@@ -34,8 +34,17 @@ const readRoutes = new Set([
   '/api/receipt',
 ]);
 
-const validOrigins = new Set(['http://127.0.0.1', 'http://localhost']);
+const validHosts = new Set(['127.0.0.1', 'localhost']);
 const validHostPattern = /^(127\.0\.0\.1|localhost)(:\d+)?$/;
+
+function isOriginAllowed(origin) {
+  try {
+    const url = new URL(origin);
+    return (url.protocol === 'http:' || url.protocol === 'https:') && validHosts.has(url.hostname);
+  } catch {
+    return false;
+  }
+}
 
 function json(response, status, body) {
   response.writeHead(status, { 'content-type': 'application/json; charset=utf-8' });
@@ -102,9 +111,9 @@ function validateRequest(request) {
     return { valid: false, status: 400, code: 'invalid_host', message: 'Unexpected Host header.' };
   }
 
-  // 2. Origin validation (when present — browser sends Origin for cross-origin)
+  // 2. Origin validation (when present — compare scheme+hostname, tolerate any port)
   const origin = request.headers.origin ?? null;
-  if (origin !== null && !validOrigins.has(origin)) {
+  if (origin !== null && !isOriginAllowed(origin)) {
     return { valid: false, status: 403, code: 'invalid_origin', message: 'Unexpected Origin.' };
   }
 
@@ -261,6 +270,5 @@ const server = createServer((request, response) => {
 
 server.listen(port, '127.0.0.1', () => {
   console.log(`Expflow GUI listening at http://127.0.0.1:${String(port)}`);
-  console.log(`Request token: ${requestToken}`);
   console.log(`Static root: ${join(appRoot, 'index.html')}`);
 });
