@@ -5,10 +5,12 @@
 **Operator:** DeepSeek (execution agent)
 
 ## Results
+
 - init: PASS — project initialized
 - status: PASS — reports clean state
 - capabilities --json: PASS — reports 1.1.1 with 9 command families
 - All operations returned exit 0
 
 ## Verdict
+
 PASS

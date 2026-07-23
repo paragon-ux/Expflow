@@ -239,10 +239,26 @@ async function handleApi(request, response) {
     '/api/verify': () => bridge.verify(body),
     '/api/capabilities': () => ({
       version: VERSION,
-      commandFamilies: ['project','material','workflow','evidence','authority','conflicts','decisions','package','reporting'],
-      features: { jsonOutput: true, nonInteractive: true, planApply: true, actorAttribution: true, capabilityDiscovery: true },
-      supportedOs: ['windows','macos','linux'],
-      nodeVersions: ['20','22'],
+      commandFamilies: [
+        'project',
+        'material',
+        'workflow',
+        'evidence',
+        'authority',
+        'conflicts',
+        'decisions',
+        'package',
+        'reporting',
+      ],
+      features: {
+        jsonOutput: true,
+        nonInteractive: true,
+        planApply: true,
+        actorAttribution: true,
+        capabilityDiscovery: true,
+      },
+      supportedOs: ['windows', 'macos', 'linux'],
+      nodeVersions: ['20', '22'],
     }),
   };
 

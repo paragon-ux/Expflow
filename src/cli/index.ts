@@ -187,10 +187,19 @@ function parseMove(value: string): ChangeOption {
 function parseArgs(rawArgs: string[]): ParsedArgs {
   const args = [...rawArgs];
   const command = args.shift();
-  if (command !== 'init' && command !== 'sync' && command !== 'status' && command !== 'restore'
-      && command !== 'capabilities' && command !== 'workflow' && command !== 'evidence'
-      && command !== 'authority' && command !== 'conflicts' && command !== 'decisions'
-      && command !== 'package') {
+  if (
+    command !== 'init' &&
+    command !== 'sync' &&
+    command !== 'status' &&
+    command !== 'restore' &&
+    command !== 'capabilities' &&
+    command !== 'workflow' &&
+    command !== 'evidence' &&
+    command !== 'authority' &&
+    command !== 'conflicts' &&
+    command !== 'decisions' &&
+    command !== 'package'
+  ) {
     usage(`unknown command '${command ?? ''}'. Use --help for usage.`);
   }
 
@@ -426,7 +435,9 @@ async function main(): Promise<void> {
       if (parsed.json) {
         printJson(caps);
       } else {
-        process.stdout.write(`Expflow ${caps.version}\nCommand families: ${caps.commandFamilies.join(', ')}\n`);
+        process.stdout.write(
+          `Expflow ${caps.version}\nCommand families: ${caps.commandFamilies.join(', ')}\n`,
+        );
       }
       return;
     }

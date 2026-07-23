@@ -33,17 +33,17 @@ No interface adapter may bypass the service to call domain or storage runtimes d
 
 ## 2. Command-Family Taxonomy
 
-| Family     | Commands                                                                 | Mutates? |
-|------------|--------------------------------------------------------------------------|----------|
-| Project    | `init`, `inspect`                                                        | Yes      |
-| Material   | `sync`, `status`, `history`, `restore`, `receipts`, `recover`            | Yes/No   |
-| Workflow   | `workflow list`, `workflow inspect`, `workflow state`, `workflow history`| No       |
-| Evidence   | `evidence intake`, `evidence inspect`                                    | Yes      |
-| Authority  | `source propose`, `source decide`, `artifact propose`, `artifact decide` | Yes      |
-| Conflicts  | `conflicts`                                                              | No       |
-| Decisions  | `complete`, `verify`, `equivalent`, `reuse`                              | Yes      |
-| Package    | `package export`, `package validate`, `package plan-import`, `package import` | Yes |
-| Reporting  | `capabilities`, `help`                                                   | No       |
+| Family    | Commands                                                                      | Mutates? |
+| --------- | ----------------------------------------------------------------------------- | -------- |
+| Project   | `init`, `inspect`                                                             | Yes      |
+| Material  | `sync`, `status`, `history`, `restore`, `receipts`, `recover`                 | Yes/No   |
+| Workflow  | `workflow list`, `workflow inspect`, `workflow state`, `workflow history`     | No       |
+| Evidence  | `evidence intake`, `evidence inspect`                                         | Yes      |
+| Authority | `source propose`, `source decide`, `artifact propose`, `artifact decide`      | Yes      |
+| Conflicts | `conflicts`                                                                   | No       |
+| Decisions | `complete`, `verify`, `equivalent`, `reuse`                                   | Yes      |
+| Package   | `package export`, `package validate`, `package plan-import`, `package import` | Yes      |
+| Reporting | `capabilities`, `help`                                                        | No       |
 
 The four existing commands (`init`, `sync`, `status`, `restore`) remain the primary material surface. New families are additive. `status --history` and `status --node-history <path>` are sub-options of `status`; the standalone `history` command provides equivalent read-model access suitable for automation and `--json` output.
 
@@ -66,7 +66,7 @@ The four existing commands (`init`, `sync`, `status`, `restore`) remain the prim
   "receipt_id": "efo_...",
   "result": {},
   "plan_token": "efp_...",
-  "actor": {"identifier": "human:alice", "class": "human", "interface": "cli"},
+  "actor": { "identifier": "human:alice", "class": "human", "interface": "cli" },
   "timestamp": "2026-07-23T14:00:00Z",
   "warnings": [],
   "blockers": []
@@ -74,6 +74,7 @@ The four existing commands (`init`, `sync`, `status`, `restore`) remain the prim
 ```
 
 On failure:
+
 ```json
 {
   "ok": false,
@@ -89,6 +90,7 @@ On failure:
 ```
 
 All fields:
+
 - `ok` — boolean, true if operation completed without error
 - `operation` — command family and name
 - `outcome` — committed, blocked, cancelled, partial, unknown
@@ -103,11 +105,11 @@ All fields:
 
 ## 5. Machine-Readable JSON Rules
 
-| Flag               | Behavior                                                |
-|--------------------|---------------------------------------------------------|
-| `--json`           | Output a single JSON result envelope to stdout          |
-| `--non-interactive`| Never prompt; fail with exit 1 if input is required     |
-| `--yes`            | Auto-confirm prompts; equivalent to answering "yes"     |
+| Flag                | Behavior                                            |
+| ------------------- | --------------------------------------------------- |
+| `--json`            | Output a single JSON result envelope to stdout      |
+| `--non-interactive` | Never prompt; fail with exit 1 if input is required |
+| `--yes`             | Auto-confirm prompts; equivalent to answering "yes" |
 
 - `--json` output is always to stdout. Human-readable output goes to stderr when `--json` is active.
 - No ANSI escape codes in `--json` or `--non-interactive` mode.
@@ -115,13 +117,14 @@ All fields:
 
 ## 6. Exit-Code Policy
 
-| Code | Meaning            | Example                                        |
-|------|--------------------|------------------------------------------------|
-| 0    | Success            | Operation completed, status queried            |
-| 1    | Operational failure| Sync blocked by stale plan, restore refused    |
-| 2    | Usage failure      | Unknown command, invalid flag combination      |
+| Code | Meaning             | Example                                     |
+| ---- | ------------------- | ------------------------------------------- |
+| 0    | Success             | Operation completed, status queried         |
+| 1    | Operational failure | Sync blocked by stale plan, restore refused |
+| 2    | Usage failure       | Unknown command, invalid flag combination   |
 
 Existing behavior preserved:
+
 - Uninitialized `status` exits 0 (query, not mutation)
 - Unknown commands exit 2
 - Operational mutation failures exit 1
@@ -183,7 +186,17 @@ Every durable record preserves: identifier, class, interface, tool, rationale, e
 ```json
 {
   "version": "1.2.0",
-  "command_families": ["project", "material", "workflow", "evidence", "authority", "conflicts", "decisions", "package", "reporting"],
+  "command_families": [
+    "project",
+    "material",
+    "workflow",
+    "evidence",
+    "authority",
+    "conflicts",
+    "decisions",
+    "package",
+    "reporting"
+  ],
   "features": {
     "json_output": true,
     "non_interactive": true,
@@ -211,12 +224,14 @@ Automation consumers use this to discover available operations without hard-codi
 ## 12. Compatibility Policy
 
 **Preserved behavior:**
+
 - `expflow init` — identical behavior
 - `expflow sync` — identical behavior, plus `--dry-run`, `--expected-head`, `--json`
 - `expflow status` — identical behavior, plus `--history`, `--node-history`, `--json`
 - `expflow restore` — identical behavior, plus `--dry-run`, `--force`, `--json`
 
 **Additive only:**
+
 - New command families do not alter existing command behavior
 - JSON output fields are additive; existing fields retain their names and types
 - Exit codes 0, 1, 2 retain their existing meanings
@@ -233,6 +248,7 @@ For every in-scope durable operation:
 5. Assert: both envelopes match the expected application service output
 
 Test matrix:
+
 - Every command family × every supported interface (CLI, GUI)
 - Every command family with `--json` and `--non-interactive`
 - Error paths: stale plan, missing expected head, invalid input, uninitialized project
