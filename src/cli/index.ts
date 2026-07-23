@@ -519,6 +519,7 @@ async function main(): Promise<void> {
           process.exit(1);
         }
         const s = r.result as Record<string, unknown>;
+        // eslint-disable-next-line @typescript-eslint/no-base-to-string
         process.stdout.write(
           `Project: ${String(s.project_id)}\nHead: ${String(s.head_tree_revision_id ?? 'none')}\nWorking tree: ${String(s.working_tree_state)}\n`,
         );
