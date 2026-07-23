@@ -16,10 +16,9 @@ Open `http://127.0.0.1:4173`. The server prints the URL and injects a one-time r
 ```bash
 git clone https://github.com/paragon-ux/Expflow.git
 cd Expflow
-npm install
+npm ci
 npm run build
-npm link                     # makes expflow-gui globally available (once)
-expflow-gui
+node apps/gui/server.mjs
 ```
 
 Open `http://127.0.0.1:4173`.
