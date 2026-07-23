@@ -58,6 +58,15 @@ npx expflow status
 npx expflow --version
 ```
 
+To use bare `expflow` and `expflow-gui` commands from the checkout, run `npm link`
+once after building (this creates a global symlink to the local checkout):
+
+```bash
+npm link
+expflow --version           # → 1.1.1
+expflow-gui                 # → http://127.0.0.1:4173
+```
+
 Once published to the npm registry, install globally:
 
 ```bash
@@ -121,13 +130,15 @@ git clone https://github.com/paragon-ux/Expflow.git
 cd Expflow
 npm install
 npm run build
-npx expflow-gui              # → http://127.0.0.1:4173
+npm link                     # makes expflow-gui globally available (optional)
+expflow-gui                  # → http://127.0.0.1:4173
 ```
 
-If `npx` is unavailable, launch the server directly:
+Without `npm link`, use `npx` or launch the server directly:
 
 ```bash
-node apps/gui/server.mjs     # → http://127.0.0.1:4173
+npx expflow-gui              # → http://127.0.0.1:4173
+node apps/gui/server.mjs     # → same
 ```
 
 Enter a project path, click **Inspect** or **Initialize**, then use the Sync, History, Restore, and Receipts panels. See `apps/gui/README.md` for the full quickstart.
