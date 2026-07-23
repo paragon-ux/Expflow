@@ -1,5 +1,24 @@
 # Changelog
 
+## v1.2.0 - 2026-07-23
+
+### Added
+
+- **Application command service** (`src/application/`) — actor-ambivalent plan/apply/receipt lifecycle with plan tokens.
+- **Actor metadata model** — `human`, `agent`, `CI`, `service`, `tool`, `unknown`.
+- **Capability discovery** — `expflow capabilities --json` CLI command and `GET /api/capabilities` GUI endpoint.
+- **`--yes` / `--non-interactive`** CLI flags for automation.
+- **9 command families** defined: project, material, workflow, evidence, authority, conflicts, decisions, package, reporting.
+
+### Changed
+
+- CLI and GUI are now peer interfaces over one shared application command service. Every durable GUI action has an equivalent CLI operation.
+
+### Release
+
+- Published `expflow@1.2.0` to npm registry.
+- `expflow-hooks` intentionally stays at `v1.1.0`; no Python-package changes in this release.
+
 ## v1.1.1 - 2026-07-23
 
 ### Added

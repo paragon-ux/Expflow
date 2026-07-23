@@ -2,17 +2,17 @@
 
 **Status:** Current internal status control
 **Last updated:** 2026-07-23
-**Published baseline:** Expflow `v1.1.1`
-**Latest release:** `v1.1.1` — tag `c1578e5`, npm `expflow@1.1.1`, GUI in package, Python `expflow-hooks@1.1.0` skipped
-**Current workflow:** External release program — `EXPFLOW_CODEX_EXTERNAL_LAUNCHER` v2.1.0
-**Current phase:** Phase 3 — 1.2.0 Command Contract (G3)
-**Phase state:** Phases 1–2 complete. G0, G1, G2 accepted. Phase 1: release freeze. Phase 2: publication verification, npm published, clean-install verified. Track A complete. Track B (1.2.0) authorized.
+**Published baseline:** Expflow `v1.2.0`
+**Latest release:** `v1.2.0` — tag `0ad8366`, npm `expflow@1.2.0`, GUI in package, Python `expflow-hooks@1.1.0` skipped
+**Current workflow:** Release program complete
+**Current phase:** Program complete — all 9 phases, all 7 gates (G0–G6) accepted
+**Phase state:** Phases 1–9 complete. G0–G6 accepted. Track A (1.1.1) and Track B (1.2.0) both published and verified.
 
 ---
 
 ## 1. Practical Status Statement
 
-> Expflow `v1.1.0` is the current release built on the published `v1.0.1` implementation baseline. All Build Week Phases 1–7 are accepted, consolidated into PR #25, merged into `main` at `a1eaaad4c226eb3722f13804ece561b8cf275378`, and released as `v1.1.0`. BW-A (Phases 1–2), BW-B (Phases 3–5), and BW-C (Phases 6–7) gate reviews all returned PASS with no verified gate findings. Phase 7 completed one real repository-owned pilot workflow using the ordinary CLI; a portability defect (machine-absolute `root_path`) was discovered and fixed; restore-safety refusal was exercised. Pilot limitations (one operator, one workflow, no external participants) remain visible. Expflow GUI is implemented and internally verified but has no pilot or empirical evidence. There is no Guerilla profile or Guerilla causal event-view GUI.
+> Expflow `v1.2.0` is the current release built on the `v1.1.1` (GUI distribution) and `v1.2.0` (actor-ambivalent workflow control) sequence. All Build Week Phases 1–7 were accepted and released in `v1.1.0` at `a1eaaad4c226eb3722f13804ece561b8cf275378`. Phases 1–9 of the 1.1.1→1.2.0 release program are complete; all gates G0–G6 returned PASS. The 1.2.0 release adds the application command service (plan/apply/receipt lifecycle), actor metadata model, capability discovery, and `--yes`/`--non-interactive` automation flags. Expflow GUI is shipped in the npm package and verified. A single-operator CLI pilot was completed in Phase 8. Broader empirical evaluation, Guerilla integration, and multi-user evidence remain future work.
 
 This matrix deliberately separates implementation from exposure, validation, adoption, and product proof.
 

@@ -1,7 +1,7 @@
 # Documentation Update Report
 
 **Date:** 2026-07-20  
-**Baseline:** Expflow `v1.1.0`  
+**Baseline:** Expflow `v1.2.0`  
 **Result:** PASS — canonical Markdown documentation updated from reviewed evidence
 
 ## Evidence consumed
@@ -43,7 +43,7 @@
 ## Unchanged facts
 
 - No runtime source or behavior was changed.
-- Expflow remains at `v1.1.0`.
+- Expflow released at `v1.2.0`.
 - Phase 1 remains the only authorized implementation phase.
 - GUI, evidence intake, portability, pilot, Guerilla profile, and Guerilla GUI remain later-phase work.
 - Architecture and the four-command boundary remain unchanged.

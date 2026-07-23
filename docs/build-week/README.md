@@ -3,7 +3,7 @@
 **Document role:** Package index for the canonical documentation set and paired `Expflow-Test/` evidence  
 **Primary project focus:** Expflow  
 **Project set:** Expflow, Guerilla, FIMP, and Reqtrace  
-**Current implementation baseline:** Expflow `v1.1.0`  
+**Current implementation baseline:** Expflow `v1.2.0`  
 **Current post-baseline state:** Evidence review complete; no Build Week implementation changes claimed  
 **Canonical format:** Markdown
 
@@ -96,7 +96,7 @@ The integrated narrative is not a mandatory deployment topology. Each project mu
 
 **Archive:** `AGENTIC_CODE_INTERNAL_CONTROLS_MD.zip`
 
-**Purpose:** Govern the post-`v1.1.0` Expflow Build Week implementation cycle.
+**Purpose:** Govern the post-`v1.2.0` Expflow Build Week implementation cycle.
 
 | Document                                | Internal role                                                                                                                                 |
 | --------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -282,7 +282,7 @@ A GUI concept may summarize several internal records. It must not alter their se
 
 ## 7. Current implementation and workflow snapshot
 
-The current implementation baseline is Expflow `v1.1.0`.
+The current implementation baseline is Expflow `v1.2.0`.
 
 The historical Expflow Gates A–D are complete and retained as v1 build evidence. They are not active Build Week phases.
 
