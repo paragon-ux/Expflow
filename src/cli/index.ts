@@ -156,6 +156,8 @@ interface ParsedArgs {
   readonly historyLimit: number | undefined;
   readonly nodeHistoryPath: string | undefined;
   readonly changes: readonly ChangeOption[];
+  readonly subcommand: string | undefined;
+  readonly familyArgs: readonly string[];
 }
 
 class UsageError extends Error {
@@ -344,11 +346,27 @@ function parseArgs(rawArgs: string[]): ParsedArgs {
   }
 
   if (command !== 'restore' && positionals.length > 0) {
-    usage(`${command} does not accept positional arguments: ${positionals.join(', ')}`);
+    // 1.2.1: new families accept a subcommand as first positional
+    const newFamilies = ['workflow', 'evidence', 'authority', 'conflicts', 'decisions', 'package'];
+    if (!newFamilies.includes(command)) {
+      usage(`${command} does not accept positional arguments: ${positionals.join(', ')}`);
+    }
   }
   if (command === 'restore' && positionals.length !== 1) {
     usage('restore requires exactly one tree:<id> or node:<id>@<revision>:<path> reference');
   }
+
+  const subcommand = [
+    'workflow',
+    'evidence',
+    'authority',
+    'conflicts',
+    'decisions',
+    'package',
+  ].includes(command)
+    ? (positionals[0] ?? 'list')
+    : undefined;
+  const familyArgs = positionals.slice(subcommand && positionals[0] === subcommand ? 1 : 0);
 
   return {
     changes,
@@ -366,6 +384,8 @@ function parseArgs(rawArgs: string[]): ParsedArgs {
     root,
     targetPath,
     yes,
+    subcommand,
+    familyArgs,
   };
 }
 
@@ -464,6 +484,24 @@ async function main(): Promise<void> {
       parsed.command === 'decisions' ||
       parsed.command === 'package'
     ) {
+      const validSubcommands: Record<string, string[]> = {
+        workflow: ['list', 'show', 'start', 'output', 'state'],
+        evidence: ['list', 'add-file', 'add-transcript', 'add-manifest', 'add-reference', 'show'],
+        authority: ['list', 'show', 'propose', 'accept', 'reject', 'supersede'],
+        conflicts: ['list', 'show', 'declare'],
+        decisions: ['list', 'show', 'record', 'supersede'],
+        package: ['export', 'import', 'validate', 'plan-import', 'inspect'],
+      };
+
+      const sub = parsed.subcommand ?? 'list';
+      const valid = validSubcommands[parsed.command];
+      if (valid && !valid.includes(sub)) {
+        process.stderr.write(
+          `expflow: unknown ${parsed.command} subcommand '${sub}'\nValid: ${valid.join(', ')}\n`,
+        );
+        process.exit(2);
+      }
+
       const { ApplicationService } = await import('../application/service.js');
       const svc = new ApplicationService(parsed.root ?? process.cwd());
       const actor = {
@@ -473,25 +511,48 @@ async function main(): Promise<void> {
         timestamp: new Date().toISOString(),
       };
 
-      let result: Record<string, unknown>;
+      // Maps (family, subcommand) → service method + human label
+      const dispatch: Record<string, () => Promise<Record<string, unknown>>> = {
+        'workflow:list': async () => {
+          const r = await svc.workflowList(actor);
+          return (r.result ?? {}) as Record<string, unknown>;
+        },
+        'evidence:list': async () => {
+          const r = await svc.evidenceList(actor);
+          return (r.result ?? {}) as Record<string, unknown>;
+        },
+        'authority:list': async () => {
+          const r = await svc.authorityList(actor);
+          return (r.result ?? {}) as Record<string, unknown>;
+        },
+        'conflicts:list': async () => {
+          const r = await svc.conflicts(actor);
+          return (r.result ?? {}) as Record<string, unknown>;
+        },
+        'decisions:list': async () => {
+          const r = await svc.decisions(actor);
+          return (r.result ?? {}) as Record<string, unknown>;
+        },
+        // eslint-disable-next-line @typescript-eslint/require-await
+        'package:list': async () => ({
+          operations: ['export', 'import', 'validate', 'plan-import', 'inspect'],
+        }),
+      };
 
-      if (parsed.command === 'workflow') {
-        const r = await svc.workflowList(actor);
-        result = (r.result ?? {}) as Record<string, unknown>;
-      } else if (parsed.command === 'evidence') {
-        const r = await svc.evidenceList(actor);
-        result = (r.result ?? {}) as Record<string, unknown>;
-      } else if (parsed.command === 'authority') {
-        const r = await svc.authorityList(actor);
-        result = (r.result ?? {}) as Record<string, unknown>;
-      } else if (parsed.command === 'conflicts') {
-        const r = await svc.conflicts(actor);
-        result = (r.result ?? {}) as Record<string, unknown>;
-      } else if (parsed.command === 'decisions') {
-        const r = await svc.decisions(actor);
-        result = (r.result ?? {}) as Record<string, unknown>;
+      const key = `${parsed.command}:${sub}`;
+      const handler = dispatch[key];
+
+      let result: Record<string, unknown>;
+      if (handler) {
+        result = await handler();
       } else {
-        result = { message: 'Use expflow package export|validate|import for package operations.' };
+        // Scaffold: not yet wired but valid subcommand
+        result = {
+          family: parsed.command,
+          subcommand: sub,
+          status: 'recognized',
+          message: `expflow ${parsed.command} ${sub} is recognized but not yet wired in this release.`,
+        };
       }
 
       if (parsed.json) {
