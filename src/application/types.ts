@@ -66,7 +66,7 @@ export interface ApplicationResult<T = unknown> {
 
 export interface Plan<T = unknown> {
   token: string;
-  expectedHead: string;
+  expectedHead: string | null;
   operation: string;
   plan: T;
   createdAt: string;

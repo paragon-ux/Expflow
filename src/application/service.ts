@@ -8,7 +8,7 @@ import { randomBytes } from 'node:crypto';
 import { VERSION } from '../core/version.js';
 import { createRuntime } from '../operations/runtime.js';
 import type { ExpflowRuntime } from '../operations/runtime.js';
-import type { Actor, ApplicationResult, CapabilityDescriptor, CommandOptions, Plan } from './types.js';
+import type { Actor, ApplicationResult, CapabilityDescriptor, CommandOptions, ErrorCode, Plan } from './types.js';
 
 export type * from './types.js';
 
@@ -17,8 +17,8 @@ function ts(): string { return new Date().toISOString(); }
 function ok<T>(op: string, actor: Actor, result: T, rid?: string, pt?: string): ApplicationResult<T> {
   return { ok: true, operation: op, outcome: 'committed', receiptId: rid, result, planToken: pt, warnings: [], blockers: [], actor, timestamp: ts() };
 }
-function blocked(op: string, actor: Actor, code: string, msg: string, rem?: string): ApplicationResult<never> {
-  return { ok: false, operation: op, outcome: 'blocked', error: { code: code as never, message: msg, remediation: rem }, warnings: [], blockers: [], actor, timestamp: ts() };
+function blocked(op: string, actor: Actor, code: ErrorCode, msg: string, rem?: string): ApplicationResult<never> {
+  return { ok: false, operation: op, outcome: 'blocked', error: { code, message: msg, remediation: rem }, warnings: [], blockers: [], actor, timestamp: ts() };
 }
 
 export class ApplicationService {
@@ -68,7 +68,7 @@ export class ApplicationService {
   async planSync(actor: Actor, opts?: CommandOptions): Promise<ApplicationResult<Plan<unknown>>> {
     try {
       const p = await this.rt.planSync({ root: this.root(), dryRun: true, expectedHead: opts?.expectedHead ?? undefined });
-      return ok('planSync', actor, { token: genToken(), expectedHead: p.previous_head ?? '', operation: 'sync', plan: p, createdAt: ts() });
+      return ok('planSync', actor, { token: genToken(), expectedHead: p.previous_head, operation: 'sync', plan: p, createdAt: ts() });
     } catch (e: unknown) { const m = e instanceof Error ? e.message : 'Plan failed'; return blocked('planSync', actor, 'OPERATION_FAILED', m); }
   }
 
@@ -107,7 +107,7 @@ export class ApplicationService {
     } catch (e: unknown) { const m = e instanceof Error ? e.message : 'Restore failed'; return blocked('restore', actor, 'OPERATION_FAILED', m); }
   }
 
-  // ── Scaffolds ──────────────────────────────────────────────
+  // ── Scaffolds (TODO: wire to runtime in Phase 5/6) ────────
   async workflowList(actor: Actor): Promise<ApplicationResult<unknown>> { return ok('workflowList', actor, { workflows: [] }); }
   async conflicts(actor: Actor): Promise<ApplicationResult<unknown>> { return ok('conflicts', actor, { conflicts: [], needsAttention: false }); }
 }
