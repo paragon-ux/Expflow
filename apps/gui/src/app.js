@@ -231,8 +231,7 @@ document.querySelector('#init-button').addEventListener('click', () => {
           code: 'inspect_required',
           message: 'Inspect the project root before initializing.',
           recoverable: true,
-          recommended_action:
-            'Click Inspect to resolve and review the project directory.',
+          recommended_action: 'Click Inspect to resolve and review the project directory.',
         },
         root: rootInput.value.trim(),
         state: 'blocked',
@@ -247,11 +246,7 @@ document.querySelector('#init-button').addEventListener('click', () => {
     );
     return;
   }
-  if (
-    !window.confirm(
-      `Initialize a new Expflow project at ${inspectedRoot}?`,
-    )
-  ) {
+  if (!window.confirm(`Initialize a new Expflow project at ${inspectedRoot}?`)) {
     return;
   }
   void (async () => {
