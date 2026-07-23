@@ -80,7 +80,6 @@ Each protected target section must use this form:
 <!-- config-reference-index:start -->
 
 - `.config-reference-reconciliation.yaml` - release notes v1.1.0 role
-- `.github/workflows/release.yml` - GitHub release notes input
 
 <!-- config-reference-index:end -->
 
@@ -89,6 +88,5 @@ Each protected target section must use this form:
 <!-- config-reference-index:start -->
 
 - `.config-reference-reconciliation.yaml` - release notes role
-- `.github/workflows/release.yml` - GitHub release notes input
 
 <!-- config-reference-index:end -->
