@@ -6,6 +6,7 @@
 **Status:** active Build Week workflow (historical reference)  
 **Completed:** Phases 1–7 released in `v1.1.0` at `a1eaaad4c226eb3722f13804ece561b8cf275378`  
 **Further release:** Phases 1–9 of the 1.1.1→1.2.0 release program completed; `v1.2.0` published at `0ad8366`  
+**Current release:** `v1.2.1` (command-family hotfix) published at `1f29223` — 19/19 gate complete  
 **Status:** Build Week complete; release program complete  
 **Review model:** one comprehensive phase review, bounded closure, one gate review at gate exit  
 **Execution model:** repository-local parent orchestrator with one independent read-only reviewer  

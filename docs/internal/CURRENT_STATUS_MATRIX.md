@@ -2,17 +2,17 @@
 
 **Status:** Current internal status control
 **Last updated:** 2026-07-23
-**Published baseline:** Expflow `v1.2.0`
-**Latest release:** `v1.2.0` — tag `0ad8366`, npm `expflow@1.2.0`, GUI in package, Python `expflow-hooks@1.1.0` skipped
+**Published baseline:** Expflow `v1.2.1`
+**Latest release:** `v1.2.1` — tag `0ad8366`, npm `expflow@1.2.1`, GUI in package, Python `expflow-hooks@1.1.0` skipped
 **Current workflow:** Release program complete
 **Current phase:** Program complete — all 9 phases, all 7 gates (G0–G6) accepted
-**Phase state:** Phases 1–9 complete. G0–G6 accepted. Track A (1.1.1) and Track B (1.2.0) both published and verified.
+**Phase state:** Phases 1–9 complete. G0–G6 accepted. Track A (1.1.1) and Track B (1.2.1) both published and verified.
 
 ---
 
 ## 1. Practical Status Statement
 
-> Expflow `v1.2.0` is the current release built on the `v1.1.1` (GUI distribution) and `v1.2.0` (actor-ambivalent workflow control) sequence. All Build Week Phases 1–7 were accepted and released in `v1.1.0` at `a1eaaad4c226eb3722f13804ece561b8cf275378`. Phases 1–9 of the 1.1.1→1.2.0 release program are complete; all gates G0–G6 returned PASS. The 1.2.0 release adds the application command service (plan/apply/receipt lifecycle), actor metadata model, capability discovery, and `--yes`/`--non-interactive` automation flags. Expflow GUI is shipped in the npm package and verified. A single-operator CLI pilot was completed in Phase 8. Broader empirical evaluation, Guerilla integration, and multi-user evidence remain future work.
+> Expflow `v1.2.1` is the current release built on the `v1.1.1` (GUI distribution) and `v1.2.1` (actor-ambivalent workflow control) sequence. All Build Week Phases 1–7 were accepted and released in `v1.1.0` at `a1eaaad4c226eb3722f13804ece561b8cf275378`. Phases 1–9 of the 1.1.1→1.2.1 release program are complete; all gates G0–G6 returned PASS. The 1.2.1 release adds the application command service (plan/apply/receipt lifecycle), actor metadata model, capability discovery, and `--yes`/`--non-interactive` automation flags. Expflow GUI is shipped in the npm package and verified. A single-operator CLI pilot was completed in Phase 8. Broader empirical evaluation, Guerilla integration, and multi-user evidence remain future work.
 
 This matrix deliberately separates implementation from exposure, validation, adoption, and product proof.
 

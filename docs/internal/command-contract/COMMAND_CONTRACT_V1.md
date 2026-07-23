@@ -1,4 +1,4 @@
-# Expflow 1.2.0 Command Contract
+# Expflow 1.2.1 Command Contract
 
 **ADR ID:** ADR-001
 **Status:** Accepted
@@ -185,7 +185,7 @@ Every durable record preserves: identifier, class, interface, tool, rationale, e
 
 ```json
 {
-  "version": "1.2.0",
+  "version": "1.2.1",
   "command_families": [
     "project",
     "material",

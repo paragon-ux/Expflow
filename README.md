@@ -7,7 +7,7 @@ Expflow is a schema-governed, local-first workflow ownership and observability p
 Expflow records what changed, which evidence was trusted, which decisions remain durable, and which outputs can be inspected, regenerated, restored, or reused.
 
 Current release:
-[`v1.2.0`](https://github.com/paragon-ux/Expflow/releases/tag/v1.2.0).
+[`v1.2.1`](https://github.com/paragon-ux/Expflow/releases/tag/v1.2.1).
 
 Install globally from the npm registry and launch the GUI:
 
@@ -31,7 +31,7 @@ Material output does not imply semantic acceptance, workflow completion, or reus
 
 ## Release Scope
 
-Expflow v1.2.0 covers the local core surfaces implemented in this repository:
+Expflow v1.2.1 covers the local core surfaces implemented in this repository:
 
 - four ordinary commands: `expflow init`, `expflow sync`, `expflow status`, and `expflow restore`;
 - local `.expflow/` material storage with immutable object, node-revision, tree-revision, receipt, validation, change, and material-head records;
@@ -55,7 +55,7 @@ npm run build
 
 node dist/cli/index.js init
 node dist/cli/index.js status
-node dist/cli/index.js --version   # → 1.2.0
+node dist/cli/index.js --version   # → 1.2.1
 node apps/gui/server.mjs           # → http://127.0.0.1:4173
 ```
 
@@ -152,7 +152,7 @@ Expflow core intentionally does not implement every surrounding integration surf
 - `docs/architecture/` contains immutable architecture sources.
 - `docs/internal/` contains current Build Week governance, status, prompts, and activation records.
 - `docs/external/` contains current product overviews and narratives.
-- `docs/releases/v1.2.0/` contains the frozen v1.2.0 release documentation record.
+- `docs/releases/v1.2.0/` contains the frozen v1.2.1 release documentation record.
 - `docs/releases/v1.1.0/` contains the frozen v1.1.0 release documentation record.
 - `apps/gui/` contains the local Expflow GUI client and server.
 - `schemas/` and `examples/` mirror the architecture schemas and examples for tooling.
@@ -177,7 +177,7 @@ python tests/contracts/verify_python_wheel.py
 
 ## Documentation
 
-- [v1.2.0 GitHub release note](docs/releases/v1.2.0/files/docs/release_notes/GITHUB_RELEASE_NOTE_V1_2_0.md)
+- [v1.2.1 GitHub release note](docs/releases/v1.2.0/files/docs/release_notes/GITHUB_RELEASE_NOTE_V1_2_0.md)
 - [v1.1.0 GitHub release note](docs/releases/v1.1.0/files/docs/release_notes/GITHUB_RELEASE_NOTE_V1_1_0.md)
 - [v1 compatibility promise](docs/releases/v1.0.1/files/docs/V1_COMPATIBILITY.md)
 - [Release publishing policy](docs/releases/v1.0.1/files/docs/RELEASE_PUBLISHING.md)

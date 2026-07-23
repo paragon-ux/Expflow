@@ -129,9 +129,9 @@ observe material and source state
 | Regeneration, equivalence, and reuse       | Treating regenerated or copied output as automatically identical and accepted.                      | Record attempts, unknown outcomes, evaluations, verification, leakage checks, and separate reuse acceptance. | Library-only                                                      |
 | Evidence intake and reconciliation         | Manual reconstruction across chat exports, direct chatbot records, cloud metadata, and local files. | Associate partial histories while preserving provenance, scope, confidence, and unresolved correspondence.   | Planned surface                                                   |
 | Portable workflow package                  | Exporting only files or transcripts.                                                                | Move the workflow with artifacts, decisions, evidence, dependencies, and unresolved references.              | Planned surface                                                   |
-| Optional local GUI                         | Requiring users to understand raw record families and opaque identifiers.                           | Inspect lineage, decisions, restore points, and portability through an approachable workspace.               | Available in v1.2.0 npm package                                   |
+| Optional local GUI                         | Requiring users to understand raw record families and opaque identifiers.                           | Inspect lineage, decisions, restore points, and portability through an approachable workspace.               | Available in v1.2.1 npm package                                   |
 
-### Current `v1.2.0` command contracts
+### Current `v1.2.1` command contracts
 
 The current ordinary command surface is intentionally four commands. The following behaviors are verified current contracts, not Phase 1 proposals:
 
@@ -143,7 +143,7 @@ The current ordinary command surface is intentionally four commands. The followi
 | Restore history       | A successful restore creates a new forward tree revision; it does not rewind or rewrite recorded history.                  | Add preview, path effects, conflicting-drift detection, refusal by default, and an explicit override while preserving exact recorded bytes.                                 |
 | Preview identity      | A new file can receive different node IDs in `status --json`, `sync --dry-run`, and the eventual commit.                   | Mark preview identity as provisional in both human and machine output, omit it until commit, or make allocation deterministic without silently changing identity semantics. |
 
-The installed `v1.2.0` `sync` command also accepts identity and concurrency directives that current help does not expose:
+The installed `v1.2.1` `sync` command also accepts identity and concurrency directives that current help does not expose:
 
 | Flag                              | Verified role                                                                   | Failure behavior                                                                                                                     |
 | --------------------------------- | ------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
