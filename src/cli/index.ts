@@ -514,14 +514,11 @@ async function main(): Promise<void> {
       if (parsed.json) {
         printJson(r);
       } else {
-        if (!r.ok) {
-          process.stderr.write(`error: ${r.error?.message ?? 'inspect failed'}\n`);
-          process.exit(1);
-        }
         const s = r.result as Record<string, unknown>;
-        // eslint-disable-next-line @typescript-eslint/no-base-to-string
+        const hid = String(s.head_tree_revision_id ?? 'none');
+        const wts = String(s.working_tree_state);
         process.stdout.write(
-          `Project: ${String(s.project_id)}\nHead: ${String(s.head_tree_revision_id ?? 'none')}\nWorking tree: ${String(s.working_tree_state)}\n`,
+          `Project: ${String(s.project_id)}\nHead: ${hid}\nWorking tree: ${wts}\n`,
         );
       }
       return;
@@ -533,11 +530,6 @@ async function main(): Promise<void> {
       if (parsed.json) {
         printJson(r);
       } else {
-        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-        if (!r.ok) {
-          process.stderr.write('history failed\n');
-          process.exit(parsed.json ? 0 : 1);
-        }
         const s = (r.result ?? {}) as unknown as StatusReportRecord;
         process.stdout.write(formatStatusReport(s));
         process.stdout.write(formatRevisionHistory(s.revision_history as RevisionHistoryEntry[]));
