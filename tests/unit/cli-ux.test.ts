@@ -198,4 +198,25 @@ describe('ordinary CLI UX', () => {
       cleanup(root);
     }
   });
+
+  it('reports capabilities with --json', () => {
+    const result = runCli(['capabilities', '--json']);
+    expectExit(result, 0);
+    const caps = parseStdout(result);
+    expect(caps.version).toBe('1.1.1');
+    expect(caps.commandFamilies).toContain('project');
+    expect(caps.features).toBeDefined();
+    expect((caps.features as Record<string,unknown>).capabilityDiscovery).toBe(true);
+  });
+
+  it('rejects --non-interactive restore without --force or --yes', () => {
+    const root = tempProject();
+    try {
+      runCli(['init', '--root', root]);
+      const result = runCli(['restore', 'tree:nonexistent', '--non-interactive', '--root', root]);
+      expectExit(result, 1);
+    } finally {
+      cleanup(root);
+    }
+  });
 });
