@@ -98,20 +98,23 @@ Gate C ownership/reproduction behavior, Phase 4 evidence intake/reconciliation b
 
 ## Commands
 
-| Command           | Purpose                                                                 |
-| ----------------- | ----------------------------------------------------------------------- |
-| `expflow init`    | Initialize local Expflow project state.                                 |
-| `expflow sync`    | Preview or commit a complete material tree revision.                    |
-| `expflow status`  | Report drift, current project version, history, and restore references. |
-| `expflow restore` | Preview or restore a recorded material tree or node revision.           |
+| Command                | Purpose                                                                 |
+| ---------------------- | ----------------------------------------------------------------------- |
+| `expflow init`         | Initialize local Expflow project state.                                 |
+| `expflow sync`         | Preview or commit a complete material tree revision.                    |
+| `expflow status`       | Report drift, current project version, history, and restore references. |
+| `expflow restore`      | Preview or restore a recorded material tree or node revision.           |
+| `expflow capabilities` | Report supported command families, features, and platform metadata.     |
 
-Useful Phase 1 options:
+Options:
 
 - `expflow sync --dry-run` previews path-level changes without committing.
 - `expflow status --history` lists recent tree restore references.
 - `expflow status --node-history <path>` lists node restore references for a tracked path.
 - `expflow restore <reference> --dry-run` previews affected paths and conflicting drift.
 - `expflow restore <reference> --force` explicitly overwrites conflicting unrecorded drift.
+- `--yes` skips interactive confirmation (for scripted/CI use).
+- `--non-interactive` requires `--force` or `--yes` to proceed.
 
 ## GUI
 
