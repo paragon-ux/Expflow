@@ -92,7 +92,7 @@ jobs:
           assert pyproject["project"]["name"] == "expflow-hooks"
           assert pyproject["project"]["version"] == "1.1.0"
           assert pyproject["project"]["license"] == "MIT"
-          assert re.search(r"VERSION\s*=\s*'1\.0\.1'", version_ts)
+          assert re.search(r"VERSION\s*=\s*'1\.1\.0'", version_ts)
           PY
 
       - name: Install Node dependencies
