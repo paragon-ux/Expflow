@@ -110,6 +110,9 @@ export interface RestoreInput extends RuntimeOptions {
   readonly expectedCurrentHead?: string | null;
   readonly expectedConflictingPaths?: readonly string[];
   readonly expectedRequiresForce?: boolean;
+  readonly expectedOverwrite?: boolean;
+  readonly expectedPathEffectsDigest?: string;
+  readonly expectedPreservedDriftDigest?: string;
 }
 
 export interface SyncPlan {
@@ -809,6 +812,54 @@ export function createRuntime(): ExpflowRuntime {
               recommendedAction: 'Run Preview to determine the current force status.',
             },
           );
+        }
+        // Compare overwrite choice
+        if (input.expectedOverwrite !== undefined && input.overwrite !== input.expectedOverwrite) {
+          throw new ExpflowError(
+            'restore_overwrite_changed',
+            'The force/overwrite choice has changed since the preview. Run Preview again.',
+            {
+              recoverable: true,
+              recommendedAction: 'Run Preview with the intended overwrite setting.',
+            },
+          );
+        }
+        // Compare path effects digest
+        if (input.expectedPathEffectsDigest !== undefined) {
+          const actualDigest = createHash('sha256')
+            .update(
+              plan.path_effects
+                .map((e) => `${e.relative_path}\x00${e.effect}\x00${e.conflicting ? '1' : '0'}`)
+                .sort()
+                .join('\x00'),
+            )
+            .digest('hex');
+          if (actualDigest !== input.expectedPathEffectsDigest) {
+            throw new ExpflowError(
+              'restore_path_effects_changed',
+              'The path effects have changed since the preview. Run Preview again.',
+              {
+                recoverable: true,
+                recommendedAction: 'Run Preview to review the updated path effects.',
+              },
+            );
+          }
+        }
+        // Compare preserved drift digest
+        if (input.expectedPreservedDriftDigest !== undefined) {
+          const actualDigest = createHash('sha256')
+            .update([...plan.preserved_drift_paths].sort().join('\x00'))
+            .digest('hex');
+          if (actualDigest !== input.expectedPreservedDriftDigest) {
+            throw new ExpflowError(
+              'restore_drift_changed',
+              'The preserved drift paths have changed since the preview. Run Preview again.',
+              {
+                recoverable: true,
+                recommendedAction: 'Run Preview to review the updated preserved drift.',
+              },
+            );
+          }
         }
 
         if (plan.requires_force && input.overwrite !== true) {

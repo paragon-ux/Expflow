@@ -7,7 +7,9 @@ Expflow is a schema-governed, local-first workflow ownership and observability p
 Expflow records what changed, which evidence was trusted, which decisions remain durable, and which outputs can be inspected, regenerated, restored, or reused.
 
 Current release:
-[`v1.1.1`](https://github.com/paragon-ux/Expflow/releases/tag/v1.1.1).
+[`v1.1.0`](https://github.com/paragon-ux/Expflow/releases/tag/v1.1.0).
+
+The next release (`v1.1.1`) will include the Expflow GUI in the npm package.
 
 The Expflow GUI is now included in the npm package. Install and launch:
 

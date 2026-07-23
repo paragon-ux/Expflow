@@ -56,9 +56,13 @@ export interface RestoreBinding {
   readonly reference: string;
   readonly sourceRef: string;
   readonly currentHead: string | null;
+  readonly targetPath: string | null;
+  readonly overwrite: boolean;
   readonly pathEffects: readonly object[];
+  readonly pathEffectsDigest: string;
   readonly conflicts: readonly string[];
   readonly preservedDrift: readonly string[];
+  readonly preservedDriftDigest: string;
   readonly requiresForce: boolean;
 }
 
@@ -382,15 +386,30 @@ export function createGuiBridge(runtime: ExpflowRuntime = createRuntime()): GuiB
       return guarded('restore.preview', input.root, async (root) => {
         const plan = await runtime.planRestore({ ...input, root });
         const planToken = randomUUID();
+        const pathEffectsDigest = createHash('sha256')
+          .update(
+            plan.path_effects
+              .map((e) => `${e.relative_path}\x00${e.effect}\x00${e.conflicting ? '1' : '0'}`)
+              .sort()
+              .join('\x00'),
+          )
+          .digest('hex');
+        const preservedDriftDigest = createHash('sha256')
+          .update([...plan.preserved_drift_paths].sort().join('\x00'))
+          .digest('hex');
         restorePlans.set(planToken, {
           root,
           binding: {
             reference: plan.reference,
             sourceRef: plan.source_ref,
             currentHead: plan.current_head,
+            targetPath: input.targetPath ?? null,
+            overwrite: input.overwrite ?? false,
             pathEffects: plan.path_effects,
+            pathEffectsDigest,
             conflicts: plan.conflicting_paths,
             preservedDrift: plan.preserved_drift_paths,
+            preservedDriftDigest,
             requiresForce: plan.requires_force,
           },
         });
@@ -455,6 +474,9 @@ export function createGuiBridge(runtime: ExpflowRuntime = createRuntime()): GuiB
           expectedCurrentHead: stored.binding.currentHead,
           expectedConflictingPaths: stored.binding.conflicts,
           expectedRequiresForce: stored.binding.requiresForce,
+          expectedOverwrite: stored.binding.overwrite,
+          expectedPathEffectsDigest: stored.binding.pathEffectsDigest,
+          expectedPreservedDriftDigest: stored.binding.preservedDriftDigest,
           root,
         });
         return result({

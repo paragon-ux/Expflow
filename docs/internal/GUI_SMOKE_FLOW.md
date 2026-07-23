@@ -49,12 +49,12 @@
 
 ## 5. Clean and drifted status
 
-| Flow                 | Setup                           | Action                                               | Expected result                                       | Mutation |
-| -------------------- | ------------------------------- | ---------------------------------------------------- | ----------------------------------------------------- | -------- |
-| Clean status         | No file changes since last sync | Inspect                                              | `working_tree_state: clean`, no pending changes       | No       |
-| Drifted status       | File added/modified/deleted     | Inspect                                              | `working_tree_state: drifted`, pending changes listed | No       |
-| Status via GET       | Server running                  | `curl http://127.0.0.1:4173/api/status` (with token) | Returns status JSON                                   | No       |
-| Status without token | Server running                  | GET without token                                    | 401 `invalid_token`                                   | No       |
+| Flow                 | Setup                           | Action                                                       | Expected result                                       | Mutation |
+| -------------------- | ------------------------------- | ------------------------------------------------------------ | ----------------------------------------------------- | -------- |
+| Clean status         | No file changes since last sync | Inspect                                                      | `working_tree_state: clean`, no pending changes       | No       |
+| Drifted status       | File added/modified/deleted     | Inspect                                                      | `working_tree_state: drifted`, pending changes listed | No       |
+| Status via POST      | Server running                  | `curl -X POST http://127.0.0.1:4173/api/status` (with token) | Returns status JSON                                   | No       |
+| Status without token | Server running                  | POST without token                                           | 401 `invalid_token`                                   | No       |
 
 ---
 
@@ -76,7 +76,7 @@
 | Commit without preview       | Fresh page load, no preview    | Click Sync → Commit  | Client-side `sync_preview_required` error              | No                      |
 | Stale preview — file changed | Preview, modify file, commit   | Click Commit         | `sync_candidate_changed`, recommendation to re-preview | No                      |
 | Stale preview — head changed | Preview, sync from CLI, commit | Click Commit         | `sync_head_changed`, recommendation to re-preview      | No                      |
-| Reused plan token            | Commit, then reuse same token  | POST with used token | `sync_plan_consumed`                                   | No                      |
+| Reused plan token            | Commit, then reuse same token  | POST with used token | `sync_plan_expired`                                    | No                      |
 
 ---
 
@@ -120,8 +120,12 @@ All refusals are non-mutating and recommend running Preview again.
 | Restore without preview               | No preview, no planToken                    | Click Restore (if enabled) | Client-side `restore_preview_required` error | No                   |
 | Restore without planToken server-side | POST `/api/restore` without token           | Bridge returns error       | `restore_preview_required`                   | No                   |
 | Stale restore — head changed          | Preview, external change, execute           | Execute                    | `restore_head_changed`, re-preview required  | No                   |
-| Stale restore — reference changed     | Preview, change ref, execute                | Execute                    | `restore_reference_changed`                  | No                   |
-| Force changed after preview           | Preview without force, check force, execute | Execute                    | `restore_force_changed`                      | No                   |
+| Stale restore — source changed        | Preview, change reference, execute          | Execute                    | `restore_source_changed`                     | No                   |
+| Force requirement changed             | Preview without conflicts, add conflict     | Execute                    | `restore_force_changed`                      | No                   |
+| Overwrite choice changed              | Preview without force, check force, execute | Execute                    | `restore_overwrite_changed`                  | No                   |
+| Path effects changed                  | Preview, modify working tree, execute       | Execute                    | `restore_path_effects_changed`               | No                   |
+| Preserved drift changed               | Preview, add drift, execute                 | Execute                    | `restore_drift_changed`                      | No                   |
+| Target path changed (node restore)    | Preview target A, execute target B          | Execute                    | Refused (path effects differ)                | No                   |
 
 ---
 

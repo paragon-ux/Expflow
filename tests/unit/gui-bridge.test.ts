@@ -93,7 +93,7 @@ describe('Expflow GUI bridge', () => {
       writeFileSync(join(root, 'note.txt'), 'local drift\n');
 
       const reference = `tree:${firstHead}`;
-      const preview = await bridge.planRestore({ reference, root });
+      const preview = await bridge.planRestore({ overwrite: true, reference, root });
       expect(preview.state).toBe('blocked');
       expect(preview.data?.requires_force).toBe(true);
       expect(preview.data?.conflicting_paths).toEqual(['note.txt']);
