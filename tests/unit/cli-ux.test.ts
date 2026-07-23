@@ -206,7 +206,7 @@ describe('ordinary CLI UX', () => {
     expect(caps.version).toBe('1.1.1');
     expect(caps.commandFamilies).toContain('project');
     expect(caps.features).toBeDefined();
-    expect((caps.features as Record<string,unknown>).capabilityDiscovery).toBe(true);
+    expect((caps.features as Record<string, unknown>).capabilityDiscovery).toBe(true);
   });
 
   it('rejects --non-interactive restore without --force or --yes', () => {

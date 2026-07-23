@@ -21,12 +21,7 @@ export interface Actor {
 
 // ── Operation outcome ────────────────────────────────────────
 
-export type OperationOutcome =
-  | 'committed'
-  | 'blocked'
-  | 'cancelled'
-  | 'partial'
-  | 'unknown';
+export type OperationOutcome = 'committed' | 'blocked' | 'cancelled' | 'partial' | 'unknown';
 
 // ── Error codes ──────────────────────────────────────────────
 
