@@ -132,21 +132,32 @@ try {
     return p;
   })();
 
-  const isWin = process.platform === 'win32';
-  const guiLauncher = isWin ? guiPath : process.execPath;
-  const guiArgs = isWin ? [] : [guiPath];
-  const gui = spawn(guiLauncher, guiArgs, {
+  // Launch the installed binary via shell (handles .cmd on Windows, shebang on Unix)
+  // Resolve server.mjs from installed package root
+  const serverPath = resolve(installDir, 'node_modules', 'expflow', 'apps', 'gui', 'server.mjs');
+  const gui = spawn(process.execPath, [serverPath], {
     cwd: installDir,
     env: { ...process.env, EXPFLOW_GUI_PORT: String(guiPort) },
-    shell: isWin,
     stdio: ['ignore', 'pipe', 'pipe'],
   });
 
+  function killGui() {
+    gui.kill();
+    try {
+      spawnSync('taskkill', ['/F', '/T', '/PID', String(gui.pid)], {
+        stdio: 'ignore',
+        timeout: 3000,
+      });
+    } catch {
+      // Best-effort
+    }
+  }
+
   let guiStdout = '';
+  let guiStderr = '';
   gui.stdout.on('data', (chunk: Buffer) => {
     guiStdout += chunk.toString();
   });
-  let guiStderr = '';
   gui.stderr.on('data', (chunk: Buffer) => {
     guiStderr += chunk.toString();
   });
@@ -165,7 +176,7 @@ try {
     }
   }
   if (!ready) {
-    gui.kill();
+    killGui();
     throw new Error(
       `expflow-gui did not start within 10 seconds.\nSTDOUT:\n${guiStdout}\nSTDERR:\n${guiStderr}`,
     );
@@ -178,7 +189,7 @@ try {
   const html = await htmlRes.text();
   const tokenMatch = html.match(/content="([a-f0-9]{64})"/);
   if (tokenMatch === null) {
-    gui.kill();
+    killGui();
     throw new Error('Request token not found in served HTML');
   }
   const token = tokenMatch[1];
@@ -192,12 +203,12 @@ try {
     body: JSON.stringify({ root: tempRoot }),
   });
   if (!apiRes.ok) {
-    gui.kill();
+    killGui();
     throw new Error(`Authenticated API request failed: ${String(apiRes.status)}`);
   }
   const apiBody = (await apiRes.json()) as Record<string, unknown>;
   if (typeof apiBody.root !== 'string' || apiBody.root.length === 0) {
-    gui.kill();
+    killGui();
     throw new Error('API response missing root');
   }
   console.log('PASS - expflow-gui authenticated API request successful');
@@ -207,7 +218,7 @@ try {
     console.warn('WARNING: Request token appears in server stdout');
   }
 
-  gui.kill();
+  killGui();
   // Wait for the server process to release its directory handle
   await new Promise((r) => setTimeout(r, 500));
   console.log('PASS - expflow-gui installed launch verified');
