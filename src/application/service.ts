@@ -115,7 +115,7 @@ export class ApplicationService {
     }
   }
 
-  async inspect(actor: Actor): Promise<ApplicationResult<unknown>> {
+  async inspect(actor: Actor): Promise<ApplicationResult> {
     try {
       const s = await this.rt.status({ root: this.root() });
       return ok('inspect', actor, s);
@@ -127,7 +127,7 @@ export class ApplicationService {
 
   // ── Material ───────────────────────────────────────────────
 
-  async status(actor: Actor, opts?: CommandOptions): Promise<ApplicationResult<unknown>> {
+  async status(actor: Actor, opts?: CommandOptions): Promise<ApplicationResult> {
     try {
       const s = await this.rt.status({
         root: this.root(),
@@ -140,7 +140,7 @@ export class ApplicationService {
     }
   }
 
-  async planSync(actor: Actor, opts?: CommandOptions): Promise<ApplicationResult<Plan<unknown>>> {
+  async planSync(actor: Actor, opts?: CommandOptions): Promise<ApplicationResult<Plan>> {
     try {
       const p = await this.rt.planSync({
         root: this.root(),
@@ -162,7 +162,7 @@ export class ApplicationService {
 
   async applySync(
     actor: Actor,
-    plan: Plan<unknown>,
+    plan: Plan,
   ): Promise<ApplicationResult<{ receiptId: string }>> {
     try {
       const r = await this.rt.sync({
@@ -193,7 +193,7 @@ export class ApplicationService {
     }
   }
 
-  async planRestore(actor: Actor, reference: string): Promise<ApplicationResult<Plan<unknown>>> {
+  async planRestore(actor: Actor, reference: string): Promise<ApplicationResult<Plan>> {
     try {
       const p = await this.rt.planRestore({ root: this.root(), reference });
       return ok('planRestore', actor, {
@@ -212,7 +212,7 @@ export class ApplicationService {
   async applyRestore(
     actor: Actor,
     reference: string,
-    _plan?: Plan<unknown>,
+    _plan?: Plan,
   ): Promise<ApplicationResult<{ receiptId: string }>> {
     try {
       const r = await this.rt.restore({ root: this.root(), reference });
@@ -238,10 +238,10 @@ export class ApplicationService {
   }
 
   // ── Scaffolds (TODO: wire to runtime in Phase 5/6) ────────
-  async workflowList(actor: Actor): Promise<ApplicationResult<unknown>> {
+  workflowList(actor: Actor): Promise<ApplicationResult> {
     return ok('workflowList', actor, { workflows: [] });
   }
-  async conflicts(actor: Actor): Promise<ApplicationResult<unknown>> {
+  conflicts(actor: Actor): Promise<ApplicationResult> {
     return ok('conflicts', actor, { conflicts: [], needsAttention: false });
   }
 }
