@@ -382,7 +382,8 @@ describe('Expflow GUI bridge', () => {
 
       // Get node reference for the first version of note.txt
       const nodeHistory = await bridge.getNodeHistory({ root, nodeHistoryPath: 'note.txt' });
-      const entries = nodeHistory.data?.node_history as Array<{ restore_reference: string }> | undefined;
+      const entries = nodeHistory.data?.node_history as
+        Array<{ restore_reference: string }> | undefined;
       const nodeReference = entries?.length ? entries[0].restore_reference : `tree:${firstHead}`;
 
       // Preview node restore to restored-a.txt
