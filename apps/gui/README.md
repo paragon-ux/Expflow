@@ -1,20 +1,35 @@
 # Expflow GUI
 
-**Status:** Phase 2 local GUI foundation.
+**Status:** Phase 2 local GUI foundation. Repository-local — not shipped in the npm package.
 
-Run from the repository root:
+## Quickstart
 
 ```bash
-npm run gui:serve
+# From the repository root:
+npm install
+npm run build
+node apps/gui/server.mjs
 ```
 
-The server builds the TypeScript package, serves the browser client, and exposes local JSON endpoints backed by `createGuiBridge`. The GUI requires a local project path typed by the user. It does not require a network account, shell command construction, or raw `.expflow` storage access.
+Open `http://127.0.0.1:4173`.
 
-Primary surfaces:
+## Usage
 
-- project selection and initialization;
-- current material state and drift;
-- revision and node history;
-- sync preview and execution;
-- restore preview, refusal, override, and execution;
-- receipts, recovery, verification, advanced read-model records, and technical details.
+1. **Enter a project root path** in the top input field (absolute path to any directory).
+2. Click **Inspect** to view current state, or **Initialize** to create a new Expflow project.
+3. After initialization or after file changes, use **Sync → Preview** to see pending changes, then **Sync → Commit** to record them.
+4. Use **History → Tree History** to browse past project versions and find restore references.
+5. Copy a tree revision ID into the **Restore** field and click **Preview** to see affected paths, then **Restore** to execute.
+6. Paste an operation ID into **Receipts** and click **Load Receipt** to inspect the durable record.
+
+## Panels
+
+| Panel         | Purpose                                                   |
+| ------------- | --------------------------------------------------------- |
+| Current State | Working tree state, pending changes, project metadata     |
+| Sync          | Preview pending changes or commit them                    |
+| History       | Browse tree revisions or node history for a path          |
+| Restore       | Preview or execute a restore with optional force override |
+| Receipts      | Load operation receipts and technical details             |
+
+The GUI reads documented application APIs and read models via the GUI bridge. It does not require a network account, shell command construction, or raw `.expflow` storage access.

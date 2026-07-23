@@ -91,6 +91,18 @@ Useful Phase 1 options:
 - `expflow restore <reference> --dry-run` previews affected paths and conflicting drift.
 - `expflow restore <reference> --force` explicitly overwrites conflicting unrecorded drift.
 
+## GUI
+
+A local browser-based GUI is available in the repository (not in the npm package).
+
+```bash
+npm install
+npm run build
+node apps/gui/server.mjs        # → http://127.0.0.1:4173
+```
+
+Enter a project path, click **Inspect** or **Initialize**, then use the Sync, History, Restore, and Receipts panels. See `apps/gui/README.md` for the full quickstart.
+
 ## What Expflow Delegates
 
 Expflow core intentionally does not implement every surrounding integration surface.
