@@ -26,7 +26,7 @@ ORDINARY COMMANDS
   status     Report project state and restorable references
   restore    Preview or restore a prior project version
 
-1.2.0 COMMANDS
+1.2.1 COMMANDS
   capabilities   Print capability descriptor and exit
   workflow       Workflow operations (list, inspect, state, history)
   evidence       Evidence intake and inspection
