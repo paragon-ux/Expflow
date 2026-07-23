@@ -23,11 +23,11 @@ python -m pip install -e ".[dev]"
 
 ## Package Roles
 
-The npm package `expflow` is the primary CLI and TypeScript library package. Its public v1 API is the package-root export surface documented in `src/index.ts` and [docs/V1_COMPATIBILITY.md](docs/V1_COMPATIBILITY.md).
+The npm package `expflow` is the primary CLI and TypeScript library package. Its public v1 API is the package-root export surface documented in `src/index.ts` and [docs/releases/v1.0.1/files/docs/V1_COMPATIBILITY.md](docs/releases/v1.0.1/files/docs/V1_COMPATIBILITY.md).
 
 The PyPI package `expflow-hooks` is the Python hook/scaffold package and imports as `expflow_hooks`. It is not the TypeScript core or the `expflow` CLI.
 
-Registry publication is owner-controlled through [docs/RELEASE_PUBLISHING.md](docs/RELEASE_PUBLISHING.md). Do not claim npm or PyPI publication until registry metadata and external install checks prove it.
+Registry publication is owner-controlled through [docs/releases/v1.0.1/files/docs/RELEASE_PUBLISHING.md](docs/releases/v1.0.1/files/docs/RELEASE_PUBLISHING.md). Do not claim npm or PyPI publication until registry metadata and external install checks prove it.
 
 ## Validation Commands
 
@@ -130,10 +130,10 @@ Working mirrors: `schemas/`, `examples/`
 
 ## Completion Reports
 
-Completion evidence lives under `docs/completion_reports/`. Reports must cite actual command results only.
+Completion evidence lives under `docs/internal/completion_reports/`. Reports must cite actual command results only.
 
 ## Agent Governance
 
 - `AGENTS.md` -- root agent governance
-- `docs/orientation/` -- mutable pass-start controls
+- `docs/internal/orientation/` -- mutable pass-start controls
 - `.agents/skills/` -- focused skill documents

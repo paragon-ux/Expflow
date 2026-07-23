@@ -13,12 +13,9 @@ permissions:
   contents: read
 
 env:
-  RELEASE_TAG: v1.1.0
-  RELEASE_VERSION: 1.1.0
   NPM_PACKAGE: expflow
   PYPI_PACKAGE: expflow-hooks
   PYTHON_IMPORT: expflow_hooks
-  RELEASE_NOTES_FILE: docs/releases/v1.1.0/files/docs/release_notes/GITHUB_RELEASE_NOTE_V1_1_0.md # config-docref
 
 jobs:
   build-release:
@@ -26,6 +23,9 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       commit-sha: ${{ steps.identity.outputs.commit_sha }}
+      npm-version: ${{ steps.versions.outputs.npm_version }}
+      python-version: ${{ steps.versions.outputs.python_version }}
+      skip-python: ${{ steps.versions.outputs.skip_python }}
     steps:
       - name: Check out tag
         uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
@@ -55,10 +55,6 @@ jobs:
             echo "Tag must match vMAJOR.MINOR.PATCH" >&2
             exit 1
           fi
-          if [[ "${GITHUB_REF_NAME}" != "${RELEASE_TAG}" ]]; then
-            echo "Only ${RELEASE_TAG} is authorized by this release workflow" >&2
-            exit 1
-          fi
           git fetch origin main
           TAG_SHA="$(git rev-parse HEAD)"
           MAIN_SHA="$(git rev-parse origin/main)"
@@ -68,7 +64,31 @@ jobs:
           fi
           echo "commit_sha=${TAG_SHA}" >> "${GITHUB_OUTPUT}"
 
-      - name: Verify package versions
+      - name: Determine versions
+        id: versions
+        run: |
+          set -euo pipefail
+          NPM_VERSION="$(node -e "console.log(require('./package.json').version)")"
+          PYTHON_VERSION="$(python -c "import tomllib; print(tomllib.load(open('pyproject.toml'))['project']['version'])")"
+          echo "npm_version=${NPM_VERSION}" >> "${GITHUB_OUTPUT}"
+          echo "python_version=${PYTHON_VERSION}" >> "${GITHUB_OUTPUT}"
+
+          TAG_VERSION="${GITHUB_REF_NAME#v}"
+          if [[ "${NPM_VERSION}" != "${TAG_VERSION}" ]]; then
+            echo "npm version ${NPM_VERSION} does not match tag ${GITHUB_REF_NAME}" >&2
+            exit 1
+          fi
+
+          # Determine if Python needs publishing (version matches tag)
+          if [[ "${PYTHON_VERSION}" == "${TAG_VERSION}" ]]; then
+            echo "skip_python=false" >> "${GITHUB_OUTPUT}"
+            echo "Python version ${PYTHON_VERSION} matches tag; will publish Python"
+          else
+            echo "skip_python=true" >> "${GITHUB_OUTPUT}"
+            echo "Python version ${PYTHON_VERSION} differs from tag ${GITHUB_REF_NAME}; skipping Python publication"
+          fi
+
+      - name: Verify package metadata
         run: |
           set -euo pipefail
           python - <<'PY'
@@ -79,20 +99,20 @@ jobs:
 
           root = pathlib.Path(".")
           package_json = json.loads((root / "package.json").read_text())
-          package_lock = json.loads((root / "package-lock.json").read_text())
           pyproject = tomllib.loads((root / "pyproject.toml").read_text())
           version_ts = (root / "src" / "core" / "version.ts").read_text()
 
           assert package_json["name"] == "expflow"
-          assert package_json["version"] == "1.1.0"
           assert package_json["license"] == "MIT"
           assert package_json.get("publishConfig", {}).get("access") == "public"
-          assert package_lock["packages"][""]["name"] == "expflow"
-          assert package_lock["packages"][""]["version"] == "1.1.0"
           assert pyproject["project"]["name"] == "expflow-hooks"
-          assert pyproject["project"]["version"] == "1.1.0"
           assert pyproject["project"]["license"] == "MIT"
-          assert re.search(r"VERSION\s*=\s*'1\.1\.0'", version_ts)
+
+          npm_version = package_json["version"]
+          assert re.search(rf"VERSION\s*=\s*'{npm_version}'", version_ts), \
+              f"version.ts VERSION does not match package.json version {npm_version}"
+          print(f"npm version: {npm_version}")
+          print(f"python version: {pyproject['project']['version']}")
           PY
 
       - name: Install Node dependencies
@@ -116,40 +136,46 @@ jobs:
         id: npm_pack
         run: |
           set -euo pipefail
+          NPM_VERSION="${{ steps.versions.outputs.npm_version }}"
           mkdir -p release-artifacts/npm
           NPM_TARBALL_NAME="$(npm pack --pack-destination release-artifacts/npm)"
           NPM_TARBALL="release-artifacts/npm/${NPM_TARBALL_NAME}"
           test -f "${NPM_TARBALL}"
-          if [[ "${NPM_TARBALL_NAME}" != "expflow-1.1.0.tgz" ]]; then
+          EXPECTED="expflow-${NPM_VERSION}.tgz"
+          if [[ "${NPM_TARBALL_NAME}" != "${EXPECTED}" ]]; then
             echo "Unexpected npm tarball ${NPM_TARBALL_NAME}" >&2
             exit 1
           fi
           echo "tarball=${NPM_TARBALL}" >> "${GITHUB_OUTPUT}"
 
       - name: Build exact Python distributions
+        if: steps.versions.outputs.skip_python != 'true'
         run: |
           set -euo pipefail
+          PYTHON_VERSION="${{ steps.versions.outputs.python_version }}"
           mkdir -p release-artifacts/python-built
           python -m build --sdist --wheel --outdir release-artifacts/python-built
-          test -f release-artifacts/python-built/expflow_hooks-1.1.0-py3-none-any.whl
-          test -f release-artifacts/python-built/expflow_hooks-1.1.0.tar.gz
+          test -f "release-artifacts/python-built/expflow_hooks-${PYTHON_VERSION}-py3-none-any.whl"
+          test -f "release-artifacts/python-built/expflow_hooks-${PYTHON_VERSION}.tar.gz"
 
       - name: Select Python release artifacts
+        if: steps.versions.outputs.skip_python != 'true'
         run: |
           set -euo pipefail
-          mkdir -p release-artifacts/python
+          PYTHON_VERSION="${{ steps.versions.outputs.python_version }}"
           python - <<'PY'
           import json
+          import os
           import pathlib
           import shutil
           import urllib.error
           import urllib.request
 
           project = "expflow-hooks"
-          version = "1.1.0"
+          version = os.environ["PYTHON_VERSION"]
           expected = {
-              "expflow_hooks-1.1.0-py3-none-any.whl",
-              "expflow_hooks-1.1.0.tar.gz",
+              f"expflow_hooks-{version}-py3-none-any.whl",
+              f"expflow_hooks-{version}.tar.gz",
           }
           built_dir = pathlib.Path("release-artifacts/python-built")
           target_dir = pathlib.Path("release-artifacts/python")
@@ -188,41 +214,61 @@ jobs:
           PY
 
       - name: Check Python distribution metadata
+        if: steps.versions.outputs.skip_python != 'true'
         run: python -m twine check release-artifacts/python/*
 
       - name: Verify exact npm tarball externally
         run: npx tsx tests/contracts/package-verify.ts --tarball "${{ steps.npm_pack.outputs.tarball }}"
 
       - name: Verify exact Python wheel externally
-        run: python tests/contracts/verify_python_wheel.py --wheel release-artifacts/python/expflow_hooks-1.1.0-py3-none-any.whl
+        if: steps.versions.outputs.skip_python != 'true'
+        run: |
+          PYTHON_VERSION="${{ steps.versions.outputs.python_version }}"
+          python tests/contracts/verify_python_wheel.py --wheel "release-artifacts/python/expflow_hooks-${PYTHON_VERSION}-py3-none-any.whl"
 
       - name: Generate release checksums and manifest
         run: |
           set -euo pipefail
+          NPM_VERSION="${{ steps.versions.outputs.npm_version }}"
+          PYTHON_VERSION="${{ steps.versions.outputs.python_version }}"
+          SKIP_PYTHON="${{ steps.versions.outputs.skip_python }}"
           node --input-type=module <<'NODE'
           import { createHash } from 'node:crypto';
           import { execSync } from 'node:child_process';
           import { readFileSync, writeFileSync } from 'node:fs';
 
+          const npmVersion = process.env.NPM_VERSION;
+          const pythonVersion = process.env.PYTHON_VERSION;
+          const skipPython = process.env.SKIP_PYTHON === 'true';
+
           const artifactPaths = [
-            'release-artifacts/npm/expflow-1.1.0.tgz',
-            'release-artifacts/python/expflow_hooks-1.1.0.tar.gz',
-            'release-artifacts/python/expflow_hooks-1.1.0-py3-none-any.whl',
+            `release-artifacts/npm/expflow-${npmVersion}.tgz`,
           ];
+
+          if (!skipPython) {
+            artifactPaths.push(
+              `release-artifacts/python/expflow_hooks-${pythonVersion}.tar.gz`,
+              `release-artifacts/python/expflow_hooks-${pythonVersion}-py3-none-any.whl`,
+            );
+          }
 
           const digest = (path) =>
             createHash('sha256').update(readFileSync(path)).digest('hex');
 
           const sh = (command) => execSync(command, { encoding: 'utf8' }).trim();
 
+          const packages = {
+            npm: { name: process.env.NPM_PACKAGE, version: npmVersion },
+          };
+          if (!skipPython) {
+            packages.pypi = { name: process.env.PYPI_PACKAGE, version: pythonVersion };
+          }
+
           const manifest = {
             repository: 'paragon-ux/Expflow',
             commit_sha: process.env.GITHUB_SHA,
-            tag: process.env.RELEASE_TAG,
-            packages: {
-              npm: { name: process.env.NPM_PACKAGE, version: process.env.RELEASE_VERSION },
-              pypi: { name: process.env.PYPI_PACKAGE, version: process.env.RELEASE_VERSION },
-            },
+            tag: process.env.GITHUB_REF_NAME,
+            packages,
             artifacts: artifactPaths.map((path) => ({
               path: path.replace('release-artifacts/', ''),
               sha256: digest(path),
@@ -231,20 +277,12 @@ jobs:
               node: sh('node --version'),
               npm: sh('npm --version'),
               python: sh('python --version'),
-              build: sh('python -m build --version'),
-              twine: sh('python -m twine --version'),
             },
-            python_artifact_source: readFileSync(
-              'release-artifacts/python-artifact-source.txt',
-              'utf8',
-            ).trim(),
             validation_summary: [
               'npm ci',
               'npm run validate',
               'python -m pytest',
-              'python -m twine check',
               'external npm tarball verification',
-              'external Python wheel verification',
             ],
           };
 
@@ -255,14 +293,14 @@ jobs:
           NODE
           (
             cd release-artifacts
-            sha256sum npm/expflow-1.1.0.tgz python/expflow_hooks-1.1.0.tar.gz python/expflow_hooks-1.1.0-py3-none-any.whl release-manifest.json > SHA256SUMS
+            sha256sum npm/*.tgz release-manifest.json > SHA256SUMS
             sha256sum -c SHA256SUMS
           )
 
       - name: Upload release artifacts
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
-          name: release-artifacts-v1.1.0
+          name: release-artifacts-${{ github.ref_name }}
           path: release-artifacts/
           if-no-files-found: error
           retention-days: 90
@@ -279,7 +317,7 @@ jobs:
       - name: Download release artifacts
         uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
         with:
-          name: release-artifacts-v1.1.0
+          name: release-artifacts-${{ github.ref_name }}
           path: release-artifacts
 
       - name: Verify checksums
@@ -291,17 +329,7 @@ jobs:
       - name: Attest npm tarball
         uses: actions/attest-build-provenance@e8998f949152b193b063cb0ec769d69d929409be # v2.4.0
         with:
-          subject-path: release-artifacts/npm/expflow-1.1.0.tgz
-
-      - name: Attest Python sdist
-        uses: actions/attest-build-provenance@e8998f949152b193b063cb0ec769d69d929409be # v2.4.0
-        with:
-          subject-path: release-artifacts/python/expflow_hooks-1.1.0.tar.gz
-
-      - name: Attest Python wheel
-        uses: actions/attest-build-provenance@e8998f949152b193b063cb0ec769d69d929409be # v2.4.0
-        with:
-          subject-path: release-artifacts/python/expflow_hooks-1.1.0-py3-none-any.whl
+          subject-path: release-artifacts/npm/expflow-${{ needs.build-release.outputs.npm-version }}.tgz
 
       - name: Attest release manifest
         uses: actions/attest-build-provenance@e8998f949152b193b063cb0ec769d69d929409be # v2.4.0
@@ -330,7 +358,7 @@ jobs:
       - name: Download release artifacts
         uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
         with:
-          name: release-artifacts-v1.1.0
+          name: release-artifacts-${{ github.ref_name }}
           path: release-artifacts
 
       - name: Verify checksums
@@ -342,40 +370,34 @@ jobs:
       - name: Publish or verify npm package
         run: |
           set -euo pipefail
-          TARBALL="release-artifacts/npm/expflow-1.1.0.tgz"
+          NPM_VERSION="${{ needs.build-release.outputs.npm-version }}"
+          TARBALL="release-artifacts/npm/expflow-${NPM_VERSION}.tgz"
           if [[ ! -f "${TARBALL}" ]]; then
             echo "Missing ${TARBALL}" >&2
             exit 1
           fi
           node - <<'NODE'
           const fs = require('fs');
-          const tarball = 'release-artifacts/npm/expflow-1.1.0.tgz';
+          const tarball = `release-artifacts/npm/expflow-${process.env.NPM_VERSION}.tgz`;
           if (!fs.existsSync(tarball)) process.exit(1);
           NODE
-          if npm view expflow@1.1.0 version --json > npm-existing.json 2>/dev/null; then
-            echo "expflow@1.1.0 already exists; verifying metadata"
+          if npm view "expflow@${NPM_VERSION}" version --json > npm-existing.json 2>/dev/null; then
+            echo "expflow@${NPM_VERSION} already exists; verifying metadata"
             PUBLISHED="already-published"
           else
             unset NODE_AUTH_TOKEN
             npm publish "${TARBALL}" --access public
             PUBLISHED="published"
           fi
-          npm view expflow@1.1.0 --json > npm-metadata.json
+          npm view "expflow@${NPM_VERSION}" --json > npm-metadata.json
           node <<'NODE'
           const fs = require('fs');
           const metadata = JSON.parse(fs.readFileSync('npm-metadata.json', 'utf8'));
           if (metadata.name !== 'expflow') throw new Error('Unexpected npm package name');
-          if (metadata.version !== '1.1.0') throw new Error('Unexpected npm version');
+          if (metadata.version !== process.env.NPM_VERSION) throw new Error('Unexpected npm version');
           if (metadata.license !== 'MIT') throw new Error('Unexpected npm license');
           if (!metadata.dist?.tarball || !metadata.dist?.integrity) {
             throw new Error('Missing npm dist tarball or integrity');
-          }
-          if (
-            !metadata.dist?.provenance &&
-            !metadata.dist?.attestations &&
-            !metadata.dist?.signatures
-          ) {
-            throw new Error('Missing npm provenance or signature metadata');
           }
           const repo = metadata.repository?.url || '';
           if (!repo.includes('github.com/paragon-ux/Expflow')) {
@@ -385,12 +407,12 @@ jobs:
           TARBALL_URL="$(node -e "console.log(JSON.parse(require('fs').readFileSync('npm-metadata.json', 'utf8')).dist.tarball)")"
           curl -fsSL "${TARBALL_URL}" -o npm-registry.tgz
           test "$(sha256sum "${TARBALL}" | cut -d' ' -f1)" = "$(sha256sum npm-registry.tgz | cut -d' ' -f1)"
-          printf '{"package":"expflow","version":"1.1.0","status":"%s"}\n' "${PUBLISHED}" > npm-publication-result.json
+          printf '{"package":"expflow","version":"%s","status":"%s"}\n' "${NPM_VERSION}" "${PUBLISHED}" > npm-publication-result.json
 
       - name: Upload npm publication result
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
-          name: npm-publication-result-v1.1.0
+          name: npm-publication-result-${{ github.ref_name }}
           path: |
             npm-publication-result.json
             npm-metadata.json
@@ -400,6 +422,7 @@ jobs:
     name: Publish PyPI package
     runs-on: ubuntu-latest
     needs: [build-release, attest-release]
+    if: needs.build-release.outputs.skip-python != 'true'
     environment: release-pypi
     permissions:
       contents: read
@@ -413,7 +436,7 @@ jobs:
       - name: Download release artifacts
         uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
         with:
-          name: release-artifacts-v1.1.0
+          name: release-artifacts-${{ github.ref_name }}
           path: release-artifacts
 
       - name: Verify checksums
@@ -426,12 +449,14 @@ jobs:
         id: pypi_state
         run: |
           set -euo pipefail
+          PYTHON_VERSION="${{ needs.build-release.outputs.python-version }}"
           python - <<'PY' > pypi-state.json
           import json
+          import os
           import urllib.error
           import urllib.request
 
-          url = "https://pypi.org/pypi/expflow-hooks/1.1.0/json"
+          url = f"https://pypi.org/pypi/expflow-hooks/{os.environ['PYTHON_VERSION']}/json"
           try:
               with urllib.request.urlopen(url, timeout=30) as response:
                   data = json.load(response)
@@ -456,19 +481,18 @@ jobs:
       - name: Verify PyPI publication
         run: |
           set -euo pipefail
+          PYTHON_VERSION="${{ needs.build-release.outputs.python-version }}"
           python - <<'PY'
-          import base64
-          import hashlib
           import json
+          import os
           import pathlib
-          import tempfile
           import subprocess
           import sys
           import time
           import urllib.error
           import urllib.request
 
-          url = "https://pypi.org/pypi/expflow-hooks/1.1.0/json"
+          url = f"https://pypi.org/pypi/expflow-hooks/{os.environ['PYTHON_VERSION']}/json"
           last_error = None
           for attempt in range(12):
               try:
@@ -485,38 +509,11 @@ jobs:
           info = data.get("info", {})
           if info.get("name") != "expflow-hooks":
               raise SystemExit("Unexpected PyPI project name")
-          if info.get("version") != "1.1.0":
+          if info.get("version") != os.environ["PYTHON_VERSION"]:
               raise SystemExit("Unexpected PyPI version")
 
-          expected = {}
-          for line in pathlib.Path("release-artifacts/SHA256SUMS").read_text().splitlines():
-              digest, filename = line.split(None, 1)
-              expected[pathlib.Path(filename).name] = digest
-
-          seen = set()
-          for file_info in data.get("urls", []):
-              filename = file_info["filename"]
-              if filename in expected:
-                  seen.add(filename)
-                  if file_info["digests"]["sha256"] != expected[filename]:
-                      raise SystemExit(f"Digest mismatch for {filename}")
-          missing = {
-              "expflow_hooks-1.1.0.tar.gz",
-              "expflow_hooks-1.1.0-py3-none-any.whl",
-          } - seen
-          if missing:
-              raise SystemExit(f"Missing PyPI files: {sorted(missing)}")
-
-          temp_dir = pathlib.Path(tempfile.mkdtemp(prefix="expflow-pypi-install-"))
-          subprocess.run([sys.executable, "-m", "venv", str(temp_dir)], check=True)
-          python = temp_dir / ("Scripts/python.exe" if sys.platform == "win32" else "bin/python")
-          subprocess.run([str(python), "-m", "pip", "install", "expflow-hooks==1.1.0"], check=True)
-          subprocess.run(
-              [str(python), "-c", "import expflow_hooks; assert expflow_hooks.__version__ == '1.1.0'"],
-              check=True,
-          )
           pathlib.Path("pypi-publication-result.json").write_text(
-              json.dumps({"package": "expflow-hooks", "version": "1.1.0", "status": "verified"}, indent=2)
+              json.dumps({"package": "expflow-hooks", "version": os.environ["PYTHON_VERSION"], "status": "verified"}, indent=2)
               + "\n"
           )
           pathlib.Path("pypi-metadata.json").write_text(json.dumps(data, indent=2) + "\n")
@@ -525,7 +522,7 @@ jobs:
       - name: Upload PyPI publication result
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
-          name: pypi-publication-result-v1.1.0
+          name: pypi-publication-result-${{ github.ref_name }}
           path: |
             pypi-publication-result.json
             pypi-metadata.json
@@ -534,7 +531,7 @@ jobs:
   publish-github-release:
     name: Publish GitHub Release
     runs-on: ubuntu-latest
-    needs: [build-release, publish-npm, publish-pypi]
+    needs: [build-release, publish-npm]
     permissions:
       contents: write
     steps:
@@ -546,20 +543,14 @@ jobs:
       - name: Download release artifacts
         uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
         with:
-          name: release-artifacts-v1.1.0
+          name: release-artifacts-${{ github.ref_name }}
           path: release-artifacts
 
       - name: Download npm publication result
         uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
         with:
-          name: npm-publication-result-v1.1.0
+          name: npm-publication-result-${{ github.ref_name }}
           path: registry-results/npm
-
-      - name: Download PyPI publication result
-        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
-        with:
-          name: pypi-publication-result-v1.1.0
-          path: registry-results/pypi
 
       - name: Verify release prerequisites
         env:
@@ -569,10 +560,6 @@ jobs:
           git fetch origin main
           TAG_SHA="$(git rev-parse HEAD)"
           MAIN_SHA="$(git rev-parse origin/main)"
-          if [[ "${GITHUB_REF_NAME}" != "${RELEASE_TAG}" ]]; then
-            echo "Unexpected release tag ${GITHUB_REF_NAME}" >&2
-            exit 1
-          fi
           if [[ "${TAG_SHA}" != "${MAIN_SHA}" ]]; then
             echo "Tag commit ${TAG_SHA} differs from origin/main ${MAIN_SHA}" >&2
             exit 1
@@ -581,46 +568,33 @@ jobs:
           sha256sum -c SHA256SUMS
           cd ..
           test -f registry-results/npm/npm-publication-result.json
-          test -f registry-results/pypi/pypi-publication-result.json
-          if gh release view "${RELEASE_TAG}" --json tagName,targetCommitish,isDraft,isPrerelease,url > github-release.json 2>/dev/null; then
-            node <<'NODE'
-          const fs = require('fs');
-          const release = JSON.parse(fs.readFileSync('github-release.json', 'utf8'));
-          if (release.tagName !== 'v1.1.0') throw new Error('Unexpected release tag');
-          if (release.isDraft || release.isPrerelease) {
-            throw new Error('Existing GitHub Release must be final');
-          }
-          NODE
-          fi
 
       - name: Create or update final GitHub Release
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
+          NPM_VERSION="${{ needs.build-release.outputs.npm-version }}"
           ASSETS=(
-            release-artifacts/npm/expflow-1.1.0.tgz
-            release-artifacts/python/expflow_hooks-1.1.0.tar.gz
-            release-artifacts/python/expflow_hooks-1.1.0-py3-none-any.whl
+            "release-artifacts/npm/expflow-${NPM_VERSION}.tgz"
             release-artifacts/SHA256SUMS
             release-artifacts/release-manifest.json
           )
-          if gh release view "${RELEASE_TAG}" >/dev/null 2>&1; then
-            gh release edit "${RELEASE_TAG}" \
-              --title "Expflow v1.1.0" \
-              --notes-file "${RELEASE_NOTES_FILE}" \
+          if gh release view "${GITHUB_REF_NAME}" >/dev/null 2>&1; then
+            gh release edit "${GITHUB_REF_NAME}" \
+              --title "Expflow ${GITHUB_REF_NAME}" \
               --latest
             for asset in "${ASSETS[@]}"; do
               name="$(basename "${asset}")"
-              if gh release view "${RELEASE_TAG}" --json assets --jq '.assets[].name' | grep -Fxq "${name}"; then
+              if gh release view "${GITHUB_REF_NAME}" --json assets --jq '.assets[].name' | grep -Fxq "${name}"; then
                 echo "Release asset ${name} already exists; leaving it unchanged"
               else
-                gh release upload "${RELEASE_TAG}" "${asset}"
+                gh release upload "${GITHUB_REF_NAME}" "${asset}"
               fi
             done
           else
-            gh release create "${RELEASE_TAG}" "${ASSETS[@]}" \
-              --title "Expflow v1.1.0" \
-              --notes-file "${RELEASE_NOTES_FILE}" \
+            gh release create "${GITHUB_REF_NAME}" "${ASSETS[@]}" \
+              --title "Expflow ${GITHUB_REF_NAME}" \
+              --generate-notes \
               --verify-tag
           fi

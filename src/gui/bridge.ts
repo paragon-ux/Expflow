@@ -1,3 +1,4 @@
+import { randomUUID } from 'node:crypto';
 import { resolve } from 'node:path';
 import { ExpflowError, toExpflowError } from '../core/errors.js';
 import {
@@ -46,6 +47,26 @@ export interface GuiProjectSnapshot {
   readonly node_history?: readonly object[];
 }
 
+export interface SyncBinding {
+  readonly previousHead: string | null;
+}
+
+export interface RestoreBinding {
+  readonly reference: string;
+  readonly sourceRef: string;
+  readonly currentHead: string | null;
+  readonly pathEffects: readonly object[];
+  readonly conflicts: readonly string[];
+  readonly preservedDrift: readonly string[];
+  readonly requiresForce: boolean;
+}
+
+interface StoredPlan<T> {
+  readonly root: string;
+  readonly binding: T;
+  readonly consumed: boolean;
+}
+
 export interface GuiBridge {
   inspectProject(input: StatusInput): Promise<GuiOperationResult<GuiProjectSnapshot>>;
   initializeProject(input?: {
@@ -53,12 +74,20 @@ export interface GuiBridge {
   }): Promise<GuiOperationResult<OperationReceiptRecord>>;
   planSync(
     input?: SyncInput,
-  ): Promise<GuiOperationResult<Awaited<ReturnType<ExpflowRuntime['planSync']>>>>;
-  executeSync(input?: SyncInput): Promise<GuiOperationResult<OperationReceiptRecord>>;
+  ): Promise<
+    GuiOperationResult<Awaited<ReturnType<ExpflowRuntime['planSync']>> & { planToken: string }>
+  >;
+  executeSync(
+    input?: SyncInput & { planToken?: string },
+  ): Promise<GuiOperationResult<OperationReceiptRecord>>;
   getHistory(input: StatusInput): Promise<GuiOperationResult<GuiProjectSnapshot>>;
   getNodeHistory(input: StatusInput): Promise<GuiOperationResult<GuiProjectSnapshot>>;
-  planRestore(input: RestoreInput): Promise<GuiOperationResult<RestorePlan>>;
-  executeRestore(input: RestoreInput): Promise<GuiOperationResult<OperationReceiptRecord>>;
+  planRestore(
+    input: RestoreInput,
+  ): Promise<GuiOperationResult<RestorePlan & { planToken: string }>>;
+  executeRestore(
+    input: RestoreInput & { planToken?: string },
+  ): Promise<GuiOperationResult<OperationReceiptRecord>>;
   recover(
     input?: StatusInput,
   ): Promise<GuiOperationResult<Awaited<ReturnType<ExpflowRuntime['recover']>>>>;
@@ -72,7 +101,15 @@ export interface GuiBridge {
 
 function resolvedRoot(root?: string): string {
   if (root === undefined || root.trim().length === 0) {
-    return resolve(process.cwd());
+    throw new ExpflowError(
+      'root_required',
+      'A non-empty project root path is required. The GUI must provide an explicit project directory.',
+      {
+        recoverable: true,
+        recommendedAction:
+          'Enter a project root path in the GUI input field, then inspect or initialize.',
+      },
+    );
   }
   if (root.includes('\0')) {
     throw new ExpflowError('invalid_root', 'Project root contains an invalid character.', {
@@ -151,7 +188,7 @@ async function guarded<T>(
       data: null,
       error: errorDetails(expflowError),
       operation,
-      root: resolve(process.cwd()),
+      root: root ?? '',
       state: 'error',
     });
   }
@@ -170,6 +207,9 @@ async function guarded<T>(
 }
 
 export function createGuiBridge(runtime: ExpflowRuntime = createRuntime()): GuiBridge {
+  const syncPlans = new Map<string, StoredPlan<SyncBinding>>();
+  const restorePlans = new Map<string, StoredPlan<RestoreBinding>>();
+
   return {
     inspectProject(input: StatusInput): Promise<GuiOperationResult<GuiProjectSnapshot>> {
       return guarded('status', input.root, async (root) => {
@@ -199,11 +239,21 @@ export function createGuiBridge(runtime: ExpflowRuntime = createRuntime()): GuiB
 
     planSync(
       input: SyncInput = {},
-    ): Promise<GuiOperationResult<Awaited<ReturnType<ExpflowRuntime['planSync']>>>> {
+    ): Promise<
+      GuiOperationResult<Awaited<ReturnType<ExpflowRuntime['planSync']>> & { planToken: string }>
+    > {
       return guarded('sync.preview', input.root, async (root) => {
         const plan = await runtime.planSync({ ...input, dryRun: true, root });
+        const planToken = randomUUID();
+        syncPlans.set(planToken, {
+          root,
+          binding: {
+            previousHead: plan.previous_head,
+          },
+          consumed: false,
+        });
         return result({
-          data: plan,
+          data: { ...plan, planToken },
           operation: 'sync.preview',
           root,
           state: plan.change_details.length === 0 ? 'empty' : 'success',
@@ -211,18 +261,69 @@ export function createGuiBridge(runtime: ExpflowRuntime = createRuntime()): GuiB
       });
     },
 
-    executeSync(input: SyncInput = {}): Promise<GuiOperationResult<OperationReceiptRecord>> {
+    executeSync(
+      input: SyncInput & { planToken?: string } = {},
+    ): Promise<GuiOperationResult<OperationReceiptRecord>> {
       return guarded('sync.execute', input.root, async (root) => {
-        if (input.expectedHead === undefined) {
+        if (input.expectedHead === undefined || input.planToken === undefined) {
           throw new ExpflowError(
             'sync_preview_required',
-            'Sync execution requires a previewed material head.',
+            'Sync execution requires a current preview. Run Preview, then commit the displayed plan.',
             {
               recoverable: true,
               recommendedAction: 'Run a sync preview again, then commit the displayed plan.',
             },
           );
         }
+
+        const stored = syncPlans.get(input.planToken);
+        if (stored === undefined) {
+          throw new ExpflowError(
+            'sync_plan_expired',
+            'The sync preview is no longer available. Run Preview again.',
+            {
+              recoverable: true,
+              recommendedAction: 'Run Preview again, then commit the refreshed plan.',
+            },
+          );
+        }
+        if (stored.consumed) {
+          syncPlans.delete(input.planToken);
+          throw new ExpflowError(
+            'sync_plan_consumed',
+            'This sync plan was already committed. Run Preview again.',
+            {
+              recoverable: true,
+              recommendedAction: 'Run Preview to produce a new plan.',
+            },
+          );
+        }
+        if (stored.root !== root) {
+          syncPlans.delete(input.planToken);
+          throw new ExpflowError(
+            'sync_root_changed',
+            'The project root has changed since the preview. Run Preview again.',
+            {
+              recoverable: true,
+              recommendedAction: 'Verify the project root, then run Preview.',
+            },
+          );
+        }
+
+        // Verify expected head matches the stored binding
+        if (input.expectedHead !== stored.binding.previousHead) {
+          syncPlans.delete(input.planToken);
+          throw new ExpflowError(
+            'sync_head_changed',
+            'The Expflow head has changed since the preview. Run Preview again.',
+            {
+              recoverable: true,
+              recommendedAction: 'Run Preview to see the updated changes.',
+            },
+          );
+        }
+
+        syncPlans.delete(input.planToken);
         const receipt = await runtime.sync({ ...input, dryRun: false, root });
         return result({
           data: receipt,
@@ -257,11 +358,27 @@ export function createGuiBridge(runtime: ExpflowRuntime = createRuntime()): GuiB
       });
     },
 
-    planRestore(input: RestoreInput): Promise<GuiOperationResult<RestorePlan>> {
+    planRestore(
+      input: RestoreInput,
+    ): Promise<GuiOperationResult<RestorePlan & { planToken: string }>> {
       return guarded('restore.preview', input.root, async (root) => {
         const plan = await runtime.planRestore({ ...input, root });
+        const planToken = randomUUID();
+        restorePlans.set(planToken, {
+          root,
+          binding: {
+            reference: plan.reference,
+            sourceRef: plan.source_ref,
+            currentHead: plan.current_head,
+            pathEffects: plan.path_effects,
+            conflicts: plan.conflicting_paths ?? [],
+            preservedDrift: plan.preserved_drift_paths ?? [],
+            requiresForce: plan.requires_force,
+          },
+          consumed: false,
+        });
         return result({
-          data: plan,
+          data: { ...plan, planToken },
           operation: 'restore.preview',
           root,
           state: plan.requires_force ? 'blocked' : 'success',
@@ -269,8 +386,104 @@ export function createGuiBridge(runtime: ExpflowRuntime = createRuntime()): GuiB
       });
     },
 
-    executeRestore(input: RestoreInput): Promise<GuiOperationResult<OperationReceiptRecord>> {
+    executeRestore(
+      input: RestoreInput & { planToken?: string },
+    ): Promise<GuiOperationResult<OperationReceiptRecord>> {
       return guarded('restore.execute', input.root, async (root) => {
+        if (input.planToken === undefined) {
+          throw new ExpflowError(
+            'restore_preview_required',
+            'Restore execution requires a current preview. Run Preview, then execute the displayed plan.',
+            {
+              recoverable: true,
+              recommendedAction: 'Run a restore preview, review the path effects, then execute.',
+            },
+          );
+        }
+
+        const stored = restorePlans.get(input.planToken);
+        if (stored === undefined) {
+          throw new ExpflowError(
+            'restore_plan_expired',
+            'The restore preview is no longer available. Run Preview again.',
+            {
+              recoverable: true,
+              recommendedAction: 'Run Preview again, then execute the refreshed plan.',
+            },
+          );
+        }
+        if (stored.consumed) {
+          restorePlans.delete(input.planToken);
+          throw new ExpflowError(
+            'restore_plan_consumed',
+            'This restore plan was already executed. Run Preview again.',
+            {
+              recoverable: true,
+              recommendedAction: 'Run Preview to produce a new plan.',
+            },
+          );
+        }
+        if (stored.root !== root) {
+          restorePlans.delete(input.planToken);
+          throw new ExpflowError(
+            'restore_root_changed',
+            'The project root has changed since the preview. Run Preview again.',
+            {
+              recoverable: true,
+              recommendedAction: 'Verify the project root, then run Preview.',
+            },
+          );
+        }
+
+        // Recompute the restore plan and compare
+        const currentPlan = await runtime.planRestore({ ...input, root });
+
+        if (currentPlan.reference !== stored.binding.reference) {
+          restorePlans.delete(input.planToken);
+          throw new ExpflowError(
+            'restore_reference_changed',
+            'The restore reference has changed since the preview. Run Preview again.',
+            {
+              recoverable: true,
+              recommendedAction: 'Run Preview to see the updated path effects.',
+            },
+          );
+        }
+        if (currentPlan.source_ref !== stored.binding.sourceRef) {
+          restorePlans.delete(input.planToken);
+          throw new ExpflowError(
+            'restore_source_changed',
+            'The resolved source has changed since the preview. Run Preview again.',
+            {
+              recoverable: true,
+              recommendedAction: 'Run Preview to review the updated source.',
+            },
+          );
+        }
+        if (currentPlan.current_head !== stored.binding.currentHead) {
+          restorePlans.delete(input.planToken);
+          throw new ExpflowError(
+            'restore_head_changed',
+            'The Expflow head has changed since the preview. Run Preview again.',
+            {
+              recoverable: true,
+              recommendedAction: 'Run Preview to see the updated effects.',
+            },
+          );
+        }
+        if (currentPlan.requires_force !== stored.binding.requiresForce) {
+          restorePlans.delete(input.planToken);
+          throw new ExpflowError(
+            'restore_force_changed',
+            'The force requirement has changed since the preview. Run Preview again.',
+            {
+              recoverable: true,
+              recommendedAction: 'Run Preview to determine the current force status.',
+            },
+          );
+        }
+
+        restorePlans.delete(input.planToken);
         const receipt = await runtime.restore({ ...input, root });
         return result({
           data: receipt,

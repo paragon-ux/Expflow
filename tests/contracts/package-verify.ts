@@ -93,7 +93,13 @@ try {
   }
   for (const file of packedFiles) {
     if (file.path.startsWith('apps/gui/')) {
-      throw new Error(`GUI app files must remain outside the npm package: ${file.path}`);
+      const allowedGui = [
+        'apps/gui/index.html',
+        'apps/gui/server.mjs',
+      ];
+      if (!allowedGui.some((p) => file.path.startsWith(p)) && !file.path.startsWith('apps/gui/src/') && !file.path.startsWith('apps/gui/styles/')) {
+        throw new Error(`Unexpected GUI file in npm package: ${file.path}`);
+      }
     }
   }
 
@@ -107,6 +113,13 @@ try {
   if (versionOutput !== VERSION) {
     throw new Error(`Expected CLI version ${VERSION}, got ${versionOutput}`);
   }
+
+  const guiBinName = process.platform === 'win32' ? 'expflow-gui.cmd' : 'expflow-gui';
+  const guiPath = resolve(installDir, 'node_modules', '.bin', guiBinName);
+  if (!existsSync(guiPath)) {
+    throw new Error(`expflow-gui binary not found at ${guiPath}`);
+  }
+  console.log('PASS - expflow-gui binary exists');
 
   const helpOutput = run(cliPath, ['--help'], installDir);
   for (const expected of [

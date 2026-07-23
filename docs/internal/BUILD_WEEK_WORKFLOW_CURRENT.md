@@ -2,8 +2,9 @@
 
 **Version:** 3.0  
 **Status:** active authoritative execution workflow  
-**Baseline:** Expflow `v1.0.1` plus accepted post-release phase merges  
-**Program:** Build Week Phases 1–9  
+**Baseline:** Expflow `v1.0.1` (historical Build Week starting point)  
+**Completed:** Phases 1–7 released in `v1.1.0` at `a1eaaad4c226eb3722f13804ece561b8cf275378`  
+**Status:** paused after BW-C; Phases 8–9 are not currently authorized  
 **Review model:** one comprehensive phase review, bounded closure, one gate review at gate exit  
 **Execution model:** repository-local parent orchestrator with one independent read-only reviewer  
 **Integration direction:** profile-driven Guerilla causal events without native-state ownership

@@ -1,8 +1,17 @@
 # Expflow GUI
 
-**Status:** Phase 2 local GUI foundation. Repository-local — not shipped in the npm package.
+**Status:** Phase 2 local GUI foundation. Shipped in the npm package starting from v1.1.1.
 
-## Quickstart
+## Quickstart (npm)
+
+```bash
+npm install -g expflow
+expflow-gui
+```
+
+Open `http://127.0.0.1:4173`. The server prints the URL and a one-time request token at startup.
+
+## Quickstart (repository checkout)
 
 ```bash
 git clone https://github.com/paragon-ux/Expflow.git

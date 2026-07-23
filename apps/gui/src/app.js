@@ -10,9 +10,17 @@ const nodeHistoryPath = document.querySelector('#node-history-path');
 const restoreReference = document.querySelector('#restore-reference');
 const restoreForce = document.querySelector('#restore-force');
 const receiptId = document.querySelector('#receipt-id');
+const syncButton = document.querySelector('#sync-button');
+const restoreButton = document.querySelector('#restore-button');
 
 let lastPayload = {};
 let lastSyncPlan = null;
+let lastSyncPlanToken = null;
+let lastRestorePlan = null;
+let lastRestorePlanToken = null;
+
+// Request token from the server page (injected by server.mjs)
+const pageToken = document.querySelector('meta[name="request-token"]')?.content ?? '';
 
 function rootPayload() {
   return { root: rootInput.value.trim() };
@@ -67,10 +75,17 @@ function renderResult(target, payload, renderer) {
   renderTechnical(payload);
 }
 
+function updateRestoreButton() {
+  restoreButton.disabled = lastRestorePlanToken === null;
+}
+
 async function request(path, body) {
   const response = await fetch(path, {
     body: JSON.stringify(body),
-    headers: { 'content-type': 'application/json' },
+    headers: {
+      'content-type': 'application/json',
+      'x-request-token': pageToken,
+    },
     method: 'POST',
   });
   const payload = await response.json();
@@ -217,12 +232,18 @@ document.querySelector('#plan-sync-button').addEventListener('click', () => {
       rootPayload(),
       renderSyncPlan,
     );
-    lastSyncPlan = payload.error ? null : payload.data;
+    if (payload.error) {
+      lastSyncPlan = null;
+      lastSyncPlanToken = null;
+    } else {
+      lastSyncPlan = payload.data;
+      lastSyncPlanToken = payload.data.planToken;
+    }
   })();
 });
 
-document.querySelector('#sync-button').addEventListener('click', () => {
-  if (lastSyncPlan === null) {
+syncButton.addEventListener('click', () => {
+  if (lastSyncPlan === null || lastSyncPlanToken === null) {
     renderResult(
       syncPanel,
       {
@@ -254,11 +275,16 @@ document.querySelector('#sync-button').addEventListener('click', () => {
       'Committing sync...',
       syncPanel,
       '/api/sync',
-      { ...rootPayload(), expectedHead: lastSyncPlan.previous_head },
+      {
+        ...rootPayload(),
+        expectedHead: lastSyncPlan.previous_head,
+        planToken: lastSyncPlanToken,
+      },
       renderReceipt,
     );
     if (!payload.error) {
       lastSyncPlan = null;
+      lastSyncPlanToken = null;
     }
   })();
 });
@@ -278,16 +304,50 @@ document.querySelector('#node-history-button').addEventListener('click', () => {
 });
 
 document.querySelector('#plan-restore-button').addEventListener('click', () => {
-  void run(
-    'Planning restore...',
-    restorePanel,
-    '/api/restore/plan',
-    { ...rootPayload(), reference: restoreReference.value.trim() },
-    renderRestorePlan,
-  );
+  void (async () => {
+    const payload = await run(
+      'Planning restore...',
+      restorePanel,
+      '/api/restore/plan',
+      { ...rootPayload(), reference: restoreReference.value.trim() },
+      renderRestorePlan,
+    );
+    if (payload.error) {
+      lastRestorePlan = null;
+      lastRestorePlanToken = null;
+    } else {
+      lastRestorePlan = payload.data;
+      lastRestorePlanToken = payload.data.planToken;
+    }
+    updateRestoreButton();
+  })();
 });
 
-document.querySelector('#restore-button').addEventListener('click', () => {
+restoreButton.addEventListener('click', () => {
+  if (lastRestorePlanToken === null) {
+    renderResult(
+      restorePanel,
+      {
+        data: null,
+        error: {
+          code: 'restore_preview_required',
+          message: 'Restore execution requires a current preview.',
+          recoverable: true,
+          recommended_action: 'Run a restore preview, review the path effects, then execute.',
+        },
+        root: rootInput.value.trim(),
+        state: 'blocked',
+        technical_details: {
+          native_authority: 'Expflow',
+          operation: 'restore.execute',
+          raw_storage_access: false,
+          surface: 'Expflow GUI client',
+        },
+      },
+      () => '',
+    );
+    return;
+  }
   if (
     !window.confirm(
       'Restore will create a forward commit and may overwrite paths when forced. Continue?',
@@ -295,13 +355,25 @@ document.querySelector('#restore-button').addEventListener('click', () => {
   ) {
     return;
   }
-  void run(
-    'Executing restore...',
-    restorePanel,
-    '/api/restore',
-    { ...rootPayload(), overwrite: restoreForce.checked, reference: restoreReference.value.trim() },
-    renderReceipt,
-  );
+  void (async () => {
+    const payload = await run(
+      'Executing restore...',
+      restorePanel,
+      '/api/restore',
+      {
+        ...rootPayload(),
+        overwrite: restoreForce.checked,
+        reference: restoreReference.value.trim(),
+        planToken: lastRestorePlanToken,
+      },
+      renderReceipt,
+    );
+    if (!payload.error) {
+      lastRestorePlan = null;
+      lastRestorePlanToken = null;
+      updateRestoreButton();
+    }
+  })();
 });
 
 document.querySelector('#receipt-button').addEventListener('click', () => {
@@ -318,5 +390,13 @@ document.querySelector('#clear-button').addEventListener('click', () => {
   renderTechnical({});
   stateSummary.textContent = 'Cleared technical details.';
 });
+
+// Initialize restore button state
+updateRestoreButton();
+
+// Inject request token from meta tag (set by server at page serve time)
+if (pageToken.length === 0) {
+  console.warn('No request token found on page. API requests may be rejected.');
+}
 
 renderTechnical(lastPayload);

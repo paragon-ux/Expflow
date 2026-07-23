@@ -14,7 +14,7 @@
 
 ## 1. Practical Status Statement
 
-> Expflow `v1.1.0` is the current release candidate built on the published `v1.0.1` implementation baseline. All Build Week Phases 1–7 are accepted, consolidated, and represented on `feat/build-week-integration`. BW-A (Phases 1–2), BW-B (Phases 3–5), and BW-C (Phases 6–7) gate reviews all returned PASS with no verified gate findings. Phase 7 completed one real repository-owned pilot workflow using the ordinary CLI; a portability defect (machine-absolute `root_path`) was discovered and fixed; restore-safety refusal was exercised. Pilot limitations (one operator, one workflow, no external participants) remain visible. Expflow GUI is implemented and internally verified but has no pilot or empirical evidence. There is no Guerilla profile or Guerilla causal event-view GUI.
+> Expflow `v1.1.0` is the current release built on the published `v1.0.1` implementation baseline. All Build Week Phases 1–7 are accepted, consolidated into PR #25, merged into `main` at `a1eaaad4c226eb3722f13804ece561b8cf275378`, and released as `v1.1.0`. BW-A (Phases 1–2), BW-B (Phases 3–5), and BW-C (Phases 6–7) gate reviews all returned PASS with no verified gate findings. Phase 7 completed one real repository-owned pilot workflow using the ordinary CLI; a portability defect (machine-absolute `root_path`) was discovered and fixed; restore-safety refusal was exercised. Pilot limitations (one operator, one workflow, no external participants) remain visible. Expflow GUI is implemented and internally verified but has no pilot or empirical evidence. There is no Guerilla profile or Guerilla causal event-view GUI.
 
 This matrix deliberately separates implementation from exposure, validation, adoption, and product proof.
 
@@ -37,10 +37,10 @@ The historical `EXPFLOW_WORKFLOW_CURRENT.md` must be retained or renamed as v1 b
 
 | Gate                                      | Phases | State   | Blocking condition                                                                                      |
 | ----------------------------------------- | -----: | ------- | ------------------------------------------------------------------------------------------------------- |
-| BW-A — UX Control Surface Ready           |    1–2 | CLOSED  | Previously represented by PR #24; now included in the consolidated Phase 1–7 integration PR.            |
+| BW-A — UX Control Surface Ready           |    1–2 | CLOSED  | Merged in consolidated PR #25.                                                                          |
 | BW-B — Workflow Portability Surface Ready |    3–5 | CLOSED  | Phases 3, 4, and 5 accepted, merged, post-merge validated, and gate-reviewed with no verified findings. |
 | BW-C — Pilot Proven                       |    6–7 | CLOSED  | Phase 7 pilot completed, BW-C gate review PASS, consolidated integration at `68a2408`.                  |
-| BW-D — Causal Integration Ready           |    8–9 | BLOCKED | Deferred pending post-BW-C product assessment. Phase 8 not authorized.                                  |
+| BW-D — Causal Integration Ready           |    8–9 | BLOCKED | Deferred pending post-BW-C product assessment. Phases 8–9 not authorized.                               |
 
 The former plan to correlate Expflow completion with a Guerilla external-compatible adapter gate is superseded. Guerilla is now profile-driven and its GUI is a causal event view implemented at the end of this workflow.
 
