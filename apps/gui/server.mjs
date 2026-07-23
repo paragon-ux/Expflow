@@ -4,6 +4,7 @@ import { createServer } from 'node:http';
 import { readFile } from 'node:fs/promises';
 import { extname, join, normalize, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { VERSION } from '../../dist/core/version.js';
 import { createGuiBridge } from '../../dist/index.js';
 
 const __dirname = fileURLToPath(new URL('.', import.meta.url));
@@ -236,17 +237,13 @@ async function handleApi(request, response) {
     '/api/sync': () => bridge.executeSync(body),
     '/api/sync/plan': () => bridge.planSync(body),
     '/api/verify': () => bridge.verify(body),
-    '/api/capabilities': () => {
-      // Phase 6: capabilities endpoint — returns the capability descriptor
-      // without requiring a project root (read-only, no token needed for this route)
-      return {
-        version: '1.1.1',
-        commandFamilies: ['project','material','workflow','evidence','authority','conflicts','decisions','package','reporting'],
-        features: { jsonOutput: true, nonInteractive: true, planApply: true, actorAttribution: true, capabilityDiscovery: true },
-        supportedOs: ['windows','macos','linux'],
-        nodeVersions: ['20','22'],
-      };
-    },
+    '/api/capabilities': () => ({
+      version: VERSION,
+      commandFamilies: ['project','material','workflow','evidence','authority','conflicts','decisions','package','reporting'],
+      features: { jsonOutput: true, nonInteractive: true, planApply: true, actorAttribution: true, capabilityDiscovery: true },
+      supportedOs: ['windows','macos','linux'],
+      nodeVersions: ['20','22'],
+    }),
   };
 
   const route = routes[pathname];

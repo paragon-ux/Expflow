@@ -409,6 +409,15 @@ async function main(): Promise<void> {
 
   const runtime = createRuntime();
 
+  if (parsed.nonInteractive) {
+    // Phase 5: --non-interactive guarantees no TTY requirement
+    // Operations that would prompt fail with exit 1
+    if (parsed.command === 'restore' && !parsed.overwrite && !parsed.yes) {
+      process.stderr.write('error: --non-interactive requires --force or --yes for restore\n');
+      process.exit(1);
+    }
+  }
+
   try {
     if (parsed.command === 'capabilities') {
       const { ApplicationService } = await import('../application/service.js');
