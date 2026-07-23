@@ -1,5 +1,16 @@
 # Changelog
 
+## v1.1.1 - 2026-07-23
+
+### Added
+
+- Included the local Expflow GUI in the npm package distribution (`expflow-gui` binary now shipped with `expflow` npm package).
+
+### Release
+
+- Release metadata and documentation frozen for the v1.1.1 release candidate.
+- `expflow-hooks` intentionally stays at `v1.1.0`; no Python-package changes in this release.
+
 ## v1.1.0 - 2026-07-21
 
 ### Added
