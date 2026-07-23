@@ -235,10 +235,12 @@ export class ApplicationService {
   }
 
   // ── Scaffolds (TODO: wire to runtime in Phase 5/6) ────────
-  workflowList(actor: Actor): Promise<ApplicationResult> {
+  // eslint-disable-next-line @typescript-eslint/require-await
+  async workflowList(actor: Actor): Promise<ApplicationResult> {
     return ok('workflowList', actor, { workflows: [] });
   }
-  conflicts(actor: Actor): Promise<ApplicationResult> {
+  // eslint-disable-next-line @typescript-eslint/require-await
+  async conflicts(actor: Actor): Promise<ApplicationResult> {
     return ok('conflicts', actor, { conflicts: [], needsAttention: false });
   }
 }
