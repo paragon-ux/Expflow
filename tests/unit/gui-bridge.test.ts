@@ -1,4 +1,4 @@
-import { mkdtempSync, rmSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 import { describe, expect, test } from 'vitest';
@@ -358,7 +358,7 @@ describe('Expflow GUI bridge', () => {
     }
   });
 
-  test('refuses restore when path effects change after preview', async () => {
+  test('refuses restore when target path differs from preview (node restore)', async () => {
     const root = tempProject();
     try {
       const bridge = createGuiBridge();
@@ -370,7 +370,7 @@ describe('Expflow GUI bridge', () => {
         planToken: p1.data?.planToken,
         root,
       });
-      const head1 = requireValue(r1.data?.new_head);
+      const firstHead = requireValue(r1.data?.new_head);
       writeFileSync(join(root, 'note.txt'), 'two\n');
       const p2 = await bridge.planSync({ root });
       await bridge.executeSync({
@@ -379,90 +379,61 @@ describe('Expflow GUI bridge', () => {
         root,
       });
 
-      // Preview restore without local drift
+      // Get node reference for the first version of note.txt
+      const nodeHistory = await bridge.getNodeHistory({ root, nodeHistoryPath: 'note.txt' });
+      const entries =
+        (nodeHistory.data?.node_history as Array<{ restore_reference: string }>) ?? [];
+      const nodeReference = entries.length > 0 ? entries[0].restore_reference : `tree:${firstHead}`;
+
+      // Preview node restore to restored-a.txt
       const preview = await bridge.planRestore({
-        overwrite: true,
-        reference: `tree:${head1}`,
+        overwrite: false,
+        reference: nodeReference,
         root,
+        targetPath: 'restored-a.txt',
       });
+      expect(
+        preview.data?.path_effects.some(
+          (e: { relative_path: string }) => e.relative_path === 'restored-a.txt',
+        ),
+      ).toBe(true);
       const planToken = preview.data?.planToken;
+      const headBefore = (await bridge.inspectProject({ root })).data?.status.head_tree_revision_id;
 
-      // Add local drift AFTER preview changes path effects
-      writeFileSync(join(root, 'note.txt'), 'changed after preview\n');
-
+      // Execute with different target path
       const result = await bridge.executeRestore({
-        overwrite: true,
-        reference: `tree:${head1}`,
-        planToken,
+        overwrite: false,
+        reference: nodeReference,
         root,
+        targetPath: 'restored-b.txt',
+        planToken,
       });
       expect(result.state).toBe('blocked');
-      expect(result.error?.code).toBe('restore_conflicts_changed');
+      expect(result.error?.code).toBe('restore_path_effects_changed');
+      expect(existsSync(join(root, 'restored-a.txt'))).toBe(false);
+      expect(existsSync(join(root, 'restored-b.txt'))).toBe(false);
+
+      // Head unchanged
+      const status = await bridge.inspectProject({ root });
+      expect(status.data?.status.head_tree_revision_id).toBe(headBefore);
     } finally {
       cleanup(root);
     }
   });
 
-  test('refuses restore when drift_kind changes after preview', async () => {
+  test('refuses restore when only drift_kind changes after preview', async () => {
     const root = tempProject();
     try {
       const bridge = createGuiBridge();
       await bridge.initializeProject({ root });
       writeFileSync(join(root, 'note.txt'), 'one\n');
-      writeFileSync(join(root, 'other.txt'), 'x\n');
       const p1 = await bridge.planSync({ root });
       const r1 = await bridge.executeSync({
         expectedHead: p1.data?.previous_head,
         planToken: p1.data?.planToken,
         root,
       });
-      const head1 = requireValue(r1.data?.new_head);
-      writeFileSync(join(root, 'other.txt'), 'y\n');
-      const p2 = await bridge.planSync({ root });
-      await bridge.executeSync({
-        expectedHead: p2.data?.previous_head,
-        planToken: p2.data?.planToken,
-        root,
-      });
-
-      // Preview restore
-      const preview = await bridge.planRestore({
-        overwrite: true,
-        reference: `tree:${head1}`,
-        root,
-      });
-      const planToken = preview.data?.planToken;
-
-      // Delete other.txt after preview — changes drift_kind for that path
-      rmSync(join(root, 'other.txt'));
-
-      const result = await bridge.executeRestore({
-        overwrite: true,
-        reference: `tree:${head1}`,
-        planToken,
-        root,
-      });
-      expect(result.state).toBe('blocked');
-      expect(result.error?.code).toBe('restore_conflicts_changed');
-    } finally {
-      cleanup(root);
-    }
-  });
-
-  test('refuses restore when preserved drift paths change after preview', async () => {
-    const root = tempProject();
-    try {
-      const bridge = createGuiBridge();
-      await bridge.initializeProject({ root });
-      writeFileSync(join(root, 'note.txt'), 'one\n');
-      writeFileSync(join(root, 'unrelated.txt'), 'x\n');
-      const p1 = await bridge.planSync({ root });
-      const r1 = await bridge.executeSync({
-        expectedHead: p1.data?.previous_head,
-        planToken: p1.data?.planToken,
-        root,
-      });
-      const head1 = requireValue(r1.data?.new_head);
+      const firstHead = requireValue(r1.data?.new_head);
       writeFileSync(join(root, 'note.txt'), 'two\n');
       const p2 = await bridge.planSync({ root });
       await bridge.executeSync({
@@ -470,28 +441,118 @@ describe('Expflow GUI bridge', () => {
         planToken: p2.data?.planToken,
         root,
       });
+      // Unsynchronised local drift
+      writeFileSync(join(root, 'note.txt'), 'local modified value\n');
 
-      // Preview restore: note.txt is restored, unrelated.txt should be preserved drift
+      // Preview: restore to firstHead, note.txt is conflicting with drift_kind=modified
       const preview = await bridge.planRestore({
         overwrite: true,
-        reference: `tree:${head1}`,
+        reference: `tree:${firstHead}`,
         root,
       });
+      expect(preview.data?.conflicting_paths).toEqual(['note.txt']);
+      expect(preview.data?.requires_force).toBe(true);
+      const effect = (preview.data?.path_effects as Array<Record<string, unknown>>).find(
+        (e) => e.relative_path === 'note.txt',
+      );
+      expect(effect).toMatchObject({
+        conflicting: true,
+        drift_kind: 'modified',
+        effect: 'update',
+      });
       const planToken = preview.data?.planToken;
+      const headBefore = (await bridge.inspectProject({ root })).data?.status.head_tree_revision_id;
 
-      // Modify unrelated.txt after preview — changes path effects since content differs
-      writeFileSync(join(root, 'unrelated.txt'), 'changed drift\n');
+      // Delete note.txt — drift_kind becomes 'removed', but conflicting stays true,
+      // conflicting_paths unchanged, requires_force unchanged, overwrite unchanged
+      rmSync(join(root, 'note.txt'));
 
       const result = await bridge.executeRestore({
         overwrite: true,
-        reference: `tree:${head1}`,
+        reference: `tree:${firstHead}`,
         planToken,
         root,
       });
       expect(result.state).toBe('blocked');
       expect(result.error?.code).toBe('restore_path_effects_changed');
+      expect(existsSync(join(root, 'note.txt'))).toBe(false);
+
+      // Head unchanged
+      const status = await bridge.inspectProject({ root });
+      expect(status.data?.status.head_tree_revision_id).toBe(headBefore);
     } finally {
       cleanup(root);
     }
+  });
+
+  test('refuses restore when only preserved drift changes after preview', async () => {
+    const root = tempProject();
+    try {
+      const bridge = createGuiBridge();
+      await bridge.initializeProject({ root });
+      writeFileSync(join(root, 'note.txt'), 'one\n');
+      const p1 = await bridge.planSync({ root });
+      const r1 = await bridge.executeSync({
+        expectedHead: p1.data?.previous_head,
+        planToken: p1.data?.planToken,
+        root,
+      });
+      const firstHead = requireValue(r1.data?.new_head);
+      writeFileSync(join(root, 'note.txt'), 'two\n');
+      const p2 = await bridge.planSync({ root });
+      await bridge.executeSync({
+        expectedHead: p2.data?.previous_head,
+        planToken: p2.data?.planToken,
+        root,
+      });
+      // Untracked file — never synced, absent from head and restore target
+      writeFileSync(join(root, 'untracked-a.txt'), 'a\n');
+
+      const preview = await bridge.planRestore({
+        overwrite: false,
+        reference: `tree:${firstHead}`,
+        root,
+      });
+      expect(preview.data?.preserved_drift_paths).toContain('untracked-a.txt');
+      expect(
+        (preview.data?.path_effects as Array<Record<string, unknown>>).some(
+          (e) => e.relative_path === 'untracked-a.txt',
+        ),
+      ).toBe(false);
+      expect(preview.data?.conflicting_paths).not.toContain('untracked-a.txt');
+      const planToken = preview.data?.planToken;
+      const headBefore = (await bridge.inspectProject({ root })).data?.status.head_tree_revision_id;
+
+      // Add second untracked file — only preserved drift changes
+      writeFileSync(join(root, 'untracked-b.txt'), 'b\n');
+
+      const result = await bridge.executeRestore({
+        overwrite: false,
+        reference: `tree:${firstHead}`,
+        planToken,
+        root,
+      });
+      expect(result.state).toBe('blocked');
+      expect(result.error?.code).toBe('restore_drift_changed');
+      expect(readFileSync(join(root, 'untracked-a.txt'), 'utf8')).toBe('a\n');
+      expect(readFileSync(join(root, 'untracked-b.txt'), 'utf8')).toBe('b\n');
+
+      // Head unchanged
+      const status = await bridge.inspectProject({ root });
+      expect(status.data?.status.head_tree_revision_id).toBe(headBefore);
+    } finally {
+      cleanup(root);
+    }
+  });
+
+  test('restorePathEffectsDigest distinguishes drift_kind values', async () => {
+    const { restorePathEffectsDigest } = await import('../../src/material/digest.js');
+    const modified = restorePathEffectsDigest([
+      { conflicting: true, drift_kind: 'modified', effect: 'update', relative_path: 'note.txt' },
+    ]);
+    const removed = restorePathEffectsDigest([
+      { conflicting: true, drift_kind: 'removed', effect: 'update', relative_path: 'note.txt' },
+    ]);
+    expect(modified).not.toBe(removed);
   });
 });
