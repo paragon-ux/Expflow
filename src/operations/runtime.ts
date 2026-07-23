@@ -7,7 +7,7 @@ import { normalizeProjectRoot, PROJECTION_ROOT } from '../core/paths.js';
 import { VERSION } from '../core/version.js';
 import { scanWorkingTree, defaultPathSelector } from '../scan/scanner.js';
 import { classifySyncPlanChanges, type PendingChangeDetail } from '../material/changes.js';
-import { treeContentDigest } from '../material/digest.js';
+import { restorePathEffectsDigest, treeContentDigest } from '../material/digest.js';
 import { planCandidateTree } from '../material/planner.js';
 import {
   createLock,
@@ -826,14 +826,7 @@ export function createRuntime(): ExpflowRuntime {
         }
         // Compare path effects digest
         if (input.expectedPathEffectsDigest !== undefined) {
-          const actualDigest = createHash('sha256')
-            .update(
-              plan.path_effects
-                .map((e) => `${e.relative_path}\x00${e.effect}\x00${e.conflicting ? '1' : '0'}`)
-                .sort()
-                .join('\x00'),
-            )
-            .digest('hex');
+          const actualDigest = restorePathEffectsDigest(plan.path_effects);
           if (actualDigest !== input.expectedPathEffectsDigest) {
             throw new ExpflowError(
               'restore_path_effects_changed',

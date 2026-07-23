@@ -1,6 +1,7 @@
 import { createHash, randomUUID } from 'node:crypto';
 import { resolve } from 'node:path';
 import { ExpflowError, toExpflowError } from '../core/errors.js';
+import { restorePathEffectsDigest } from '../material/digest.js';
 import {
   createRuntime,
   readCommittedReceipt,
@@ -386,14 +387,7 @@ export function createGuiBridge(runtime: ExpflowRuntime = createRuntime()): GuiB
       return guarded('restore.preview', input.root, async (root) => {
         const plan = await runtime.planRestore({ ...input, root });
         const planToken = randomUUID();
-        const pathEffectsDigest = createHash('sha256')
-          .update(
-            plan.path_effects
-              .map((e) => `${e.relative_path}\x00${e.effect}\x00${e.conflicting ? '1' : '0'}`)
-              .sort()
-              .join('\x00'),
-          )
-          .digest('hex');
+        const pathEffectsDigest = restorePathEffectsDigest(plan.path_effects);
         const preservedDriftDigest = createHash('sha256')
           .update([...plan.preserved_drift_paths].sort().join('\x00'))
           .digest('hex');

@@ -132,25 +132,35 @@ try {
     return p;
   })();
 
-  // Launch the installed binary via shell (handles .cmd on Windows, shebang on Unix)
-  // Resolve server.mjs from installed package root
-  const serverPath = resolve(installDir, 'node_modules', 'expflow', 'apps', 'gui', 'server.mjs');
-  const gui = spawn(process.execPath, [serverPath], {
-    cwd: installDir,
-    env: { ...process.env, EXPFLOW_GUI_PORT: String(guiPort) },
-    stdio: ['ignore', 'pipe', 'pipe'],
-  });
+  // Launch the installed expflow-gui binary shim
+  // Windows: cmd.exe /d /s /c guiPath  (bin shims are .cmd not executable directly)
+  // Unix:    spawn(guiPath, [])         (bin shims are shebang scripts/symlinks)
+  const isWin = process.platform === 'win32';
+  const gui = isWin
+    ? spawn('cmd.exe', ['/d', '/s', '/c', guiPath], {
+        cwd: installDir,
+        env: { ...process.env, EXPFLOW_GUI_PORT: String(guiPort) },
+        stdio: ['ignore', 'pipe', 'pipe'],
+      })
+    : spawn(guiPath, [], {
+        cwd: installDir,
+        env: { ...process.env, EXPFLOW_GUI_PORT: String(guiPort) },
+        stdio: ['ignore', 'pipe', 'pipe'],
+      });
 
   function killGui() {
-    gui.kill();
-    try {
-      spawnSync('taskkill', ['/F', '/T', '/PID', String(gui.pid)], {
-        stdio: 'ignore',
-        timeout: 3000,
-      });
-    } catch {
-      // Best-effort
+    // On Windows, kill the cmd.exe process tree (handles node child)
+    if (isWin && gui.pid !== undefined) {
+      try {
+        spawnSync('taskkill', ['/F', '/T', '/PID', String(gui.pid)], {
+          stdio: 'ignore',
+          timeout: 3000,
+        });
+      } catch {
+        // Best-effort
+      }
     }
+    gui.kill();
   }
 
   let guiStdout = '';

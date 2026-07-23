@@ -8,11 +8,11 @@
 
 ## 1. Entry points
 
-| Entry                                    | Action                        | Expected result                                                                          |
-| ---------------------------------------- | ----------------------------- | ---------------------------------------------------------------------------------------- |
-| `expflow-gui` from npm                   | Launch from installed package | Server starts on `http://127.0.0.1:4173`, prints URL and request token                   |
-| `node apps/gui/server.mjs` from checkout | Launch from repository        | Same as above                                                                            |
-| Browser at `http://127.0.0.1:4173`       | Open GUI shell                | Index page loads with project root input, panels, and request token injected as meta tag |
+| Entry                                    | Action                        | Expected result                                                                                                 |
+| ---------------------------------------- | ----------------------------- | --------------------------------------------------------------------------------------------------------------- |
+| `expflow-gui` from npm                   | Launch from installed package | Server starts on `http://127.0.0.1:4173`, prints loopback URL; request token is injected into HTML, not printed |
+| `node apps/gui/server.mjs` from checkout | Launch from repository        | Server starts on loopback URL; request token is injected into HTML, not printed                                 |
+| Browser at `http://127.0.0.1:4173`       | Open GUI shell                | Index page loads with project root input, panels, and request token injected as meta tag                        |
 
 ---
 
@@ -131,11 +131,22 @@ All refusals are non-mutating and recommend running Preview again.
 
 ## 12. Restore conflict refusal
 
-| Flow                    | Setup                                 | Action            | Expected result                       | Mutation |
-| ----------------------- | ------------------------------------- | ----------------- | ------------------------------------- | -------- |
-| Conflicting drift shown | Drifted file, restore would overwrite | Preview           | `conflicting: true` on affected paths | No       |
-| Force required          | Conflicting drift                     | Preview           | `requires_force: true`                | No       |
-| Force override          | Check "Force overwrite"               | Preview + Execute | Restore proceeds                      | Yes      |
+| Flow                        | Setup                                  | Action            | Expected result                       | Mutation |
+| --------------------------- | -------------------------------------- | ----------------- | ------------------------------------- | -------- |
+| Conflicting drift shown     | Drifted file, restore would overwrite  | Preview           | `conflicting: true` on affected paths | No       |
+| Force required              | Conflicting drift                      | Preview           | `requires_force: true`                | No       |
+| Force override              | Check "Force overwrite", click Preview | Preview + Execute | Restore proceeds                      | Yes      |
+| Force changed after preview | Preview with force, uncheck, execute   | Execute           | `restore_overwrite_changed`           | No       |
+
+Restore with Force requires:
+
+1. Check "Force overwrite".
+2. Run restore Preview (preview binds overwrite=true).
+3. Review the force-enabled plan.
+4. Execute without changing Force.
+5. Restore succeeds.
+
+Changing Force after preview returns `restore_overwrite_changed` and requires a new preview.
 
 Restore remains byte-exact, append-only, and forward-committing.
 
@@ -179,14 +190,14 @@ Server working directory is never substituted for a blank root.
 
 ## 16. Installed-package launch
 
-| Flow                        | Setup                               | Action                  | Expected result                     |
-| --------------------------- | ----------------------------------- | ----------------------- | ----------------------------------- |
-| `expflow-gui` binary        | `npm install -g expflow@1.1.1`      | Run `expflow-gui`       | Server starts, prints URL and token |
-| Port override               | `EXPFLOW_GUI_PORT=4200 expflow-gui` | Server on port 4200     | URL shows port 4200                 |
-| Port unavailable            | Port already in use                 | Launch                  | Fails with clear error              |
-| `expflow` CLI unchanged     | Installed package                   | Run `expflow --version` | `1.1.1`, four commands unchanged    |
-| GUI assets served           | Browser open                        | Navigate to URL         | Full GUI shell loads                |
-| No source checkout required | Delete repo, keep npm global        | Run `expflow-gui`       | Works from installed package        |
+| Flow                        | Setup                               | Action                  | Expected result                                                          |
+| --------------------------- | ----------------------------------- | ----------------------- | ------------------------------------------------------------------------ |
+| `expflow-gui` binary        | `npm install -g expflow@1.1.1`      | Run `expflow-gui`       | Server starts, prints loopback URL; token injected into HTML not printed |
+| Port override               | `EXPFLOW_GUI_PORT=4200 expflow-gui` | Server on port 4200     | URL shows port 4200                                                      |
+| Port unavailable            | Port already in use                 | Launch                  | Fails with clear error                                                   |
+| `expflow` CLI unchanged     | Installed package                   | Run `expflow --version` | `1.1.1`, four commands unchanged                                         |
+| GUI assets served           | Browser open                        | Navigate to URL         | Full GUI shell loads                                                     |
+| No source checkout required | Delete repo, keep npm global        | Run `expflow-gui`       | Works from installed package                                             |
 
 ---
 
@@ -201,7 +212,7 @@ Server working directory is never substituted for a blank root.
 ## 18. Automated test references
 
 - API/boundary tests: `tests/unit/gui-bridge.test.ts` (bridge-level binding tests)
-- Installed launch test: `tests/contracts/package-verify.ts` (launches `expflow-gui`, makes authenticated API request)
+- Installed launch test: `tests/contracts/package-verify.ts` (launches the installed `expflow-gui` binary shim, makes authenticated API request)
 - Sync binding tests: `tests/unit/gui-bridge.test.ts`
 - Restore binding tests: `tests/unit/gui-bridge.test.ts`
 

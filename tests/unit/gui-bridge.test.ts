@@ -258,4 +258,103 @@ describe('Expflow GUI bridge', () => {
     expect(whitespace.state).toBe('error');
     expect(whitespace.error?.code).toBe('root_required');
   });
+
+  test('refuses restore when overwrite choice differs from preview', async () => {
+    const root = tempProject();
+    try {
+      const bridge = createGuiBridge();
+      await bridge.initializeProject({ root });
+      writeFileSync(join(root, 'note.txt'), 'one\n');
+      const p1 = await bridge.planSync({ root });
+      const r1 = await bridge.executeSync({
+        expectedHead: p1.data?.previous_head,
+        planToken: p1.data?.planToken,
+        root,
+      });
+      const head1 = requireValue(r1.data?.new_head);
+      writeFileSync(join(root, 'note.txt'), 'two\n');
+      const p2 = await bridge.planSync({ root });
+      await bridge.executeSync({
+        expectedHead: p2.data?.previous_head,
+        planToken: p2.data?.planToken,
+        root,
+      });
+      writeFileSync(join(root, 'note.txt'), 'conflicting drift\n');
+
+      // Preview with overwrite=false
+      const preview = await bridge.planRestore({
+        overwrite: false,
+        reference: `tree:${head1}`,
+        root,
+      });
+      // Should be blocked because there are conflicts
+      const planToken = preview.data?.planToken;
+
+      // Execute with overwrite=true — mismatched from preview
+      if (planToken !== undefined) {
+        const result = await bridge.executeRestore({
+          overwrite: true,
+          reference: `tree:${head1}`,
+          planToken,
+          root,
+        });
+        expect(result.state).toBe('blocked');
+        expect(result.error?.code).toBe('restore_overwrite_changed');
+      }
+    } finally {
+      cleanup(root);
+    }
+  });
+
+  test('refuses restore with reused plan token', async () => {
+    const root = tempProject();
+    try {
+      const bridge = createGuiBridge();
+      await bridge.initializeProject({ root });
+      writeFileSync(join(root, 'note.txt'), 'one\n');
+      const p1 = await bridge.planSync({ root });
+      const r1 = await bridge.executeSync({
+        expectedHead: p1.data?.previous_head,
+        planToken: p1.data?.planToken,
+        root,
+      });
+      const head1 = requireValue(r1.data?.new_head);
+      writeFileSync(join(root, 'note.txt'), 'two\n');
+      const p2 = await bridge.planSync({ root });
+      await bridge.executeSync({
+        expectedHead: p2.data?.previous_head,
+        planToken: p2.data?.planToken,
+        root,
+      });
+      writeFileSync(join(root, 'note.txt'), 'local drift\n');
+
+      const preview = await bridge.planRestore({
+        overwrite: true,
+        reference: `tree:${head1}`,
+        root,
+      });
+      const planToken = preview.data?.planToken;
+
+      // First execution succeeds
+      const first = await bridge.executeRestore({
+        overwrite: true,
+        reference: `tree:${head1}`,
+        planToken,
+        root,
+      });
+      expect(first.state).toBe('success');
+
+      // Second execution with same token fails
+      const second = await bridge.executeRestore({
+        overwrite: true,
+        reference: `tree:${head1}`,
+        planToken,
+        root,
+      });
+      expect(second.state).toBe('blocked');
+      expect(second.error?.code).toBe('restore_plan_expired');
+    } finally {
+      cleanup(root);
+    }
+  });
 });

@@ -2,6 +2,7 @@ import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import { canonicalJson, type JsonValue } from '../core/json.js';
 import type { PathSelectorRecord, TreeEntryRecord } from './types.js';
+import type { RestorePathEffect } from '../operations/restore-plan.js';
 
 export function sha256Bytes(bytes: Buffer | string): string {
   return `sha256:${createHash('sha256').update(bytes).digest('hex')}`;
@@ -46,4 +47,19 @@ export function treeContentDigest(
     },
   };
   return sha256Bytes(canonicalJson(preimage));
+}
+
+/** Shared restore path-effects canonical digest. Bridge and runtime must use the same logic. */
+export function restorePathEffectsDigest(effects: readonly RestorePathEffect[]): string {
+  return createHash('sha256')
+    .update(
+      effects
+        .map(
+          (e) =>
+            `${e.relative_path}\x00${e.effect}\x00${e.drift_kind ?? ''}\x00${e.conflicting ? '1' : '0'}`,
+        )
+        .sort()
+        .join('\x00'),
+    )
+    .digest('hex');
 }

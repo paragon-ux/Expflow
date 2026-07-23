@@ -81,6 +81,12 @@ function updateRestoreButton() {
   restoreButton.disabled = lastRestorePlanToken === null;
 }
 
+function invalidateRestorePreview() {
+  lastRestorePlan = null;
+  lastRestorePlanToken = null;
+  updateRestoreButton();
+}
+
 async function request(path, body) {
   const response = await fetch(path, {
     body: JSON.stringify(body),
@@ -362,7 +368,11 @@ document.querySelector('#plan-restore-button').addEventListener('click', () => {
       'Planning restore...',
       restorePanel,
       '/api/restore/plan',
-      { ...rootPayload(), reference: restoreReference.value.trim() },
+      {
+        ...rootPayload(),
+        reference: restoreReference.value.trim(),
+        overwrite: restoreForce.checked,
+      },
       renderRestorePlan,
     );
     if (payload.error) {
@@ -451,6 +461,7 @@ updateRestoreButton();
 rootInput.addEventListener('input', () => {
   inspectedRoot = null;
   initButton.disabled = true;
+  invalidateRestorePreview();
 });
 
 // Inject request token from meta tag (set by server at page serve time)
@@ -460,5 +471,8 @@ if (pageToken.length === 0) {
     'No request token found. Ensure you are connecting through the Expflow GUI server.';
   console.warn('No request token found on page. API requests may be rejected.');
 }
+
+restoreReference.addEventListener('input', invalidateRestorePreview);
+restoreForce.addEventListener('change', invalidateRestorePreview);
 
 renderTechnical(lastPayload);
