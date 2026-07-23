@@ -14,7 +14,8 @@ The next release (`v1.1.1`) will include the Expflow GUI in the npm package.
 Once published to the npm registry, install globally and launch the GUI:
 
 ```bash
-npm install -g expflow
+npm install -g expflow@1.1.1
+expflow --version
 expflow-gui
 ```
 
@@ -51,12 +52,13 @@ From a repository checkout (development):
 ```bash
 git clone https://github.com/paragon-ux/Expflow.git
 cd Expflow
-npm install
+npm ci
 npm run build
-expflow init
-expflow status
-expflow --version            # → 1.1.1
-expflow-gui                  # → http://127.0.0.1:4173
+
+node dist/cli/index.js init
+node dist/cli/index.js status
+node dist/cli/index.js --version   # → 1.1.1
+node apps/gui/server.mjs           # → http://127.0.0.1:4173
 ```
 
 Once published to the npm registry, install globally:
