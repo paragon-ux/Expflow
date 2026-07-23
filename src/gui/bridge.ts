@@ -210,6 +210,19 @@ export function createGuiBridge(runtime: ExpflowRuntime = createRuntime()): GuiB
   const syncPlans = new Map<string, StoredPlan<SyncBinding>>();
   const restorePlans = new Map<string, StoredPlan<RestoreBinding>>();
 
+  function entryDigestEntry(e: object): string {
+    const path =
+      'relative_path' in e && typeof (e as { relative_path?: unknown }).relative_path === 'string'
+        ? (e as { relative_path: string }).relative_path
+        : '';
+    const digest =
+      'node_content_digest' in e &&
+      typeof (e as { node_content_digest?: unknown }).node_content_digest === 'string'
+        ? (e as { node_content_digest: string }).node_content_digest
+        : '';
+    return `${path}\x00${digest}`;
+  }
+
   return {
     inspectProject(input: StatusInput): Promise<GuiOperationResult<GuiProjectSnapshot>> {
       return guarded('status', input.root, async (root) => {
@@ -246,15 +259,7 @@ export function createGuiBridge(runtime: ExpflowRuntime = createRuntime()): GuiB
         const plan = await runtime.planSync({ ...input, dryRun: true, root });
         const planToken = randomUUID();
         const changeDigest = createHash('sha256')
-          .update(
-            plan.entries
-              .map(
-                (e) =>
-                  `${String((e as Record<string, unknown>).relative_path ?? '')}\x00${String((e as Record<string, unknown>).node_content_digest ?? '')}`,
-              )
-              .sort()
-              .join('\x00'),
-          )
+          .update(plan.entries.map(entryDigestEntry).sort().join('\x00'))
           .digest('hex');
         syncPlans.set(planToken, {
           root,
@@ -333,15 +338,7 @@ export function createGuiBridge(runtime: ExpflowRuntime = createRuntime()): GuiB
         // Recompute and compare stable file digest to detect working-tree changes
         const currentPlan = await runtime.planSync({ root, dryRun: true });
         const currentDigest = createHash('sha256')
-          .update(
-            currentPlan.entries
-              .map(
-                (e) =>
-                  `${String((e as Record<string, unknown>).relative_path ?? '')}\x00${String((e as Record<string, unknown>).node_content_digest ?? '')}`,
-              )
-              .sort()
-              .join('\x00'),
-          )
+          .update(currentPlan.entries.map(entryDigestEntry).sort().join('\x00'))
           .digest('hex');
         if (currentDigest !== stored.binding.changeDigest) {
           syncPlans.delete(input.planToken);
@@ -403,8 +400,8 @@ export function createGuiBridge(runtime: ExpflowRuntime = createRuntime()): GuiB
             sourceRef: plan.source_ref,
             currentHead: plan.current_head,
             pathEffects: plan.path_effects,
-            conflicts: plan.conflicting_paths ?? [],
-            preservedDrift: plan.preserved_drift_paths ?? [],
+            conflicts: plan.conflicting_paths,
+            preservedDrift: plan.preserved_drift_paths,
             requiresForce: plan.requires_force,
           },
         });
@@ -509,7 +506,7 @@ export function createGuiBridge(runtime: ExpflowRuntime = createRuntime()): GuiB
           );
         }
         // Compare path effects, conflicts, and preserved drift
-        const currentConflicts = JSON.stringify([...(currentPlan.conflicting_paths ?? [])].sort());
+        const currentConflicts = JSON.stringify([...currentPlan.conflicting_paths].sort());
         const storedConflicts = JSON.stringify([...stored.binding.conflicts].sort());
         if (currentConflicts !== storedConflicts) {
           restorePlans.delete(input.planToken);
