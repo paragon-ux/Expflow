@@ -396,6 +396,9 @@ updateRestoreButton();
 
 // Inject request token from meta tag (set by server at page serve time)
 if (pageToken.length === 0) {
+  statusPill.textContent = 'error';
+  stateSummary.textContent =
+    'No request token found. Ensure you are connecting through the Expflow GUI server.';
   console.warn('No request token found on page. API requests may be rejected.');
 }
 

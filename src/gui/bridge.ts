@@ -1,4 +1,4 @@
-import { randomUUID } from 'node:crypto';
+import { createHash, randomUUID } from 'node:crypto';
 import { resolve } from 'node:path';
 import { ExpflowError, toExpflowError } from '../core/errors.js';
 import {
@@ -49,6 +49,7 @@ export interface GuiProjectSnapshot {
 
 export interface SyncBinding {
   readonly previousHead: string | null;
+  readonly changeDigest: string;
 }
 
 export interface RestoreBinding {
@@ -64,7 +65,6 @@ export interface RestoreBinding {
 interface StoredPlan<T> {
   readonly root: string;
   readonly binding: T;
-  readonly consumed: boolean;
 }
 
 export interface GuiBridge {
@@ -245,13 +245,31 @@ export function createGuiBridge(runtime: ExpflowRuntime = createRuntime()): GuiB
       return guarded('sync.preview', input.root, async (root) => {
         const plan = await runtime.planSync({ ...input, dryRun: true, root });
         const planToken = randomUUID();
+        const changeDigest = createHash('sha256')
+          .update(
+            plan.entries
+              .map(
+                (e) =>
+                  `${String((e as Record<string, unknown>).relative_path ?? '')}\x00${String((e as Record<string, unknown>).node_content_digest ?? '')}`,
+              )
+              .sort()
+              .join('\x00'),
+          )
+          .digest('hex');
         syncPlans.set(planToken, {
           root,
           binding: {
             previousHead: plan.previous_head,
+            changeDigest,
           },
-          consumed: false,
         });
+        // Evict oldest entries when plan count exceeds limit
+        if (syncPlans.size > 100) {
+          const oldest = syncPlans.keys().next().value;
+          if (oldest !== undefined) {
+            syncPlans.delete(oldest);
+          }
+        }
         return result({
           data: { ...plan, planToken },
           operation: 'sync.preview',
@@ -287,17 +305,6 @@ export function createGuiBridge(runtime: ExpflowRuntime = createRuntime()): GuiB
             },
           );
         }
-        if (stored.consumed) {
-          syncPlans.delete(input.planToken);
-          throw new ExpflowError(
-            'sync_plan_consumed',
-            'This sync plan was already committed. Run Preview again.',
-            {
-              recoverable: true,
-              recommendedAction: 'Run Preview to produce a new plan.',
-            },
-          );
-        }
         if (stored.root !== root) {
           syncPlans.delete(input.planToken);
           throw new ExpflowError(
@@ -319,6 +326,31 @@ export function createGuiBridge(runtime: ExpflowRuntime = createRuntime()): GuiB
             {
               recoverable: true,
               recommendedAction: 'Run Preview to see the updated changes.',
+            },
+          );
+        }
+
+        // Recompute and compare stable file digest to detect working-tree changes
+        const currentPlan = await runtime.planSync({ root, dryRun: true });
+        const currentDigest = createHash('sha256')
+          .update(
+            currentPlan.entries
+              .map(
+                (e) =>
+                  `${String((e as Record<string, unknown>).relative_path ?? '')}\x00${String((e as Record<string, unknown>).node_content_digest ?? '')}`,
+              )
+              .sort()
+              .join('\x00'),
+          )
+          .digest('hex');
+        if (currentDigest !== stored.binding.changeDigest) {
+          syncPlans.delete(input.planToken);
+          throw new ExpflowError(
+            'sync_candidate_changed',
+            'The working tree has changed since the preview. Run Preview again.',
+            {
+              recoverable: true,
+              recommendedAction: 'Run Preview to review the updated changes.',
             },
           );
         }
@@ -375,8 +407,13 @@ export function createGuiBridge(runtime: ExpflowRuntime = createRuntime()): GuiB
             preservedDrift: plan.preserved_drift_paths ?? [],
             requiresForce: plan.requires_force,
           },
-          consumed: false,
         });
+        if (restorePlans.size > 100) {
+          const oldest = restorePlans.keys().next().value;
+          if (oldest !== undefined) {
+            restorePlans.delete(oldest);
+          }
+        }
         return result({
           data: { ...plan, planToken },
           operation: 'restore.preview',
@@ -409,17 +446,6 @@ export function createGuiBridge(runtime: ExpflowRuntime = createRuntime()): GuiB
             {
               recoverable: true,
               recommendedAction: 'Run Preview again, then execute the refreshed plan.',
-            },
-          );
-        }
-        if (stored.consumed) {
-          restorePlans.delete(input.planToken);
-          throw new ExpflowError(
-            'restore_plan_consumed',
-            'This restore plan was already executed. Run Preview again.',
-            {
-              recoverable: true,
-              recommendedAction: 'Run Preview to produce a new plan.',
             },
           );
         }

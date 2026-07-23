@@ -293,7 +293,11 @@ jobs:
           NODE
           (
             cd release-artifacts
-            sha256sum npm/*.tgz release-manifest.json > SHA256SUMS
+            if [ "${SKIP_PYTHON}" = "false" ]; then
+              sha256sum npm/*.tgz python/*.tar.gz python/*.whl release-manifest.json > SHA256SUMS
+            else
+              sha256sum npm/*.tgz release-manifest.json > SHA256SUMS
+            fi
             sha256sum -c SHA256SUMS
           )
 

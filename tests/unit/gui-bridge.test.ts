@@ -193,14 +193,12 @@ describe('Expflow GUI bridge', () => {
       const planToken = preview.data?.planToken;
       const previewHead = preview.data?.previous_head;
 
-      // The planToken binding and head check provide consent safety.
-      // File content changes between preview and commit are accepted
-      // since the user explicitly confirmed the preview.
+      // Change working tree after preview — should be detected via changeDigest
       writeFileSync(join(root, 'a.txt'), 'changed after preview\n');
 
       const result = await bridge.executeSync({ expectedHead: previewHead, planToken, root });
-      // With head-consistent planToken binding, the commit proceeds
-      expect(result.state).toBe('success');
+      expect(result.state).toBe('blocked');
+      expect(result.error?.code).toBe('sync_candidate_changed');
     } finally {
       cleanup(root);
     }
