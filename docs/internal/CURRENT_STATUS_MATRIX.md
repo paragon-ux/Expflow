@@ -35,12 +35,12 @@ The historical `EXPFLOW_WORKFLOW_CURRENT.md` must be retained or renamed as v1 b
 
 ### Current Build Week workflow
 
-| Gate                                      | Phases | State   | Blocking condition                                                                                               |
-| ----------------------------------------- | -----: | ------- | ---------------------------------------------------------------------------------------------------------------- |
-| BW-A — UX Control Surface Ready           |    1–2 | CLOSED  | Previously represented by PR #24; now included in the consolidated Phase 1–7 integration PR. |
-| BW-B — Workflow Portability Surface Ready |    3–5 | CLOSED  | Phases 3, 4, and 5 accepted, merged, post-merge validated, and gate-reviewed with no verified findings.          |
-| BW-C — Pilot Proven                       |    6–7 | CLOSED  | Phase 7 pilot completed, BW-C gate review PASS, consolidated integration at `68a2408`.                           |
-| BW-D — Causal Integration Ready           |    8–9 | BLOCKED | Deferred pending post-BW-C product assessment. Phase 8 not authorized.                                           |
+| Gate                                      | Phases | State   | Blocking condition                                                                                      |
+| ----------------------------------------- | -----: | ------- | ------------------------------------------------------------------------------------------------------- |
+| BW-A — UX Control Surface Ready           |    1–2 | CLOSED  | Previously represented by PR #24; now included in the consolidated Phase 1–7 integration PR.            |
+| BW-B — Workflow Portability Surface Ready |    3–5 | CLOSED  | Phases 3, 4, and 5 accepted, merged, post-merge validated, and gate-reviewed with no verified findings. |
+| BW-C — Pilot Proven                       |    6–7 | CLOSED  | Phase 7 pilot completed, BW-C gate review PASS, consolidated integration at `68a2408`.                  |
+| BW-D — Causal Integration Ready           |    8–9 | BLOCKED | Deferred pending post-BW-C product assessment. Phase 8 not authorized.                                  |
 
 The former plan to correlate Expflow completion with a Guerilla external-compatible adapter gate is superseded. Guerilla is now profile-driven and its GUI is a causal event view implemented at the end of this workflow.
 
