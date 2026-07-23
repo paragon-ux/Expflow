@@ -96,6 +96,8 @@ Useful Phase 1 options:
 A local browser-based GUI is available in the repository (not in the npm package).
 
 ```bash
+git clone https://github.com/paragon-ux/Expflow.git
+cd Expflow
 npm install
 npm run build
 node apps/gui/server.mjs        # → http://127.0.0.1:4173

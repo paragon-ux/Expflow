@@ -5,7 +5,8 @@
 ## Quickstart
 
 ```bash
-# From the repository root:
+git clone https://github.com/paragon-ux/Expflow.git
+cd Expflow
 npm install
 npm run build
 node apps/gui/server.mjs
