@@ -160,10 +160,7 @@ export class ApplicationService {
     }
   }
 
-  async applySync(
-    actor: Actor,
-    plan: Plan,
-  ): Promise<ApplicationResult<{ receiptId: string }>> {
+  async applySync(actor: Actor, plan: Plan): Promise<ApplicationResult<{ receiptId: string }>> {
     try {
       const r = await this.rt.sync({
         root: this.root(),
