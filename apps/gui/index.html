@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Expflow GUI</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <header class="topbar">
+        <div>
+          <h1>Expflow GUI</h1>
+          <p id="state-summary">Choose a local project root.</p>
+        </div>
+        <div class="status-pill" id="status-pill">empty</div>
+      </header>
+
+      <section class="command-band" aria-label="Project controls">
+        <label class="root-field">
+          <span>Project root</span>
+          <input id="project-root" type="text" autocomplete="off" spellcheck="false" />
+        </label>
+        <div class="button-row">
+          <button id="inspect-button" type="button">Inspect</button>
+          <button id="init-button" type="button">Initialize</button>
+          <button id="recover-button" type="button">Recover</button>
+          <button id="verify-button" type="button">Verify</button>
+        </div>
+      </section>
+
+      <section class="workspace-grid">
+        <article class="panel" aria-labelledby="state-heading">
+          <h2 id="state-heading">Current State</h2>
+          <div id="state-panel" class="panel-body empty-state">No project loaded.</div>
+        </article>
+
+        <article class="panel" aria-labelledby="sync-heading">
+          <h2 id="sync-heading">Sync</h2>
+          <div class="button-row">
+            <button id="plan-sync-button" type="button">Preview</button>
+            <button id="sync-button" type="button">Commit</button>
+          </div>
+          <div id="sync-panel" class="panel-body empty-state">No sync preview yet.</div>
+        </article>
+
+        <article class="panel" aria-labelledby="history-heading">
+          <h2 id="history-heading">History</h2>
+          <div class="button-row">
+            <button id="history-button" type="button">Tree History</button>
+            <button id="node-history-button" type="button">Node History</button>
+          </div>
+          <label class="inline-field">
+            <span>Path</span>
+            <input id="node-history-path" type="text" autocomplete="off" spellcheck="false" />
+          </label>
+          <div id="history-panel" class="panel-body empty-state">No history loaded.</div>
+        </article>
+
+        <article class="panel" aria-labelledby="restore-heading">
+          <h2 id="restore-heading">Restore</h2>
+          <label class="inline-field">
+            <span>Reference</span>
+            <input id="restore-reference" type="text" autocomplete="off" spellcheck="false" />
+          </label>
+          <label class="check-field">
+            <input id="restore-force" type="checkbox" />
+            <span>Force overwrite</span>
+          </label>
+          <div class="button-row">
+            <button id="plan-restore-button" type="button">Preview</button>
+            <button id="restore-button" type="button">Restore</button>
+          </div>
+          <div id="restore-panel" class="panel-body empty-state">No restore preview yet.</div>
+        </article>
+
+        <article class="panel wide" aria-labelledby="receipt-heading">
+          <h2 id="receipt-heading">Receipts And Technical Details</h2>
+          <label class="inline-field">
+            <span>Operation id</span>
+            <input id="receipt-id" type="text" autocomplete="off" spellcheck="false" />
+          </label>
+          <div class="button-row">
+            <button id="receipt-button" type="button">Load Receipt</button>
+            <button id="clear-button" type="button">Clear</button>
+          </div>
+          <pre id="technical-panel" class="technical-output" tabindex="0">{}</pre>
+        </article>
+      </section>
+    </main>
+    <script type="module" src="./src/app.js"></script>
+  </body>
+</html>

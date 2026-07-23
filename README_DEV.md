@@ -1,6 +1,6 @@
 # Expflow Developer Guide
 
-**v1.0.1 release.** Local material-core runtime behavior is implemented for the four ordinary commands. Gate C ownership and reproduction behavior is implemented through library runtimes for authority, semantics, workflows, projections, regeneration/equivalence, and reuse. Gate D adds local security controls, migration evidence, package hardening, end-to-end proof, and native durability hardening for material transactions.
+**v1.1.0 release.** Local material-core runtime behavior is implemented for the four ordinary commands. Gate C ownership and reproduction behavior is implemented through library runtimes for authority, semantics, workflows, projections, regeneration/equivalence, and reuse. Gate D adds local security controls, migration evidence, package hardening, end-to-end proof, and native durability hardening for material transactions.
 
 Adapter inspection/reconciliation, Guerilla hook dispatch, network services, databases, brokers, and generated-code execution remain out of scope.
 
@@ -93,7 +93,7 @@ git diff --check -- ':!docs/architecture/**'
 
 The TypeScript package implements:
 
-- Package version reporting (`1.0.1`)
+- Package version reporting (`1.1.0`)
 - CLI handlers for `expflow init`, `expflow sync`, `expflow status`, and `expflow restore`
 - Local `.expflow/` material storage with immutable objects, node revisions, tree revisions, operation receipts, validations, changes, and material head state
 - Working-tree scanning with `.expflow/**` exclusion and scoped path selectors
@@ -105,6 +105,9 @@ The TypeScript package implements:
 - Workflow occurrences, virtual artifacts, materialization events, and immutable workflow state transitions
 - Manifest revisions, projection-head derivation, projection-root constraints, and model-assisted proposal defaults
 - Regeneration attempts, equivalence evaluations, reuse results, and reuse policy-gate checks
+- Stable read-model envelopes, deterministic ordering, bounded cursor pagination, filters, material linkage, and GUI bridge access for advanced records
+- Evidence intake with provenance envelopes, deterministic digest/idempotency handling, quarantine state, authority-source proposals, correspondence proposals, conflict records, artifact candidates, and explicit human decisions
+- Portable workflow package export/import with deterministic manifests, offline payload validation, collision-safe import plans, unresolved external dependency reporting, and resume-state summaries
 - Security controls for archive quarantine manifests, source instruction/data separation, secret redaction, local-only remote disclosure policy, generated-code non-execution, and reuse license restrictions
 - Migration evidence for in-place typed-folder projects without fabricating authority or semantic acceptance
 - End-to-end proof covering material, authority, semantic, workflow, projection, reproduction, security, migration, and adapter-boundary scenarios

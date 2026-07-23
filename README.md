@@ -6,7 +6,8 @@ Expflow is a schema-governed, local-first workflow ownership and observability p
 
 Expflow records what changed, which evidence was trusted, which decisions remain durable, and which outputs can be inspected, regenerated, restored, or reused.
 
-Current release: [`v1.0.1`](docs/release_notes/GITHUB_RELEASE_NOTE_V1_0_1.md).
+Current release candidate:
+[`v1.1.0`](docs/releases/v1.1.0/files/docs/release_notes/GITHUB_RELEASE_NOTE_V1_1_0.md).
 
 ## What Expflow Tracks
 
@@ -22,13 +23,16 @@ Material output does not imply semantic acceptance, workflow completion, or reus
 
 ## Release Scope
 
-Expflow v1.0.1 covers the local core surfaces implemented in this repository:
+Expflow v1.1.0 covers the local core surfaces implemented in this repository:
 
 - four ordinary commands: `expflow init`, `expflow sync`, `expflow status`, and `expflow restore`;
 - local `.expflow/` material storage with immutable object, node-revision, tree-revision, receipt, validation, change, and material-head records;
 - complete-tree sync, drift status, tree/node restore, scoped path selection, explicit identity directives, and digest-similarity proposals without silent identity preservation;
 - project locks, operation-scoped staging, recoverable init/restore intents, stale-lock classification, causal tree/receipt head repair, restore recovery, and restored-tree digest verification;
 - library runtimes for authority sources, semantic decisions, workflow boundaries, projections, regeneration/equivalence, structural reuse, security controls, migration evidence, and the native extension host;
+- stable, bounded, versioned read models over advanced authority, semantic, workflow, projection, reproduction, and material linkage records;
+- attributed evidence intake, quarantine, duplicate detection, source proposals, correspondence, conflict, artifact-candidate, and decision helpers through the TypeScript library;
+- deterministic portable workflow package export, offline validation, import planning, collision-safe import, and resume-state reporting through the TypeScript library;
 - repository-contract checks for immutable architecture sources, schemas, examples, fixtures, registries, package boundaries, and end-to-end proof.
 
 ## Quickstart
@@ -63,20 +67,29 @@ pip install expflow-hooks
 
 1. Run `expflow init` to create local Expflow state.
 2. Change files in the project tree.
-3. Run `expflow sync` to record a complete material tree revision.
-4. Run `expflow status` to inspect drift and recorded state.
-5. Run `expflow restore` when a recorded tree or node revision should be restored.
+3. Run `expflow status` or `expflow sync --dry-run` to preview pending changes.
+4. Run `expflow sync` to record a complete material tree revision.
+5. Run `expflow status --history` or `expflow status --node-history <path>` to find restore references.
+6. Run `expflow restore <reference> --dry-run` before restoring a recorded tree or node revision.
 
-Gate C ownership/reproduction behavior and Gate D security/migration behavior are available through library runtimes rather than additional ordinary commands.
+Gate C ownership/reproduction behavior, Phase 4 evidence intake/reconciliation behavior, Phase 5 portable workflow package behavior, and Gate D security/migration behavior are available through library runtimes rather than additional ordinary commands.
 
 ## Commands
 
-| Command           | Purpose                                                             |
-| ----------------- | ------------------------------------------------------------------- |
-| `expflow init`    | Initialize local Expflow project state.                             |
-| `expflow sync`    | Scan the working tree and commit a complete material tree revision. |
-| `expflow status`  | Report local drift and material project state.                      |
-| `expflow restore` | Restore a recorded material tree or node revision.                  |
+| Command           | Purpose                                                                 |
+| ----------------- | ----------------------------------------------------------------------- |
+| `expflow init`    | Initialize local Expflow project state.                                 |
+| `expflow sync`    | Preview or commit a complete material tree revision.                    |
+| `expflow status`  | Report drift, current project version, history, and restore references. |
+| `expflow restore` | Preview or restore a recorded material tree or node revision.           |
+
+Useful Phase 1 options:
+
+- `expflow sync --dry-run` previews path-level changes without committing.
+- `expflow status --history` lists recent tree restore references.
+- `expflow status --node-history <path>` lists node restore references for a tracked path.
+- `expflow restore <reference> --dry-run` previews affected paths and conflicting drift.
+- `expflow restore <reference> --force` explicitly overwrites conflicting unrecorded drift.
 
 ## What Expflow Delegates
 
@@ -87,18 +100,23 @@ Expflow core intentionally does not implement every surrounding integration surf
 - **Guerilla hook dispatch:** compatibility reference only, not an Expflow core runtime.
 - **Network services, databases, and brokers:** absent from the local core.
 - **Archive extraction and generated-code execution:** blocked by the Gate D security posture.
-- **Pilots and empirical evaluation:** future work outside the v1.0.1 core release.
+- **Pilots and empirical evaluation:** one repository-owned pilot completed in Phase 7. Broader external pilots, comparative evaluation, multi-user evidence, and adoption evidence remain future work.
 
 ## Repository Map
 
 - `docs/architecture/` contains immutable architecture sources.
-- `docs/` contains mutable implementation evidence, completion reports, release notes, review summaries, and orientation.
+- `docs/internal/` contains current Build Week governance, status, prompts, and activation records.
+- `docs/external/` contains current product overviews and narratives.
+- `docs/releases/v1.1.0/` contains the frozen v1.1.0 release documentation record.
+- `apps/gui/` contains the local Expflow GUI client and server.
 - `schemas/` and `examples/` mirror the architecture schemas and examples for tooling.
-- `src/` contains the TypeScript package, CLI, material runtime, Gate C library runtimes, Gate D security/migration runtimes, and contract tooling.
+- `src/` contains the TypeScript package, CLI, GUI bridge, read-model runtime, evidence runtime, portable package runtime, material runtime, Gate C library runtimes, Gate D security/migration runtimes, and contract tooling.
 - `python/expflow_hooks/` contains the Python hook-package scaffold and repository-only schema discovery.
-- `tests/` contains repository-contract, material-runtime, authority, Gate C ownership/reproduction, Gate D security/migration, package, and end-to-end proof tests.
+- `tests/` contains repository-contract, material-runtime, evidence-intake, authority, Gate C ownership/reproduction, Gate D security/migration, package, and end-to-end proof tests.
 
-For implementation status, see [docs/CURRENT_STATUS_MATRIX.md](docs/CURRENT_STATUS_MATRIX.md). For contributor setup and validation commands, see [README_DEV.md](README_DEV.md).
+For implementation status, see
+[docs/internal/CURRENT_STATUS_MATRIX.md](docs/internal/CURRENT_STATUS_MATRIX.md). For contributor setup
+and validation commands, see [README_DEV.md](README_DEV.md).
 
 ## Validation
 
@@ -113,12 +131,11 @@ python tests/contracts/verify_python_wheel.py
 
 ## Documentation
 
-- [v1.0.1 GitHub release note](docs/release_notes/GITHUB_RELEASE_NOTE_V1_0_1.md)
-- [v1 compatibility promise](docs/V1_COMPATIBILITY.md)
-- [Release publishing checklist](docs/RELEASE_PUBLISHING.md)
-- [Current status matrix](docs/CURRENT_STATUS_MATRIX.md)
+- [v1.1.0 GitHub release note](docs/releases/v1.1.0/files/docs/release_notes/GITHUB_RELEASE_NOTE_V1_1_0.md)
+- [v1 compatibility promise](docs/releases/v1.0.1/files/docs/V1_COMPATIBILITY.md)
+- [Release publishing policy](docs/releases/v1.0.1/files/docs/RELEASE_PUBLISHING.md)
+- [Current status matrix](docs/internal/CURRENT_STATUS_MATRIX.md)
 - [Developer guide](README_DEV.md)
-- [Repository directory structure](docs/REPOSITORY_DIRECTORY_STRUCTURE.md)
 - [Security policy](SECURITY.md)
 
 ## License

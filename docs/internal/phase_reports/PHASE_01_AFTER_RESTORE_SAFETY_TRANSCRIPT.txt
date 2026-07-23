@@ -1,0 +1,90 @@
+# Phase 1 after restore-safety transcript
+
+$ expflow init --json
+exit: 0
+stdout:
+{
+  "schema_version": "2.3",
+  "error": null,
+  "finished_at": "2026-07-21T17:55:38.876Z",
+  "new_head": "eft_1CVSP24VNCKRG53CEJ4HQFVG1X",
+  "node_revision_refs": [
+    "efn_AJ9MA4AC6AHSH7H50RKCESGMYQ@1"
+  ],
+  "operation_id": "efo_Z8YDNY6R9BCFA88376CGSY1G4D",
+  "previous_head": null,
+  "project_id": "efp_96AEDDXPH4JKG5367YATXET9NQ",
+  "status": "committed",
+  "started_at": "2026-07-21T17:55:38.779Z",
+  "validation_refs": [
+    "efv_KG207P3N1XWWNPBJGB9ATP1NHR"
+  ],
+  "warnings": []
+}
+
+$ expflow sync
+exit: 0
+stdout:
+Status: committed
+Project id: efp_96AEDDXPH4JKG5367YATXET9NQ
+Current project version (tree revision): eft_X8TZF1X4V6Q35GFBSSW3RERGN6
+Previous head: eft_1CVSP24VNCKRG53CEJ4HQFVG1X
+Operation id: efo_ZHEDKZE0BVPYFJGYHX53108YM8
+
+$ expflow restore tree:<initial_head> --dry-run
+exit: 0
+stdout:
+Restore preview - nothing was changed.
+Selected source reference: tree:eft_1CVSP24VNCKRG53CEJ4HQFVG1X (tree, resolved: eft_1CVSP24VNCKRG53CEJ4HQFVG1X)
+Current head: eft_X8TZF1X4V6Q35GFBSSW3RERGN6
+Affected paths:
+  update:
+    a.txt (unrecorded drift: modified - conflicts)
+CONFLICTING DRIFT:
+  a.txt
+Restore will refuse to overwrite these unrecorded working-tree changes.
+Remediation: run `expflow sync` first to record your changes, or re-run with `--force` to overwrite them.
+This restore creates a new project version (forward commit); history is unchanged.
+Nothing was changed.
+
+# file content after restore preview
+local
+
+$ expflow restore tree:<initial_head>
+exit: 1
+stderr:
+expflow: Restore would overwrite unrecorded working-tree changes at: a.txt [restore_conflict]
+No new project version was committed.
+Recommended action: Run `expflow sync` to record your working-tree changes first, or re-run with --force to overwrite them.
+Run `expflow status` for current project state.
+
+# file content after refused restore
+local
+
+$ expflow restore tree:<initial_head> --force
+exit: 0
+stdout:
+Status: committed
+Project id: efp_96AEDDXPH4JKG5367YATXET9NQ
+Current project version (tree revision): eft_5QC3HADRM0BNXMBENTG71EHG49
+Previous head: eft_X8TZF1X4V6Q35GFBSSW3RERGN6
+Operation id: efo_NFQHKV18WGJQJ8HTHRR2RFTJ4Y
+Restore created a new project version (forward commit); history is unchanged.
+
+# file content after forced restore
+one
+
+$ expflow status --history
+exit: 0
+stdout:
+Project id: efp_96AEDDXPH4JKG5367YATXET9NQ
+Current project version (tree revision): eft_5QC3HADRM0BNXMBENTG71EHG49
+Working tree: clean - no pending changes.
+Hints: `expflow status --json` for machine-readable output;
+  `expflow status --history` to list project versions;
+  `expflow restore --dry-run tree:<tree_revision_id>` for a restore preview.
+Project version history (most recent first):
+  #3 2026-07-21T17:55:41.963Z source=restore status=committed tree:eft_5QC3HADRM0BNXMBENTG71EHG49 (current head)
+  #2 2026-07-21T17:55:39.666Z source=sync status=committed tree:eft_X8TZF1X4V6Q35GFBSSW3RERGN6
+  #1 2026-07-21T17:55:38.779Z source=initialization status=committed tree:eft_1CVSP24VNCKRG53CEJ4HQFVG1X
+Restore: `expflow restore tree:<tree_revision_id>`; preview: `expflow restore --dry-run tree:<tree_revision_id>`.

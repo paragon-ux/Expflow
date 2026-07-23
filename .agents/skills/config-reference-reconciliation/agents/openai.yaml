@@ -1,0 +1,4 @@
+interface:
+  display_name: "Config Reference Reconciliation"
+  short_description: "Reconcile marked config-document references"
+  default_prompt: "Use $config-reference-reconciliation to reconcile this marked config-document reference change."

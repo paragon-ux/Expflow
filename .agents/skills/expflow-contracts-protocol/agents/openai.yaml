@@ -1,0 +1,4 @@
+interface:
+  display_name: "Expflow Contracts and Protocol"
+  short_description: "Govern schemas, contracts, and compatibility"
+  default_prompt: "Use $expflow-contracts-protocol to evaluate this Expflow contract change."

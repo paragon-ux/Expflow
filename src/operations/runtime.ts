@@ -5,12 +5,16 @@ import { cloneJson } from '../core/json.js';
 import { normalizeProjectRoot, PROJECTION_ROOT } from '../core/paths.js';
 import { VERSION } from '../core/version.js';
 import { scanWorkingTree, defaultPathSelector } from '../scan/scanner.js';
+import { classifySyncPlanChanges, type PendingChangeDetail } from '../material/changes.js';
 import { treeContentDigest } from '../material/digest.js';
 import { planCandidateTree } from '../material/planner.js';
 import {
   createLock,
   ensureStoreDirectories,
   isProjectInitialized,
+  listNodeRevisions,
+  listOperationReceipts,
+  listTreeRevisionIds,
   nextNodeRevisionNumber,
   prepareOperationStaging,
   publicProjectState,
@@ -34,6 +38,7 @@ import {
   writeTreeRevision,
   writeValidationResult,
 } from '../material/store.js';
+import { buildRestorePlan, type RestorePlan } from './restore-plan.js';
 import { recoverProject, type RecoveryReport } from '../transactions/recovery.js';
 import {
   deleteRestorePaths,
@@ -89,12 +94,16 @@ export interface SyncInput extends RuntimeOptions {
 
 export interface StatusInput {
   readonly root?: string;
+  readonly history?: boolean;
+  readonly nodeHistoryPath?: string;
+  readonly historyLimit?: number;
 }
 
 export interface RestoreInput extends RuntimeOptions {
   readonly root?: string;
   readonly reference: string;
   readonly targetPath?: string;
+  readonly overwrite?: boolean;
 }
 
 export interface SyncPlan {
@@ -105,6 +114,7 @@ export interface SyncPlan {
   readonly entries: readonly object[];
   readonly removed_paths: readonly string[];
   readonly new_node_revisions: readonly string[];
+  readonly change_details: readonly PendingChangeDetail[];
   readonly identity_proposals: readonly object[];
   readonly content_digest: string;
 }
@@ -115,6 +125,7 @@ export interface ExpflowRuntime {
   planSync(input?: SyncInput): Promise<SyncPlan>;
   status(input?: StatusInput): Promise<StatusReportRecord>;
   restore(input: RestoreInput): Promise<OperationReceiptRecord>;
+  planRestore(input: RestoreInput): Promise<RestorePlan>;
   recover(input?: StatusInput): Promise<RecoveryReport>;
   verify(input?: StatusInput): Promise<ValidationResultRecord>;
 }
@@ -269,7 +280,7 @@ function validateCandidate(candidate: CandidateTree): ValidationResultRecord['fi
 }
 
 function makeProject(
-  projectRoot: string,
+  _projectRoot: string,
   projectId: string,
   createdAt: string,
   input: InitInput,
@@ -285,7 +296,7 @@ function makeProject(
     policy_profile: input.policyProfile ?? 'default',
     project_id: projectId,
     projection_root: PROJECTION_ROOT,
-    root_path: projectRoot,
+    root_path: '.',
   };
 }
 
@@ -322,19 +333,76 @@ function buildSyncPlan(projectRoot: string, input: SyncInput = {}): SyncPlan {
     scope,
     source: 'sync',
   });
+  const newNodeRevisionRefs = candidate.new_node_revisions.map(
+    (node) => `${node.record.node_id}@${String(node.record.revision)}`,
+  );
   return {
     candidate_head: candidate.content_digest,
+    change_details: classifySyncPlanChanges(
+      {
+        entries: candidate.entries,
+        new_node_revisions: newNodeRevisionRefs,
+        removed_paths: candidate.removed_paths,
+      },
+      currentTree,
+      input.changes ?? [],
+    ),
     content_digest: candidate.content_digest,
     entries: candidate.entries,
     identity_proposals: candidate.identity_proposals,
-    new_node_revisions: candidate.new_node_revisions.map(
-      (node) => `${node.record.node_id}@${String(node.record.revision)}`,
-    ),
+    new_node_revisions: newNodeRevisionRefs,
     operation_id: operationId,
     previous_head: currentTree?.tree_revision_id ?? null,
     project_id: project.project_id,
     removed_paths: candidate.removed_paths,
   };
+}
+
+function revisionHistory(
+  projectRoot: string,
+  head: string | null,
+  historyLimit: number | undefined,
+): readonly object[] {
+  const limit = Math.min(Math.max(historyLimit ?? 10, 1), 100);
+  const statusByOperation = new Map<string, OperationReceiptRecord['status']>();
+  for (const operationReceipt of listOperationReceipts(projectRoot)) {
+    statusByOperation.set(operationReceipt.operation_id, operationReceipt.status);
+  }
+  return listTreeRevisionIds(projectRoot)
+    .map((treeRevisionId) => readTreeRevision(projectRoot, treeRevisionId))
+    .sort((left, right) => right.sequence - left.sequence)
+    .slice(0, limit)
+    .map((tree) => ({
+      created_at: tree.created_at,
+      created_by_operation: tree.created_by_operation,
+      is_current_head: tree.tree_revision_id === head,
+      operation_status: statusByOperation.get(tree.created_by_operation) ?? null,
+      restore_reference: `tree:${tree.tree_revision_id}`,
+      sequence: tree.sequence,
+      source: tree.source,
+      tree_revision_id: tree.tree_revision_id,
+    }));
+}
+
+function nodeHistory(projectRoot: string, head: string | null, path: string): readonly object[] {
+  const currentTree = head === null ? null : readTreeRevision(projectRoot, head);
+  const entry = currentTree?.entries.find((candidate) => candidate.relative_path === path);
+  if (entry === undefined || entry.node_id === null || entry.node_id === undefined) {
+    throw new ExpflowError('node_revision_missing', `No tracked node at path: ${path}`, {
+      recoverable: true,
+      recommendedAction: 'Run `expflow status --history` to list restorable project versions.',
+    });
+  }
+  const nodeId = entry.node_id;
+  return listNodeRevisions(projectRoot, nodeId).map((record) => ({
+    created_at: record.created_at,
+    created_by_operation: record.created_by_operation,
+    is_current: record.revision === entry.node_revision,
+    node_id: record.node_id,
+    node_revision_ref: `${record.node_id}@${String(record.revision)}`,
+    restore_reference: `node:${record.node_id}@${String(record.revision)}:${path}`,
+    revision: record.revision,
+  }));
 }
 
 function failIfRequested(input: RuntimeOptions, point: MaterialFaultPoint): void {
@@ -608,14 +676,16 @@ export function createRuntime(): ExpflowRuntime {
         };
       }
       const project = readProject(projectRoot);
+      let report: StatusReportRecord;
       try {
         const plan = buildSyncPlan(projectRoot, {});
-        return {
+        report = {
           schema_version: '2.3',
           automation_state: { failed_hooks: [], pending_hooks: [] },
           generated_at: new Date().toISOString(),
           head_tree_revision_id: readHead(projectRoot),
           manifest_heads: {},
+          pending_change_details: plan.change_details,
           pending_changes: [
             ...plan.new_node_revisions.map((revision) => ({ kind: 'node_revision', revision })),
             ...plan.removed_paths.map((path) => ({ kind: 'removed_path', path })),
@@ -641,12 +711,41 @@ export function createRuntime(): ExpflowRuntime {
           working_tree_state: 'invalid',
         };
       }
+      if (report.working_tree_state !== 'clean' && report.working_tree_state !== 'drifted') {
+        return report;
+      }
+      const head = report.head_tree_revision_id;
+      return {
+        ...report,
+        ...(input.history === true
+          ? { revision_history: revisionHistory(projectRoot, head, input.historyLimit) }
+          : {}),
+        ...(input.nodeHistoryPath !== undefined
+          ? { node_history: nodeHistory(projectRoot, head, input.nodeHistoryPath) }
+          : {}),
+      };
     },
 
     async restore(input: RestoreInput): Promise<OperationReceiptRecord> {
       await Promise.resolve();
       const projectRoot = normalizeProjectRoot(input.root);
       const project = readProject(projectRoot);
+      const plan = buildRestorePlan(projectRoot, input.reference, input.targetPath);
+      if (plan.requires_force && input.overwrite !== true) {
+        const named = plan.conflicting_paths.slice(0, 20);
+        const remaining = plan.conflicting_paths.length - named.length;
+        throw new ExpflowError(
+          'restore_conflict',
+          `Restore would overwrite unrecorded working-tree changes at: ${named.join(', ')}${
+            remaining > 0 ? ` +${String(remaining)} more` : ''
+          }`,
+          {
+            recoverable: true,
+            recommendedAction:
+              'Run `expflow sync` to record your working-tree changes first, or re-run with --force to overwrite them.',
+          },
+        );
+      }
       const release = createLock(projectRoot);
       try {
         const previousHead = readHead(projectRoot);
@@ -654,12 +753,25 @@ export function createRuntime(): ExpflowRuntime {
         const operationId = createExpflowId('efo');
         prepareOperationStaging(projectRoot, operationId);
         const targetTreeRevisionId = createExpflowId('eft');
+        const effectByPath = new Map(
+          plan.path_effects.map((pathEffect) => [pathEffect.relative_path, pathEffect.effect]),
+        );
+        const scannedFiles = scanWorkingTree(projectRoot, defaultPathSelector());
+        const scanDigestByPath = new Map(
+          scannedFiles.map((file) => [file.relative_path, file.content_digest]),
+        );
         let restoredTree: TreeRevisionRecord;
         let restoreIntent: RestoreRecoveryIntentRecord;
-        if (input.reference.startsWith('tree:')) {
-          const sourceTree = readTreeRevision(projectRoot, input.reference.slice('tree:'.length));
+        if (plan.reference_kind === 'tree') {
+          const sourceTree = readTreeRevision(projectRoot, plan.source_ref);
           const currentTree =
             previousHead === null ? null : readTreeRevision(projectRoot, previousHead);
+          const headDigestByPath = new Map<string, string | null>();
+          for (const entry of currentTree?.entries ?? []) {
+            if (entry.entry_kind === 'file') {
+              headDigestByPath.set(entry.relative_path, entry.node_content_digest ?? null);
+            }
+          }
           const restoredPaths = treeFilePaths(sourceTree);
           const removedPaths =
             currentTree === null
@@ -668,10 +780,18 @@ export function createRuntime(): ExpflowRuntime {
                   .filter((entry) => !restoredPaths.has(entry.relative_path))
                   .map((entry) => entry.relative_path)
                   .sort();
-          const deletePaths = scanWorkingTree(projectRoot, defaultPathSelector())
-            .filter((file) => !restoredPaths.has(file.relative_path))
-            .map((file) => file.relative_path)
-            .sort();
+          const deletePaths = removedPaths.filter((path) => {
+            const workingDigest = scanDigestByPath.get(path);
+            return workingDigest === undefined || workingDigest === headDigestByPath.get(path);
+          });
+          if (input.overwrite === true) {
+            for (const path of plan.conflicting_paths) {
+              if (effectByPath.get(path) === 'remove' && !deletePaths.includes(path)) {
+                deletePaths.push(path);
+              }
+            }
+            deletePaths.sort();
+          }
           const writeFiles: { content_digest: string; relative_path: string }[] = [];
           for (const entry of sourceTree.entries) {
             if (
@@ -682,6 +802,14 @@ export function createRuntime(): ExpflowRuntime {
               continue;
             }
             if (entry.node_revision === null || entry.node_revision === undefined) {
+              continue;
+            }
+            const effect = effectByPath.get(entry.relative_path);
+            if (effect !== 'create' && effect !== 'update') {
+              continue;
+            }
+            const workingDigest = scanDigestByPath.get(entry.relative_path);
+            if (workingDigest !== undefined && workingDigest === entry.node_content_digest) {
               continue;
             }
             const node = readNodeRevision(projectRoot, entry.node_id, entry.node_revision);
@@ -722,7 +850,7 @@ export function createRuntime(): ExpflowRuntime {
           writeRecoveryIntent(projectRoot, operationId, restoreIntent);
           failIfRequested(input, 'after_restore_intent');
           writeTreeRevision(projectRoot, restoredTree);
-        } else if (input.reference.startsWith('node:')) {
+        } else {
           const match = /^node:([^@]+)@([0-9]+):(.+)$/.exec(input.reference);
           if (match === null) {
             throw new ExpflowError(
@@ -734,17 +862,21 @@ export function createRuntime(): ExpflowRuntime {
           const revision = Number(match[2] ?? '0');
           const targetPath = input.targetPath ?? match[3] ?? '';
           const node = readNodeRevision(projectRoot, nodeId, revision);
-          const bytes = readObjectBytes(projectRoot, node.content_digest);
-          const stagedPath = stageRestoreFile(projectRoot, operationId, targetPath, bytes);
           const scope = defaultPathSelector();
           const currentTree =
             previousHead === null ? null : readTreeRevision(projectRoot, previousHead);
-          const scannedFiles = [
-            ...scanWorkingTree(projectRoot, scope).filter(
-              (file) => file.relative_path !== targetPath,
-            ),
-            scannedFileForStagedRestore(targetPath, stagedPath, bytes, node.content_digest),
-          ];
+          const needsWrite = scanDigestByPath.get(targetPath) !== node.content_digest;
+          const writeFiles: { content_digest: string; relative_path: string }[] = [];
+          let candidateScannedFiles = scannedFiles;
+          if (needsWrite) {
+            const bytes = readObjectBytes(projectRoot, node.content_digest);
+            const stagedPath = stageRestoreFile(projectRoot, operationId, targetPath, bytes);
+            candidateScannedFiles = [
+              ...scannedFiles.filter((file) => file.relative_path !== targetPath),
+              scannedFileForStagedRestore(targetPath, stagedPath, bytes, node.content_digest),
+            ];
+            writeFiles.push({ content_digest: node.content_digest, relative_path: targetPath });
+          }
           const candidate = planCandidateTree({
             changes: [
               {
@@ -760,7 +892,7 @@ export function createRuntime(): ExpflowRuntime {
             operationId,
             projectId: project.project_id,
             nextRevisionForNode: (nodeId) => nextNodeRevisionNumber(projectRoot, nodeId),
-            scannedFiles,
+            scannedFiles: candidateScannedFiles,
             scope,
             source: 'restore',
           });
@@ -772,7 +904,7 @@ export function createRuntime(): ExpflowRuntime {
             operation_id: operationId,
             previous_head: previousHead,
             target_head: targetTreeRevisionId,
-            write_files: [{ content_digest: node.content_digest, relative_path: targetPath }],
+            write_files: writeFiles,
           };
           writeRecoveryIntent(projectRoot, operationId, restoreIntent);
           failIfRequested(input, 'after_restore_intent');
@@ -782,16 +914,19 @@ export function createRuntime(): ExpflowRuntime {
             startedAt,
             targetTreeRevisionId,
           );
-        } else {
-          throw new ExpflowError(
-            'restore_conflict',
-            `Unsupported restore reference: ${input.reference}`,
-          );
         }
 
         const validation = validationResult(operationId, 'pass', []);
         writeValidationResult(projectRoot, validation);
         verifyTreeRevision(projectRoot, restoredTree);
+        const warnings = [
+          ...(input.overwrite === true && plan.requires_force
+            ? ['overwrote_unrecorded_changes']
+            : []),
+          ...(input.simulatePostCommitFailure === true
+            ? ['post_commit_automation_incomplete']
+            : []),
+        ];
         const operationReceipt = receipt({
           newHead: restoredTree.tree_revision_id,
           operationId,
@@ -800,8 +935,7 @@ export function createRuntime(): ExpflowRuntime {
           startedAt,
           status: input.simulatePostCommitFailure === true ? 'partial_post_commit' : 'committed',
           validationRefs: [validation.validation_id],
-          warnings:
-            input.simulatePostCommitFailure === true ? ['post_commit_automation_incomplete'] : [],
+          warnings,
         });
         writeOperationReceipt(projectRoot, operationReceipt);
         failIfRequested(input, 'after_material_records');
@@ -818,6 +952,11 @@ export function createRuntime(): ExpflowRuntime {
       } finally {
         release();
       }
+    },
+
+    async planRestore(input: RestoreInput): Promise<RestorePlan> {
+      await Promise.resolve();
+      return buildRestorePlan(normalizeProjectRoot(input.root), input.reference, input.targetPath);
     },
 
     async recover(input: StatusInput = {}): Promise<RecoveryReport> {

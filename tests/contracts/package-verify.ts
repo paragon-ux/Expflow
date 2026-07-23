@@ -69,10 +69,19 @@ try {
   mkdirSync(packDir);
   mkdirSync(installDir);
 
+  let packedFiles: readonly { readonly path: string }[] = [];
   if (!providedTarball) {
     run(npmCommand, ['run', 'clean'], REPO_ROOT);
     run(npmCommand, ['run', 'build'], REPO_ROOT);
-    run(npmCommand, ['pack', '--pack-destination', packDir], REPO_ROOT);
+    const packOutput = run(
+      npmCommand,
+      ['pack', '--pack-destination', packDir, '--json'],
+      REPO_ROOT,
+    );
+    const packReport = JSON.parse(packOutput) as readonly {
+      readonly files?: readonly { readonly path: string }[];
+    }[];
+    packedFiles = packReport[0]?.files ?? [];
   }
 
   const tarball = providedTarball ?? resolve(packDir, `expflow-${VERSION}.tgz`);
@@ -81,6 +90,11 @@ try {
   }
   if (basename(tarball) !== `expflow-${VERSION}.tgz`) {
     throw new Error(`Expected npm tarball expflow-${VERSION}.tgz, got ${basename(tarball)}`);
+  }
+  for (const file of packedFiles) {
+    if (file.path.startsWith('apps/gui/')) {
+      throw new Error(`GUI app files must remain outside the npm package: ${file.path}`);
+    }
   }
 
   run(npmCommand, ['init', '-y'], installDir);
@@ -100,9 +114,35 @@ try {
     'sync',
     'status',
     'restore',
+    'Run "expflow <command> --help"',
     'Gate B implements local material-core',
+    'EXIT CODES',
+    '0  Success, including uninitialized status queries',
+    '1  Operational mutation or runtime failure',
+    '2  Usage failure, unknown command, or unsupported option',
   ]) {
     assertContains(helpOutput, expected);
+  }
+  const statusHelp = run(cliPath, ['status', '--help'], installDir);
+  for (const expected of [
+    '--history',
+    '--node-history <path>',
+    '--history-limit <n>',
+    '0  Status query completed, including uninitialized roots',
+    '1  Operational runtime failure',
+    '2  Usage failure or unsupported option',
+  ]) {
+    assertContains(statusHelp, expected);
+  }
+  const restoreHelp = run(cliPath, ['restore', '--help'], installDir);
+  for (const expected of [
+    '--dry-run',
+    '--force',
+    '--target-path <path>',
+    '1  Operational failure, including restore conflict',
+    '2  Usage failure or unsupported option',
+  ]) {
+    assertContains(restoreHelp, expected);
   }
 
   const projectDir = resolve(tempRoot, 'project');
@@ -111,19 +151,21 @@ try {
   assertContains(initOutput, '"status": "committed"');
   const statusOutput = run(cliPath, ['status', '--root', projectDir, '--json'], installDir);
   assertContains(statusOutput, '"working_tree_state": "clean"');
+  const statusHumanOutput = run(cliPath, ['status', '--root', projectDir], installDir);
+  assertContains(statusHumanOutput, 'Current project version');
 
   const importOutput = run(
     nodeCommand,
     [
       '--input-type=module',
       '--eval',
-      "const { VERSION, createRuntime } = await import('expflow'); console.log(`${VERSION}:${typeof createRuntime}`);",
+      "const { VERSION, createRuntime, createGuiBridge, createReadModelRuntime, createEvidenceRuntime, createPortablePackageRuntime } = await import('expflow'); console.log(`${VERSION}:${typeof createRuntime}:${typeof createGuiBridge}:${typeof createReadModelRuntime}:${typeof createEvidenceRuntime}:${typeof createPortablePackageRuntime}`);",
     ],
     installDir,
   );
-  if (importOutput !== `${VERSION}:function`) {
+  if (importOutput !== `${VERSION}:function:function:function:function:function`) {
     throw new Error(
-      `Expected package export version/runtime ${VERSION}:function, got ${importOutput}`,
+      `Expected package export version/runtime/gui bridge/read models/evidence/portable package ${VERSION}:function:function:function:function:function, got ${importOutput}`,
     );
   }
 

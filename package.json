@@ -1,6 +1,6 @@
 {
   "name": "expflow",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "description": "Expflow - schema-governed, local-first workflow ownership and observability platform",
   "type": "module",
   "main": "./dist/index.js",
@@ -23,6 +23,9 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "contracts:verify": "tsx tests/contracts/verify.ts",
+    "check:config-references": "tsx tools/check-config-references.ts",
+    "check:skill-contracts": "tsx tools/check-skill-contracts.ts",
+    "check:protected-surfaces": "tsx tools/check-protected-surfaces.ts",
     "controls:generate": "tsx tests/contracts/generate-controls.ts",
     "registries:verify": "tsx tests/contracts/registries-verify.ts",
     "schemas:meta-validate": "tsx tests/contracts/meta-validate.ts",
@@ -30,7 +33,7 @@
     "examples:index-check": "tsx tests/contracts/examples-index-check.ts",
     "fixtures:verify": "tsx tests/contracts/fixtures-verify.ts",
     "package:verify": "tsx tests/contracts/package-verify.ts",
-    "validate": "npm run format:check && npm run lint && npm run typecheck && npm test && npm run contracts:verify && npm run registries:verify && npm run schemas:meta-validate && npm run examples:index-check && npm run schemas:examples-validate && npm run fixtures:verify && npm run build && npm run package:verify"
+    "validate": "npm run check:config-references && npm run check:skill-contracts && npm run check:protected-surfaces && npm run format:check && npm run lint && npm run typecheck && npm test && npm run contracts:verify && npm run registries:verify && npm run schemas:meta-validate && npm run examples:index-check && npm run schemas:examples-validate && npm run fixtures:verify && npm run build && npm run package:verify"
   },
   "devDependencies": {
     "@types/node": "^26.1.1",

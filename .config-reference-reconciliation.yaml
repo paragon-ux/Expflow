@@ -1,0 +1,103 @@
+version: 1
+
+checker:
+  command: npm run check:config-references
+  staged: true
+  commit_range: true
+
+commands:
+  config_references: npm run check:config-references
+  skill_contracts: npm run check:skill-contracts
+  validate: npm run validate
+
+marker:
+  token: config-docref
+
+surfaces:
+  agent_governance:
+    - AGENTS.md
+    - '**/AGENTS.md'
+  repository_skills:
+    - .agents/skills/**/SKILL.md
+  workflows:
+    - .github/workflows/*.yml
+    - .github/workflows/*.yaml
+  package_scripts:
+    - package.json
+
+roles:
+  repository_governance:
+    path: 'AGENTS.md' # config-docref
+    class: active-authority
+
+  active_workflow:
+    path: docs/internal/BUILD_WEEK_WORKFLOW_CURRENT.md # config-docref
+    class: active-authority
+
+  active_status:
+    path: docs/internal/CURRENT_STATUS_MATRIX.md # config-docref
+    class: active-authority
+
+  glossary:
+    path: docs/internal/GLOSSARY.md # config-docref
+    class: active-authority
+
+  reconciliation_policy:
+    path: docs/internal/CONFIG_REFERENCE_RECONCILIATION.md # config-docref
+    class: active-authority
+
+  phase_1_prompt:
+    path: docs/internal/phase_prompts/PHASE_01_UX_UI_FIXES.md # config-docref
+    class: active-authority
+
+  phase_reports:
+    path: docs/internal/phase_reports/
+    class: active-evidence
+    kind: directory
+
+  historical_workflow:
+    path: docs/architecture/EXPFLOW_WORKFLOW_CURRENT.md # config-docref
+    class: immutable-architecture
+
+  concept_paper:
+    path: docs/architecture/EXPFLOW_CONCEPT_PAPER_V2_3.md # config-docref
+    class: immutable-architecture
+
+  implementation_spec:
+    path: docs/architecture/EXPFLOW_IMPLEMENTATION_SPEC_V2_3.md # config-docref
+    class: immutable-architecture
+
+  protocol_spec:
+    path: docs/architecture/EXPFLOW_PROTOCOL_SPEC_V2_3.md # config-docref
+    class: immutable-architecture
+
+  project_snapshot:
+    path: docs/architecture/EXPFLOW_PROJECT_SNAPSHOT_V2_3.md # config-docref
+    class: immutable-architecture
+
+  architecture_note:
+    path: docs/architecture/Note-On-Architecture.md # config-docref
+    class: immutable-architecture
+
+  architecture_delta:
+    path: docs/architecture/V2_3_ARCHITECTURE_DELTA.md # config-docref
+    class: immutable-architecture
+
+  release_notes_v1_0_1:
+    path: docs/releases/v1.0.1/files/docs/release_notes/GITHUB_RELEASE_NOTE_V1_0_1.md # config-docref
+    class: frozen-evidence
+
+  release_notes_v1_1_0:
+    path: docs/releases/v1.1.0/files/docs/release_notes/GITHUB_RELEASE_NOTE_V1_1_0.md # config-docref
+    class: frozen-evidence
+
+  release_archive:
+    path: docs/releases/v1.0.1/files/
+    class: frozen-evidence
+    kind: directory
+
+protected_targets:
+  - docs/architecture/**
+  - docs/releases/**
+
+protected_sidecar: docs/internal/PROTECTED_CONFIG_REFERENCE_INDEX.md

@@ -1,3 +1,8 @@
+---
+name: expflow-projections-reproduction
+description: Govern Expflow deterministic and model-assisted projections, manifest acceptance, materialization, regeneration attempts, equivalence evaluations, and structural reuse. Use when implementing or evaluating Expflow projectors, manifests, projection materialization, regeneration tracking, equivalence classification, or structural reuse during Gate C phases 12–14.
+---
+
 # Expflow Projections and Reproduction
 
 ## Purpose
@@ -5,15 +10,23 @@
 - Defines: the governance responsibility for deterministic and model-assisted projections, manifest acceptance, materialization, regeneration attempts, equivalence evaluations, and structural reuse
 - Phase boundary: Gate C (Phases 12–14); this skill may guide work related to manifest projections, regeneration, equivalence classification, and reuse evaluation
 
-## Activation Criteria
+## Required Reading Roles
 
-- Activate when: deterministic or model-assisted projector implementation, manifest management, projection materialization, regeneration attempt tracking, equivalence evaluation, or structural reuse is needed
-- Route elsewhere when: work involves machine contracts (route to expflow-contracts-protocol), material storage (route to expflow-material-storage-sync), authority or workflow records (route to expflow-authority-semantics-workflows), or testing/security (route to expflow-testing-security-migration)
+1. `repository_governance`
+2. `active_workflow`
+3. `active_status`
+4. `glossary`
+5. `historical_workflow`
+6. `concept_paper`
+7. `implementation_spec`
+8. `protocol_spec`
+9. `project_snapshot`
+10. `architecture_note`
+11. `architecture_delta`
 
-## Required Reading
+## Supporting References
 
-- Read in order: AGENTS.md, EXPFLOW_WORKFLOW_CURRENT.md, EXPFLOW_CONCEPT_PAPER_V2_3.md, EXPFLOW_IMPLEMENTATION_SPEC_V2_3.md, EXPFLOW_PROTOCOL_SPEC_V2_3.md, EXPFLOW_PROJECT_SNAPSHOT_V2_3.md, Note-On-Architecture.md, V2_3_ARCHITECTURE_DELTA.md
-- Supporting references: docs/architecture/schemas/manifest-revision.schema.json, docs/architecture/schemas/regeneration-attempt.schema.json, docs/architecture/schemas/equivalence-evaluation.schema.json, docs/architecture/schemas/reuse-result.schema.json, docs/architecture/schemas/status-report.schema.json, docs/WORKFLOW_AND_PROJECTION_MODEL.md
+- docs/architecture/schemas/manifest-revision.schema.json, docs/architecture/schemas/regeneration-attempt.schema.json, docs/architecture/schemas/equivalence-evaluation.schema.json, docs/architecture/schemas/reuse-result.schema.json, docs/architecture/schemas/status-report.schema.json, docs/releases/v1.0.1/files/docs/WORKFLOW_AND_PROJECTION_MODEL.md
 
 ## Invariants
 

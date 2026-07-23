@@ -1,5 +1,9 @@
 export { VERSION } from './core/version.js';
 export { createRuntime } from './operations/runtime.js';
+export { createGuiBridge } from './gui/bridge.js';
+export { createReadModelRuntime } from './read-models/runtime.js';
+export { createEvidenceRuntime } from './evidence/runtime.js';
+export { createPortablePackageRuntime } from './portable-package/runtime.js';
 export { createExtensionHost } from './extensions/host.js';
 export {
   createAuthorityRuntime,
@@ -29,6 +33,27 @@ export type {
   SyncInput,
   SyncPlan,
 } from './operations/runtime.js';
+export type {
+  GuiBridge,
+  GuiErrorDetails,
+  GuiOperationResult,
+  GuiProjectSnapshot,
+  GuiStateKind,
+} from './gui/bridge.js';
+export type {
+  ListReadModelInput,
+  ReadModelCollection,
+  ReadModelCollectionSummary,
+  ReadModelEnvelope,
+  ReadModelItem,
+  ReadModelMaterialRef,
+  ReadModelOverview,
+  ReadModelPage,
+  ReadModelRuntime,
+  ReadModelState,
+} from './read-models/types.js';
+export type { EvidenceRuntime } from './evidence/types.js';
+export type { PortablePackageRuntime } from './portable-package/types.js';
 export type { ExpflowExtensionHost } from './extensions/host.js';
 export type { AuthorityRuntime } from './authority/runtime.js';
 export type { SemanticRuntime } from './semantics/runtime.js';
@@ -94,6 +119,36 @@ export type {
   SecurityPolicy,
   SourceContentPreparation,
 } from './security/types.js';
+export type {
+  EvidenceArtifactInput,
+  EvidenceCaptureMethod,
+  EvidenceConflictInput,
+  EvidenceCorrespondenceInput,
+  EvidenceDecisionAction,
+  EvidenceDecisionInput,
+  EvidenceDisclosurePolicy,
+  EvidenceEncoding,
+  EvidenceIntakeInput,
+  EvidenceIntakeRecord,
+  EvidenceIntakeState,
+  EvidenceMediaType,
+  EvidenceRelation,
+} from './evidence/types.js';
+export type {
+  ExecutePortableImportInput,
+  ExportPortablePackageInput,
+  PlanPortableImportInput,
+  PortableEvidencePolicy,
+  PortableImportEffect,
+  PortableImportEffectRecord,
+  PortableImportPlan,
+  PortableImportResult,
+  PortablePackageExternalReference,
+  PortablePackageManifest,
+  PortablePackagePayload,
+  PortableResumeState,
+  ValidatePortablePackageInput,
+} from './portable-package/types.js';
 export type {
   LegacyInventoryEntry,
   LegacyMigrationInput,

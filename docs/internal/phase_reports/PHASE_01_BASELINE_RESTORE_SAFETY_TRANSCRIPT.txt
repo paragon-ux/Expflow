@@ -1,0 +1,39 @@
+# Phase 1 baseline ('before') restore-safety transcript
+# Baseline: Expflow v1.0.1 @ 99ad975a2b3e1f4b6c67020b219db7ff6d64acf7 (branch feat/build-week-governance)
+# Invocation: node dist/cli/index.js <args> from a clean temp directory
+# Date: 2026-07-21T11:14:52Z
+
+# setup: init; a.txt='version one'; sync -> eft_51TA011CPQWY7BMY6GH6C4S318; a.txt='version two'; sync -> eft_21X53NXAWEG1SYDERQCYGN0WM6
+# now: unrecorded local edit a.txt='version three (unsynced local work)'
+
+$ expflow status
+drifted
+[exit 0]
+
+# file content before restore:
+version three (unsynced local work)
+
+$ expflow restore tree:eft_51TA011CPQWY7BMY6GH6C4S318
+committed eft_DYN2DRCPKRV6QK8TNY9ABE9CK2
+[exit 0]
+[exit 0]
+
+# file content AFTER restore of tree:eft_51TA011CPQWY7BMY6GH6C4S318 (was unsynced local work overwritten?)
+version one
+
+$ expflow status
+clean
+[exit 0]
+
+$ expflow restore --dry-run tree:eft_51TA011CPQWY7BMY6GH6C4S318
+committed eft_8JA5TN0BQHG5BAQPGVMSH3ZBHT
+[exit 0]
+
+# file content after 'restore --dry-run tree:eft_51TA011CPQWY7BMY6GH6C4S318' (did --dry-run mutate?)
+version one
+
+$ expflow status
+clean
+[exit 0]
+
+# sandbox was: /tmp/tmp.VPrnrdvbuE

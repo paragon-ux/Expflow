@@ -1,3 +1,8 @@
+---
+name: expflow-authority-semantics-workflows
+description: Govern Expflow authority registration, readable authority documents, semantic assertions, immutable decisions, conflicts, reviews, source correspondence, workflow occurrences, virtual artifacts, materialization events, and completion states. Use for Expflow authority sources, semantic records, workflow boundaries, conflict handling, review workflows, or virtual artifacts in Gate C phases 9–11.
+---
+
 # Expflow Authority, Semantics, and Workflows
 
 ## Purpose
@@ -5,15 +10,23 @@
 - Defines: the governance responsibility for authority registration, readable authority documents, semantic assertions, immutable decisions, conflicts, review requests, source correspondence, workflow occurrences, virtual artifacts, materialization events, and completion states
 - Phase boundary: Gate C (Phases 9–11); this skill may guide work related to authority sources, semantic records, workflow boundaries, and virtual artifacts
 
-## Activation Criteria
+## Required Reading Roles
 
-- Activate when: authority source registration, readable document profiles, semantic assertion or decision stores, conflict management, review workflows, or workflow occurrence management is needed
-- Route elsewhere when: work involves machine contracts (route to expflow-contracts-protocol), material storage (route to expflow-material-storage-sync), projections or reproduction (route to expflow-projections-reproduction), or testing/security (route to expflow-testing-security-migration)
+1. `repository_governance`
+2. `active_workflow`
+3. `active_status`
+4. `glossary`
+5. `historical_workflow`
+6. `concept_paper`
+7. `implementation_spec`
+8. `protocol_spec`
+9. `project_snapshot`
+10. `architecture_note`
+11. `architecture_delta`
 
-## Required Reading
+## Supporting References
 
-- Read in order: AGENTS.md, EXPFLOW_WORKFLOW_CURRENT.md, EXPFLOW_CONCEPT_PAPER_V2_3.md, EXPFLOW_IMPLEMENTATION_SPEC_V2_3.md, EXPFLOW_PROTOCOL_SPEC_V2_3.md, EXPFLOW_PROJECT_SNAPSHOT_V2_3.md, Note-On-Architecture.md, V2_3_ARCHITECTURE_DELTA.md
-- Supporting references: docs/architecture/schemas/authority-source.schema.json, docs/architecture/schemas/authority-document.schema.json, docs/architecture/schemas/source-registration-decision.schema.json, docs/architecture/schemas/semantic-assertion.schema.json, docs/architecture/schemas/semantic-decision.schema.json, docs/architecture/schemas/conflict.schema.json, docs/architecture/schemas/review-request.schema.json, docs/architecture/schemas/source-correspondence.schema.json, docs/architecture/schemas/artifact-cluster.schema.json, docs/architecture/schemas/workflow-occurrence.schema.json, docs/architecture/schemas/virtual-artifact.schema.json, docs/architecture/schemas/materialization-event.schema.json, docs/AUTHORITY_AND_SEMANTIC_MODEL.md, docs/WORKFLOW_AND_PROJECTION_MODEL.md
+- docs/architecture/schemas/authority-source.schema.json, docs/architecture/schemas/authority-document.schema.json, docs/architecture/schemas/source-registration-decision.schema.json, docs/architecture/schemas/semantic-assertion.schema.json, docs/architecture/schemas/semantic-decision.schema.json, docs/architecture/schemas/conflict.schema.json, docs/architecture/schemas/review-request.schema.json, docs/architecture/schemas/source-correspondence.schema.json, docs/architecture/schemas/artifact-cluster.schema.json, docs/architecture/schemas/workflow-occurrence.schema.json, docs/architecture/schemas/virtual-artifact.schema.json, docs/architecture/schemas/materialization-event.schema.json, docs/releases/v1.0.1/files/docs/AUTHORITY_AND_SEMANTIC_MODEL.md, docs/releases/v1.0.1/files/docs/WORKFLOW_AND_PROJECTION_MODEL.md
 
 ## Invariants
 

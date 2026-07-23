@@ -1,0 +1,4 @@
+interface:
+  display_name: "Expflow Authority and Workflows"
+  short_description: "Govern authority, semantics, and workflows"
+  default_prompt: "Use $expflow-authority-semantics-workflows to review this Expflow authority or workflow change."

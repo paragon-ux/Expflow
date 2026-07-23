@@ -1,3 +1,8 @@
+---
+name: expflow-material-storage-sync
+description: Govern Expflow object, node, tree, project, and head stores; working-tree scanning; identity directives; change detection; candidate trees; dry-run plans; and material integrity. Use when implementing Expflow immutable material stores, scanners, sync operations, identity resolution, transactions, recovery, candidate trees, or material-integrity checks in Gate B phases 5–8.
+---
+
 # Expflow Material, Storage, and Sync
 
 ## Purpose
@@ -5,15 +10,22 @@
 - Defines: the governance responsibility for object, node, tree, project, and head stores; working-tree scanning; identity directives; change detection; candidate trees; dry-run plans; and material integrity
 - Phase boundary: Gate B (Phases 5–8); this skill may guide work related to immutable material stores, sync operations, identity resolution, and material recovery
 
-## Activation Criteria
+## Required Reading Roles
 
-- Activate when: implementation of object stores, node stores, tree stores, head stores, scanner exclusions, identity directives, candidate trees, or material integrity checks is needed
-- Route elsewhere when: work involves schema or contract definition (route to expflow-contracts-protocol), authority or semantic records (route to expflow-authority-semantics-workflows), projection or reproduction (route to expflow-projections-reproduction), or testing/security concerns (route to expflow-testing-security-migration)
+1. `repository_governance`
+2. `active_workflow`
+3. `active_status`
+4. `glossary`
+5. `historical_workflow`
+6. `concept_paper`
+7. `implementation_spec`
+8. `protocol_spec`
+9. `project_snapshot`
+10. `architecture_note`
 
-## Required Reading
+## Supporting References
 
-- Read in order: AGENTS.md, EXPFLOW_WORKFLOW_CURRENT.md, EXPFLOW_CONCEPT_PAPER_V2_3.md, EXPFLOW_IMPLEMENTATION_SPEC_V2_3.md, EXPFLOW_PROTOCOL_SPEC_V2_3.md, EXPFLOW_PROJECT_SNAPSHOT_V2_3.md, Note-On-Architecture.md
-- Supporting references: docs/architecture/schemas/node-revision.schema.json, docs/architecture/schemas/tree-entry.schema.json, docs/architecture/schemas/tree-revision.schema.json, docs/architecture/schemas/operation-plan.schema.json, docs/architecture/schemas/operation-receipt.schema.json, docs/architecture/schemas/path-selector.schema.json, docs/architecture/schemas/project.schema.json, docs/DATA_MODEL.md, docs/IDENTITY_AND_REVISION_MODEL.md, docs/MATERIAL_RECORD_FORMAT.md, docs/STORAGE_AND_RECOVERY.md
+- docs/architecture/schemas/node-revision.schema.json, docs/architecture/schemas/tree-entry.schema.json, docs/architecture/schemas/tree-revision.schema.json, docs/architecture/schemas/operation-plan.schema.json, docs/architecture/schemas/operation-receipt.schema.json, docs/architecture/schemas/path-selector.schema.json, docs/architecture/schemas/project.schema.json, docs/releases/v1.0.1/files/docs/DATA_MODEL.md, docs/releases/v1.0.1/files/docs/IDENTITY_AND_REVISION_MODEL.md, docs/releases/v1.0.1/files/docs/MATERIAL_RECORD_FORMAT.md, docs/releases/v1.0.1/files/docs/STORAGE_AND_RECOVERY.md
 
 ## Invariants
 
