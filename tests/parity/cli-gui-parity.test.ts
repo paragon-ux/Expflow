@@ -99,7 +99,7 @@ describe('CLI/GUI parity — result envelopes', () => {
   it('result envelope is JSON-serializable', () => {
     const result = svc().capabilities();
     const json = JSON.stringify(result);
-    const parsed = JSON.parse(json);
+    const parsed = JSON.parse(json) as Record<string, unknown>;
     expect(parsed.version).toBeDefined();
     expect(parsed.commandFamilies).toBeDefined();
   });
