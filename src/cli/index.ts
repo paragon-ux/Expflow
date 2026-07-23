@@ -515,7 +515,7 @@ async function main(): Promise<void> {
         printJson(r);
       } else {
         const s = r.result as Record<string, unknown>;
-        const hid = String(s.head_tree_revision_id ?? 'none');
+        const hid = String((s.head_tree_revision_id as string) ?? 'none');
         const wts = String(s.working_tree_state);
         process.stdout.write(
           `Project: ${String(s.project_id)}\nHead: ${hid}\nWorking tree: ${wts}\n`,
