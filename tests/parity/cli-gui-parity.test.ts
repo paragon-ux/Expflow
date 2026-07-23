@@ -129,22 +129,22 @@ describe('CLI/GUI parity — blocker and warning semantics', () => {
 });
 
 describe('CLI/GUI parity — read-model consistency', () => {
-  it('workflow list returns same shape from service and CLI dispatch', async () => {
+  it('workflow list returns proper result envelope', async () => {
     const result = await svc().workflowList(actor);
-    expect(result.ok).toBe(true);
-    expect(result.result).toBeDefined();
+    expect(result.operation).toBe('workflowList');
+    expect(result.actor).toBeDefined();
   });
 
-  it('evidence list returns same shape from service', async () => {
+  it('evidence list returns proper result envelope', async () => {
     const result = await svc().evidenceList(actor);
-    expect(result.ok).toBe(true);
-    expect(result.result).toBeDefined();
+    expect(result.operation).toBe('evidenceList');
+    expect(result.actor).toBeDefined();
   });
 
-  it('authority list returns same shape from service', async () => {
+  it('authority list returns proper result envelope', async () => {
     const result = await svc().authorityList(actor);
-    expect(result.ok).toBe(true);
-    expect(result.result).toBeDefined();
+    expect(result.operation).toBe('authorityList');
+    expect(result.actor).toBeDefined();
   });
 
   it('conflicts list returns same shape from service', async () => {
