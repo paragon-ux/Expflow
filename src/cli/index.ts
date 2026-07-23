@@ -520,7 +520,7 @@ async function main(): Promise<void> {
         }
         const s = r.result as Record<string, unknown>;
         process.stdout.write(
-          `Project: ${s.project_id}\nHead: ${s.head_tree_revision_id ?? 'none'}\nWorking tree: ${s.working_tree_state}\n`,
+          `Project: ${String(s.project_id)}\nHead: ${String(s.head_tree_revision_id ?? 'none')}\nWorking tree: ${String(s.working_tree_state)}\n`,
         );
       }
       return;
@@ -532,11 +532,11 @@ async function main(): Promise<void> {
       if (parsed.json) {
         printJson(r);
       } else {
-        if (!r.ok || !r.result) {
+        if (!r.ok) {
           process.stderr.write('history failed\n');
           process.exit(parsed.json ? 0 : 1);
         }
-        const s = r.result as unknown as StatusReportRecord;
+        const s = (r.result ?? {}) as unknown as StatusReportRecord;
         process.stdout.write(formatStatusReport(s));
         process.stdout.write(formatRevisionHistory(s.revision_history as RevisionHistoryEntry[]));
       }
