@@ -1,5 +1,22 @@
 # Changelog
 
+## v1.2.1 - 2026-07-23
+
+### Fixed
+
+- `conflicts()` and `decisions()` now consult the semantic runtime (not evidence-intake records)
+- CLI `inspect`/`history` route through `ApplicationService` (not raw runtime)
+- JSDoc header corrected to 1.2.1
+- CLI write-path arguments now reach service methods (was silently discarded)
+- README command `expflow authorities` corrected to `expflow authority`
+- CI: SHA256 tarball comparison skipped when package already published
+
+### Added
+
+- All 30 application-service methods exposed via CLI subcommands
+- Parity test matrix: 16 tests covering capabilities, actors, envelopes
+- `createGuiBridgeFromService` — architectural migration path for GUI
+
 ## v1.2.0 - 2026-07-23
 
 ### Added

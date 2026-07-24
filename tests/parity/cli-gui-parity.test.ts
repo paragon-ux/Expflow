@@ -112,12 +112,13 @@ describe('CLI/GUI parity — error codes', () => {
     const result = await s.status(actor);
     // status always runs; test verifies the envelope shape
     expect(result.operation).toBe('status');
-    expect(['ok', 'outcome'] in result || 'ok' in result).toBeTruthy();
+    expect('ok' in result).toBe(true);
+    expect('outcome' in result).toBe(true);
   });
 });
 
 describe('CLI/GUI parity — blocker and warning semantics', () => {
-  it('blocked result has error field', async () => {
+  it('success result has blockers and warnings arrays', async () => {
     // Verify blocked() helper produces consistent shape
     const s = svc();
     const result = await s.inspect(actor);
