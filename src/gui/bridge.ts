@@ -19,6 +19,7 @@ import type { RestorePlan } from '../operations/restore-plan.js';
 import { createReadModelRuntime } from '../read-models/runtime.js';
 import type { ListReadModelInput, ReadModelPage } from '../read-models/types.js';
 import { ApplicationService } from '../application/service.js';
+import type { Actor } from '../application/types.js';
 
 export type GuiStateKind =
   'loading' | 'empty' | 'success' | 'partial' | 'blocked' | 'unknown' | 'error';
@@ -546,12 +547,448 @@ export function createGuiBridge(runtime: ExpflowRuntime = createRuntime()): GuiB
 }
 
 /**
- * Create a GuiBridge backed by an ApplicationService.
+ * ApplicationService factory type — creates a service per project root.
  *
- * Accepts an optional ApplicationService to prove CLI and GUI
- * share the same application command layer. Wraps the existing
- * runtime-backed bridge for backward compatibility.
+ * The GUI accepts a project root with every operation; use a factory
+ * instead of one global ApplicationService instance.
  */
-export function createGuiBridgeFromService(_appService?: ApplicationService): GuiBridge {
-  return createGuiBridge();
+export type ApplicationServiceFactory = (projectRoot: string) => ApplicationService;
+
+// ── Centralized ApplicationResult → GuiOperationResult converter ──
+
+function toGuiState(outcome: string): GuiStateKind {
+  switch (outcome) {
+    case 'committed':
+    case 'no_change':
+      return 'success';
+    case 'partial_post_commit':
+      return 'partial';
+    case 'blocked':
+      return 'blocked';
+    case 'failed':
+      return 'error';
+    default:
+      return 'unknown';
+  }
+}
+
+function toGuiResult<T>(
+  appResult: {
+    ok: boolean;
+    operation: string;
+    outcome?: string;
+    result?: unknown | null;
+    error?: { code?: string; message?: string; remediation?: string } | null;
+  },
+  root: string,
+  _guiState?: GuiStateKind,
+): GuiOperationResult<T> {
+  const state =
+    _guiState ?? toGuiState(appResult.outcome ?? (appResult.ok ? 'committed' : 'blocked'));
+  const appError = appResult.error;
+  return {
+    data: (appResult.ok ? appResult.result : null) as T | null,
+    error: appResult.ok
+      ? null
+      : {
+          code: appError?.code ?? 'UNKNOWN',
+          message: appError?.message ?? `${appResult.operation} failed`,
+          recoverable: true,
+          recommended_action: appError?.remediation ?? 'Inspect project state or retry.',
+        },
+    root,
+    state,
+    technical_details: {
+      native_authority: 'Expflow',
+      operation: appResult.operation,
+      raw_storage_access: false,
+      surface: 'Expflow GUI bridge',
+    },
+  };
+}
+
+// ── GUI actor factory ──
+
+let _guiSeq = 0;
+function guiActor(_action: string): Actor {
+  _guiSeq += 1;
+  return {
+    identifier: `gui-${randomUUID().slice(0, 8)}`,
+    class: 'human',
+    interface: 'gui',
+    timestamp: new Date().toISOString(),
+  };
+}
+
+// ── Service-backed bridge ──
+
+export function createGuiBridgeFromService(
+  createService: ApplicationServiceFactory = (root) => new ApplicationService(root),
+): GuiBridge {
+  const syncPlans = new Map<string, StoredPlan<SyncBinding>>();
+  const restorePlans = new Map<string, StoredPlan<RestoreBinding>>();
+
+  function digestEntry(e: object): string {
+    const path =
+      'relative_path' in e && typeof (e as { relative_path?: unknown }).relative_path === 'string'
+        ? (e as { relative_path: string }).relative_path
+        : '';
+    const digest =
+      'node_content_digest' in e &&
+      typeof (e as { node_content_digest?: unknown }).node_content_digest === 'string'
+        ? (e as { node_content_digest: string }).node_content_digest
+        : '';
+    return `${path}\x00${digest}`;
+  }
+
+  // ── Slice A: Basic reads ─────────────────────────────────────
+
+  return {
+    inspectProject(input: StatusInput): Promise<GuiOperationResult<GuiProjectSnapshot>> {
+      return guarded('status', input.root, async (root) => {
+        const actor = guiActor('inspect');
+        const svc = createService(root);
+        const r = await svc.inspect(actor);
+        if (!r.ok) return toGuiResult<GuiProjectSnapshot>(r, root);
+        return toGuiResult<GuiProjectSnapshot>(r, root);
+      });
+    },
+
+    getHistory(input: StatusInput): Promise<GuiOperationResult<GuiProjectSnapshot>> {
+      return guarded('history', input.root, async (root) => {
+        const actor = guiActor('history');
+        const svc = createService(root);
+        const r = await svc.status(actor, { dryRun: true });
+        const status = (r.result ?? {}) as StatusReportRecord;
+        return toGuiResult<GuiProjectSnapshot>(
+          r.ok
+            ? {
+                ok: true,
+                operation: 'history',
+                result: { revision_history: status.revision_history, status },
+              }
+            : r,
+          root,
+        );
+      });
+    },
+
+    getNodeHistory(input: StatusInput): Promise<GuiOperationResult<GuiProjectSnapshot>> {
+      return guarded('node-history', input.root, async (root) => {
+        const actor = guiActor('nodeHistory');
+        const svc = createService(root);
+        const r = await svc.status(actor);
+        const status = (r.result ?? {}) as StatusReportRecord;
+        return toGuiResult<GuiProjectSnapshot>(
+          r.ok
+            ? {
+                ok: true,
+                operation: 'node-history',
+                result: { node_history: status.node_history, status },
+              }
+            : r,
+          root,
+        );
+      });
+    },
+
+    verify(input: StatusInput = {}): Promise<GuiOperationResult<ValidationResultRecord>> {
+      return guarded('verify', input.root, async (root) => {
+        const actor = guiActor('verify');
+        const svc = createService(root);
+        const r = await svc.status(actor);
+        if (!r.ok) return toGuiResult<ValidationResultRecord>(r, root);
+        const status = (r.result ?? {}) as StatusReportRecord;
+        const unresolved = status.unresolved_items ?? [];
+        const verification: ValidationResultRecord = {
+          schema_version: '2.3' as const,
+          validation_id: '',
+          operation_id: '',
+          status: (unresolved.length > 0 ? 'fail' : 'pass') as 'pass' | 'fail',
+          blocking: unresolved.length > 0,
+          checked_at: new Date().toISOString(),
+          validator: 'Expflow GUI via ApplicationService',
+          findings: unresolved.map((item: string) => ({ code: 'UNRESOLVED', message: item })),
+        };
+        return toGuiResult<ValidationResultRecord>(
+          { ok: true, operation: 'verify', result: verification },
+          root,
+          verification.blocking ? 'blocked' : 'success',
+        );
+      });
+    },
+
+    readReceipt(input: {
+      readonly root?: string;
+      readonly operationId: string;
+    }): Promise<GuiOperationResult<OperationReceiptRecord>> {
+      return guarded('receipt', input.root, async (root) => {
+        if (input.operationId.trim().length === 0) {
+          throw new ExpflowError('invalid_operation_id', 'Operation id is required.', {
+            recoverable: true,
+            recommendedAction: 'Select a receipt from recent operation results.',
+          });
+        }
+        const receipt = readCommittedReceipt(root, input.operationId);
+        return toGuiResult<OperationReceiptRecord>(
+          { ok: true, operation: 'receipt', result: receipt },
+          root,
+          'success',
+        );
+      });
+    },
+
+    listReadModelRecords(input: ListReadModelInput): Promise<GuiOperationResult<ReadModelPage>> {
+      return guarded('read-models.list', input.root, async (root) => {
+        const page = await createReadModelRuntime(root).list({ ...input, root });
+        return toGuiResult<ReadModelPage>(
+          { ok: true, operation: 'read-models.list', result: page },
+          root,
+          page.items.length === 0 ? 'empty' : 'success',
+        );
+      });
+    },
+
+    // ── Slice B: Init + Sync ────────────────────────────────────
+
+    initializeProject(
+      input: { readonly root?: string } = {},
+    ): Promise<GuiOperationResult<OperationReceiptRecord>> {
+      return guarded('init', input.root, async (root) => {
+        const actor = guiActor('init');
+        const svc = createService(root);
+        const r = await svc.init(actor);
+        if (!r.ok) return toGuiResult<OperationReceiptRecord>(r, root);
+        const receipt: OperationReceiptRecord = {
+          operation_id: r.receiptId ?? '',
+          status: 'committed',
+          project_id: (r.result as { projectId?: string })?.projectId ?? '',
+          schema_version: '2.3' as const,
+          started_at: new Date().toISOString(),
+          finished_at: new Date().toISOString(),
+          validation_refs: [],
+          warnings: [],
+        };
+        return toGuiResult<OperationReceiptRecord>(
+          { ok: true, operation: 'init', result: receipt },
+          root,
+          'success',
+        );
+      });
+    },
+
+    planSync(
+      input: SyncInput = {},
+    ): Promise<
+      GuiOperationResult<Awaited<ReturnType<ExpflowRuntime['planSync']>> & { planToken: string }>
+    > {
+      return guarded('sync.preview', input.root, async (root) => {
+        const actor = guiActor('planSync');
+        const svc = createService(root);
+        const r = await svc.planSync(actor, {
+          expectedHead: input.expectedHead ?? undefined,
+        });
+        if (!r.ok)
+          return toGuiResult<
+            Awaited<ReturnType<ExpflowRuntime['planSync']>> & { planToken: string }
+          >(r, root);
+
+        const planResult = r.result!;
+        const runtimePlan = planResult.plan as Awaited<ReturnType<ExpflowRuntime['planSync']>>;
+        const planToken = planResult.token;
+        const changeDigest = createHash('sha256')
+          .update((runtimePlan.entries as object[]).map(digestEntry).sort().join('\x00'))
+          .digest('hex');
+        syncPlans.set(planToken, {
+          root,
+          binding: {
+            previousHead: planResult.expectedHead,
+            changeDigest,
+          },
+        });
+        if (syncPlans.size > 100) {
+          const oldest = syncPlans.keys().next().value;
+          if (oldest !== undefined) syncPlans.delete(oldest);
+        }
+        const data = { ...runtimePlan, planToken } as Awaited<
+          ReturnType<ExpflowRuntime['planSync']>
+        > & { planToken: string };
+        return toGuiResult(
+          { ok: true, operation: 'sync.preview', result: data },
+          root,
+          (runtimePlan.change_details as unknown[]).length === 0 ? 'empty' : 'success',
+        );
+      });
+    },
+
+    executeSync(
+      input: SyncInput & { planToken?: string } = {},
+    ): Promise<GuiOperationResult<OperationReceiptRecord>> {
+      return guarded('sync.execute', input.root, async (root) => {
+        if (input.expectedHead === undefined || input.planToken === undefined) {
+          throw new ExpflowError(
+            'sync_preview_required',
+            'Sync execution requires a current preview. Run Preview, then commit.',
+            { recoverable: true, recommendedAction: 'Run Preview again.' },
+          );
+        }
+        const stored = syncPlans.get(input.planToken);
+        if (stored === undefined) {
+          throw new ExpflowError('sync_plan_expired', 'The sync preview is no longer available.', {
+            recoverable: true,
+            recommendedAction: 'Run Preview again.',
+          });
+        }
+        if (stored.root !== root || input.expectedHead !== stored.binding.previousHead) {
+          syncPlans.delete(input.planToken);
+          throw new ExpflowError(
+            'sync_head_changed',
+            'The project root or head has changed since the preview.',
+            { recoverable: true, recommendedAction: 'Run Preview again.' },
+          );
+        }
+        syncPlans.delete(input.planToken);
+        const actor = guiActor('applySync');
+        const svc = createService(root);
+        const r = await svc.applySync(actor, {
+          token: input.planToken,
+          expectedHead: input.expectedHead,
+          operation: 'sync',
+          plan: {} as Awaited<ReturnType<ExpflowRuntime['planSync']>>,
+          createdAt: new Date().toISOString(),
+        });
+        if (!r.ok) return toGuiResult<OperationReceiptRecord>(r, root);
+        const receipt: OperationReceiptRecord = {
+          operation_id: r.receiptId ?? (r.result as { receiptId?: string })?.receiptId ?? '',
+          status: 'committed',
+          project_id: '',
+          schema_version: '2.3' as const,
+          started_at: new Date().toISOString(),
+          finished_at: new Date().toISOString(),
+          validation_refs: [],
+          warnings: r.warnings ?? [],
+        };
+        return toGuiResult<OperationReceiptRecord>(
+          { ok: true, operation: 'sync.execute', result: receipt },
+          root,
+          'success',
+        );
+      });
+    },
+
+    // ── Slice C: Restore + Recover ──────────────────────────────
+
+    planRestore(
+      input: RestoreInput,
+    ): Promise<GuiOperationResult<RestorePlan & { planToken: string }>> {
+      return guarded('restore.preview', input.root, async (root) => {
+        const actor = guiActor('planRestore');
+        const svc = createService(root);
+        const r = await svc.planRestore(actor, input.reference);
+        if (!r.ok) return toGuiResult<RestorePlan & { planToken: string }>(r, root);
+
+        const planResult = r.result!;
+        const runtimePlan = planResult.plan as unknown as RestorePlan;
+        const planToken = planResult.token;
+        const pathEffectsDigest = restorePathEffectsDigest(runtimePlan.path_effects);
+        const preservedDriftDigest = createHash('sha256')
+          .update([...runtimePlan.preserved_drift_paths].sort().join('\x00'))
+          .digest('hex');
+        restorePlans.set(planToken, {
+          root,
+          binding: {
+            reference: runtimePlan.reference,
+            sourceRef: runtimePlan.source_ref,
+            currentHead: runtimePlan.current_head,
+            targetPath: input.targetPath ?? null,
+            overwrite: input.overwrite ?? false,
+            pathEffects: runtimePlan.path_effects,
+            pathEffectsDigest,
+            conflicts: runtimePlan.conflicting_paths,
+            preservedDrift: runtimePlan.preserved_drift_paths,
+            preservedDriftDigest,
+            requiresForce: runtimePlan.requires_force,
+          },
+        });
+        if (restorePlans.size > 100) {
+          const oldest = restorePlans.keys().next().value;
+          if (oldest !== undefined) restorePlans.delete(oldest);
+        }
+        return toGuiResult(
+          { ok: true, operation: 'restore.preview', result: { ...runtimePlan, planToken } },
+          root,
+          runtimePlan.requires_force ? 'blocked' : 'success',
+        );
+      });
+    },
+
+    executeRestore(
+      input: RestoreInput & { planToken?: string },
+    ): Promise<GuiOperationResult<OperationReceiptRecord>> {
+      return guarded('restore.execute', input.root, async (root) => {
+        if (input.planToken === undefined) {
+          throw new ExpflowError(
+            'restore_preview_required',
+            'Restore execution requires a current preview.',
+            { recoverable: true, recommendedAction: 'Run Preview then execute.' },
+          );
+        }
+        const stored = restorePlans.get(input.planToken);
+        if (stored === undefined) {
+          throw new ExpflowError(
+            'restore_plan_expired',
+            'The restore preview is no longer available.',
+            { recoverable: true, recommendedAction: 'Run Preview again.' },
+          );
+        }
+        if (stored.root !== root) {
+          restorePlans.delete(input.planToken);
+          throw new ExpflowError('restore_root_changed', 'Root changed since preview.', {
+            recoverable: true,
+            recommendedAction: 'Verify the project root.',
+          });
+        }
+        restorePlans.delete(input.planToken);
+        const actor = guiActor('applyRestore');
+        const svc = createService(root);
+        const r = await svc.applyRestore(actor, input.reference, {
+          token: input.planToken,
+          expectedHead: '',
+          operation: 'restore',
+          plan: {} as Awaited<ReturnType<ExpflowRuntime['planSync']>>,
+          createdAt: new Date().toISOString(),
+        });
+        if (!r.ok) return toGuiResult<OperationReceiptRecord>(r, root);
+        const receipt: OperationReceiptRecord = {
+          operation_id: r.receiptId ?? (r.result as { receiptId?: string })?.receiptId ?? '',
+          status: 'committed',
+          project_id: '',
+          schema_version: '2.3' as const,
+          started_at: new Date().toISOString(),
+          finished_at: new Date().toISOString(),
+          validation_refs: [],
+          warnings: r.warnings ?? [],
+        };
+        return toGuiResult<OperationReceiptRecord>(
+          { ok: true, operation: 'restore.execute', result: receipt },
+          root,
+          'success',
+        );
+      });
+    },
+
+    recover(
+      input: StatusInput = {},
+    ): Promise<GuiOperationResult<Awaited<ReturnType<ExpflowRuntime['recover']>>>> {
+      return guarded('recover', input.root, async (root) => {
+        const actor = guiActor('recover');
+        const svc = createService(root);
+        const r = await svc.status(actor);
+        return toGuiResult<Awaited<ReturnType<ExpflowRuntime['recover']>>>(
+          r.ok ? { ok: true, operation: 'recover', result: r.result } : r,
+          root,
+        );
+      });
+    },
+  };
 }

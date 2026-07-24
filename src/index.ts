@@ -1,6 +1,7 @@
 export { VERSION } from './core/version.js';
 export { createRuntime } from './operations/runtime.js';
-export { createGuiBridge } from './gui/bridge.js';
+export { createGuiBridge, createGuiBridgeFromService } from './gui/bridge.js';
+export type { ApplicationServiceFactory } from './gui/bridge.js';
 export { createReadModelRuntime } from './read-models/runtime.js';
 export { createEvidenceRuntime } from './evidence/runtime.js';
 export { createPortablePackageRuntime } from './portable-package/runtime.js';

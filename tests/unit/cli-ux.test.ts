@@ -203,7 +203,7 @@ describe('ordinary CLI UX', () => {
     const result = runCli(['capabilities', '--json']);
     expectExit(result, 0);
     const caps = parseStdout(result);
-    expect(caps.version).toBe('1.2.2');
+    expect(caps.version).toBe('1.2.3');
     expect(caps.commandFamilies).toContain('project');
     expect(caps.features).toBeDefined();
     expect((caps.features as Record<string, unknown>).capabilityDiscovery).toBe(true);

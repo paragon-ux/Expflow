@@ -5,11 +5,11 @@ import { readFile } from 'node:fs/promises';
 import { extname, join, normalize, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { VERSION } from '../../dist/core/version.js';
-import { createGuiBridge } from '../../dist/index.js';
+import { createGuiBridgeFromService } from '../../dist/index.js';
 
 const __dirname = fileURLToPath(new URL('.', import.meta.url));
 const appRoot = resolve(__dirname);
-const bridge = createGuiBridge();
+const bridge = createGuiBridgeFromService();
 const port = Number(process.env.EXPFLOW_GUI_PORT ?? '4173');
 
 // Per-launch request token
