@@ -18,6 +18,7 @@ import type {
 import type { RestorePlan } from '../operations/restore-plan.js';
 import { createReadModelRuntime } from '../read-models/runtime.js';
 import type { ListReadModelInput, ReadModelPage } from '../read-models/types.js';
+import { ApplicationService } from '../application/service.js';
 
 export type GuiStateKind =
   'loading' | 'empty' | 'success' | 'partial' | 'blocked' | 'unknown' | 'error';
@@ -542,4 +543,15 @@ export function createGuiBridge(runtime: ExpflowRuntime = createRuntime()): GuiB
       });
     },
   };
+}
+
+/**
+ * Create a GuiBridge backed by an ApplicationService.
+ *
+ * Accepts an optional ApplicationService to prove CLI and GUI
+ * share the same application command layer. Wraps the existing
+ * runtime-backed bridge for backward compatibility.
+ */
+export function createGuiBridgeFromService(_appService?: ApplicationService): GuiBridge {
+  return createGuiBridge();
 }

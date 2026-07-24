@@ -572,44 +572,95 @@ async function main(): Promise<void> {
       const dispatch: Record<string, () => Promise<Record<string, unknown>>> = {
         // ── Workflow ────────────────────────
         'workflow:list': async () => mk(await svc.workflowList(actor)),
-        'workflow:start': async () => mk(await svc.startWorkflow(actor, {})),
-        'workflow:output': async () => mk(await svc.attachWorkflowOutput(actor, {})),
-        'workflow:state': async () => mk(await svc.transitionWorkflowState(actor, {})),
+        'workflow:start': async () =>
+          mk(await svc.startWorkflow(actor, { workflowName: parsed.familyArgs[0] ?? '' })),
+        'workflow:output': async () =>
+          mk(await svc.attachWorkflowOutput(actor, { workflowId: parsed.familyArgs[0] ?? '' })),
+        'workflow:state': async () =>
+          mk(await svc.transitionWorkflowState(actor, { workflowId: parsed.familyArgs[0] ?? '' })),
         // ── Evidence ─────────────────────────
         'evidence:list': async () => mk(await svc.evidenceList(actor)),
         'evidence:add-file': async () =>
-          mk(await svc.evidenceIntake(actor, { sourceType: 'file' })),
+          mk(
+            await svc.evidenceIntake(actor, {
+              sourceType: 'file',
+              path: parsed.familyArgs[0] ?? '',
+            }),
+          ),
         'evidence:add-transcript': async () =>
-          mk(await svc.evidenceIntake(actor, { sourceType: 'transcript' })),
+          mk(
+            await svc.evidenceIntake(actor, {
+              sourceType: 'transcript',
+              path: parsed.familyArgs[0] ?? '',
+            }),
+          ),
         'evidence:add-manifest': async () =>
-          mk(await svc.evidenceIntake(actor, { sourceType: 'manifest' })),
+          mk(
+            await svc.evidenceIntake(actor, {
+              sourceType: 'manifest',
+              path: parsed.familyArgs[0] ?? '',
+            }),
+          ),
         'evidence:add-reference': async () =>
-          mk(await svc.evidenceIntake(actor, { sourceType: 'reference' })),
+          mk(
+            await svc.evidenceIntake(actor, {
+              sourceType: 'reference',
+              path: parsed.familyArgs[0] ?? '',
+            }),
+          ),
         // ── Authority ───────────────────────
         'authority:list': async () => mk(await svc.authorityList(actor)),
-        'authority:propose': async () => mk(await svc.registerAuthoritySource(actor, {})),
+        'authority:propose': async () =>
+          mk(await svc.registerAuthoritySource(actor, { sourceName: parsed.familyArgs[0] ?? '' })),
         'authority:accept': async () =>
-          mk(await svc.recordSourceDecision(actor, { decision: 'accepted' })),
+          mk(
+            await svc.recordSourceDecision(actor, {
+              decision: 'accepted',
+              sourceId: parsed.familyArgs[0] ?? '',
+            }),
+          ),
         'authority:reject': async () =>
-          mk(await svc.recordSourceDecision(actor, { decision: 'rejected' })),
+          mk(
+            await svc.recordSourceDecision(actor, {
+              decision: 'rejected',
+              sourceId: parsed.familyArgs[0] ?? '',
+            }),
+          ),
         'authority:supersede': async () =>
-          mk(await svc.recordSourceDecision(actor, { decision: 'superseded' })),
+          mk(
+            await svc.recordSourceDecision(actor, {
+              decision: 'superseded',
+              sourceId: parsed.familyArgs[0] ?? '',
+            }),
+          ),
         // ── Conflicts ────────────────────────
         'conflicts:list': async () => mk(await svc.conflicts(actor)),
-        'conflicts:declare': async () => mk(await svc.declareConflict(actor, {})),
+        'conflicts:declare': async () =>
+          mk(await svc.declareConflict(actor, { description: parsed.familyArgs.join(' ') || '' })),
         // ── Decisions ────────────────────────
         'decisions:list': async () => mk(await svc.decisions(actor)),
-        'decisions:record': async () => mk(await svc.recordDecision(actor, {})),
-        'decisions:supersede': async () => mk(await svc.recordDecision(actor, { supersede: true })),
+        'decisions:record': async () =>
+          mk(await svc.recordDecision(actor, { description: parsed.familyArgs.join(' ') || '' })),
+        'decisions:supersede': async () =>
+          mk(
+            await svc.recordDecision(actor, {
+              supersede: true,
+              description: parsed.familyArgs.join(' ') || '',
+            }),
+          ),
         // ── Package ──────────────────────────
         // eslint-disable-next-line @typescript-eslint/require-await
         'package:list': async () => ({
           operations: ['export', 'import', 'validate', 'plan-import', 'inspect'],
         }),
-        'package:export': async () => mk(await svc.exportPackage(actor, {})),
-        'package:import': async () => mk(await svc.importPackage(actor, {})),
-        'package:validate': async () => mk(await svc.validatePackage(actor, {})),
-        'package:plan-import': async () => mk(await svc.planImport(actor, {})),
+        'package:export': async () =>
+          mk(await svc.exportPackage(actor, { targetPath: parsed.familyArgs[0] ?? '' })),
+        'package:import': async () =>
+          mk(await svc.importPackage(actor, { sourcePath: parsed.familyArgs[0] ?? '' })),
+        'package:validate': async () =>
+          mk(await svc.validatePackage(actor, { sourcePath: parsed.familyArgs[0] ?? '' })),
+        'package:plan-import': async () =>
+          mk(await svc.planImport(actor, { sourcePath: parsed.familyArgs[0] ?? '' })),
       };
 
       const key = `${parsed.command}:${sub}`;
