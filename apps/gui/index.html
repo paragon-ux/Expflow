@@ -8,85 +8,76 @@
   </head>
   <body>
     <main class="app-shell">
+      <!-- Header -->
       <header class="topbar">
         <div>
           <h1>Expflow GUI</h1>
-          <p id="state-summary">Choose a local project root.</p>
+          <span id="version-badge" class="badge">v1.2.3</span>
         </div>
-        <div class="status-pill" id="status-pill">empty</div>
-      </header>
-
-      <section class="command-band" aria-label="Project controls">
         <label class="root-field">
           <span>Project root</span>
-          <input id="project-root" type="text" autocomplete="off" spellcheck="false" />
+          <input
+            id="project-root"
+            type="text"
+            autocomplete="off"
+            spellcheck="false"
+            placeholder="C:\path\to\project"
+          />
         </label>
-        <div class="button-row">
-          <button id="inspect-button" type="button">Inspect</button>
-          <button id="init-button" type="button">Initialize</button>
-          <button id="recover-button" type="button">Recover</button>
-          <button id="verify-button" type="button">Verify</button>
+        <div class="header-actions">
+          <button id="refresh-button" title="Refresh (Ctrl+R)">🔄</button>
+          <button id="logs-button" title="View Logs">📋</button>
+          <span id="status-pill" class="status-pill">disconnected</span>
         </div>
-      </section>
+      </header>
 
-      <section class="workspace-grid">
-        <article class="panel" aria-labelledby="state-heading">
-          <h2 id="state-heading">Current State</h2>
-          <div id="state-panel" class="panel-body empty-state">No project loaded.</div>
-        </article>
+      <!-- Sidebar + Workspace -->
+      <div class="body-layout">
+        <nav class="sidebar" aria-label="Command families">
+          <h3>Command Families</h3>
+          <ul id="family-list"></ul>
+        </nav>
 
-        <article class="panel" aria-labelledby="sync-heading">
-          <h2 id="sync-heading">Sync</h2>
-          <div class="button-row">
-            <button id="plan-sync-button" type="button">Preview</button>
-            <button id="sync-button" type="button">Commit</button>
+        <section class="workspace">
+          <!-- Command list -->
+          <div id="command-panel" class="panel">
+            <h3 id="family-title">Select a family</h3>
+            <ul id="command-list" class="command-list"></ul>
           </div>
-          <div id="sync-panel" class="panel-body empty-state">No sync preview yet.</div>
-        </article>
 
-        <article class="panel" aria-labelledby="history-heading">
-          <h2 id="history-heading">History</h2>
-          <div class="button-row">
-            <button id="history-button" type="button">Tree History</button>
-            <button id="node-history-button" type="button">Node History</button>
+          <!-- Options -->
+          <div id="options-panel" class="panel" style="display: none">
+            <h3>Options</h3>
+            <div id="options-fields"></div>
           </div>
-          <label class="inline-field">
-            <span>Path</span>
-            <input id="node-history-path" type="text" autocomplete="off" spellcheck="false" />
-          </label>
-          <div id="history-panel" class="panel-body empty-state">No history loaded.</div>
-        </article>
 
-        <article class="panel" aria-labelledby="restore-heading">
-          <h2 id="restore-heading">Restore</h2>
-          <label class="inline-field">
-            <span>Reference</span>
-            <input id="restore-reference" type="text" autocomplete="off" spellcheck="false" />
-          </label>
-          <label class="check-field">
-            <input id="restore-force" type="checkbox" />
-            <span>Force overwrite</span>
-          </label>
-          <div class="button-row">
-            <button id="plan-restore-button" type="button">Preview</button>
-            <button id="restore-button" type="button">Restore</button>
+          <!-- Plan preview -->
+          <div id="plan-panel" class="panel" style="display: none">
+            <h3>Plan Preview</h3>
+            <div id="plan-content" class="empty-state">Run Preview to see what will change.</div>
+            <div class="button-row">
+              <button id="preview-button" type="button">Preview</button>
+              <button id="apply-button" type="button" disabled>Apply</button>
+            </div>
           </div>
-          <div id="restore-panel" class="panel-body empty-state">No restore preview yet.</div>
-        </article>
 
-        <article class="panel wide" aria-labelledby="receipt-heading">
-          <h2 id="receipt-heading">Receipts And Technical Details</h2>
-          <label class="inline-field">
-            <span>Operation id</span>
-            <input id="receipt-id" type="text" autocomplete="off" spellcheck="false" />
-          </label>
-          <div class="button-row">
-            <button id="receipt-button" type="button">Load Receipt</button>
-            <button id="clear-button" type="button">Clear</button>
+          <!-- Results & Receipt -->
+          <div id="result-panel" class="panel" style="display: none">
+            <h3>Result</h3>
+            <div id="result-content" class="empty-state">No result yet.</div>
+            <details>
+              <summary>Receipt (JSON)</summary>
+              <pre id="receipt-content" class="technical-output">{}</pre>
+            </details>
           </div>
-          <pre id="technical-panel" class="technical-output" tabindex="0">{}</pre>
-        </article>
-      </section>
+        </section>
+      </div>
+
+      <!-- Footer -->
+      <footer class="bottombar">
+        <span>Expflow GUI — complete CLI parity</span>
+        <span id="shortcut-hint">Ctrl+R Refresh · Esc Cancel</span>
+      </footer>
     </main>
     <script type="module" src="./src/app.js"></script>
   </body>

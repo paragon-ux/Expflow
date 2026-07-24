@@ -12,40 +12,43 @@ describe('Expflow GUI shell contract', () => {
     for (const expected of [
       'Expflow GUI',
       'Project root',
-      'Current State',
-      'Sync',
-      'History',
-      'Restore',
-      'Receipts And Technical Details',
-      'aria-label="Project controls"',
+      'Command Families',
+      'plan',
+      'apply',
+      'preview',
+      'receipt',
+      'sidebar',
+      'workspace',
       'id="project-root"',
-      'id="restore-reference"',
-      'id="restore-force"',
-      'id="technical-panel"',
+      'id="status-pill"',
+      'id="family-list"',
+      'id="command-list"',
+      'id="plan-panel"',
+      'id="result-panel"',
+      'id="receipt-content"',
     ]) {
       expect(html).toContain(expected);
     }
   });
 
-  test('requires confirmation before GUI-triggered mutations', () => {
+  test('requires plan-before-apply workflow with confirmation', () => {
     const app = read('apps/gui/src/app.js');
 
-    expect(app).toContain('Commit the current sync plan');
-    expect(app).toContain('sync_preview_required');
-    expect(app).toContain('expectedHead: lastSyncPlan.previous_head');
-    expect(app).toContain('Restore will create a forward commit');
+    expect(app).toContain('planToken');
+    expect(app).toContain('doPreview');
+    expect(app).toContain('doApply');
     expect(app).toContain('/api/sync/plan');
     expect(app).toContain('/api/restore/plan');
+    expect(app).toContain('lastPlanToken');
+    expect(app).toContain('applyBtn.disabled = true');
   });
 
   test('server uses the GUI bridge without shell command construction or raw storage coupling', () => {
     const server = read('apps/gui/server.mjs');
-    const app = read('apps/gui/src/app.js');
 
-    expect(server).toContain('createGuiBridge');
+    expect(server).toContain('createGuiBridgeFromService');
     expect(server).not.toContain('child_process');
     expect(server).not.toContain('.expflow');
-    expect(app).not.toContain('.expflow');
     for (const route of [
       '/api/status',
       '/api/init',

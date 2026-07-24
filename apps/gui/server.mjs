@@ -6,6 +6,7 @@ import { extname, join, normalize, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { VERSION } from '../../dist/core/version.js';
 import { createGuiBridgeFromService } from '../../dist/index.js';
+import { ApplicationService } from '../../dist/application/service.js';
 
 const __dirname = fileURLToPath(new URL('.', import.meta.url));
 const appRoot = resolve(__dirname);
@@ -22,7 +23,20 @@ const contentTypes = new Map([
 ]);
 
 // Routes that may mutate state (require POST + token)
-const mutationRoutes = new Set(['/api/init', '/api/sync', '/api/restore', '/api/recover']);
+const mutationRoutes = new Set([
+  '/api/init',
+  '/api/sync',
+  '/api/restore',
+  '/api/recover',
+  '/api/evidence/intake',
+  '/api/authority/propose',
+  '/api/authority/decide',
+  '/api/conflicts/declare',
+  '/api/decisions/complete',
+  '/api/package/export',
+  '/api/package/plan-import',
+  '/api/package/import',
+]);
 
 // Read-only routes (require token, allow POST but also allow read-only inspection)
 const readRoutes = new Set([
@@ -35,6 +49,16 @@ const readRoutes = new Set([
   '/api/read-models/list',
   '/api/receipt',
   '/api/capabilities',
+  '/api/evidence/inspect',
+  '/api/conflicts/list',
+  '/api/decisions/verify',
+  '/api/decisions/equivalent',
+  '/api/decisions/reuse',
+  '/api/workflow/list',
+  '/api/workflow/inspect',
+  '/api/workflow/state',
+  '/api/workflow/history',
+  '/api/package/validate',
 ]);
 
 const validHosts = new Set(['127.0.0.1', 'localhost']);
@@ -259,6 +283,95 @@ async function handleApi(request, response) {
       },
       supportedOs: ['windows', 'macos', 'linux'],
       nodeVersions: ['20', '22'],
+    }),
+
+    // ── Evidence ──────────────────────────────────────────
+    '/api/evidence/intake': async () => {
+      const svc = new ApplicationService(body.root);
+      return svc.evidence.intake({ path: body.path, metadata: body.metadata });
+    },
+    '/api/evidence/inspect': async () => {
+      const svc = new ApplicationService(body.root);
+      return svc.evidence.inspect(body.reference);
+    },
+
+    // ── Authority ─────────────────────────────────────────
+    '/api/authority/propose': async () => {
+      const svc = new ApplicationService(body.root);
+      return svc.authority.propose({
+        kind: body.kind,
+        type: body.type,
+        identifier: body.identifier,
+        description: body.description,
+      });
+    },
+    '/api/authority/decide': async () => {
+      const svc = new ApplicationService(body.root);
+      return svc.authority.decide(body.reference, body.decision);
+    },
+
+    // ── Conflicts ─────────────────────────────────────────
+    '/api/conflicts/declare': async () => {
+      const svc = new ApplicationService(body.root);
+      return svc.semantics.declareConflict(body.description);
+    },
+    '/api/conflicts/list': async () => {
+      const svc = new ApplicationService(body.root);
+      return svc.semantics.listConflicts();
+    },
+
+    // ── Decisions ─────────────────────────────────────────
+    '/api/decisions/complete': async () => {
+      const svc = new ApplicationService(body.root);
+      return svc.semantics.completeDecision(body.reference, body.result);
+    },
+    '/api/decisions/verify': async () => {
+      const svc = new ApplicationService(body.root);
+      return svc.semantics.verifyDecision(body.reference);
+    },
+    '/api/decisions/equivalent': async () => {
+      const svc = new ApplicationService(body.root);
+      return svc.semantics.equivalentDecisions(body.reference, body.other);
+    },
+    '/api/decisions/reuse': async () => {
+      const svc = new ApplicationService(body.root);
+      return svc.semantics.reuseDecision(body.reference);
+    },
+
+    // ── Workflow ──────────────────────────────────────────
+    '/api/workflow/list': async () => {
+      const svc = new ApplicationService(body.root);
+      return svc.workflow.listWorkflowOccurrences();
+    },
+    '/api/workflow/inspect': async () => {
+      const svc = new ApplicationService(body.root);
+      return svc.workflow.inspectWorkflowOccurrence(body.workflowId);
+    },
+    '/api/workflow/state': async () => {
+      const svc = new ApplicationService(body.root);
+      return svc.workflow.readWorkflowState(body.workflowId, body.state);
+    },
+    '/api/workflow/history': async () => {
+      const svc = new ApplicationService(body.root);
+      return svc.workflow.readWorkflowHistory(body.workflowId);
+    },
+
+    // ── Package ───────────────────────────────────────────
+    '/api/package/export': async () => ({
+      state: 'blocked',
+      error: { code: 'NOT_IMPLEMENTED', message: 'Package export available via CLI.' },
+    }),
+    '/api/package/validate': async () => ({
+      state: 'blocked',
+      error: { code: 'NOT_IMPLEMENTED', message: 'Package validate available via CLI.' },
+    }),
+    '/api/package/plan-import': async () => ({
+      state: 'blocked',
+      error: { code: 'NOT_IMPLEMENTED', message: 'Package plan-import available via CLI.' },
+    }),
+    '/api/package/import': async () => ({
+      state: 'blocked',
+      error: { code: 'NOT_IMPLEMENTED', message: 'Package import available via CLI.' },
     }),
   };
 
