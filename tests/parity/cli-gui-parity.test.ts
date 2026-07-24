@@ -104,7 +104,7 @@ describe('CLI/GUI adapter parity — inspect/status', () => {
 
 describe('CLI/GUI adapter parity — error semantics', () => {
   it('GUI reports uninitialized for nonexistent root', async () => {
-    const nonexistent = join(process.cwd(), `nx-parity-${Date.now()}`);
+    const nonexistent = join(process.cwd(), `nx-parity-${String(Date.now())}`);
     const bridge = createGuiBridgeFromService(factory);
     const guiResult = await bridge.inspectProject({ root: nonexistent });
 
