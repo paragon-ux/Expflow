@@ -1,5 +1,26 @@
 # Changelog
 
+## v1.2.3 - 2026-07-24
+
+### Fixed
+- **ApplicationService GUI migration**: `createGuiBridgeFromService` now routes all 13 bridge methods through `ApplicationService` using a factory pattern (was a no-op returning legacy bridge)
+- **GUI server**: `apps/gui/server.mjs` imports `createGuiBridgeFromService` instead of `createGuiBridge`
+- **Centralized result converter**: `toGuiResult<T>()` maps `ApplicationResult` → `GuiOperationResult` consistently
+- **State mapping**: `inspectProject` now uses `stateFromStatus()` for correct empty/blocked states
+- `package-lock.json` version corrected to match `package.json`
+- All version references updated to 1.2.3
+
+### Added
+- **Structural regression tests** (4 tests): bridge migration verified — factory invoked, root passed, server imports correct function
+- **Real CLI/GUI adapter parity tests** (10 tests): CLI output compared against bridge output for capabilities, inspect, error semantics, actor attribution
+- `ApplicationServiceFactory` type exported from `src/gui/bridge.ts`
+- `createGuiBridgeFromService` re-exported from package entry point
+
+### Architecture
+- GUI operations route through: `GUI → GuiBridge → ApplicationService(projectRoot) → runtimes`
+- CLI operations route through: `CLI → ApplicationService(projectRoot) → runtimes`
+- Both interfaces are now peer adapters over one application command layer
+
 ## v1.2.1 - 2026-07-23
 
 ### Fixed
