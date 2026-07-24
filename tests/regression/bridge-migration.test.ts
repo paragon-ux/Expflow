@@ -1,4 +1,4 @@
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect } from 'vitest';
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { createGuiBridge, createGuiBridgeFromService } from '../../src/gui/bridge.js';
@@ -39,7 +39,7 @@ describe('Bridge migration — structural regression', () => {
 
   it('apps/gui/server.mjs imports createGuiBridgeFromService, not createGuiBridge', () => {
     const serverSource = readFileSync(
-      resolve(import.meta.dirname!, '../../apps/gui/server.mjs'),
+      resolve(import.meta.dirname, '../../apps/gui/server.mjs'),
       'utf8',
     );
     // Must import createGuiBridgeFromService

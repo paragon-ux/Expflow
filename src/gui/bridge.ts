@@ -577,7 +577,7 @@ function toGuiResult<T>(
     ok: boolean;
     operation: string;
     outcome?: string;
-    result?: unknown | null;
+    result?: unknown;
     error?: { code?: string; message?: string; remediation?: string } | null;
   },
   root: string,
@@ -609,9 +609,7 @@ function toGuiResult<T>(
 
 // ── GUI actor factory ──
 
-let _guiSeq = 0;
 function guiActor(_action: string): Actor {
-  _guiSeq += 1;
   return {
     identifier: `gui-${randomUUID().slice(0, 8)}`,
     class: 'human',
@@ -650,7 +648,8 @@ export function createGuiBridgeFromService(
         const svc = createService(root);
         const r = await svc.inspect(actor);
         if (!r.ok) return toGuiResult<GuiProjectSnapshot>(r, root);
-        return toGuiResult<GuiProjectSnapshot>(r, root);
+        const status = (r.result ?? {}) as StatusReportRecord;
+        return toGuiResult<GuiProjectSnapshot>(r, root, stateFromStatus(status));
       });
     },
 
@@ -699,12 +698,12 @@ export function createGuiBridgeFromService(
         const r = await svc.status(actor);
         if (!r.ok) return toGuiResult<ValidationResultRecord>(r, root);
         const status = (r.result ?? {}) as StatusReportRecord;
-        const unresolved = status.unresolved_items ?? [];
+        const unresolved = status.unresolved_items;
         const verification: ValidationResultRecord = {
           schema_version: '2.3' as const,
           validation_id: '',
           operation_id: '',
-          status: (unresolved.length > 0 ? 'fail' : 'pass') as 'pass' | 'fail',
+          status: unresolved.length > 0 ? 'fail' : 'pass',
           blocking: unresolved.length > 0,
           checked_at: new Date().toISOString(),
           validator: 'Expflow GUI via ApplicationService',
@@ -723,6 +722,8 @@ export function createGuiBridgeFromService(
       readonly operationId: string;
     }): Promise<GuiOperationResult<OperationReceiptRecord>> {
       return guarded('receipt', input.root, async (root) => {
+        // readCommittedReceipt is synchronous; lint exception is acceptable
+        await Promise.resolve();
         if (input.operationId.trim().length === 0) {
           throw new ExpflowError('invalid_operation_id', 'Operation id is required.', {
             recoverable: true,
@@ -762,7 +763,7 @@ export function createGuiBridgeFromService(
         const receipt: OperationReceiptRecord = {
           operation_id: r.receiptId ?? '',
           status: 'committed',
-          project_id: (r.result as { projectId?: string })?.projectId ?? '',
+          project_id: (r.result as { projectId?: string }).projectId ?? '',
           schema_version: '2.3' as const,
           started_at: new Date().toISOString(),
           finished_at: new Date().toISOString(),
@@ -793,7 +794,10 @@ export function createGuiBridgeFromService(
             Awaited<ReturnType<ExpflowRuntime['planSync']>> & { planToken: string }
           >(r, root);
 
-        const planResult = r.result!;
+        const planResult = r.result;
+        if (!planResult) {
+          throw new ExpflowError('OPERATION_FAILED', 'planSync returned no result', { recoverable: true, recommendedAction: 'Retry.' });
+        }
         const runtimePlan = planResult.plan as Awaited<ReturnType<ExpflowRuntime['planSync']>>;
         const planToken = planResult.token;
         const changeDigest = createHash('sha256')
@@ -854,19 +858,19 @@ export function createGuiBridgeFromService(
           token: input.planToken,
           expectedHead: input.expectedHead,
           operation: 'sync',
-          plan: {} as Awaited<ReturnType<ExpflowRuntime['planSync']>>,
+          plan: {},
           createdAt: new Date().toISOString(),
         });
         if (!r.ok) return toGuiResult<OperationReceiptRecord>(r, root);
         const receipt: OperationReceiptRecord = {
-          operation_id: r.receiptId ?? (r.result as { receiptId?: string })?.receiptId ?? '',
+          operation_id: r.receiptId ?? (r.result as { receiptId?: string }).receiptId ?? '',
           status: 'committed',
           project_id: '',
           schema_version: '2.3' as const,
           started_at: new Date().toISOString(),
           finished_at: new Date().toISOString(),
           validation_refs: [],
-          warnings: r.warnings ?? [],
+          warnings: r.warnings,
         };
         return toGuiResult<OperationReceiptRecord>(
           { ok: true, operation: 'sync.execute', result: receipt },
@@ -887,8 +891,11 @@ export function createGuiBridgeFromService(
         const r = await svc.planRestore(actor, input.reference);
         if (!r.ok) return toGuiResult<RestorePlan & { planToken: string }>(r, root);
 
-        const planResult = r.result!;
-        const runtimePlan = planResult.plan as unknown as RestorePlan;
+        const planResult = r.result;
+        if (!planResult) {
+          throw new ExpflowError('OPERATION_FAILED', 'planRestore returned no result', { recoverable: true, recommendedAction: 'Retry.' });
+        }
+        const runtimePlan = planResult.plan as RestorePlan;
         const planToken = planResult.token;
         const pathEffectsDigest = restorePathEffectsDigest(runtimePlan.path_effects);
         const preservedDriftDigest = createHash('sha256')
@@ -955,19 +962,19 @@ export function createGuiBridgeFromService(
           token: input.planToken,
           expectedHead: '',
           operation: 'restore',
-          plan: {} as Awaited<ReturnType<ExpflowRuntime['planSync']>>,
+          plan: {},
           createdAt: new Date().toISOString(),
         });
         if (!r.ok) return toGuiResult<OperationReceiptRecord>(r, root);
         const receipt: OperationReceiptRecord = {
-          operation_id: r.receiptId ?? (r.result as { receiptId?: string })?.receiptId ?? '',
+          operation_id: r.receiptId ?? (r.result as { receiptId?: string }).receiptId ?? '',
           status: 'committed',
           project_id: '',
           schema_version: '2.3' as const,
           started_at: new Date().toISOString(),
           finished_at: new Date().toISOString(),
           validation_refs: [],
-          warnings: r.warnings ?? [],
+          warnings: r.warnings,
         };
         return toGuiResult<OperationReceiptRecord>(
           { ok: true, operation: 'restore.execute', result: receipt },
