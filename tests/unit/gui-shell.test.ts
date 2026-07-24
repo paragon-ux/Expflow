@@ -15,7 +15,6 @@ describe('Expflow GUI shell contract', () => {
       'Command Families',
       'plan',
       'apply',
-      'preview',
       'receipt',
       'sidebar',
       'workspace',
@@ -35,7 +34,7 @@ describe('Expflow GUI shell contract', () => {
     const app = read('apps/gui/src/app.js');
 
     expect(app).toContain('planToken');
-    expect(app).toContain('doPreview');
+    expect(app).toContain('doPrimaryAction');
     expect(app).toContain('doApply');
     expect(app).toContain('/api/sync/plan');
     expect(app).toContain('/api/restore/plan');

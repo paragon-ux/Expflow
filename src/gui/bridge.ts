@@ -649,6 +649,11 @@ export function createGuiBridgeFromService(
         const r = await svc.inspect(actor);
         if (!r.ok) return toGuiResult<GuiProjectSnapshot>(r, root);
         const status = (r.result ?? {}) as StatusReportRecord;
+        const snapshot: GuiProjectSnapshot = {
+          status,
+          revision_history: status.revision_history ?? [],
+          node_history: status.node_history ?? [],
+        };
         return toGuiResult<GuiProjectSnapshot>(r, root, stateFromStatus(status));
       });
     },

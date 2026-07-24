@@ -79,7 +79,9 @@ skipIf('CLI/GUI adapter parity — inspect/status', () => {
     const guiR = await bridge.inspectProject({ root: tempRoot });
 
     const cliStatus = cliR.result as Record<string, unknown>;
-    const guiStatus = guiR.data as Record<string, unknown>;
+    const guiData = guiR.data as Record<string, unknown>;
+    // GuiProjectSnapshot: { status: StatusReportRecord, revision_history, node_history }
+    const guiStatus = (guiData.status ?? guiData) as Record<string, unknown>;
     expect(cliStatus.project_id).toBe(guiStatus.project_id);
   });
 
@@ -89,7 +91,8 @@ skipIf('CLI/GUI adapter parity — inspect/status', () => {
     const guiR = await bridge.inspectProject({ root: tempRoot });
 
     const cliStatus = cliR.result as Record<string, unknown>;
-    const guiStatus = guiR.data as Record<string, unknown>;
+    const guiData = guiR.data as Record<string, unknown>;
+    const guiStatus = (guiData.status ?? guiData) as Record<string, unknown>;
     expect(cliStatus.working_tree_state).toBeDefined();
     expect(cliStatus.working_tree_state).toBe(guiStatus.working_tree_state);
   });
@@ -100,7 +103,8 @@ skipIf('CLI/GUI adapter parity — inspect/status', () => {
     const guiR = await bridge.inspectProject({ root: tempRoot });
 
     const cliStatus = cliR.result as Record<string, unknown>;
-    const guiStatus = guiR.data as Record<string, unknown>;
+    const guiData = guiR.data as Record<string, unknown>;
+    const guiStatus = (guiData.status ?? guiData) as Record<string, unknown>;
     expect(cliStatus.head_tree_revision_id).toBe(guiStatus.head_tree_revision_id);
   });
 });
