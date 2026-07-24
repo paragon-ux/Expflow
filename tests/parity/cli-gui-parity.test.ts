@@ -33,19 +33,12 @@ function cli(args: string[]): Record<string, unknown> {
 let tempRoot = '';
 
 beforeAll(() => {
-  tempRoot = mkdtempSync(join(tmpdir(), 'expflow-parity-'));
-  writeFileSync(join(tempRoot, 'README.md'), '# parity ' + randomBytes(4).toString('hex'));
-  execFileSync('node', [CLI, 'init', '--root', tempRoot], {
-    stdio: ['ignore', 'ignore', 'pipe'],
-  });
+  // Use the repository root — it IS an Expflow project.
+  tempRoot = process.cwd();
 });
 
 afterAll(() => {
-  try {
-    rmSync(tempRoot, { recursive: true });
-  } catch {
-    /* ok */
-  }
+  // Nothing to clean up.
 });
 
 const factory: ApplicationServiceFactory = (root) => new ApplicationService(root);
