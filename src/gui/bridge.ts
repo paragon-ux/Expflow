@@ -796,7 +796,10 @@ export function createGuiBridgeFromService(
 
         const planResult = r.result;
         if (!planResult) {
-          throw new ExpflowError('OPERATION_FAILED', 'planSync returned no result', { recoverable: true, recommendedAction: 'Retry.' });
+          throw new ExpflowError('OPERATION_FAILED', 'planSync returned no result', {
+            recoverable: true,
+            recommendedAction: 'Retry.',
+          });
         }
         const runtimePlan = planResult.plan as Awaited<ReturnType<ExpflowRuntime['planSync']>>;
         const planToken = planResult.token;
@@ -893,7 +896,10 @@ export function createGuiBridgeFromService(
 
         const planResult = r.result;
         if (!planResult) {
-          throw new ExpflowError('OPERATION_FAILED', 'planRestore returned no result', { recoverable: true, recommendedAction: 'Retry.' });
+          throw new ExpflowError('OPERATION_FAILED', 'planRestore returned no result', {
+            recoverable: true,
+            recommendedAction: 'Retry.',
+          });
         }
         const runtimePlan = planResult.plan as RestorePlan;
         const planToken = planResult.token;
