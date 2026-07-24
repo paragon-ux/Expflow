@@ -552,7 +552,6 @@ export function createGuiBridge(runtime: ExpflowRuntime = createRuntime()): GuiB
  * share the same application command layer. Wraps the existing
  * runtime-backed bridge for backward compatibility.
  */
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export function createGuiBridgeFromService(_appService?: ApplicationService): GuiBridge {
   return createGuiBridge();
 }

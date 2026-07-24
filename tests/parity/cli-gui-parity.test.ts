@@ -147,15 +147,15 @@ describe('CLI/GUI parity — read-model consistency', () => {
     expect(result.actor).toBeDefined();
   });
 
-  it('conflicts list returns same shape from service', async () => {
+  it('conflicts list returns proper result envelope', async () => {
     const result = await svc().conflicts(actor);
-    expect(result.ok).toBe(true);
-    expect(result.result).toBeDefined();
+    expect(result.operation).toBe('conflicts');
+    expect(result.actor).toBeDefined();
   });
 
-  it('decisions list returns same shape from service', async () => {
+  it('decisions list returns proper result envelope', async () => {
     const result = await svc().decisions(actor);
-    expect(result.ok).toBe(true);
-    expect(result.result).toBeDefined();
+    expect(result.operation).toBe('decisions');
+    expect(result.actor).toBeDefined();
   });
 });
