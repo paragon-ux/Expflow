@@ -8,9 +8,6 @@
  */
 import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import { execFileSync } from 'node:child_process';
-import { randomBytes } from 'node:crypto';
-import { mkdtempSync, rmSync, writeFileSync } from 'node:fs';
-import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { createGuiBridgeFromService } from '../../src/gui/bridge.js';
 import type { ApplicationServiceFactory } from '../../src/gui/bridge.js';
@@ -107,7 +104,7 @@ describe('CLI/GUI adapter parity — inspect/status', () => {
 
 describe('CLI/GUI adapter parity — error semantics', () => {
   it('GUI reports uninitialized for nonexistent root', async () => {
-    const nonexistent = join(tmpdir(), `nx-${randomBytes(4).toString('hex')}`);
+    const nonexistent = join(process.cwd(), `nx-parity-${Date.now()}`);
     const bridge = createGuiBridgeFromService(factory);
     const guiResult = await bridge.inspectProject({ root: nonexistent });
 
